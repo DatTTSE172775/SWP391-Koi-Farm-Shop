@@ -1,23 +1,17 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import Navbar from "./components/Navbar"; // Đường dẫn đến file Navbar.js
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {/* Hiển thị navbar */}
+      <Navbar />
+
+      {/* Nội dung chính của trang web */}
+      <main>
+        <h1>Welcome to Koi Farm Shop</h1>
+        {/* Các thành phần khác trong trang */}
+      </main>
     </div>
   );
 }
