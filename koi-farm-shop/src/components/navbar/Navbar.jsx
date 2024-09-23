@@ -6,7 +6,7 @@ const Navbar = () => {
     <header>
       <nav className="navbar">
         <div className="navbar-brand">
-          <a href="/home">
+          <a href="/homepage">
             <img
               src="koi-farm-shop.png"
               alt="Koi Farm Shop Logo"
@@ -16,7 +16,7 @@ const Navbar = () => {
         </div>
         <ul className="navbar-nav">
           <li className="nav-item">
-            <a href="/home" className="nav-link">
+            <a href="/homepage" className="nav-link">
               Trang chủ
             </a>
           </li>
