@@ -31,7 +31,7 @@ const Navbar = () => {
             </a>
             <ul className="dropdown-menu">
               <li>
-                <a href="/ProductList">Showa</a>
+                <a href="/japanese-koi/showa">Showa</a>
               </li>
               <li>
                 <a href="/japanese-koi/kohaku">Kohaku</a>

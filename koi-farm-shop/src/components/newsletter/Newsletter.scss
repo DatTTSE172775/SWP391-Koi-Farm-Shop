@@ -1,0 +1,47 @@
+.newsletter-container {
+  background-color: #333;
+  color: #fff;
+  padding: 40px;
+  text-align: center;
+  border-radius: 10px;
+  max-width: 600px;
+  margin: 40px auto;
+
+  h2 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+  }
+
+  p {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+  }
+
+  .newsletter-form {
+    display: flex;
+    justify-content: center;
+
+    input {
+      padding: 10px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+      margin-right: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      background-color: #ff6347;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+
+      &:hover {
+        background-color: #ff4500;
+      }
+    }
+  }
+}
