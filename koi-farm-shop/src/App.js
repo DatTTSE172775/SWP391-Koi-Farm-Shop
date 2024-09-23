@@ -1,18 +1,16 @@
 import React from "react";
 import Navbar from "./components/navbar/Navbar";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import Blog from "./components/blog/Blog";
 
 function App() {
   return (
-    <div className="App">
-      {/* Hiển thị navbar */}
+    <Router>
       <Navbar />
-
-      {/* Nội dung chính của trang web */}
-      <main>
-        <h1>Welcome to Koi Farm Shop</h1>
-        {/* Các thành phần khác trong trang */}
-      </main>
-    </div>
+      <Routes>
+        <Route path="/blog" element={<Blog />} />
+      </Routes>
+    </Router>
   );
 }
 

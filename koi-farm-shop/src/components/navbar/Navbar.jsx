@@ -66,7 +66,7 @@ const Navbar = () => {
             </a>
           </li>
           <li className="nav-item">
-            <a href="/blogs" className="nav-link">
+            <a href="/blog" className="nav-link">
               Tin tức
             </a>
           </li>
