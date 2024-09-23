@@ -1,0 +1,111 @@
+.footer {
+  background-color: #f8f8f8; // Màu nền nhẹ nhàng
+  color: #333; // Màu chữ tối cho dễ đọc
+  padding: 40px 0;
+  text-align: center;
+
+  .footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between; // Căn đều khoảng cách giữa các phần tử
+    flex-wrap: wrap; // Tự động xuống dòng trên màn hình nhỏ
+
+    .footer-section {
+      flex: 1 1 200px; // Đảm bảo mỗi section có chiều rộng tối thiểu là 200px
+      margin-bottom: 20px;
+
+      h2,
+      h3 {
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+        color: #333; // Màu chữ tiêu đề
+        text-transform: uppercase; // Chuyển đổi chữ hoa cho tiêu đề
+        letter-spacing: 1px;
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+        li {
+          margin-bottom: 10px;
+          a {
+            color: #555;
+            text-decoration: none;
+            transition: color 0.3s;
+
+            &:hover {
+              color: #007bff; // Màu nhấn khi hover
+            }
+          }
+        }
+      }
+    }
+
+    .newsletter {
+      flex: 2 1 400px; // Section dành cho newsletter sẽ rộng hơn
+      input[type="email"] {
+        padding: 10px;
+        width: 70%;
+        border: 1px solid #ccc;
+        margin-right: 10px;
+        border-radius: 4px;
+      }
+
+      button {
+        padding: 10px 20px;
+        border: none;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+
+        &:hover {
+          background-color: #0056b3;
+        }
+      }
+
+      p {
+        margin-top: 10px;
+        font-size: 0.85rem;
+        color: #777;
+      }
+    }
+
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+
+      a {
+        color: #333;
+        font-size: 1.5em;
+        transition: color 0.3s;
+
+        &:hover {
+          color: #007bff; // Màu khi hover trên biểu tượng mạng xã hội
+        }
+      }
+    }
+  }
+
+  .footer-bottom {
+    margin-top: 20px;
+    padding-top: 20px;
+    font-size: 0.9rem;
+    color: #777;
+    border-top: 1px solid #ddd;
+
+    a {
+      color: #007bff;
+      text-decoration: none;
+      transition: color 0.3s;
+
+      &:hover {
+        color: #0056b3;
+      }
+    }
+  }
+}
