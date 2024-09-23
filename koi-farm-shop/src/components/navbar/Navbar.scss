@@ -1,0 +1,128 @@
+$navbar-height: 60px;
+$navbar-bg-color: #fff;
+$navbar-text-color: #333;
+$navbar-hover-color: #0066cc;
+$navbar-border-color: #e0e0e0;
+$navbar-link-hover-color: #0066cc;
+$navbar-icon-color: #333;
+$cart-icon-color: #d32f2f;
+$navbar-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+.navbar {
+  height: $navbar-height;
+  background-color: $navbar-bg-color;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 30px;
+  box-shadow: $navbar-shadow;
+
+  .navbar-brand {
+    display: flex;
+    align-items: center;
+
+    .navbar-logo {
+      width: 60px;
+      height: auto;
+    }
+  }
+
+  .navbar-nav {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    .nav-item {
+      margin-left: 20px;
+      position: relative;
+
+      .nav-link {
+        text-decoration: none;
+        font-size: 1rem;
+        color: $navbar-text-color;
+        padding: 10px 15px;
+        transition: color 0.3s;
+
+        &:hover {
+          color: $navbar-hover-color;
+        }
+      }
+
+      &:hover .dropdown-menu {
+        display: block;
+      }
+
+      .dropdown-menu {
+        display: none;
+        position: absolute;
+        background-color: $navbar-bg-color;
+        padding: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        list-style: none;
+        margin-top: 10px;
+        left: 0;
+        z-index: 1000;
+
+        li {
+          margin-bottom: 10px;
+
+          &:last-child {
+            margin-bottom: 0;
+          }
+
+          a {
+            text-decoration: none;
+            color: $navbar-text-color;
+            padding: 5px 10px;
+            display: block;
+            white-space: nowrap;
+
+            &:hover {
+              background-color: $navbar-hover-color;
+              color: white;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .navbar-icons {
+    display: flex;
+    align-items: center;
+
+    .cart-icon {
+      position: relative;
+      margin-right: 30px;
+      font-size: 1rem;
+      color: $navbar-icon-color;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+
+      .cart-count {
+        background-color: $cart-icon-color;
+        color: white;
+        border-radius: 50%;
+        padding: 2px 6px;
+        margin-right: 5px;
+        font-size: 0.9rem;
+      }
+
+      &:hover {
+        color: $navbar-hover-color;
+      }
+    }
+
+    .account-icon {
+      font-size: 1rem;
+      color: $navbar-icon-color;
+      text-decoration: none;
+
+      &:hover {
+        color: $navbar-hover-color;
+      }
+    }
+  }
+}
