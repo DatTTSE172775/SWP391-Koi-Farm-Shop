@@ -2,6 +2,8 @@ import React from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import About from "./components/about/About";
 import Blog from "./components/blog/Blog";
+import Consignment from "./components/consignment/Consignment";
+import ConsignmentForm from "./components/consignment/ConsignmentForm";
 import Footer from "./components/footer/Footer";
 import KoiDetails from "./components/koiDetails/KoiDetails";
 import KoiList from "./components/koiList/KoiList";
@@ -20,6 +22,8 @@ function App() {
         <Route path="/koi-details/:id" element={<KoiDetails />} />
         <Route path="/products" element={<ProductList />} />
         <Route path="/product-details/:id" element={<ProductDetails />} />
+        <Route path="/consignment" element={<Consignment />} />
+        <Route path="/consignment-form" element={<ConsignmentForm />} />
         <Route path="/about" element={<About />} />
         <Route path="/blog" element={<Blog />} />
       </Routes>
