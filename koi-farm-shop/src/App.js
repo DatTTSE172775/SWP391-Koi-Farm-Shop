@@ -1,6 +1,10 @@
 import React from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import About from "./components/about/About";
+import CustomerAccount from "./components/account/CustomerAccount";
+import ForgetPassword from "./components/auth/ForgetPassWord";
+import Login from "./components/auth/Login";
+import Register from "./components/auth/Register";
 import Blog from "./components/blog/Blog";
 import Cart from "./components/cart/Cart";
 import Consignment from "./components/consignment/Consignment";
@@ -14,6 +18,7 @@ import OrderSuccess from "./components/order/OrderSuccess";
 import PaymentConfirm from "./components/payment/PaymentConfirm";
 import ProductDetails from "./components/productDetails/ProductDetails";
 import ProductList from "./components/productList/ProductList";
+import SettingCustomer from "./components/settingAccount/SettingCustomer";
 import HomePage from "./pages/home/HomePage";
 
 function App() {
@@ -34,6 +39,11 @@ function App() {
         <Route path="/payment-confirm" element={<PaymentConfirm />} />
         <Route path="/order-success" element={<OrderSuccess />} />
         <Route path="/check-order" element={<CheckOrder />} />
+        <Route path="/account" element={<CustomerAccount />} />
+        <Route path="/settings" element={<SettingCustomer />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/forget-password" element={<ForgetPassword />} />
       </Routes>
       <Footer />
     </Router>
