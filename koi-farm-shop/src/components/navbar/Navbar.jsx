@@ -26,7 +26,7 @@ const Navbar = () => {
             </a>
           </li>
           <li className="nav-item dropdown">
-            <a href="/ProductList" className="nav-link">
+            <a href="/koi-list" className="nav-link">
               Cá Koi Nhật
             </a>
             <ul className="dropdown-menu">
