@@ -2,12 +2,16 @@ import React from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import About from "./components/about/About";
 import Blog from "./components/blog/Blog";
+import Cart from "./components/cart/Cart";
 import Consignment from "./components/consignment/Consignment";
 import ConsignmentForm from "./components/consignment/ConsignmentForm";
 import Footer from "./components/footer/Footer";
 import KoiDetails from "./components/koiDetails/KoiDetails";
 import KoiList from "./components/koiList/KoiList";
 import Navbar from "./components/navbar/Navbar";
+import CheckOrder from "./components/order/CheckOrder";
+import OrderSuccess from "./components/order/OrderSuccess";
+import PaymentConfirm from "./components/payment/PaymentConfirm";
 import ProductDetails from "./components/productDetails/ProductDetails";
 import ProductList from "./components/productList/ProductList";
 import HomePage from "./pages/home/HomePage";
@@ -26,6 +30,10 @@ function App() {
         <Route path="/consignment-form" element={<ConsignmentForm />} />
         <Route path="/about" element={<About />} />
         <Route path="/blog" element={<Blog />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/payment-confirm" element={<PaymentConfirm />} />
+        <Route path="/order-success" element={<OrderSuccess />} />
+        <Route path="/check-order" element={<CheckOrder />} />
       </Routes>
       <Footer />
     </Router>
