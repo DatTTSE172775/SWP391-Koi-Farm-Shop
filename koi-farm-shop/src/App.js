@@ -6,6 +6,7 @@ import ForgetPassword from "./components/auth/ForgetPassWord";
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
 import Blog from "./components/blog/Blog";
+import BlogDetails from "./components/blogdetails/BlogDetails";
 import Cart from "./components/cart/Cart";
 import Consignment from "./components/consignment/Consignment";
 import ConsignmentForm from "./components/consignment/ConsignmentForm";
@@ -35,6 +36,7 @@ function App() {
         <Route path="/consignment-form" element={<ConsignmentForm />} />
         <Route path="/about" element={<About />} />
         <Route path="/blog" element={<Blog />} />
+        <Route path="/blog-details/:id" element={<BlogDetails />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/payment-confirm" element={<PaymentConfirm />} />
         <Route path="/order-success" element={<OrderSuccess />} />
