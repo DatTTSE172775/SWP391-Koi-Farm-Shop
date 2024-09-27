@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import "./Blog.scss";
 
 const Blog = () => {
@@ -140,7 +141,9 @@ const Blog = () => {
                 </div>
               </div>
               <div className="card-footer">
-                <button className="read-more">Đọc thêm</button>
+                <Link to={`/blog-details/${newsArticles.id}`}>
+                  <button className="read-more">Đọc thêm</button>
+                </Link>
               </div>
             </div>
           ))}
