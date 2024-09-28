@@ -1,37 +1,24 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./Auth.scss";
+import "../Auth.scss";
 
-const Register = () => {
-  const [name, setName] = useState("");
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
-  const handleRegister = (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
-    // Add logic for user registration here
-    setMessage("Registration successful!");
-    navigate("/login"); // Redirect to login after registration
+    // Add logic for user login here
+    setMessage("Login successful!");
+    navigate("/homepage"); // Redirect to homepage after successful login
   };
 
   return (
     <div className="auth-container">
-      <h2>Register</h2>
-      <form onSubmit={handleRegister}>
-        <div className="form-group">
-          <label htmlFor="name">Full Name</label>
-          <input
-            type="text"
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Enter your full name"
-            required
-          />
-        </div>
-
+      <h2>Login</h2>
+      <form onSubmit={handleLogin}>
         <div className="form-group">
           <label htmlFor="email">Email</label>
           <input
@@ -56,13 +43,14 @@ const Register = () => {
           />
         </div>
 
-        <button type="submit">Register</button>
+        <button type="submit">Login</button>
 
         {message && <p className="message">{message}</p>}
 
         <div className="auth-links">
+          <a href="/forget-password">Forgot Password?</a>
           <p>
-            Already have an account? <a href="/login">Login here</a>
+            Don't have an account? <a href="/register">Register here</a>
           </p>
         </div>
       </form>
@@ -70,4 +58,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default Login;

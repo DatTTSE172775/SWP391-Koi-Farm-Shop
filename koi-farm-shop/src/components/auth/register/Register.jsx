@@ -1,30 +1,34 @@
 import React, { useState } from "react";
-import "./SettingCustomer.scss";
+import { useNavigate } from "react-router-dom";
+import "../Auth.scss";
 
-const SettingCustomer = () => {
+const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleRegister = (e) => {
     e.preventDefault();
-    // Add logic to update the profile here
-    setMessage("Profile updated successfully!");
+    // Add logic for user registration here
+    setMessage("Registration successful!");
+    navigate("/login"); // Redirect to login after registration
   };
 
   return (
-    <div className="settings-container">
-      <h2>Update Profile</h2>
-      <form onSubmit={handleSubmit}>
+    <div className="auth-container">
+      <h2>Register</h2>
+      <form onSubmit={handleRegister}>
         <div className="form-group">
-          <label htmlFor="name">Name</label>
+          <label htmlFor="name">Full Name</label>
           <input
             type="text"
             id="name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Enter your name"
+            placeholder="Enter your full name"
+            required
           />
         </div>
 
@@ -36,6 +40,7 @@ const SettingCustomer = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter your email"
+            required
           />
         </div>
 
@@ -47,15 +52,22 @@ const SettingCustomer = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter your password"
+            required
           />
         </div>
 
-        <button type="submit">Update Profile</button>
+        <button type="submit">Register</button>
 
         {message && <p className="message">{message}</p>}
+
+        <div className="auth-links">
+          <p>
+            Already have an account? <a href="/login">Login here</a>
+          </p>
+        </div>
       </form>
     </div>
   );
 };
 
-export default SettingCustomer;
+export default Register;

@@ -1,18 +1,13 @@
 import React from "react";
-import Blog from "../../components/blog/Blog";
-import HeroSection from "../../components/heroSection/HeroSection";
-import KoiFeature from "../../components/koifeature/KoiFeature";
-import Newsletter from "../../components/newsletter/Newsletter";
-import Testimonials from "../../components/testimonials/Testimonials";
+import Footer from "../../components/footer/Footer";
+import Navigation from "../../components/navigation/Navigation";
 
 const HomePage = () => {
   return (
     <div>
-      <HeroSection />
-      <KoiFeature />
-      <Blog />
-      <Testimonials />
-      <Newsletter />
+      <Navigation />
+      <p>Chào mừng đến với Koi-Farm-Shop</p>
+      <Footer />
     </div>
   );
 };
