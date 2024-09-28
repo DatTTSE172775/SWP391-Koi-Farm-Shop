@@ -1,3 +1,4 @@
+import "bootstrap/dist/css/bootstrap.min.css";
 import React from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import About from "./components/about/About";
@@ -13,7 +14,7 @@ import ConsignmentForm from "./components/consignment/ConsignmentForm";
 import Footer from "./components/footer/Footer";
 import KoiDetails from "./components/koiDetails/KoiDetails";
 import KoiList from "./components/koiList/KoiList";
-import Navbar from "./components/navbar/Navbar";
+import Navigation from "./components/navigation/Navigation";
 import CheckOrder from "./components/order/CheckOrder";
 import OrderSuccess from "./components/order/OrderSuccess";
 import PaymentConfirm from "./components/payment/PaymentConfirm";
@@ -25,9 +26,10 @@ import HomePage from "./pages/home/HomePage";
 function App() {
   return (
     <Router>
-      <Navbar />
+      <Navigation />
       <Routes>
-        <Route path="/homepage" element={<HomePage />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/home" element={<HomePage />} />
         <Route path="/koi-list" element={<KoiList />} />
         <Route path="/koi-details/:id" element={<KoiDetails />} />
         <Route path="/products" element={<ProductList />} />

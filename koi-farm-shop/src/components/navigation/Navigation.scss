@@ -1,0 +1,69 @@
+.navigation {
+  background-color: #fff;
+  box-shadow: none;
+
+  .logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    margin-right: 20px;
+
+    .logo-image {
+      width: 50px;
+      margin-right: 10px;
+    }
+  }
+
+  .nav-tabs {
+    .MuiTabs-flexContainer {
+      display: flex;
+      align-items: center;
+    }
+
+    .MuiTab-root {
+      text-transform: none;
+      font-weight: 500;
+      color: #333;
+      min-width: auto;
+      padding: 0 15px;
+
+      &:hover {
+        color: #1976d2;
+      }
+    }
+
+    .Mui-selected {
+      color: #1976d2 !important;
+    }
+
+    .MuiTabs-indicator {
+      background-color: #1976d2;
+    }
+  }
+
+  .cart-button {
+    text-transform: none;
+    color: #333;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+
+    .MuiBadge-root {
+      margin-right: 5px;
+    }
+
+    .cart-text {
+      margin-left: 5px;
+    }
+
+    &:hover {
+      color: #1976d2;
+    }
+  }
+
+  .login-button {
+    text-transform: none;
+    color: #fff;
+  }
+}
