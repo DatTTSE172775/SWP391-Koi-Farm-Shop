@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./Auth.scss";
+import "../Auth.scss";
 
 const ForgetPassWord = () => {
   const [email, setEmail] = useState("");
