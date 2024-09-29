@@ -6,6 +6,8 @@ import ForgetPassword from "./components/auth/forget-password/ForgetPassWord";
 import Login from "./components/auth/login/Login";
 import Register from "./components/auth/register/Register";
 import HomePage from "./pages/home/HomePage";
+import Consignment from "./components/consignment/Consignment";
+import ConsignmentForm from "./components/consignment/ConsignmentForm";
 
 function App() {
   return (
@@ -17,6 +19,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forget-password" element={<ForgetPassword />} />
+        <Route path="consignment" element={<Consignment />} />
+        <Route path="/consignment-form" element={<ConsignmentForm />} />
         <Route path="/" element={<HomePage />} />
         <Route path="*" element={<HomePage />} />
       </Routes>
