@@ -1,0 +1,73 @@
+.hero-banner-container {
+  width: 100%;
+  height: 80vh;
+  position: relative;
+
+  .hero-swiper {
+    width: 100%;
+    height: 100%;
+
+    .swiper-button-next,
+    .swiper-button-prev {
+      color: #fff;
+    }
+
+    .swiper-pagination-bullet {
+      background: rgba(255, 255, 255, 0.5);
+      opacity: 1;
+    }
+
+    .swiper-pagination-bullet-active {
+      background: #fff;
+    }
+
+    .hero-slide {
+      width: 100%;
+      height: 80vh;
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+
+      /* Overlay để làm nổi bật nội dung */
+      &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+      }
+
+      .hero-content {
+        position: relative;
+        color: #fff;
+        text-align: center;
+        padding: 20px;
+        max-width: 800px;
+
+        .hero-title {
+          font-weight: bold;
+          margin-bottom: 20px;
+          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-cta-button {
+          padding: 10px 30px;
+          font-size: 1.2rem;
+          text-transform: none;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+          transition: background-color 0.3s ease, transform 0.3s ease;
+
+          &:hover {
+            background-color: #ff9800;
+            transform: translateY(-2px);
+          }
+        }
+      }
+    }
+  }
+}
