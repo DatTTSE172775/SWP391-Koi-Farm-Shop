@@ -1,44 +1,94 @@
-import React, { useState } from "react";
-// import "../Auth.scss";
+import {
+  Box,
+  Button,
+  Grid,
+  Link as MuiLink,
+  TextField,
+  Typography,
+} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import "./ForgetPassWord.scss";
 
-const ForgetPassWord = () => {
+const ForgetPassword = () => {
+  // const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const auth = useSelector((state) => state.auth);
+  const { isAuthenticated, loading, error, forgetPasswordSuccess } = auth;
+
   const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
 
-  const handleReset = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    // Add logic for password reset here
-    setMessage("Password reset instructions sent to your email!");
+    console.log("Gửi yêu cầu đặt lại mật khẩu với email: ", email);
+    // dispatch(forgetPassword(email));
   };
 
+  // Redirect nếu đã đăng nhập hoặc sau khi gửi yêu cầu thành công
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/home");
+    }
+    if (forgetPasswordSuccess) {
+      alert("Yêu cầu đặt lại mật khẩu đã được gửi đến email của bạn.");
+      navigate("/login");
+    }
+  }, [isAuthenticated, forgetPasswordSuccess, navigate]);
+
   return (
-    <div className="auth-container">
-      <h2>Forget Password</h2>
-      <form onSubmit={handleReset}>
-        <div className="form-group">
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your email"
-            required
-          />
-        </div>
-
-        <button type="submit">Send Reset Instructions</button>
-
-        {message && <p className="message">{message}</p>}
-
-        <div className="auth-links">
-          <p>
-            Remember your password? <a href="/login">Login here</a>
-          </p>
-        </div>
-      </form>
-    </div>
+    <Box className="forget-password-container">
+      <Box className="forget-password-form-container">
+        <Typography variant="h4" gutterBottom align="center">
+          Quên Mật Khẩu
+        </Typography>
+        <form onSubmit={handleSubmit} className="forget-password-form">
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                label="Email"
+                type="email"
+                variant="outlined"
+                fullWidth
+                required
+                name="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Nhập email của bạn"
+              />
+            </Grid>
+            {error && (
+              <Grid item xs={12}>
+                <Typography color="error" align="center">
+                  {error}
+                </Typography>
+              </Grid>
+            )}
+            <Grid item xs={12}>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                fullWidth
+                disabled={loading}
+              >
+                {loading ? "Đang gửi..." : "Gửi Yêu Cầu"}
+              </Button>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="body2" align="center">
+                Bạn đã nhớ mật khẩu?{" "}
+                <MuiLink component={Link} to="/login">
+                  Đăng nhập ngay
+                </MuiLink>
+              </Typography>
+            </Grid>
+          </Grid>
+        </form>
+      </Box>
+    </Box>
   );
 };
 
-export default ForgetPassWord;
+export default ForgetPassword;
