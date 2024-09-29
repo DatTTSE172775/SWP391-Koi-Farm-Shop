@@ -82,7 +82,7 @@ const Navigation = () => {
   };
 
   return (
-    <AppBar position="static" color="default" className="navigation">
+    <AppBar position="fixed" color="default" className="navigation">
       <Toolbar>
         {/* Logo */}
         <Typography variant="h6" component={Link} to="/home" className="logo">
