@@ -1,60 +1,106 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "../Auth.scss";
+import GoogleIcon from "@mui/icons-material/Google";
+import {
+  Box,
+  Button,
+  Checkbox,
+  Divider,
+  FormControlLabel,
+  Link,
+  TextField,
+  Typography,
+} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { login } from "../../../store/actions/authActions";
+import "./Login.scss";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const auth = useSelector((state) => state.auth);
+  const { isAuthenticated, error } = auth;
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/home");
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleLogin = (e) => {
     e.preventDefault();
-    // Add logic for user login here
-    setMessage("Login successful!");
-    navigate("/homepage"); // Redirect to homepage after successful login
+    dispatch(login(username, password));
   };
 
   return (
-    <div className="auth-container">
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <div className="form-group">
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your email"
+    <Box className="auth-container">
+      <Box className="login-form">
+        <Typography variant="h4" gutterBottom align="center">
+          Đăng nhập
+        </Typography>
+        <form onSubmit={handleLogin}>
+          <TextField
+            label="Tên tài khoản"
+            variant="outlined"
+            fullWidth
             required
+            margin="normal"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Nhập tên tài khoản"
           />
-        </div>
 
-        <div className="form-group">
-          <label htmlFor="password">Password</label>
-          <input
+          <TextField
+            label="Mật khẩu"
             type="password"
-            id="password"
+            variant="outlined"
+            fullWidth
+            required
+            margin="normal"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter your password"
-            required
+            placeholder="Nhập mật khẩu"
           />
-        </div>
 
-        <button type="submit">Login</button>
+          <Box className="login-options">
+            <FormControlLabel
+              control={<Checkbox color="primary" required />}
+              label="Chấp nhận các điều khoản"
+            />
+            <Link component={RouterLink} to="/forget-password" variant="body2">
+              Quên mật khẩu ?
+            </Link>
+          </Box>
 
-        {message && <p className="message">{message}</p>}
+          <Button type="submit" variant="contained" color="primary" fullWidth>
+            Đăng nhập
+          </Button>
 
-        <div className="auth-links">
-          <a href="/forget-password">Forgot Password?</a>
-          <p>
-            Don't have an account? <a href="/register">Register here</a>
-          </p>
-        </div>
-      </form>
-    </div>
+          {error && <Typography className="message">{error}</Typography>}
+
+          <Divider sx={{ my: 2 }}>HOẶC</Divider>
+
+          <Button
+            variant="outlined"
+            color="primary"
+            fullWidth
+            startIcon={<GoogleIcon />}
+          >
+            Đăng nhập với Google
+          </Button>
+
+          <Typography variant="body2" align="center" className="register-text">
+            Bạn chưa có tài khoản ?{" "}
+            <Link component={RouterLink} to="/register" variant="body2">
+              Đăng ký ngay
+            </Link>
+          </Typography>
+        </form>
+      </Box>
+    </Box>
   );
 };
 

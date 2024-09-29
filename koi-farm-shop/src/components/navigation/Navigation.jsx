@@ -1,6 +1,7 @@
 import { ExpandMore, ShoppingCart } from "@mui/icons-material";
 import {
   AppBar,
+  Avatar,
   Badge,
   Box,
   Button,
@@ -11,32 +12,41 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { logout } from "../../store/actions/authActions";
 import "./Navigation.scss";
 
 const Navigation = () => {
   const location = useLocation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [value, setValue] = useState(false);
 
   // Xác định tab được chọn dựa trên đường dẫn hiện tại
-  const getSelectedTab = () => {
+  useEffect(() => {
     switch (location.pathname) {
       case "/home":
-        return 0;
+        setValue(0);
+        break;
       case "/about":
-        return 1;
+        setValue(1);
+        break;
       case "/consignment":
-        return 4;
+        setValue(4);
+        break;
       case "/blog":
-        return 5;
+        setValue(5);
+        break;
       case "/contact":
-        return 6;
+        setValue(6);
+        break;
       default:
-        return false;
+        setValue(false);
     }
-  };
-
-  const [value, setValue] = useState(getSelectedTab());
+  }, [location.pathname]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -60,6 +70,15 @@ const Navigation = () => {
 
   const handleCloseProduct = () => {
     setAnchorElProduct(null);
+  };
+
+  // get auth state from redux store
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
+
+  // handle logout
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/home");
   };
 
   return (
@@ -121,26 +140,42 @@ const Navigation = () => {
         <Box sx={{ flexGrow: 1 }} />
 
         {/* Icons bên phải */}
-        <Button
-          component={Link}
-          to="/cart"
-          color="inherit"
-          className="cart-button"
-        >
-          <Badge badgeContent={3} color="secondary">
-            <ShoppingCart />
-          </Badge>
-          <span className="cart-text">Giỏ hàng</span>
-        </Button>
-        <Button
-          component={Link}
-          to="/login"
-          variant="contained"
-          color="primary"
-          className="login-button"
-        >
-          Đăng nhập
-        </Button>
+        {isAuthenticated ? (
+          <Box display="flex" alignItems="center">
+            <Avatar name="Foo Bar" />
+            <Typography variant="body1" className="username">
+              {user}
+            </Typography>
+            <Button
+              component={Link}
+              to="/cart"
+              color="inherit"
+              className="cart-button"
+            >
+              <Badge badgeContent={3} color="secondary">
+                <ShoppingCart />
+              </Badge>
+              <span className="cart-text">Giỏ hàng</span>
+            </Button>
+            <Button
+              color="inherit"
+              onClick={handleLogout}
+              className="logout-button"
+            >
+              Đăng xuất
+            </Button>
+          </Box>
+        ) : (
+          <Button
+            component={Link}
+            to="/login"
+            variant="contained"
+            color="primary"
+            className="login-button"
+          >
+            Đăng nhập
+          </Button>
+        )}
 
         {/* Menu cho Cá Koi Nhật */}
         <Menu
