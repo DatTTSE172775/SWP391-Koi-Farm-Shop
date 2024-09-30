@@ -144,14 +144,14 @@ const Navigation = () => {
 
         {/* Sản phẩm SubMenu */}
         <SubMenu key="product" title="Sản phẩm">
-          <Menu.Item key="product-details-1">
-            <Link to="/product-details/1">Cám cá Koi</Link>
+          <Menu.Item key="product-koi-feed">
+            <Link to="/product-koi-feed">Cám cá Koi</Link>
           </Menu.Item>
-          <Menu.Item key="product-details-2">
-            <Link to="/product-details/2">Hệ thống lọc hồ cá Koi</Link>
+          <Menu.Item key="product-pond-filter-system">
+            <Link to="/product-pond-filter-system">Hệ thống lọc hồ cá Koi</Link>
           </Menu.Item>
-          <Menu.Item key="product-details-3">
-            <Link to="/product-details/3">Phụ kiện hồ cá Koi</Link>
+          <Menu.Item key="product-pond-accessories">
+            <Link to="/product-pond-accessories">Phụ kiện hồ cá Koi</Link>
           </Menu.Item>
         </SubMenu>
 
