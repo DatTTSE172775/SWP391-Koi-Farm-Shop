@@ -1,74 +1,153 @@
 .navigation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  height: 100px;
   background-color: #fff;
-  box-shadow: none;
+  box-shadow: 0 5px 18px #f0f1f2;
 
   .logo {
     display: flex;
     align-items: center;
     text-decoration: none;
     color: inherit;
-    margin-right: 20px;
 
     .logo-image {
-      width: 50px;
+      width: 80px;
+      height: auto;
       margin-right: 10px;
     }
-  }
 
-  .nav-tabs {
-    .MuiTabs-flexContainer {
-      display: flex;
-      align-items: center;
-    }
-
-    .MuiTab-root {
-      text-transform: none;
-      font-weight: 500;
-      color: #333;
-      min-width: auto;
-      padding: 0 15px;
-
-      &:hover {
-        color: #1976d2;
-      }
-    }
-
-    .Mui-selected {
-      color: #1976d2 !important;
-    }
-
-    .MuiTabs-indicator {
-      background-color: #1976d2;
+    span {
+      font-size: 1.2rem;
+      font-weight: bold;
     }
   }
 
-  .cart-button {
-    text-transform: none;
-    color: #333;
-    margin-right: 10px;
+  .nav-menu {
+    flex: 1;
+    margin-left: 20px;
     display: flex;
-    align-items: center;
+    justify-content: center;
 
-    .MuiBadge-root {
-      margin-right: 5px;
+    .ant-menu-horizontal {
+      border-bottom: none;
     }
 
-    .cart-text {
+    .ant-menu-item,
+    .ant-menu-submenu-title {
+      font-size: 1rem;
+      padding: 0 20px;
+      white-space: nowrap;
+    }
+
+    .ant-menu-item:hover,
+    .ant-menu-submenu-title:hover {
+      color: #ff9800;
+    }
+
+    .ant-menu-submenu-arrow {
       margin-left: 5px;
     }
 
-    &:hover {
-      color: #1976d2;
+    .ant-menu-item,
+    .ant-menu-submenu-title {
+      margin-right: 0;
     }
   }
 
-  .login-button {
-    text-transform: none;
-    color: #fff;
+  .nav-icons {
+    display: flex;
+    align-items: center;
+
+    .user-avatar {
+      margin-right: 8px;
+    }
+
+    .username {
+      margin-right: 16px;
+      font-size: 1rem;
+      color: #333;
+    }
+
+    .cart-icon {
+      font-size: 1.5rem;
+      color: #333;
+      margin-right: 16px;
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: #ff9800;
+      }
+    }
+
+    .logout-button {
+      font-size: 1rem;
+      color: #333;
+      margin-left: 10px;
+      padding: 0;
+
+      &:hover {
+        color: #ff9800;
+        background-color: transparent;
+      }
+    }
+
+    .login-button {
+      font-size: 1rem;
+
+      a {
+        color: #fff;
+        text-decoration: none;
+      }
+    }
   }
 
-  .username {
-    margin-left: 10px;
-    margin-right: 10px;
+  @media (max-width: 1200px) {
+    .nav-menu {
+      justify-content: flex-start;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .nav-menu {
+      display: none; // Ẩn menu trên màn hình nhỏ, có thể thêm Drawer hoặc Menu mobile nếu cần
+    }
+
+    .logo {
+      .logo-image {
+        width: 30px;
+        height: 30px;
+      }
+
+      span {
+        font-size: 1rem;
+      }
+    }
+
+    .nav-icons {
+      .username {
+        display: none;
+      }
+
+      .cart-icon {
+        margin-right: 8px;
+      }
+
+      .logout-button {
+        display: none;
+      }
+
+      .login-button {
+        font-size: 0.9rem;
+        padding: 4px 12px;
+      }
+    }
   }
 }

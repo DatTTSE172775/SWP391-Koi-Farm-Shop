@@ -1,275 +1,206 @@
-import { ExpandMore, ShoppingCart } from "@mui/icons-material";
-import {
-  AppBar,
-  Avatar,
-  Badge,
-  Box,
-  Button,
-  Menu,
-  MenuItem,
-  Tab,
-  Tabs,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+// src/components/home/Navigation.jsx
+
+import { ShoppingCartOutlined, UserOutlined } from "@ant-design/icons";
+import { Avatar, Badge, Button, Flex, Menu } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { logout } from "../../store/actions/authActions";
 import "./Navigation.scss";
 
+const { SubMenu } = Menu;
+
 const Navigation = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [value, setValue] = useState(false);
+  const [current, setCurrent] = useState("home");
 
   // Xác định tab được chọn dựa trên đường dẫn hiện tại
   useEffect(() => {
-    switch (location.pathname) {
-      case "/home":
-        setValue(0);
-        break;
-      case "/about":
-        setValue(1);
-        break;
-      case "/consignment":
-        setValue(4);
-        break;
-      case "/blog":
-        setValue(5);
-        break;
-      case "/contact":
-        setValue(6);
-        break;
-      default:
-        setValue(false);
+    const path = location.pathname;
+    if (path === "/home") {
+      setCurrent("home");
+    } else if (path === "/about") {
+      setCurrent("about");
+    } else if (path.startsWith("/koi")) {
+      setCurrent("koi");
+    } else if (path.startsWith("/product")) {
+      setCurrent("product");
+    } else if (path === "/consignment") {
+      setCurrent("consignment");
+    } else if (path === "/blog") {
+      setCurrent("blog");
+    } else if (path === "/contact") {
+      setCurrent("contact");
+    } else {
+      setCurrent("");
     }
   }, [location.pathname]);
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
+  const handleClick = (e) => {
+    setCurrent(e.key);
   };
 
-  // State cho dropdown menu
-  const [anchorElKoi, setAnchorElKoi] = useState(null);
-  const [anchorElProduct, setAnchorElProduct] = useState(null);
-
-  const handleClickKoi = (event) => {
-    setAnchorElKoi(event.currentTarget);
-  };
-
-  const handleCloseKoi = () => {
-    setAnchorElKoi(null);
-  };
-
-  const handleClickProduct = (event) => {
-    setAnchorElProduct(event.currentTarget);
-  };
-
-  const handleCloseProduct = () => {
-    setAnchorElProduct(null);
-  };
-
-  // get auth state from redux store
+  // Get auth state from redux store
   const { isAuthenticated, user } = useSelector((state) => state.auth);
 
-  // handle logout
+  // Handle logout
   const handleLogout = () => {
     dispatch(logout());
     navigate("/home");
   };
 
   return (
-    <AppBar position="fixed" color="default" className="navigation">
-      <Toolbar>
-        {/* Logo */}
-        <Typography variant="h6" component={Link} to="/home" className="logo">
+    <div className="navigation">
+      {/* Logo */}
+      <div className="logo">
+        <Link to="/home">
           <img
             src="koi-farm-shop.png"
             alt="Koi Farm Shop"
             className="logo-image"
           />
-          Koi Farm Shop
-        </Typography>
+        </Link>
+      </div>
 
-        {/* Tabs */}
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          className="nav-tabs"
-          indicatorColor="primary"
-          textColor="inherit"
-        >
-          <Tab label="Trang chủ" component={Link} to="/home" />
-          <Tab label="Giới thiệu" component={Link} to="/about" />
+      {/* Menu */}
+      <Menu
+        onClick={handleClick}
+        selectedKeys={[current]}
+        mode="horizontal"
+        className="nav-menu"
+      >
+        <Menu.Item key="home">
+          <Link to="/home">Trang chủ</Link>
+        </Menu.Item>
+        <Menu.Item key="about">
+          <Link to="/about">Giới thiệu</Link>
+        </Menu.Item>
 
-          {/* Cá Koi Nhật Tab với submenu */}
-          <Tab
-            label={
-              <Box display="flex" alignItems="center">
-                Cá Koi Nhật
-                <ExpandMore fontSize="small" />
-              </Box>
-            }
-            onClick={handleClickKoi}
-            aria-controls="koi-menu"
-            aria-haspopup="true"
-          />
+        {/* Tìm kiếm cá Koi SubMenu */}
+        <SubMenu key="koi" title="Tìm kiếm cá Koi">
+          <Menu.Item key="koi-list">
+            <Link to="/koi-list">Tất cả cá Koi đang bán</Link>
+          </Menu.Item>
+          <Menu.Item key="koi-high-quality">
+            <Link to="/koi-high-quality">Cá Koi chất lượng cao</Link>
+          </Menu.Item>
+          <SubMenu key="koi-varieties" title="Các giống cá Koi">
+            <Menu.Item key="koi-varieties-1">
+              <Link to="/koi-varieties/1">Kohaku Koi</Link>
+            </Menu.Item>
+            <Menu.Item key="koi-varieties-2">
+              <Link to="/koi-varieties/2">Showa Koi</Link>
+            </Menu.Item>
+            <Menu.Item key="koi-varieties-3">
+              <Link to="/koi-varieties/3">Taisho Sanke Koi</Link>
+            </Menu.Item>
+            <Menu.Item key="koi-varieties-4">
+              <Link to="/koi-varieties/4">Shiro Utsuri Koi</Link>
+            </Menu.Item>
+            <Menu.Item key="koi-varieties-5">
+              <Link to="/koi-varieties/5">Hi Utsuri Koi</Link>
+            </Menu.Item>
+            <Menu.Item key="koi-varieties-6">
+              <Link to="/koi-varieties/6">Goshiki Koi</Link>
+            </Menu.Item>
+            <Menu.Item key="koi-varieties-7">
+              <Link to="/koi-varieties/7">Kujyaku Koi</Link>
+            </Menu.Item>
+            <Menu.Item key="koi-varieties-8">
+              <Link to="/koi-varieties/8">Shusui Koi</Link>
+            </Menu.Item>
+            <Menu.Item key="koi-varieties-9">
+              <Link to="/koi-varieties/9">Asagi Koi</Link>
+            </Menu.Item>
+            <Menu.Item key="koi-varieties-10">
+              <Link to="/koi-varieties/10">Ginrin Koi</Link>
+            </Menu.Item>
+            <Menu.Item key="koi-varieties-11">
+              <Link to="/koi-varieties/11">Tancho Koi</Link>
+            </Menu.Item>
+            <Menu.Item key="koi-varieties-12">
+              <Link to="/koi-varieties/12">Doitsu Koi</Link>
+            </Menu.Item>
+            <Menu.Item key="koi-varieties-13">
+              <Link to="/koi-varieties/13">Buffterfly Koi</Link>
+            </Menu.Item>
+          </SubMenu>
+          <Menu.Item key="koi-breeders">
+            <Link to="/koi-breeders">Người nuôi cá Koi</Link>
+          </Menu.Item>
+          <Menu.Item key="koi-package">
+            <Link to="/koi-package">Lô cá Koi</Link>
+          </Menu.Item>
+          <Menu.Item key="koi-collection">
+            <Link to="/koi-collection">Bộ sưu tập cá Koi</Link>
+          </Menu.Item>
+          <Menu.Item key="koi-request">
+            <Link to="/koi-request">Đề xuất cá Koi</Link>
+          </Menu.Item>
+        </SubMenu>
 
-          {/* Sản phẩm Tab với submenu */}
-          <Tab
-            label={
-              <Box display="flex" alignItems="center">
-                Sản phẩm
-                <ExpandMore fontSize="small" />
-              </Box>
-            }
-            onClick={handleClickProduct}
-            aria-controls="product-menu"
-            aria-haspopup="true"
-          />
+        {/* Sản phẩm SubMenu */}
+        <SubMenu key="product" title="Sản phẩm">
+          <Menu.Item key="product-details-1">
+            <Link to="/product-details/1">Cám cá Koi</Link>
+          </Menu.Item>
+          <Menu.Item key="product-details-2">
+            <Link to="/product-details/2">Hệ thống lọc hồ cá Koi</Link>
+          </Menu.Item>
+          <Menu.Item key="product-details-3">
+            <Link to="/product-details/3">Phụ kiện hồ cá Koi</Link>
+          </Menu.Item>
+        </SubMenu>
 
-          <Tab label="Ký gửi" component={Link} to="/consignment" />
-          <Tab label="Tin tức" component={Link} to="/blog" />
-          <Tab label="Liên hệ" component={Link} to="/contact" />
-        </Tabs>
+        <Menu.Item key="consignment">
+          <Link to="/consignment">Ký gửi</Link>
+        </Menu.Item>
+        <Menu.Item key="blog">
+          <Link to="/blog">Tin tức</Link>
+        </Menu.Item>
+        <Menu.Item key="contact">
+          <Link to="/contact">Liên hệ</Link>
+        </Menu.Item>
+      </Menu>
 
-        {/* Khoảng trống để đẩy icon sang bên phải */}
-        <Box sx={{ flexGrow: 1 }} />
-
-        {/* Icons bên phải */}
+      {/* Icons bên phải */}
+      <div className="nav-icons">
         {isAuthenticated ? (
-          <Box display="flex" alignItems="center">
-            <Avatar name="Foo Bar" />
-            <Typography variant="body1" className="username">
-              {user}
-            </Typography>
-            <Button
-              component={Link}
-              to="/cart"
-              color="inherit"
-              className="cart-button"
-            >
-              <Badge badgeContent={3} color="secondary">
-                <ShoppingCart />
+          <>
+            <Avatar
+              className="user-avatar"
+              src="/images/users/avatar.jpg"
+              icon={<UserOutlined />}
+            />
+            <span className="username">{user}</span>
+            <Link to="/cart">
+              <Badge count={3} showZero>
+                <ShoppingCartOutlined className="cart-icon" />
               </Badge>
-              <span className="cart-text">Giỏ hàng</span>
-            </Button>
+            </Link>
             <Button
-              color="inherit"
+              type="text"
               onClick={handleLogout}
               className="logout-button"
             >
               Đăng xuất
             </Button>
-          </Box>
+          </>
         ) : (
-          <Button
-            component={Link}
-            to="/login"
-            variant="contained"
-            color="primary"
-            className="login-button"
-          >
-            Đăng nhập
-          </Button>
+          <Flex gap="large" wrap>
+            <Button type="default" className="register-button">
+              <Link to="/register">Đăng ký</Link>
+            </Button>
+            <Button type="primary" className="login-button">
+              <Link to="/login">Đăng nhập</Link>
+            </Button>
+          </Flex>
         )}
-
-        {/* Menu cho Cá Koi Nhật */}
-        <Menu
-          id="koi-menu"
-          anchorEl={anchorElKoi}
-          open={Boolean(anchorElKoi)}
-          onClose={handleCloseKoi}
-          anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-          transformOrigin={{ vertical: "top", horizontal: "left" }}
-        >
-          <MenuItem
-            component={Link}
-            to="/koi-details/1"
-            onClick={() => {
-              handleCloseKoi();
-              setValue(false);
-            }}
-          >
-            Cá Koi Nhật 1
-          </MenuItem>
-          <MenuItem
-            component={Link}
-            to="/koi-details/2"
-            onClick={() => {
-              handleCloseKoi();
-              setValue(false);
-            }}
-          >
-            Cá Koi Nhật 2
-          </MenuItem>
-          <MenuItem
-            component={Link}
-            to="/koi-details/3"
-            onClick={() => {
-              handleCloseKoi();
-              setValue(false);
-            }}
-          >
-            Cá Koi Nhật 3
-          </MenuItem>
-          <MenuItem
-            component={Link}
-            to="/koi-details/4"
-            onClick={() => {
-              handleCloseKoi();
-              setValue(false);
-            }}
-          >
-            Cá Koi Nhật 4
-          </MenuItem>
-        </Menu>
-
-        {/* Menu cho Sản phẩm */}
-        <Menu
-          id="product-menu"
-          anchorEl={anchorElProduct}
-          open={Boolean(anchorElProduct)}
-          onClose={handleCloseProduct}
-          anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-          transformOrigin={{ vertical: "top", horizontal: "left" }}
-        >
-          <MenuItem
-            component={Link}
-            to="/product-details/1"
-            onClick={() => {
-              handleCloseProduct();
-              setValue(false);
-            }}
-          >
-            Sản phẩm 1
-          </MenuItem>
-          <MenuItem
-            component={Link}
-            to="/product-details/2"
-            onClick={() => {
-              handleCloseProduct();
-              setValue(false);
-            }}
-          >
-            Sản phẩm 2
-          </MenuItem>
-          <MenuItem
-            component={Link}
-            to="/product-details/3"
-            onClick={() => {
-              handleCloseProduct();
-              setValue(false);
-            }}
-          >
-            Sản phẩm 3
-          </MenuItem>
-        </Menu>
-      </Toolbar>
-    </AppBar>
+      </div>
+    </div>
   );
 };
 

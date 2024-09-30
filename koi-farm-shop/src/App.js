@@ -1,4 +1,4 @@
-import "bootstrap/dist/css/bootstrap.min.css";
+import "antd/dist/reset.css";
 import React from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import ForgetPassword from "./components/auth/forget-password/ForgetPassWord";
