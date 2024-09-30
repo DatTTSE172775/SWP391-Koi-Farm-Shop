@@ -6,6 +6,7 @@ import ForgetPassword from "./components/auth/forget-password/ForgetPassWord";
 import Login from "./components/auth/login/Login";
 import Register from "./components/auth/register/Register";
 import HomePage from "./pages/home/HomePage";
+import BlogDetails from "./components/blog/blogdetails/BlogDetails";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/blog" element={<BlogDetails />} />
         <Route path="/forget-password" element={<ForgetPassword />} />
         <Route path="/" element={<HomePage />} />
         <Route path="*" element={<HomePage />} />
