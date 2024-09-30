@@ -1,15 +1,20 @@
 import React from "react";
+import { useSelector } from "react-redux";
+import Footer from "../../../components/footer/Footer";
+import KoiList from "../../../components/koiFish/koiList/KoiList";
+import Navigation from "../../../components/navigation/Navigation";
 import "./Koi-List-Page.scss";
 
 const KoiListPage = () => {
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
   return (
-    <div className="koi-list-page">
-      <h1>Danh Sách Cá Koi</h1>
-      <p>Đây là trang hiển thị danh sách các cá Koi.</p>
-      {/* Có thể thêm nội dung tĩnh hoặc hình ảnh minh họa nếu cần */}
-      <div className="koi-list-placeholder">
-        <p>Hiện chưa có dữ liệu, vui lòng kiểm tra lại sau.</p>
+    <div>
+      <Navigation />
+      <div className="koi-list-page">
+        <KoiList isAuthenticated={isAuthenticated} />
       </div>
+      <Footer />
     </div>
   );
 };
