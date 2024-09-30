@@ -155,8 +155,8 @@ const Navigation = () => {
           </Menu.Item>
         </SubMenu>
 
-        <Menu.Item key="consignment">
-          <Link to="/consignment">Ký gửi</Link>
+        <Menu.Item key="consign">
+          <Link to="/consign">Ký gửi</Link>
         </Menu.Item>
         <Menu.Item key="blog">
           <Link to="/blog">Tin tức</Link>
