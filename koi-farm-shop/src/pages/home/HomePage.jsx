@@ -1,6 +1,7 @@
 import React from "react";
 import Footer from "../../components/footer/Footer";
 import AboutUs from "../../components/home/aboutUs/aboutUs";
+import ContactInformation from "../../components/home/contactInfomation/ContactInformation";
 import FeatureProduct from "../../components/home/featureProduct/FeatureProduct";
 import Gallery from "../../components/home/gallery/Gallery";
 import HeroBanner from "../../components/home/heroBanner/HeroBanner";
@@ -22,6 +23,7 @@ const HomePage = () => {
         <Testimonials />
         <Newletters />
         <Gallery />
+        <ContactInformation />
       </div>
       <Footer />
     </div>
