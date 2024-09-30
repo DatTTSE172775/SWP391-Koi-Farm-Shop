@@ -12,6 +12,7 @@ import Testimonials from "../../components/home/testimonials/Testimonials";
 import Navigation from "../../components/navigation/Navigation";
 import "./HomePage.scss";
 
+
 const HomePage = () => {
   return (
     <div>

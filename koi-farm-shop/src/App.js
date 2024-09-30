@@ -7,7 +7,7 @@ import Register from "./components/auth/register/Register";
 import KoiFeed from "./components/product/koiFeed/KoiFeed";
 import PondAccessories from "./components/product/pondAccessories/PondAccessories";
 import PondFilter from "./components/product/pondFilter/PondFilter";
-import AboutPage from "./pages/about/AboutPage";
+import About from "./pages/about/About";
 import Consignment from "./pages/consignment/Consignment";
 import ConsignmentForm from "./pages/consignment/ConsignmentForm";
 import Contact from "./pages/contact/Contact";
@@ -21,7 +21,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/home" element={<HomePage />} />
-        <Route path="/about" element={<AboutPage />} />
+        <Route path="/about" element={<About />} />
         <Route path="/koi-list" element={<KoiListPage />} />
         <Route path="/product" element={<ProductPage />} />
         <Route path="/product-koi-feed" element={<KoiFeed />} />
