@@ -6,6 +6,7 @@ import Login from "./components/auth/login/Login";
 import Register from "./components/auth/register/Register";
 import AboutPage from "./pages/about/AboutPage";
 import HomePage from "./pages/home/HomePage";
+import KoiListPage from "./pages/koi-fish/koiList/Koi-List-Page";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forget-password" element={<ForgetPassword />} />
+        <Route path="/koi-list" element={<KoiListPage />} />
         <Route path="/" element={<HomePage />} />
         <Route path="*" element={<HomePage />} />
       </Routes>
