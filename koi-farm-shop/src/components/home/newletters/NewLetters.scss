@@ -1,0 +1,99 @@
+/* src/components/home/LatestNews.scss */
+
+.latest-news-container {
+  padding: 60px 20px;
+  background-color: #ffffff;
+
+  .latest-news-title {
+    text-align: center;
+    margin-bottom: 40px;
+    color: #333;
+    font-weight: bold;
+  }
+
+  .latest-news-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .news-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .news-image {
+      object-fit: cover;
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+    }
+
+    .news-title {
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 8px;
+    }
+
+    .news-date {
+      color: #777;
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+    }
+
+    .news-excerpt {
+      color: #555;
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+
+    .news-button-container {
+      margin-top: auto;
+      padding: 0 16px 16px 16px;
+      text-align: right;
+    }
+
+    .news-button {
+      text-transform: none;
+      padding: 6px 12px;
+      font-size: 0.9rem;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+
+      &:hover {
+        background-color: #ff9800; // Màu khi hover, điều chỉnh theo ý bạn
+        transform: translateY(-2px);
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 40px 10px;
+
+    .latest-news-title {
+      font-size: 1.8rem;
+      margin-bottom: 30px;
+    }
+
+    .news-card {
+      .news-title {
+        font-size: 1.1rem;
+      }
+
+      .news-date {
+        font-size: 0.85rem;
+      }
+
+      .news-excerpt {
+        font-size: 0.9rem;
+      }
+
+      .news-button {
+        font-size: 0.85rem;
+      }
+    }
+  }
+}
