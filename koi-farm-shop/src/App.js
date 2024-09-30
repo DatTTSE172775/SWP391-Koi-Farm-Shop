@@ -5,6 +5,7 @@ import ForgetPassword from "./components/auth/forget-password/ForgetPassWord";
 import Login from "./components/auth/login/Login";
 import Register from "./components/auth/register/Register";
 import AboutPage from "./pages/about/AboutPage";
+import Contact from "./pages/contact/Contact";
 import HomePage from "./pages/home/HomePage";
 import KoiListPage from "./pages/koi-fish/koiList/Koi-List-Page";
 
@@ -18,6 +19,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forget-password" element={<ForgetPassword />} />
+        <Route path="/contact" element={<Contact />} />
         <Route path="/koi-list" element={<KoiListPage />} />
         <Route path="/" element={<HomePage />} />
         <Route path="*" element={<HomePage />} />

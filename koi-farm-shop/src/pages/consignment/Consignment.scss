@@ -1,76 +1,102 @@
 .consignment-page {
-  margin: 20px;
+  max-width: 800px;
+  margin: 0 auto;
   padding: 20px;
+  background-color: #f0f8ff; //xóa nếu muống dùng ảnh background riêng
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 
-  section {
-    margin-bottom: 40px;
+  h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+  }
 
-    h2 {
-      font-size: 24px;
-      margin-bottom: 10px;
-    }
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
 
-    ul {
-      list-style-type: none;
-      padding-left: 0;
+  li {
+    background-color: #ffffff;
+    margin: 10px 0;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
 
-      li {
-        margin-bottom: 10px;
+  strong {
+    color: #2980b9;
+  }
 
-        strong {
-          font-weight: bold;
-        }
+  .consignment-button {
+    display: block;
+    width: 100%;
+    padding: 10px 20px;
+    margin-top: 20px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+  }
 
-        p {
-          margin: 0;
-        }
-      }
-    }
+  .consignment-button:hover {
+    background-color: #45a049;
+  }
 
-    .consignment-button {
-      background-color: #28a745;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      cursor: pointer;
-      border-radius: 5px;
-      font-size: 16px;
-      transition: background-color 0.3s;
+  .sections-container {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px;
+  }
 
-      &:hover {
-        background-color: #218838;
-      }
-    }
+  .offlineSection,
+  .onlineSection {
+    flex: 1;
+    margin: 0 15px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
   }
 }
 
 .consignment-form {
   max-width: 600px;
   margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
 
   h2 {
     text-align: center;
-    margin-bottom: 20px;
+    color: #333;
   }
 
   .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 
     label {
       display: block;
       margin-bottom: 5px;
+      font-weight: bold;
+      color: #555;
     }
 
-    input,
+    input[type="text"],
     textarea {
       width: 100%;
       padding: 10px;
       border: 1px solid #ccc;
       border-radius: 4px;
+      font-size: 16px;
     }
 
     textarea {
-      resize: vertical;
       height: 100px;
     }
   }
@@ -78,14 +104,15 @@
   button {
     width: 100%;
     padding: 10px;
-    background-color: #007bff;
+    background-color: #4caf50;
     color: white;
     border: none;
     border-radius: 4px;
+    font-size: 16px;
     cursor: pointer;
 
     &:hover {
-      background-color: #0056b3;
+      background-color: #45a049;
     }
   }
 }

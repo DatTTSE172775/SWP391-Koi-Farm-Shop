@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./Consignment.scss";
 
+
 const ConsignmentForm = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -25,7 +26,7 @@ const ConsignmentForm = () => {
 
   return (
     <div className="consignment-form">
-      <h2>Form Đăng ký ký gửi</h2>
+      <h2>Ký gửi cá Koi</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Tên của bạn</label>
@@ -73,6 +74,7 @@ const ConsignmentForm = () => {
             name="description"
             value={formData.description}
             onChange={handleInputChange}
+            style={{resize: 'none'}} //ngăn tùy chỉnh kích thước
           />
         </div>
 
