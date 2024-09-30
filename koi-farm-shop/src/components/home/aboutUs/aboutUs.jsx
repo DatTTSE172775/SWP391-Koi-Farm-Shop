@@ -5,7 +5,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "./AboutUs.scss";
 
-import aboutUsImg from "../../../assets/homepage/aboutUs.jpg";
+import aboutUsImg from "../../../assets/homepage/aboutUs.webp";
 
 const AboutUs = () => {
   return (

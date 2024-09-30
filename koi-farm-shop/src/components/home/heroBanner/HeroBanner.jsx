@@ -9,9 +9,9 @@ import { Autoplay, Navigation, Pagination } from "swiper/modules"; // Đảm b�
 import { Swiper, SwiperSlide } from "swiper/react";
 import "./HeroBanner.scss";
 
-import bannerImg1 from "../../../assets/homepage/hero-banner1.jpg";
-import bannerImg2 from "../../../assets/homepage/hero-banner2.jpg";
-import bannerImg3 from "../../../assets/homepage/hero-banner3.jpg";
+import bannerImg1 from "../../../assets/homepage/hero-banner1.webp";
+import bannerImg2 from "../../../assets/homepage/hero-banner2.webp";
+import bannerImg3 from "../../../assets/homepage/hero-banner3.webp";
 
 const heroSlides = [
   {
@@ -34,7 +34,7 @@ const heroSlides = [
   },
 ];
 
-const HeroBanner = () => {
+const HeroBanner = React.memo(() => {
   return (
     <Box className="hero-banner-container">
       <Swiper
@@ -80,6 +80,6 @@ const HeroBanner = () => {
       </Swiper>
     </Box>
   );
-};
+});
 
 export default HeroBanner;
