@@ -1,0 +1,32 @@
+.koi-detail-modal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+
+  .koi-detail-image {
+    flex: 1 1 300px;
+    max-width: 400px;
+    border-radius: 8px;
+    object-fit: cover;
+  }
+
+  .koi-detail-info {
+    flex: 1 1 300px;
+
+    .ant-typography {
+      margin-bottom: 16px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .koi-detail-modal {
+    flex-direction: column;
+    align-items: center;
+
+    .koi-detail-image,
+    .koi-detail-info {
+      max-width: 100%;
+    }
+  }
+}
