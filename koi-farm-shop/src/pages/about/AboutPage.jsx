@@ -19,7 +19,7 @@ const About = () => {
             possible experience.
           </p>
           <img
-            src="farm-overview.jpg"
+            src="KoiFishOverview.jpg"
             alt="Koi Farm Overview"
             className="about-image"
           />

@@ -1,66 +1,120 @@
+// AboutPage.scss
+
+// Define variables at the top of the file
+$primary-color: #e65100;
+$background-color: #f9f9f9;
+$text-color: #333;
+$card-background: #fff;
+
 .about-container {
-  padding: 50px;
-  background-color: #f9f9f9;
-  font-family: Arial, sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: 'Arial', sans-serif;
+  color: $text-color;
+  background-color: $background-color;
 
-  .about-intro {
-    text-align: center;
-    margin-bottom: 40px;
-
-    h1 {
-      font-size: 2.5rem;
-      color: #333;
-    }
-
-    p {
-      font-size: 1.1rem;
-      line-height: 1.8;
-      color: #666;
-    }
-
-    .about-image {
-      width: 100%;
-      max-width: 600px;
-      height: auto;
-      margin-top: 20px;
-    }
+  h1, h2 {
+    color: $primary-color;
+    margin-bottom: 1rem;
   }
 
-  .about-mission,
-  .about-values {
-    margin: 40px 0;
-    text-align: center;
+  p {
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+}
 
-    h2 {
-      font-size: 2rem;
-      color: #0066cc;
-      margin-bottom: 20px;
-    }
+.about-intro {
+  text-align: center;
+  margin-bottom: 3rem;
 
-    p,
-    ul {
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  p {
+    font-size: 1.1rem;
+    max-width: 800px;
+    margin: 0 auto 2rem;
+  }
+
+  .about-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.about-mission, .about-values, .about-team {
+  background-color: $card-background;
+  border-radius: 10px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+  }
+
+  h2 {
+    font-size: 1.8rem;
+    border-bottom: 2px solid $primary-color;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+.about-values {
+  ul {
+    list-style-type: none;
+    padding: 0;
+
+    li {
+      position: relative;
+      padding-left: 30px;
+      margin-bottom: 1rem;
       font-size: 1.1rem;
-      line-height: 1.8;
-      color: #666;
-    }
 
-    ul {
-      list-style: none;
-      padding: 0;
-
-      li {
-        margin-bottom: 10px;
+      &:before {
+        content: '🐠';
+        position: absolute;
+        left: 0;
+        top: 0;
       }
     }
   }
+}
 
-  .about-team {
-    text-align: center;
-    margin-top: 50px;
+// Responsive design
+@media (max-width: 768px) {
+  .about-container {
+    padding: 1rem;
+  }
 
-    h2 {
+  .about-intro {
+    h1 {
       font-size: 2rem;
-      color: #0066cc;
     }
   }
+
+  .about-mission, .about-values, .about-team {
+    padding: 1.5rem;
+  }
+}
+
+// Add a cool water ripple effect to the background
+body {
+  background: linear-gradient(to right, #e0f7fa, #b2ebf2);
+  animation: waterRipple 10s ease-in-out infinite;
+  background-size: 200% 200%;
+}
+
+@keyframes waterRipple {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }

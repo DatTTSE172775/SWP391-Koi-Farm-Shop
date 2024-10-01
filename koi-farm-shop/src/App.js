@@ -10,6 +10,7 @@ import ConsignmentForm from "./pages/consignment/ConsignmentForm";
 import Contact from "./pages/contact/Contact";
 import HomePage from "./pages/home/HomePage";
 import KoiListPage from "./pages/koi-fish/koiList/Koi-List-Page";
+import Blog from "./pages/blog/Blog";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path="/consign-form" element={<ConsignmentForm />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/koi-list" element={<KoiListPage />} />
+        <Route path="/blog" element={<Blog />} />
         <Route path="/" element={<HomePage />} />
         <Route path="*" element={<HomePage />} />
       </Routes>
