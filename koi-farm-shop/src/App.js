@@ -24,6 +24,7 @@ const Consignment = lazy(() => import("./pages/consignment/Consignment"));
 const ConsignmentForm = lazy(() =>
   import("./pages/consignment/ConsignmentForm")
 );
+const Blog = lazy(() => import("./pages/blog/Blog"));
 const Contact = lazy(() => import("./pages/contact/Contact"));
 const HomePage = lazy(() => import("./pages/home/HomePage"));
 
@@ -66,6 +67,7 @@ function App() {
               <Route path="pond-accessories" element={<PondAccessories />} />
             </Route>
 
+            <Route path="blog" element={<Blog />} />
             <Route path="consign" element={<Consignment />} />
             <Route path="consign-form" element={<ConsignmentForm />} />
             <Route path="contact" element={<Contact />} />
