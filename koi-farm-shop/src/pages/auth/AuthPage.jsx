@@ -1,11 +1,12 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
+import "./AuthPage.scss";
 
-const ProductPage = () => {
+const AuthPage = () => {
   return (
-    <div className="product-page">
+    <>
       <Outlet />
-    </div>
+    </>
   );
 };
-export default ProductPage;
+export default AuthPage;
