@@ -1,24 +1,14 @@
 import { HeartOutlined, SwapOutlined } from "@ant-design/icons";
 import { Button, Card } from "antd";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { memo } from "react";
+import LazyLoad from "react-lazyload";
 import { Link } from "react-router-dom";
-import KoiDetail from "../koiDetail/KoiDetail";
 import "./KoiCard.scss";
 
 const { Meta } = Card;
 
 const KoiCard = ({ koi, isAuthenticated }) => {
-  const [isModelVisible, setIsModelVisible] = useState(false);
-
-  const showModal = () => {
-    setIsModelVisible(true);
-  };
-
-  const handleModalClose = () => {
-    setIsModelVisible(false);
-  };
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -30,12 +20,16 @@ const KoiCard = ({ koi, isAuthenticated }) => {
         className="koi-card"
         cover={
           <div className="koi-image-container">
-            <img alt={koi.name} src={koi.image} className="koi-image" />
+            <LazyLoad height={200} offset={100} once>
+              <img alt={koi.name} src={koi.image} className="koi-image" />
+            </LazyLoad>
             <div className="hover-info">
               <p>{koi.description}</p>
-              <Button type="primary" size="small" onClick={showModal}>
-                Xem chi tiết
-              </Button>
+              <Link to={`/koi-details/${koi.id}`}>
+                <Button type="primary" size="small">
+                  Xem chi tiết
+                </Button>
+              </Link>
             </div>
           </div>
         }
@@ -75,13 +69,20 @@ const KoiCard = ({ koi, isAuthenticated }) => {
           )}
         </div>
       </Card>
-      <KoiDetail
-        visible={isModelVisible}
-        onClose={handleModalClose}
-        koi={koi}
-      />
     </motion.div>
   );
 };
 
-export default KoiCard;
+const areEqual = (prevProps, nextProps) => {
+  return (
+    prevProps.koi.id === nextProps.koi.id &&
+    prevProps.koi.name === nextProps.koi.name &&
+    prevProps.koi.image === nextProps.koi.image &&
+    prevProps.koi.color === nextProps.koi.color &&
+    prevProps.koi.size === nextProps.koi.size &&
+    prevProps.koi.price === nextProps.koi.price &&
+    prevProps.isAuthenticated === nextProps.isAuthenticated
+  );
+};
+
+export default memo(KoiCard, areEqual);

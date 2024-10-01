@@ -1,5 +1,5 @@
 import { Breadcrumb, Row, Space } from "antd";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import KoiListHeader from "../header/KoiListHeader";
 import KoiCard from "../koiCard/KoiCard";
 import KoiSearch from "../koiSearch/KoiSearch";
@@ -94,15 +94,16 @@ const KoiList = ({ isAuthenticated }) => {
     setSearchTerms(searchValue);
   };
 
-  const filteredKoiList = koiSampleList.filter((koi) => {
-    const isSearchMatched = koi.name
-      .toLowerCase()
-      .includes(searchTerms.toLowerCase());
-    const isColorMatched = !filter.color || koi.color === filter.color;
-    const isSizeMatched = !filter.size || koi.size === filter.size;
-
-    return isSearchMatched && isColorMatched && isSizeMatched;
-  });
+  const filteredKoiList = useMemo(() => {
+    return koiSampleList.filter((koi) => {
+      const matchesSearch = koi.name
+        .toLowerCase()
+        .includes(searchTerms.toLowerCase());
+      const matchesColor = filter.color ? koi.color === filter.color : true;
+      const matchesSize = filter.size ? koi.size === filter.size : true;
+      return matchesSearch && matchesColor && matchesSize;
+    });
+  }, [searchTerms, filter]);
 
   return (
     <div className="koi-list">
@@ -111,7 +112,7 @@ const KoiList = ({ isAuthenticated }) => {
           <Breadcrumb.Item>
             <Link to="/home">Trang chủ</Link>
           </Breadcrumb.Item>
-          <Breadcrumb.Item>Tìm kiếm cá Koi</Breadcrumb.Item>
+          <Breadcrumb.Item>Tất cả cá Koi</Breadcrumb.Item>
         </Breadcrumb>
       </div>
       <KoiListHeader />

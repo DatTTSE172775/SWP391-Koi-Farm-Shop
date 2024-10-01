@@ -4,6 +4,7 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import ForgetPassword from "./components/auth/forget-password/ForgetPassWord";
 import Login from "./components/auth/login/Login";
 import Register from "./components/auth/register/Register";
+import KoiDetail from "./components/koiFish/koiDetail/KoiDetail";
 import KoiFeed from "./components/product/koiFeed/KoiFeed";
 import PondAccessories from "./components/product/pondAccessories/PondAccessories";
 import PondFilter from "./components/product/pondFilter/PondFilter";
@@ -23,6 +24,7 @@ function App() {
         <Route path="/home" element={<HomePage />} />
         <Route path="/about" element={<About />} />
         <Route path="/koi-list" element={<KoiListPage />} />
+        <Route path="/koi-details/:id" element={<KoiDetail />} />
         <Route path="/product" element={<ProductPage />} />
         <Route path="/product-koi-feed" element={<KoiFeed />} />
         <Route path="/product-pond-filter-system" element={<PondFilter />} />
