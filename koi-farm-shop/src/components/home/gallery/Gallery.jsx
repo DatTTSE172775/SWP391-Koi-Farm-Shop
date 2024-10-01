@@ -8,42 +8,47 @@ import {
 } from "@mui/material";
 import React from "react";
 import "./Gallery.scss";
+import scene from "../../../assets/galleryImage/koiscene.jpg";
+import koiProd from "../../../assets/galleryImage/koiprod.jpg";
+import pondExpert from "../../../assets/galleryImage/aopro.jpg";
+import like from "../../../assets/galleryImage/like.jpg";
+
 
 const galleryItems = [
   {
     id: 1,
     type: "image",
-    src: "/images/gallery/gallery1.jpg",
+    src: scene,
     alt: "Cảnh ao cá Koi",
   },
   {
     id: 2,
     type: "video",
-    src: "https://www.youtube.com/embed/VIDEO_ID",
+    src: "https://www.youtube.com/embed/76UcaHnx5gE",
     alt: "Video hướng dẫn chăm sóc cá Koi",
   },
   {
     id: 3,
     type: "image",
-    src: "/images/gallery/gallery2.jpg",
+    src: koiProd,
     alt: "Sản phẩm cá Koi đẹp mắt",
   },
   {
     id: 4,
     type: "video",
-    src: "https://www.youtube.com/embed/VIDEO_ID_2",
+    src: "https://www.youtube.com/embed/2DKFs3zVCuo",
     alt: "Hướng dẫn lắp đặt ao cá",
   },
   {
     id: 5,
     type: "image",
-    src: "/images/gallery/gallery3.jpg",
+    src: like,
     alt: "Khách hàng hài lòng với sản phẩm",
   },
   {
     id: 6,
     type: "image",
-    src: "/images/gallery/gallery4.jpg",
+    src: pondExpert,
     alt: "Thiết kế ao cá chuyên nghiệp",
   },
 ];

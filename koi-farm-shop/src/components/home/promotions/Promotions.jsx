@@ -12,12 +12,16 @@ import {
 } from "@mui/material";
 import React from "react";
 import "./Promotions.scss";
+import combo from "../../../assets/promotion-images/combo.jpg";
+import sale20 from "../../../assets/promotion-images/sale.jpg";
+import sale10 from "../../../assets/promotion-images/sale-10.jpg";
+import freeShipping from "../../../assets/promotion-images/freeshipping.png";
 
 const promotions = [
   {
     id: 1,
     title: "Giảm Giá 20% Cho Sản Phẩm Mới",
-    image: "/images/promotions/promo1.jpg",
+    image: sale20,
     description:
       "Nhận ngay ưu đãi giảm giá 20% cho các sản phẩm mới nhất của chúng tôi.",
     buttonText: "Mua Ngay",
@@ -26,7 +30,7 @@ const promotions = [
   {
     id: 2,
     title: "Bundle Ao Cá + Thiết Bị Lọc Nước",
-    image: "/images/promotions/promo2.jpg",
+    image: combo,
     description:
       "Mua bundle Ao Cá 200L cùng thiết bị lọc nước AquaPro với giá ưu đãi.",
     buttonText: "Xem Chi Tiết",
@@ -35,7 +39,7 @@ const promotions = [
   {
     id: 3,
     title: "Mã Giảm Giá 10% Cho Đơn Hàng Đầu Tiên",
-    image: "/images/promotions/promo3.jpg",
+    image: sale10,
     description:
       "Sử dụng mã FIRST10 để nhận ngay giảm giá 10% cho đơn hàng đầu tiên của bạn.",
     buttonText: "Sử Dụng Mã",
@@ -44,7 +48,7 @@ const promotions = [
   {
     id: 4,
     title: "Miễn Phí Vận Chuyển",
-    image: "/images/promotions/promo4.jpg",
+    image: freeShipping,
     description: "Miễn phí vận chuyển cho tất cả đơn hàng trên 500,000 VND.",
     buttonText: "Mua Ngay",
     buttonLink: "/products",
