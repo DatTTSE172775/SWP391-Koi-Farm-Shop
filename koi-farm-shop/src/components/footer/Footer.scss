@@ -1,111 +1,179 @@
+/* src/components/footer/Footer.scss */
+
 .footer {
-  background-color: #f8f8f8; // Màu nền nhẹ nhàng
-  color: #333; // Màu chữ tối cho dễ đọc
-  padding: 40px 0;
-  text-align: center;
+  background-color: #2e8b57; // Sea Green
+  color: #ffffff; // White text for contrast
+  padding: 60px 20px;
+  text-align: left;
 
   .footer-content {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 40px; // Space between sections
+  }
+
+  .footer-section {
     display: flex;
-    justify-content: space-between; // Căn đều khoảng cách giữa các phần tử
-    flex-wrap: wrap; // Tự động xuống dòng trên màn hình nhỏ
+    flex-direction: column;
 
-    .footer-section {
-      flex: 1 1 200px; // Đảm bảo mỗi section có chiều rộng tối thiểu là 200px
-      margin-bottom: 20px;
+    h1.logo-text {
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+      color: #ffffff;
+    }
 
-      h2,
-      h3 {
-        font-size: 1.2rem;
-        margin-bottom: 15px;
-        color: #333; // Màu chữ tiêu đề
-        text-transform: uppercase; // Chuyển đổi chữ hoa cho tiêu đề
-        letter-spacing: 1px;
+    h2 {
+      font-size: 1.4rem;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #ffffff;
+    }
+
+    p {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #f0f0f0;
+
+      a {
+        color: #f0f0f0;
+        text-decoration: none;
+        transition: color 0.3s ease;
+
+        &:hover {
+          color: #ffd700; // Gold accent on hover
+        }
       }
+    }
 
-      ul {
-        list-style: none;
-        padding: 0;
-        li {
-          margin-bottom: 10px;
-          a {
-            color: #555;
-            text-decoration: none;
-            transition: color 0.3s;
+    ul {
+      list-style: none;
+      padding: 0;
 
-            &:hover {
-              color: #007bff; // Màu nhấn khi hover
-            }
+      li {
+        margin-bottom: 10px;
+
+        a {
+          color: #f0f0f0;
+          text-decoration: none;
+          transition: color 0.3s ease;
+
+          &:hover {
+            color: #ffd700; // Gold accent on hover
           }
         }
       }
     }
 
-    .newsletter {
-      flex: 2 1 400px; // Section dành cho newsletter sẽ rộng hơn
-      input[type="email"] {
-        padding: 10px;
-        width: 70%;
-        border: 1px solid #ccc;
-        margin-right: 10px;
-        border-radius: 4px;
-      }
+    &.newsletter {
+      form {
+        display: flex;
+        margin-bottom: 10px;
+        color: #2e8b57;
 
-      button {
-        padding: 10px 20px;
-        border: none;
-        background-color: #007bff;
-        color: white;
-        cursor: pointer;
-        border-radius: 4px;
-        transition: background-color 0.3s;
+        input[type="email"] {
+          padding: 10px;
+          flex: 1;
+          border: none;
+          border-radius: 4px 0 0 4px;
+          outline: none;
+        }
 
-        &:hover {
-          background-color: #0056b3;
+        button {
+          padding: 10px 20px;
+          border: none;
+          background-color: #ffd700; // Gold
+          color: #2e8b57; // Sea Green
+          cursor: pointer;
+          border-radius: 0 4px 4px 0;
+          transition: background-color 0.3s ease;
+
+          &:hover {
+            background-color: #e6c200; // Darker Gold on hover
+          }
         }
       }
 
-      p {
-        margin-top: 10px;
+      .privacy-text {
         font-size: 0.85rem;
-        color: #777;
+        color: #cfcfcf;
       }
     }
 
-    .social-links {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
+    &.social {
+      .social-links {
+        display: flex;
+        gap: 15px;
+        margin-top: 10px;
 
-      a {
-        color: #333;
-        font-size: 1.5em;
-        transition: color 0.3s;
+        a {
+          color: #ffffff;
+          font-size: 1.8rem;
+          transition: color 0.3s ease;
 
-        &:hover {
-          color: #007bff; // Màu khi hover trên biểu tượng mạng xã hội
+          &:hover {
+            color: #ffd700; // Gold accent on hover
+          }
         }
       }
     }
   }
 
   .footer-bottom {
-    margin-top: 20px;
+    margin-top: 40px;
     padding-top: 20px;
+    border-top: 1px solid #f0f0f0;
     font-size: 0.9rem;
-    color: #777;
-    border-top: 1px solid #ddd;
+    color: #cfcfcf;
+    text-align: center;
 
     a {
-      color: #007bff;
+      color: #ffd700; // Gold
       text-decoration: none;
-      transition: color 0.3s;
+      transition: color 0.3s ease;
 
       &:hover {
-        color: #0056b3;
+        color: #ffffff; // White on hover
       }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .footer-content {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .footer-section {
+      align-items: center;
+      text-align: center;
+
+      .newsletter form {
+        flex-direction: column;
+
+        input[type="email"] {
+          width: 100%;
+          border-radius: 4px;
+          margin-bottom: 10px;
+        }
+
+        button {
+          width: 100%;
+          border-radius: 4px;
+        }
+      }
+
+      &.social {
+        .social-links {
+          justify-content: center;
+        }
+      }
+    }
+
+    .footer-bottom {
+      font-size: 0.85rem;
     }
   }
 }
