@@ -86,7 +86,6 @@ const Consignment = () => {
       <button className="consignment-button" onClick={handleConsignmentClick}>
         Ký gửi ngay
       </button>{" "}
-      {/* Moved button outside the sections */}
     </div>
   );
 };

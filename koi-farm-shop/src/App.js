@@ -7,8 +7,11 @@ import {
   Routes,
 } from "react-router-dom";
 
+import Loading from "./components/loading/Loading";
+import Cart from "./components/order/cart/Cart";
 // main layout
 import MainLayout from "./pages/MainLayout";
+import NotFound from "./pages/notfound/NotFound";
 
 // auth page
 const ForgetPassword = lazy(() =>
@@ -46,10 +49,13 @@ const PondFilter = lazy(() =>
 );
 const ProductPage = lazy(() => import("./pages/product/ProductPage"));
 
+// order page
+const Checkout = lazy(() => import("./components/order/checkout/Checkout"));
+
 function App() {
   return (
     <Router>
-      <Suspense fallback={<div>Loding...</div>}>
+      <Suspense fallback={<Loading />}>
         <Routes>
           {/* Routes with MainLayout */}
           <Route path="/" element={<MainLayout />}>
@@ -71,6 +77,10 @@ function App() {
             <Route path="consign" element={<Consignment />} />
             <Route path="consign-form" element={<ConsignmentForm />} />
             <Route path="contact" element={<Contact />} />
+
+            {/* Order Routes */}
+            <Route path="cart" element={<Cart />} />
+            <Route path="checkout" element={<Checkout />} />
           </Route>
 
           {/* Auth Routes without MainLayout */}
@@ -81,7 +91,7 @@ function App() {
           </Route>
 
           {/* Fallback Route */}
-          <Route path="*" element={<Navigate to="/home" replace />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
     </Router>
