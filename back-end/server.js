@@ -49,7 +49,7 @@ const users = [
 ];
 
 app.post("/api/login", (req, res) => {
-  const { username, password } = req.body;
+  const { username, password } = req.body
 
   // Tìm user trong danh sách users
   const user = users.find((u) => u.username === username);
@@ -66,7 +66,7 @@ app.post("/api/login", (req, res) => {
   // Tạo token
   const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, {
     expiresIn: 86400, // 24 hours
-  });
+  })
 
   res.status(200).json({ token, username: user.username });
 });
