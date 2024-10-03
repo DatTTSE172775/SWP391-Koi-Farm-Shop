@@ -1,0 +1,25 @@
+/* src/styles/variables.scss */
+
+:root {
+  /* Primary Colors */
+  --color-primary: #2e8b57; /* Sea Green */
+  --color-primary-dark: #276749;
+  --color-secondary: #ffd700; /* Gold */
+  --color-neutral-light: #f0f0f0; /* Light Gray */
+  --color-neutral-dark: #333333; /* Dark Gray */
+
+  /* Accent Colors */
+  --color-accent-red: #ff4500; /* Orange Red */
+  --color-accent-blue: #40a9ff; /* Light Blue */
+
+  /* Typography */
+  --font-family-primary: "Montserrat", sans-serif;
+  --font-family-secondary: "Open Sans", sans-serif;
+
+  /* Spacing */
+  --spacing-xs: 8px;
+  --spacing-sm: 16px;
+  --spacing-md: 24px;
+  --spacing-lg: 32px;
+  --spacing-xl: 40px;
+}

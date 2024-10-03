@@ -153,6 +153,9 @@ const Navigation = () => {
           <Menu.Item key="koi-request">
             <Link to="/koi-request">Đề xuất cá Koi</Link>
           </Menu.Item>
+          <Menu.Item key="koi-sold">
+            <Link to="/koi-sold">Cá koi đã bán</Link>
+          </Menu.Item>
         </SubMenu>
 
         {/* Sản phẩm SubMenu */}
