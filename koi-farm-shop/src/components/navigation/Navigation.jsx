@@ -1,10 +1,8 @@
-// src/components/home/Navigation.jsx
-
 import { ShoppingCartOutlined, UserOutlined } from "@ant-design/icons";
-import { Avatar, Badge, Button, Flex, Menu } from "antd";
+import { Avatar, Badge, Button, Dropdown, Menu } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { logout } from "../../store/actions/authActions";
 import "./Navigation.scss";
 
@@ -13,7 +11,6 @@ const { SubMenu } = Menu;
 const Navigation = () => {
   const location = useLocation();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const [current, setCurrent] = useState("home");
 
@@ -41,8 +38,8 @@ const Navigation = () => {
         default:
           setCurrent("product");
       }
-    } else if (path === "/consignment") {
-      setCurrent("consignment");
+    } else if (path === "/consign") {
+      setCurrent("consign");
     } else if (path === "/blog") {
       setCurrent("blog");
     } else if (path === "/contact") {
@@ -62,8 +59,20 @@ const Navigation = () => {
   // Handle logout
   const handleLogout = () => {
     dispatch(logout());
-    navigate("/home");
   };
+
+  // Menu cho Dropdown khi click vào avatar
+  const accountMenu = (
+    <Menu>
+      <Menu.Item key="view-info">
+        <Link to="/account">Xem Thông Tin</Link>
+      </Menu.Item>
+      <Menu.Divider />
+      <Menu.Item key="logout" onClick={handleLogout}>
+        Đăng xuất
+      </Menu.Item>
+    </Menu>
+  );
 
   return (
     <div className="navigation">
@@ -138,7 +147,7 @@ const Navigation = () => {
               <Link to="/koi-varieties/12">Doitsu Koi</Link>
             </Menu.Item>
             <Menu.Item key="koi-varieties-13">
-              <Link to="/koi-varieties/13">Buffterfly Koi</Link>
+              <Link to="/koi-varieties/13">Butterfly Koi</Link>
             </Menu.Item>
           </SubMenu>
           <Menu.Item key="koi-breeders">
@@ -186,34 +195,36 @@ const Navigation = () => {
       <div className="nav-icons">
         {isAuthenticated ? (
           <>
-            <Avatar
-              className="user-avatar"
-              src="/images/users/avatar.jpg"
-              icon={<UserOutlined />}
-            />
-            <span className="username">{user}</span>
-            <Link to="/cart">
+            <Dropdown
+              overlay={accountMenu}
+              placement="bottomRight"
+              trigger={["click"]}
+            >
+              <div className="account-dropdown">
+                <Avatar
+                  className="user-avatar"
+                  src="/images/users/avatar.jpg"
+                  icon={<UserOutlined />}
+                />
+                <span className="username">{user}</span>
+              </div>
+            </Dropdown>
+            <Link to="/cart" className="cart-link">
               <Badge count={3} showZero>
                 <ShoppingCartOutlined className="cart-icon" />
               </Badge>
+              <span className="cart-text">Giỏ hàng</span>
             </Link>
-            <Button
-              type="text"
-              onClick={handleLogout}
-              className="logout-button"
-            >
-              Đăng xuất
-            </Button>
           </>
         ) : (
-          <Flex gap="large" wrap>
+          <div className="auth-buttons">
             <Button type="default" className="register-button">
               <Link to="/register">Đăng ký</Link>
             </Button>
             <Button type="primary" className="login-button">
               <Link to="/login">Đăng nhập</Link>
             </Button>
-          </Flex>
+          </div>
         )}
       </div>
     </div>

@@ -8,9 +8,10 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
-  height: 100px;
-  background-color: #fff;
-  box-shadow: 0 5px 18px #f0f1f2;
+  height: 80px; // Giảm chiều cao để tạo cảm giác hiện đại
+  background-color: #004d40; // Màu xanh ngọc ngà đậm
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
 
   .logo {
     display: flex;
@@ -19,14 +20,20 @@
     color: inherit;
 
     .logo-image {
-      width: 80px;
+      width: 60px;
       height: auto;
       margin-right: 10px;
+      transition: transform 0.3s ease;
+
+      &:hover {
+        transform: scale(1.05);
+      }
     }
 
     span {
-      font-size: 1.2rem;
+      font-size: 1.5rem;
       font-weight: bold;
+      color: #ffffff;
     }
   }
 
@@ -35,6 +42,7 @@
     margin-left: 20px;
     display: flex;
     justify-content: center;
+    background-color: #004d40;
 
     .ant-menu-horizontal {
       border-bottom: none;
@@ -45,6 +53,7 @@
       font-size: 1rem;
       padding: 0 20px;
       white-space: nowrap;
+      color: #ffffff;
     }
 
     .ant-menu-item:hover,
@@ -53,7 +62,7 @@
     }
 
     .ant-menu-submenu-arrow {
-      margin-left: 5px;
+      color: #ffffff;
     }
 
     .ant-menu-item,
@@ -66,45 +75,104 @@
     display: flex;
     align-items: center;
 
-    .user-avatar {
-      margin-right: 8px;
-    }
+    .account-dropdown {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
 
-    .username {
-      margin-right: 16px;
-      font-size: 1rem;
-      color: #333;
-    }
+      .user-avatar {
+        margin-right: 8px;
+        transition: transform 0.3s ease;
 
-    .cart-icon {
-      font-size: 1.5rem;
-      color: #333;
-      margin-right: 16px;
-      transition: color 0.3s ease;
+        &:hover {
+          transform: scale(1.05);
+        }
+      }
 
-      &:hover {
-        color: #ff9800;
+      .username {
+        margin-right: 16px;
+        font-size: 1rem;
+        color: #ffffff;
+        transition: color 0.3s ease;
+
+        &:hover {
+          color: #ff9800;
+        }
       }
     }
 
-    .logout-button {
+    .cart-link {
+      display: flex;
+      align-items: center;
+      color: #ffffff;
+      text-decoration: none;
       font-size: 1rem;
-      color: #333;
-      margin-left: 10px;
-      padding: 0;
+      margin-left: 20px;
+      transition: color 0.3s ease, background-color 0.3s ease;
+      padding: 8px 12px;
+      border-radius: 4px;
+
+      .cart-icon {
+        font-size: 1.5rem;
+        color: #ffffff;
+        margin-right: 8px;
+        transition: color 0.3s ease;
+      }
+
+      .cart-text {
+        color: #ffffff;
+        transition: color 0.3s ease;
+      }
 
       &:hover {
-        color: #ff9800;
+        background-color: #ff9800; // Màu nền cam khi hover
+        color: #ffffff;
+
+        .cart-icon,
+        .cart-text {
+          color: #ffffff;
+        }
+      }
+    }
+
+    .auth-buttons {
+      display: flex;
+      align-items: center;
+      margin-left: 20px;
+
+      .register-button,
+      .login-button {
+        margin-left: 10px;
+        font-size: 1rem;
+        border-radius: 20px;
+        padding: 8px 20px;
+        transition: background-color 0.3s ease, border-color 0.3s ease,
+          color 0.3s ease;
+        border: 2px solid #ff9800;
+      }
+
+      .register-button {
         background-color: transparent;
+        color: #ff9800;
+
+        &:hover,
+        &:focus {
+          background-color: #ff9800;
+          color: #ffffff;
+          border-color: #ff9800;
+        }
       }
-    }
 
-    .login-button {
-      font-size: 1rem;
+      .login-button {
+        background-color: #ff9800;
+        color: #ffffff;
+        border: none;
 
-      a {
-        color: #fff;
-        text-decoration: none;
+        &:hover,
+        &:focus {
+          background-color: #e68900; // Sử dụng màu cam tối hơn khi hover
+          color: #ffffff;
+        }
       }
     }
   }
@@ -122,12 +190,12 @@
 
     .logo {
       .logo-image {
-        width: 30px;
-        height: 30px;
+        width: 40px;
+        height: 40px;
       }
 
       span {
-        font-size: 1rem;
+        font-size: 1.2rem;
       }
     }
 
@@ -136,17 +204,21 @@
         display: none;
       }
 
-      .cart-icon {
-        margin-right: 8px;
+      .cart-link {
+        margin-left: 10px;
+        padding: 6px 10px;
       }
 
-      .logout-button {
-        display: none;
-      }
+      .auth-buttons {
+        flex-direction: column;
 
-      .login-button {
-        font-size: 0.9rem;
-        padding: 4px 12px;
+        .register-button,
+        .login-button {
+          width: 100%;
+          margin-left: 0;
+          margin-bottom: 8px;
+          padding: 8px 0;
+        }
       }
     }
   }
