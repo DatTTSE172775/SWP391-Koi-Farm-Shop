@@ -1,0 +1,36 @@
+/* src/components/koi/koiListHeader/KoiListHeader.scss */
+
+.koi-list-header {
+  text-align: center;
+  padding: 40px 20px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  margin-bottom: 40px;
+
+  .ant-typography {
+    color: #333;
+  }
+
+  .ant-typography-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 16px;
+  }
+
+  .ant-typography-paragraph {
+    font-size: 1rem;
+    color: #555;
+  }
+
+  @media (max-width: 768px) {
+    padding: 20px 10px;
+
+    .ant-typography-title {
+      font-size: 1.5rem;
+    }
+
+    .ant-typography-paragraph {
+      font-size: 0.9rem;
+    }
+  }
+}

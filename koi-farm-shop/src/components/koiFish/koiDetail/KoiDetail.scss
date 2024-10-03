@@ -1,0 +1,74 @@
+/* src/pages/KoiDetail.scss */
+
+.koi-detail {
+  .breadcrumb-background {
+    padding: 20px 0;
+    position: relative;
+
+    &:before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.6); /* Lớp phủ màu trắng nhẹ */
+      z-index: 1;
+    }
+
+    .ant-breadcrumb {
+      position: relative;
+      z-index: 2;
+      padding: 10px 40px;
+      font-size: 16px;
+      background-color: transparent;
+      border-radius: 8px;
+      max-width: 1200px;
+      margin: auto;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  .koi-detail-container {
+    max-width: 1200px;
+    margin: 100px auto;
+    padding: 0 20px;
+  }
+
+  .koi-detail-image-container {
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+
+    .koi-detail-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    @media (max-width: 768px) {
+      height: 250px;
+
+      .koi-detail-image {
+        height: 100%;
+      }
+    }
+  }
+
+  .koi-detail-buttons {
+    margin-top: 24px;
+
+    .ant-btn {
+      width: 200px;
+      font-size: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      .ant-btn {
+        width: 100%;
+        margin-bottom: 16px;
+      }
+    }
+  }
+}

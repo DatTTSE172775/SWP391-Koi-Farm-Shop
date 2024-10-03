@@ -24,10 +24,23 @@ const Navigation = () => {
       setCurrent("home");
     } else if (path === "/about") {
       setCurrent("about");
-    } else if (path.startsWith("/koi")) {
-      setCurrent("koi");
+    } else if (path.startsWith("/koi-list")) {
+      setCurrent("koi-list");
     } else if (path.startsWith("/product")) {
-      setCurrent("product");
+      const subPath = path.split("/product/")[1];
+      switch (subPath) {
+        case "koi-feed":
+          setCurrent("/product/koi-feed");
+          break;
+        case "pond-filter-system":
+          setCurrent("/product/pond-filter-system");
+          break;
+        case "pond-accessories":
+          setCurrent("/product/pond-accessories");
+          break;
+        default:
+          setCurrent("product");
+      }
     } else if (path === "/consignment") {
       setCurrent("consignment");
     } else if (path === "/blog") {
@@ -144,14 +157,14 @@ const Navigation = () => {
 
         {/* Sản phẩm SubMenu */}
         <SubMenu key="product" title="Sản phẩm">
-          <Menu.Item key="product-koi-feed">
-            <Link to="/product-koi-feed">Cám cá Koi</Link>
+          <Menu.Item key="product/koi-feed">
+            <Link to="/product/koi-feed">Cám cá Koi</Link>
           </Menu.Item>
-          <Menu.Item key="product-pond-filter-system">
-            <Link to="/product-pond-filter-system">Hệ thống lọc hồ cá Koi</Link>
+          <Menu.Item key="product/pond-filter-system">
+            <Link to="/product/pond-filter-system">Hệ thống lọc hồ cá Koi</Link>
           </Menu.Item>
-          <Menu.Item key="product-pond-accessories">
-            <Link to="/product-pond-accessories">Phụ kiện hồ cá Koi</Link>
+          <Menu.Item key="product/pond-accessories">
+            <Link to="/product/pond-accessories">Phụ kiện hồ cá Koi</Link>
           </Menu.Item>
         </SubMenu>
 

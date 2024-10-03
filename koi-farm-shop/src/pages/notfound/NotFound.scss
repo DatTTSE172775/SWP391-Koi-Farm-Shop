@@ -1,0 +1,16 @@
+.not-found-container {
+  min-height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 20px;
+
+  .ant-result {
+    text-align: center;
+  }
+
+  @media (max-width: 768px) {
+    padding: 10px;
+  }
+}

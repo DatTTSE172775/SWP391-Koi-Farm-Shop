@@ -11,12 +11,19 @@ import {
 } from "@mui/material";
 import React from "react";
 import "./FeatureProduct.scss";
+import koipond100l from "../../../assets/homepage/koi-pond100l.jpg";
+import koipond200l from "../../../assets/homepage/koi-pond200l.jpg";
+import aquapro from "../../../assets/homepage/aqua-pro.jpg";
+import koifood from "../../../assets/homepage/koi-food-premium.jpg";
+import decor from "../../../assets/homepage/decorate.png";
+import pondlight from "../../../assets/homepage/LED.jpg";
+
 
 const featuredProducts = [
   {
     id: 1,
     name: "Ao Cá Koi 100L",
-    image: "/images/products/koi1.jpg",
+    image: koipond100l,
     price: "$150",
     rating: 4.5,
     description: "Ao cá Koi chất lượng cao, dung tích 100L, dễ dàng lắp đặt.",
@@ -24,7 +31,7 @@ const featuredProducts = [
   {
     id: 2,
     name: "Ao Cá Koi 200L",
-    image: "/images/products/koi2.jpg",
+    image: koipond200l,
     price: "$500",
     rating: 4.8,
     description: "Ao cá Koi chất lượng cao, dung tích 200L, dễ dàng lắp đặt.",
@@ -32,7 +39,7 @@ const featuredProducts = [
   {
     id: 3,
     name: "Thiết Bị Lọc AquaPro",
-    image: "/images/products/koi3.jpg",
+    image: aquapro,
     price: "$120",
     rating: 4.2,
     description: "Thiết bị lọc nước hiệu suất cao, bảo vệ sức khỏe cá Koi.",
@@ -40,7 +47,7 @@ const featuredProducts = [
   {
     id: 4,
     name: "Thức Ăn Cá Koi Premium",
-    image: "/images/products/koi4.jpg",
+    image: koifood,
     price: "$30",
     rating: 4.7,
     description: "Thức ăn bổ dưỡng, đảm bảo sức khỏe và sắc màu cho cá Koi.",
@@ -48,7 +55,7 @@ const featuredProducts = [
   {
     id: 5,
     name: "Trang Trí Ao Cá",
-    image: "/images/products/koi5.jpg",
+    image: decor,
     price: "$80",
     rating: 4.3,
     description: "Các phụ kiện trang trí ao cá, tạo điểm nhấn cho khu vườn.",
@@ -56,7 +63,7 @@ const featuredProducts = [
   {
     id: 6,
     name: "Hệ Thống Chiếu Sáng LED",
-    image: "/images/products/koi6.jpg",
+    image: pondlight,
     price: "$60",
     rating: 4.6,
     description:

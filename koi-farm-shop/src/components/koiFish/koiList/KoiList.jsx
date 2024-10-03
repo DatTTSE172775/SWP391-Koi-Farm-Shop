@@ -1,6 +1,8 @@
-import { Breadcrumb, Col, Row } from "antd";
-import React from "react";
+import { Breadcrumb, Row, Space } from "antd";
+import React, { useMemo, useState } from "react";
+import KoiListHeader from "../header/KoiListHeader";
 import KoiCard from "../koiCard/KoiCard";
+import KoiSearch from "../koiSearch/KoiSearch";
 import "./KoiList.scss";
 
 import { Link } from "react-router-dom";
@@ -81,6 +83,28 @@ const koiSampleList = [
 ];
 
 const KoiList = ({ isAuthenticated }) => {
+  const [filter, setFilter] = useState({});
+  const [searchTerms, setSearchTerms] = useState("");
+
+  const handleFilter = (filterValues) => {
+    setFilter(filterValues);
+  };
+
+  const handleSearch = (searchValue) => {
+    setSearchTerms(searchValue);
+  };
+
+  const filteredKoiList = useMemo(() => {
+    return koiSampleList.filter((koi) => {
+      const matchesSearch = koi.name
+        .toLowerCase()
+        .includes(searchTerms.toLowerCase());
+      const matchesColor = filter.color ? koi.color === filter.color : true;
+      const matchesSize = filter.size ? koi.size === filter.size : true;
+      return matchesSearch && matchesColor && matchesSize;
+    });
+  }, [searchTerms, filter]);
+
   return (
     <div className="koi-list">
       <div className="breadcrumb-background">
@@ -88,17 +112,27 @@ const KoiList = ({ isAuthenticated }) => {
           <Breadcrumb.Item>
             <Link to="/home">Trang chủ</Link>
           </Breadcrumb.Item>
-          <Breadcrumb.Item>Tìm kiếm cá Koi</Breadcrumb.Item>
+          <Breadcrumb.Item>Tất cả cá Koi</Breadcrumb.Item>
         </Breadcrumb>
       </div>
-      <Row gutter={[32, 40]} justify="center">
-        {" "}
-        {/* Điều chỉnh khoảng cách giữa các card */}
-        {koiSampleList.map((koi) => (
-          <Col key={koi.id} xs={24} sm={12} md={8} lg={6}>
-            <KoiCard koi={koi} isAuthenticated={isAuthenticated} />
-          </Col>
-        ))}
+      <KoiListHeader />
+      <KoiSearch onFilter={handleFilter} onSearch={handleSearch} />
+      <Row justify="center">
+        <Space direction="vertical" size="40px" style={{ width: "100%" }}>
+          <Space wrap size={[32, 40]} justify="center">
+            {filteredKoiList.length > 0 ? (
+              filteredKoiList.map((koi) => (
+                <KoiCard
+                  key={koi.id}
+                  koi={koi}
+                  isAuthenticated={isAuthenticated}
+                />
+              ))
+            ) : (
+              <p>Không tìm thấy cá Koi nào phù hợp với yêu cầu của bạn.</p>
+            )}
+          </Space>
+        </Space>
       </Row>
     </div>
   );
