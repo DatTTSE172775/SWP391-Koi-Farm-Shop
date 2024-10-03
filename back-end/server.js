@@ -37,7 +37,7 @@ const users = [
   {
     id: 2,
     username: "admin",
-    password: bcrypt.hashSync("adminassword", 8),
+    password: bcrypt.hashSync("adminpassword", 8),
     role: "admin",
   },
   {
@@ -45,6 +45,12 @@ const users = [
     username: "staff",
     password: bcrypt.hashSync("staffpassword", 8),
     role: "staff",
+  },
+  {
+    id: 4,
+    username: "jonnytran",
+    password: bcrypt.hashSync("123", 8),
+    role: "customer",
   },
 ];
 
