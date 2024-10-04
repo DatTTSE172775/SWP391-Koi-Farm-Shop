@@ -32,6 +32,7 @@ if (!JWT_SECRET) {
 app.use("/api", registerRoutes);
 app.use("/api", loginRoutes);
 
+
 // Cấu hình Swagger
 const swaggerOptions = {
   swaggerDefinition: {
@@ -50,6 +51,7 @@ const swaggerOptions = {
   apis: ["./register.js", "./login.js"], // Đảm bảo rằng Swagger lấy định nghĩa từ file register.js và login.js
 };
 
+// Khởi tạo Swagger Docs
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use("/api", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
@@ -64,3 +66,4 @@ app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
   console.log(`API Docs available at http://localhost:${PORT}/api`);
 });
+

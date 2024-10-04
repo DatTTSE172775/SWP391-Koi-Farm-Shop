@@ -72,18 +72,42 @@ router.post("/login", (req, res) => {
 
   const user = users.find((u) => u.username === username);
   if (!user) {
-    return res.status(400).send({ message: "Tên đăng nhập không chính xác" });
+    return res.status(401).send({ message: "Tên đăng nhập không chính xác" });
   }
 
   const isPasswordValid = bcrypt.compareSync(password, user.password);
   if (!isPasswordValid) {
-    return res.status(400).send({ message: "Mật khẩu không chính xác" });
+    return res.status(401).send({ message: "Mật khẩu không chính xác" });
   }
 
   const token = jwt.sign({ id: user.id, role: user.role }, secretKey, {
-    expiresIn: "1h",
+    expiresIn: 86400, // 24 hours
   });
-  res.status(200).json({ token });
+  res.status(200).json({ token, username: user.username });
+});
+
+// Middleware xac thuc jwt
+const verifyToken = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  if (!token) {
+    return res.status(403).send({ message: "No token provided!" });
+  }
+  jwt.verify(token, JWT_SECRET, (err, decoded) => {
+    if (err) {
+      return res.status(500).send({ message: "Failed to authenticate token." });
+    }
+    req.userId = decoded.id;
+    req.userRole = decoded.role;
+    next();
+  });
+};
+
+// endpoint cần xác thực token
+router.get("/api/protected", verifyToken, (req, res) => {
+  res.status(200).json({
+    message: `Hello User ${req.userId}, your role is ${req.userRole}`,
+  });
 });
 
 module.exports = router;

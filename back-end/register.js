@@ -9,24 +9,36 @@ const users = [
     username: "customer",
     password: bcrypt.hashSync("customerpassword", 8),
     role: "customer",
+    fullname: "Customer Name",
+    phone: "123456789",
+    email: "customer@example.com",
   },
   {
     id: 2,
     username: "admin",
     password: bcrypt.hashSync("adminpassword", 8),
     role: "admin",
+    fullname: "Admin Name",
+    phone: "987654321",
+    email: "admin@example.com",
   },
   {
     id: 3,
     username: "staff",
     password: bcrypt.hashSync("staffpassword", 8),
     role: "staff",
+    fullname: "Staff Name",
+    phone: "123123123",
+    email: "staff@example.com",
   },
   {
     id: 4,
     username: "jonnytran",
     password: bcrypt.hashSync("123", 8),
     role: "customer",
+    fullname: "Jonny Tran",
+    phone: "456456456",
+    email: "jonnytran@example.com",
   },
 ];
 
@@ -46,13 +58,19 @@ const users = [
  *             required:
  *               - username
  *               - password
- *               - role
+ *               - fullname
+ *               - phone
+ *               - email
  *             properties:
  *               username:
  *                 type: string
  *               password:
  *                 type: string
- *               role:
+ *               fullname:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               email:
  *                 type: string
  *     responses:
  *       201:
@@ -61,9 +79,9 @@ const users = [
  *         description: Yêu cầu không hợp lệ
  */
 router.post('/register', (req, res) => {
-  const { username, password, role } = req.body;
+  const { username, password, fullname, phone, email } = req.body;
 
-  if (!username || !password || !role) {
+  if (!username || !password || !fullname || !phone || !email) {
     return res.status(400).json({ message: 'Thiếu thông tin bắt buộc' });
   }
 
@@ -77,7 +95,10 @@ router.post('/register', (req, res) => {
     id: users.length + 1,
     username,
     password: hashedPassword,
-    role,
+    role: "customer", // Mặc định role là customer
+    fullname,
+    phone,
+    email,
   };
 
   users.push(newUser);
