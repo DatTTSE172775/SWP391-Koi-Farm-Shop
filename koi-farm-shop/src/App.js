@@ -54,6 +54,7 @@ const ProductPage = lazy(() => import("./pages/product/ProductPage"));
 
 // order page
 const Checkout = lazy(() => import("./components/order/checkout/Checkout"));
+const Guide = lazy(() => import("./pages/guide/guide"));
 
 function App() {
   return (
@@ -87,6 +88,7 @@ function App() {
             {/* Order Routes */}
             <Route path="cart" element={<Cart />} />
             <Route path="checkout" element={<Checkout />} />
+            <Route path="guide" element={<Guide />} />
           </Route>
 
           {/* Auth Routes without MainLayout */}
