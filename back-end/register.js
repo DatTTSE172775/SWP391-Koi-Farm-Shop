@@ -1,46 +1,8 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
+const users = require('./users');
 
 const router = express.Router();
-
-const users = [
-  {
-    id: 1,
-    username: "customer",
-    password: bcrypt.hashSync("customerpassword", 8),
-    role: "customer",
-    fullname: "Customer Name",
-    phone: "123456789",
-    email: "customer@example.com",
-  },
-  {
-    id: 2,
-    username: "admin",
-    password: bcrypt.hashSync("adminpassword", 8),
-    role: "admin",
-    fullname: "Admin Name",
-    phone: "987654321",
-    email: "admin@example.com",
-  },
-  {
-    id: 3,
-    username: "staff",
-    password: bcrypt.hashSync("staffpassword", 8),
-    role: "staff",
-    fullname: "Staff Name",
-    phone: "123123123",
-    email: "staff@example.com",
-  },
-  {
-    id: 4,
-    username: "jonnytran",
-    password: bcrypt.hashSync("123", 8),
-    role: "customer",
-    fullname: "Jonny Tran",
-    phone: "456456456",
-    email: "jonnytran@example.com",
-  },
-];
 
 // API đăng ký người dùng
 /**
@@ -105,6 +67,7 @@ router.post('/register', (req, res) => {
 
   users.push(newUser);
   res.status(201).json({ message: 'Đăng ký thành công' });
+
 });
 
 module.exports = router;
