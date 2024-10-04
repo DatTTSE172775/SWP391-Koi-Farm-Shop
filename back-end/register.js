@@ -86,9 +86,11 @@ router.post('/register', (req, res) => {
   }
 
   const userExists = users.find((u) => u.username === username);
-  if (userExists) {
-    return res.status(400).json({ message: 'Tên người dùng đã tồn tại' });
-  }
+  if (userExists) return res.status(400).json({ message: 'Tên người dùng đã tồn tại' });
+
+  const emailExists = users.find((u) => u.email === email);
+  if(emailExists) return res.status(400).json({ message: "Email này đã đăng ký" })
+  
 
   const hashedPassword = bcrypt.hashSync(password, 8);
   const newUser = {
