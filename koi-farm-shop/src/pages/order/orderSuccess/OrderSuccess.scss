@@ -1,0 +1,118 @@
+// Define variables for colors and typography
+$primary-color: #008cba;
+$accent-color: #f56a00;
+$text-color: #333;
+$background-color: #f9f9f9;
+$border-radius: 8px;
+$font-family: "Open Sans", sans-serif;
+
+// Container for the success page
+.order-success-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: $background-color;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+// Styling for the Result component
+.order-result {
+  background-color: white;
+  padding: 40px;
+  border-radius: $border-radius;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  max-width: 600px;
+  text-align: center;
+  font-family: $font-family;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  }
+
+  .ant-result-title {
+    color: $primary-color;
+    font-weight: bold;
+    font-size: 2rem;
+    margin-bottom: 16px;
+  }
+
+  .ant-result-subtitle {
+    color: $text-color;
+    font-size: 1.1rem;
+    margin-bottom: 24px;
+    line-height: 1.5;
+  }
+
+  .ant-btn {
+    padding: 12px 24px;
+    border-radius: $border-radius;
+    font-family: $font-family;
+    font-weight: 500;
+    transition: all 0.3s ease;
+
+    &.ant-btn-primary {
+      background-color: $primary-color;
+      border-color: $primary-color;
+
+      &:hover {
+        background-color: darken($primary-color, 10%);
+        border-color: darken($primary-color, 10%);
+      }
+    }
+
+    &:not(.ant-btn-primary) {
+      color: $accent-color;
+      border-color: $accent-color;
+
+      &:hover {
+        color: darken($accent-color, 10%);
+        border-color: darken($accent-color, 10%);
+      }
+    }
+  }
+}
+
+// Add hover effects for buttons
+.ant-btn {
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  }
+}
+
+// Media queries for responsiveness
+@media (max-width: 768px) {
+  .order-success-container {
+    padding: 10px;
+  }
+
+  .order-result {
+    padding: 30px;
+  }
+
+  .ant-result-title {
+    font-size: 1.7rem;
+  }
+
+  .ant-result-subtitle {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .order-result {
+    padding: 20px;
+  }
+
+  .ant-result-title {
+    font-size: 1.4rem;
+  }
+
+  .ant-result-subtitle {
+    font-size: 0.9rem;
+  }
+}
