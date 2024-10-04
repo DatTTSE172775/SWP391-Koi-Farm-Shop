@@ -8,6 +8,7 @@ import HeroBanner from "../../components/home/heroBanner/HeroBanner";
 import Newletters from "../../components/home/newletters/NewLetters";
 import Promotions from "../../components/home/promotions/Promotions";
 import Testimonials from "../../components/home/testimonials/Testimonials";
+import Tutorial from "../../components/home/tutorial/Tutorial";
 import "./HomePage.scss";
 
 const HomePage = () => {
@@ -16,6 +17,7 @@ const HomePage = () => {
       <div className="homepage-container">
         <HeroBanner />
         <AboutUs />
+        <Tutorial />
         <FeatureProduct />
         <Promotions />
         <Testimonials />

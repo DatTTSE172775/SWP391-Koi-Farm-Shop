@@ -1,14 +1,22 @@
 :root {
   /* Primary Colors */
-  --color-primary: #2e8b57; /* Sea Green */
-  --color-primary-dark: #276749;
+  --color-primary: #e6f7ff; /* Light Blue */
+  --color-primary-dark: #87cefa; /* Dark Blue */
+
+  /* Secondary Colors */
   --color-secondary: #ffd700; /* Gold */
-  --color-neutral-light: #f0f0f0; /* Light Gray */
-  --color-neutral-dark: #333333; /* Dark Gray */
+  --color-secondary-dark: #ffc107; /* Darker Gold */
 
   /* Accent Colors */
-  --color-accent-red: #ff4500; /* Orange Red */
-  --color-accent-blue: #40a9ff; /* Light Blue */
+  --color-accent-orange: #ffa07a; /* Light Orange */
+  --color-accent-green: #32cd32; /* Green */
+  --color-accent-red: #ff4500; /* Red */
+  --color-accent-cyan: #00ffff; /* Cyan */
+
+  /* Neutral Colors */
+  --color-neutral-light: #f0f0f0; /* Light Gray */
+  --color-neutral-dark: #333333; /* Dark Gray */
+  --color-neutral-white: #ffffff; /* White */
 
   /* Typography */
   --font-family-primary: "Montserrat", sans-serif;
@@ -27,4 +35,6 @@ body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  background-color: var(--color-neutral-light); /* Light Gray Background */
+  color: var(--color-neutral-dark); /* Dark Gray Text */
 }

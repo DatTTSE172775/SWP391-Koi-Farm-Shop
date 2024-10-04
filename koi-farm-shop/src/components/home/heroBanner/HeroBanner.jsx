@@ -9,6 +9,7 @@ import { Autoplay, Navigation, Pagination } from "swiper/modules"; // Đảm b�
 import { Swiper, SwiperSlide } from "swiper/react";
 import "./HeroBanner.scss";
 
+import { useNavigate } from "react-router-dom";
 import bannerImg1 from "../../../assets/homepage/hero-banner1.webp";
 import bannerImg2 from "../../../assets/homepage/hero-banner2.webp";
 import bannerImg3 from "../../../assets/homepage/hero-banner3.webp";
@@ -18,7 +19,7 @@ const heroSlides = [
     label: "Chào Mừng Đến Với Koi Farm Shop",
     imgPath: bannerImg1,
     ctaText: "Khám Phá Ngay",
-    ctaLink: "/products",
+    ctaLink: "/koi-list",
   },
   {
     label: "Ưu Đãi Đặc Biệt Mùa Xuân",
@@ -35,6 +36,7 @@ const heroSlides = [
 ];
 
 const HeroBanner = React.memo(() => {
+  const navigate = useNavigate();
   return (
     <Box className="hero-banner-container">
       <Swiper
@@ -68,7 +70,7 @@ const HeroBanner = React.memo(() => {
                   variant="contained"
                   color="primary"
                   size="large"
-                  href={slide.ctaLink}
+                  onClick={() => navigate(slide.ctaLink)}
                   className="hero-cta-button"
                 >
                   {slide.ctaText}
