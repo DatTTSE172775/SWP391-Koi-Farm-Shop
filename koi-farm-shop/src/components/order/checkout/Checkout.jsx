@@ -10,6 +10,7 @@ import {
   Typography,
 } from "antd";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import momoLogo from "../../../assets/checkout/momo-logo.png";
 import vnpayLogo from "../../../assets/checkout/vnpay-logo.png";
 import "./Checkout.scss";
@@ -18,10 +19,12 @@ const { Title, Text } = Typography;
 
 const Checkout = () => {
   const [form] = Form.useForm();
+  const navigate = useNavigate();
 
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
     // Xử lý thanh toán ở đây (sau này tích hợp với backend)
+    navigate("/order-success");
   };
 
   return (
@@ -117,7 +120,12 @@ const Checkout = () => {
 
               {/* Nút Xác Nhận Thanh Toán */}
               <Form.Item>
-                <Button type="primary" htmlType="submit" block>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  block
+                  onClick={onFinish}
+                >
                   Xác Nhận Thanh Toán
                 </Button>
               </Form.Item>
