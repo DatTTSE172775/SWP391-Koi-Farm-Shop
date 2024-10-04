@@ -1,5 +1,3 @@
-// src/components/about/AboutUs.jsx
-
 import {
   FundOutlined,
   SolutionOutlined,

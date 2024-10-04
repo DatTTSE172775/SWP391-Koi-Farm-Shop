@@ -2,7 +2,7 @@ import { EyeOutlined, FormOutlined, LockOutlined } from "@ant-design/icons";
 import { Button, Card, Col, Row } from "antd";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import "./Tutorial.scss"; // Import the SCSS file
+import "./Tutorial.scss";
 
 const Tutorial = () => {
   const navigate = useNavigate();
