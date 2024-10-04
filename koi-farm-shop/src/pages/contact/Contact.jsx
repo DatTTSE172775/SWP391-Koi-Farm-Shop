@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./Contact.scss";
+import Koiimage from "../../assets/images/Koiimage.jpg";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -8,54 +9,87 @@ const Contact = () => {
     email: "",
     message: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     console.log(formData);
+    setIsSubmitting(false);
+    setIsSubmitted(true);
   };
+
+  if (isSubmitted) {
+    return (
+      <div className="contact-container">
+        <div className="success-message">
+          <div className="check-mark">✓</div>
+          <h2>Thank you for your message!</h2>
+          <p>We'll get back to you as soon as possible.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="contact-container">
-      <h1>Contact us</h1>
-      <p>Liên hệ với chúng tôi bằng cách điền vào đơn phía dưới !</p>
+      <img
+        className="koi-banner"
+        src={Koiimage}
+        alt="Beautiful Koi Pond"
+      />
+      <h1>Contact Us</h1>
+      <p>We'd love to hear from you. Please fill out the form below!</p>
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="firstName"
-          placeholder="First name*"
-          value={formData.firstName}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="text"
-          name="lastName"
-          placeholder="Last name"
-          value={formData.lastName}
-          onChange={handleChange}
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="Email*"
-          value={formData.email}
-          onChange={handleChange}
-          required
-        />
-        <textarea
-          name="message"
-          placeholder="What can we help you with?"
-          value={formData.message}
-          onChange={handleChange}
-          style={{ resize: "none" }}
-          required
-        />
-        <button type="submit">Submit</button>
+        <div className="input-group">
+          <input
+            type="text"
+            name="firstName"
+            value={formData.firstName}
+            onChange={handleChange}
+            required
+            placeholder="First Name*"
+          />
+        </div>
+        <div className="input-group">
+          <input
+            type="text"
+            name="lastName"
+            value={formData.lastName}
+            onChange={handleChange}
+            placeholder="Last Name"
+          />
+        </div>
+        <div className="input-group">
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+            placeholder="Email*"
+          />
+        </div>
+        <div className="input-group">
+          <textarea
+            name="message"
+            value={formData.message}
+            onChange={handleChange}
+            required
+            placeholder="What can we help you with?*"
+          />
+        </div>
+        <button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? <span className="loading-spinner" /> : "Submit"}
+        </button>
       </form>
     </div>
   );
