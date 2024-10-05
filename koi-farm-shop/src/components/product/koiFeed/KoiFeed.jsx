@@ -1,93 +1,94 @@
 import React from "react";
 import "./KoiFeed.scss";
 
-import koiImg1 from "../../../assets/koi-list/koiImg1.jpg";
-import koiImg2 from "../../../assets/koi-list/koiImg2.jpg";
-import koiImg3 from "../../../assets/koi-list/koiImg3.jpg";
-import koiImg4 from "../../../assets/koi-list/koiImg4.jpg";
-import koiImg5 from "../../../assets/koi-list/koiImg5.jpg";
-import koiImg6 from "../../../assets/koi-list/koiImg6.jpg";
-import koiImg7 from "../../../assets/koi-list/koiImg7.jpg";
-import koiImg8 from "../../../assets/koi-list/koiImg8.jpg";
+import food1 from "../../../assets/koiFood/food-aquamasterColorEnhancer.jpg";
+import food2 from "../../../assets/koiFood/food-aquamasterGrowth.jpg";
+import food3 from "../../../assets/koiFood/food-aquamasterHiGrowth.jpg";
+import food4 from "../../../assets/koiFood/food-aquamasterStaple.jpg";
+import food5 from "../../../assets/koiFood/food-hikariColorEnhancer.jpg";
+import food6 from "../../../assets/koiFood/food-JPDShogun.jpg";
+import food7 from "../../../assets/koiFood/food-sakuraHighGrowth.jpg";
+import food8 from "../../../assets/koiFood/food-sakuraHighGrowth&Color.jpg"; 
+
 
 const koiFoodSampleList = [
   {
     id: 1,
-    name: "Kohaku Koi",
-    image: koiImg1,
+    name: "Aquamaster Color Enhancer",
+    image: food1,
     seller: "Đỏ & Trắng",
     origin: "Japan",
-    brand: "Cám thương hiệu đâu đó",
+    brand: "Aqua Master",
     Weight: "3kg",
     price: "2.000.000 VND",
   },
   {
     id: 2,
-    name: "Showa Koi",
-    image: koiImg2,
+    name: "Aquamaster Growth",
+    image: food2,
     seller: "Đỏ & Trắng",
     origin: "Japan",
-    brand: "Cám thương hiệu đâu đó",
+    brand: "Aqua Master",
     Weight: "3kg",
     price: "2.000.000 VND",
   },
   {
     id: 3,
-    name: "Showa Koi",
-    image: koiImg3,
+    name: "Aquamaster Hi-Growth",
+    image: food3,
     seller: "Đỏ & Trắng",
     origin: "Japan",
-    brand: "Cám thương hiệu đâu đó",
+    brand: "Aqua Master",
     Weight: "3kg",
     price: "2.000.000 VND",
   },
   {
     id: 4,
-    name: "Showa Koi",
-    image: koiImg4,
+    name: "Aquamaster Staple",
+    image: food4,
     seller: "Đỏ & Trắng",
     origin: "Japan",
-    brand: "Cám thương hiệu đâu đó",
+    brand: "Aqua Master",
     Weight: "3kg",
     price: "2.000.000 VND",
   },
   {
     id: 5,
-    name: "Kohaku Koi",
-    image: koiImg5,
+    name: "Hikari Color Enhancer",
+    image: food5,
     seller: "Đỏ & Trắng",
     origin: "Japan",
-    brand: "Cám thương hiệu đâu đó",
+    brand: "Hikari",
     Weight: "3kg",
     price: "2.000.000 VND",
   },
   {
     id: 6,
-    name: "Showa Koi",
-    image: koiImg6,
+    name: "JPD Shogun",
+    image: food6,
     seller: "Đỏ & Trắng",
     origin: "Japan",
-    brand: "Cám thương hiệu đâu đó",
+    brand: "Shogun JPD",
     Weight: "3kg",
     price: "2.000.000 VND",
   },
   {
     id: 7,
-    name: "Showa Koi",
-    image: koiImg7,
+    name: "Sakura High Growth",
+    image: food7,
     seller: "Đỏ & Trắng",
     origin: "Japan",
-    brand: "Cám thương hiệu đâu đó",
+    brand: "Sakura",
     Weight: "3kg",
     price: "2.000.000 VND",
   },
   {
     id: 8,
-    name: "Showa Koi",
-    image: koiImg8,
+    name: "Sakura High Growth & Color",
+    image: food8,
     seller: "Đỏ & Trắng",
     origin: "Japan",
-    brand: "Cám thương hiệu đâu đó",
+    brand: "Sakura",
     Weight: "3kg",
     price: "2.000.000 VND",
   },
@@ -101,7 +102,7 @@ const KoiFeed = () => {
       
       <div className="guide">
         <h2>Guide to Koi Feeding</h2>
-        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. In expedita temporibus labore non rem recusandae ipsam, dignissimos perferendis debitis repellendus voluptatibus, voluptas facere illo totam laboriosam suscipit vel quasi officiis. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus voluptas laudantium recusandae fuga saepe, rem quod aliquam possimus nostrum, mollitia tempora omnis consequuntur vero officia quis nam sint provident dolor.</p>
+        <p>Give your koi the nutrition they need to thrive with our specially formulated koi food. Designed to promote optimal health, vibrant colors, and strong growth, our koi food blends high-quality ingredients to meet the dietary needs of koi at every stage of life.</p>
       </div>
 
       <div className="koi-feed-grid">

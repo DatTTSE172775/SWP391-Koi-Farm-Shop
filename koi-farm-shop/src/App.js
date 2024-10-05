@@ -21,7 +21,7 @@ const Login = lazy(() => import("./components/auth/login/Login"));
 const Register = lazy(() => import("./components/auth/register/Register"));
 const AuthPage = lazy(() => import("./pages/auth/AuthPage"));
 
-//home - about - consignment - contact - blog
+//home - about - consignment - contact - blog - guide
 const About = lazy(() => import("./pages/about/About"));
 const Consignment = lazy(() => import("./pages/consignment/Consignment"));
 const ConsignmentForm = lazy(() =>
@@ -30,6 +30,7 @@ const ConsignmentForm = lazy(() =>
 const Blog = lazy(() => import("./pages/blog/Blog"));
 const Contact = lazy(() => import("./pages/contact/Contact"));
 const HomePage = lazy(() => import("./pages/home/HomePage"));
+const Guide = lazy(() => import("./pages/guide/guide"));
 
 // koi page
 const KoiDetail = lazy(() =>
@@ -70,6 +71,7 @@ function App() {
               <Route index element={<Navigate to="/home" replace />} />
               <Route path="home" element={<HomePage />} />
               <Route path="about" element={<About />} />
+              <Route path="guide" element={<Guide />} />
 
               {/* Koi Routes */}
               <Route path="koi-list" element={<KoiListPage />} />
