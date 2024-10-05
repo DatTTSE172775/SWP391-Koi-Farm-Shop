@@ -4,7 +4,7 @@ import "./PondFilter.scss";
 import filter1 from "../../../assets/pondFilter/filter.webp";
 import filter2 from "../../../assets/pondFilter/filterPIll.webp";
 import filter3 from "../../../assets/pondFilter/pondFilter.webp";
-import filter4 from "../../../assets/pondFilter/pondFilterROAqua.webp";
+import filter4 from "../../../assets/pondFilter/pondFilterSOBO.webp";
 
 const PondFilterSampleList = [
   {
@@ -49,13 +49,11 @@ const PondFilter = () => {
       <div className="guide">
         <h2>Guide to Pond filter</h2>
         <p>
-          Maintaining the health and beauty of your koi pond is crucial for the
-          well-being of your fish. Our advanced Koi pond filtration systems are
-          specifically designed to ensure your pond water remains crystal clear
-          and safe for your koi. With a multi-stage filtration process, our
-          systems effectively remove debris, fish waste, and toxic chemicals
-          like ammonia, while also encouraging beneficial bacteria growth that
-          helps maintain a balanced ecosystem.
+        Duy trì sức khỏe và vẻ đẹp của ao cá koi là điều tối quan trọng đối với sức khỏe của cá.
+         Hệ thống lọc ao cá Koi tiên tiến của chúng tôi được thiết kế đặc biệt để đảm bảo nước ao 
+         của bạn luôn trong vắt và an toàn cho cá koi. Với quy trình lọc nhiều giai đoạn, hệ thống 
+         của chúng tôi loại bỏ hiệu quả các mảnh vụn, chất thải của cá và các hóa chất độc hại như 
+         amoniac, đồng thời thúc đẩy sự phát triển của vi khuẩn có lợi giúp duy trì hệ sinh thái cân bằng.
         </p>
       </div>
 

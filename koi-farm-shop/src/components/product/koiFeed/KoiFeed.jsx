@@ -102,7 +102,11 @@ const KoiFeed = () => {
       
       <div className="guide">
         <h2>Guide to Koi Feeding</h2>
-        <p>Give your koi the nutrition they need to thrive with our specially formulated koi food. Designed to promote optimal health, vibrant colors, and strong growth, our koi food blends high-quality ingredients to meet the dietary needs of koi at every stage of life.</p>
+        <p>Cung cấp cho cá koi của bạn dinh dưỡng cần thiết để phát triển mạnh mẽ 
+          với thức ăn cá koi được pha chế đặc biệt của chúng tôi. Được thiết kế để thúc 
+          đẩy sức khỏe tối ưu, màu sắc rực rỡ và tăng trưởng mạnh mẽ, thức ăn cá koi của
+           chúng tôi pha trộn các thành phần chất lượng cao để đáp ứng nhu cầu dinh dưỡng 
+           của cá koi ở mọi giai đoạn của cuộc đời.</p>
       </div>
 
       <div className="koi-feed-grid">
