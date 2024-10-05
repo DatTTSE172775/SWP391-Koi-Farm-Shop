@@ -1,7 +1,7 @@
 import { Layout, Typography } from "antd";
 import React from "react";
-import AdminHeader from "../../components/admin/header/AdminHeader";
-import AdminSidebar from "../../components/admin/sidebar/AdminSidebar";
+import AdminHeader from "../../../components/admin/header/AdminHeader";
+import AdminSidebar from "../../../components/admin/sidebar/AdminSidebar";
 import "./WelcomeAdmin.scss";
 
 const { Content } = Layout;

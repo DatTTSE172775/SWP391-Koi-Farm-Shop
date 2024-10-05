@@ -3,6 +3,7 @@
 import {
   DashboardOutlined,
   SettingOutlined,
+  ShoppingOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 import { HomeMiniOutlined } from "@mui/icons-material";
@@ -19,12 +20,15 @@ const AdminSidebar = () => {
       <div className="logo">
         <h2>Admin Portal</h2>
       </div>
-      <Menu theme="dark" mode="inline" defaultSelectedKeys={["admin"]}>
+      <Menu theme="dark" mode="inline">
         <Menu.Item key="admin" icon={<HomeMiniOutlined />}>
           <Link to="/admin">Trang chủ</Link>
         </Menu.Item>
         <Menu.Item key="dashboard" icon={<DashboardOutlined />}>
           <Link to="/dashboard">Dashboard</Link>
+        </Menu.Item>
+        <Menu.Item key="orders" icon={<ShoppingOutlined />}>
+          <Link to="/admin/manage-orders">Quản lý đơn hàng</Link>
         </Menu.Item>
         <Menu.Item key="users" icon={<UserOutlined />}>
           <Link to="/admin/users">Quản Lý Người Dùng</Link>

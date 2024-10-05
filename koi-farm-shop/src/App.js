@@ -10,6 +10,8 @@ import {
 import Loading from "./components/loading/Loading";
 import CartProvider from "./components/order/cart-context/CartContext";
 // main layout
+import OrderDetails from "./pages/admin/order-details/OrderDetails";
+import OrdersManagement from "./pages/admin/orderManagement/OrdersManagement";
 import MainLayout from "./pages/MainLayout";
 import NotFound from "./pages/notfound/NotFound";
 
@@ -64,7 +66,7 @@ const Cart = lazy(() => import("./pages/order/cart/CartPage"));
 const WelcomeStaff = lazy(() => import("./pages/staff/layout/WelcomeStaff"));
 
 //admin page
-const WelcomeAdmin = lazy(() => import("./pages/admin/WelcomeAdmin"));
+const WelcomeAdmin = lazy(() => import("./pages/admin/welcome/WelcomeAdmin"));
 
 function App() {
   return (
@@ -110,11 +112,16 @@ function App() {
               <Route path="forget-password" element={<ForgetPassword />} />
             </Route>
 
-            {/* Staff Routes */}
-            <Route path="/staff" element={<WelcomeStaff />} />
-
             {/* Admin Routes */}
             <Route path="/admin" element={<WelcomeAdmin />} />
+            <Route path="/admin/manage-orders" element={<OrdersManagement />} />
+            <Route
+              path="/admin/manage-orders/:orderId"
+              element={<OrderDetails />}
+            />
+
+            {/* Staff Routes */}
+            <Route path="/staff" element={<WelcomeStaff />} />
 
             {/* Fallback Route */}
             <Route path="*" element={<NotFound />} />
