@@ -17,7 +17,6 @@
     "cors": "^2.8.5",
     "cros": "^1.0.1",
     "dotenv": "^16.4.5",
-    "eslint-plugin-react-hooks": "^5.1.0-rc-3edc000d-20240926",
     "express": "^4.21.0",
     "framer-motion": "^11.9.0",
     "jsonwebtoken": "^9.0.2",
@@ -71,6 +70,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@babel/plugin-proposal-optional-chaining": "^7.21.0"
+    "@babel/plugin-proposal-optional-chaining": "^7.21.0",
+    "eslint-plugin-react-hooks": "^4.6.2"
   }
 }

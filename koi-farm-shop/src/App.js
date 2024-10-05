@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 
 import Loading from "./components/loading/Loading";
-import Cart from "./components/order/cart/Cart";
+import CartProvider from "./components/order/cart-context/CartContext";
 // main layout
 import MainLayout from "./pages/MainLayout";
 import NotFound from "./pages/notfound/NotFound";
@@ -57,54 +57,57 @@ const Checkout = lazy(() => import("./components/order/checkout/Checkout"));
 const OrderSuccess = lazy(() =>
   import("./pages/order/orderSuccess/OrderSuccess")
 );
+const Cart = lazy(() => import("./pages/order/cart/CartPage"));
 
 function App() {
   return (
-    <Router>
-      <Suspense fallback={<Loading />}>
-        <Routes>
-          {/* Routes with MainLayout */}
-          <Route path="/" element={<MainLayout />}>
-            <Route index element={<Navigate to="/home" replace />} />
-            <Route path="home" element={<HomePage />} />
-            <Route path="about" element={<About />} />
+    <CartProvider>
+      <Router>
+        <Suspense fallback={<Loading />}>
+          <Routes>
+            {/* Routes with MainLayout */}
+            <Route path="/" element={<MainLayout />}>
+              <Route index element={<Navigate to="/home" replace />} />
+              <Route path="home" element={<HomePage />} />
+              <Route path="about" element={<About />} />
 
-            {/* Koi Routes */}
-            <Route path="koi-list" element={<KoiListPage />} />
-            <Route path="koi-details/:id" element={<KoiDetail />} />
-            <Route path="koi-breeders" element={<KoiBreeders />} />
+              {/* Koi Routes */}
+              <Route path="koi-list" element={<KoiListPage />} />
+              <Route path="koi-details/:id" element={<KoiDetail />} />
+              <Route path="koi-breeders" element={<KoiBreeders />} />
 
-            {/* Product Routes */}
-            <Route path="product" element={<ProductPage />}>
-              <Route index element={<Navigate to="koi-feed" replace />} />
-              <Route path="koi-feed" element={<KoiFeed />} />
-              <Route path="pond-filter-system" element={<PondFilter />} />
-              <Route path="pond-accessories" element={<PondAccessories />} />
+              {/* Product Routes */}
+              <Route path="product" element={<ProductPage />}>
+                <Route index element={<Navigate to="koi-feed" replace />} />
+                <Route path="koi-feed" element={<KoiFeed />} />
+                <Route path="pond-filter-system" element={<PondFilter />} />
+                <Route path="pond-accessories" element={<PondAccessories />} />
+              </Route>
+
+              <Route path="blog" element={<Blog />} />
+              <Route path="consign" element={<Consignment />} />
+              <Route path="consign-form" element={<ConsignmentForm />} />
+              <Route path="contact" element={<Contact />} />
+
+              {/* Order Routes */}
+              <Route path="cart" element={<Cart />} />
+              <Route path="checkout" element={<Checkout />} />
+              <Route path="order-success" element={<OrderSuccess />} />
             </Route>
 
-            <Route path="blog" element={<Blog />} />
-            <Route path="consign" element={<Consignment />} />
-            <Route path="consign-form" element={<ConsignmentForm />} />
-            <Route path="contact" element={<Contact />} />
+            {/* Auth Routes without MainLayout */}
+            <Route path="/" element={<AuthPage />}>
+              <Route path="login" element={<Login />} />
+              <Route path="register" element={<Register />} />
+              <Route path="forget-password" element={<ForgetPassword />} />
+            </Route>
 
-            {/* Order Routes */}
-            <Route path="cart" element={<Cart />} />
-            <Route path="checkout" element={<Checkout />} />
-            <Route path="order-success" element={<OrderSuccess />} />
-          </Route>
-
-          {/* Auth Routes without MainLayout */}
-          <Route path="/" element={<AuthPage />}>
-            <Route path="login" element={<Login />} />
-            <Route path="register" element={<Register />} />
-            <Route path="forget-password" element={<ForgetPassword />} />
-          </Route>
-
-          {/* Fallback Route */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Suspense>
-    </Router>
+            {/* Fallback Route */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
+      </Router>
+    </CartProvider>
   );
 }
 

@@ -9,10 +9,11 @@ import {
   Row,
   Typography,
 } from "antd";
-import React from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import momoLogo from "../../../assets/checkout/momo-logo.png";
 import vnpayLogo from "../../../assets/checkout/vnpay-logo.png";
+import { CartContext } from "../cart-context/CartContext";
 import "./Checkout.scss";
 
 const { Title, Text } = Typography;
@@ -20,11 +21,12 @@ const { Title, Text } = Typography;
 const Checkout = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
+  const { cartItems } = useContext(CartContext);
 
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
     // Xử lý thanh toán ở đây (sau này tích hợp với backend)
-    navigate("/order-success");
+    navigate("/order-success", { state: { cartItems, customerInfo: values } });
   };
 
   return (
@@ -138,14 +140,12 @@ const Checkout = () => {
           <Card title="Đơn Hàng Của Bạn" bordered={false}>
             {/* Dữ liệu mẫu, bạn sẽ thay thế bằng dữ liệu thực tế sau */}
             <div className="order-summary">
-              <div className="order-item">
-                <Text>1x Kohaku Koi</Text>
-                <Text strong>2,000,000 VND</Text>
-              </div>
-              <div className="order-item">
-                <Text>1x Showa Koi</Text>
-                <Text strong>1,800,000 VND</Text>
-              </div>
+              {cartItems.map((item) => (
+                <div className="order-item" key={item.id}>
+                  <Text>{`1x ${item.name}`}</Text>
+                  <Text strong>{`${item.price.toLocaleString()}`}</Text>
+                </div>
+              ))}
               <Divider />
               <div className="order-total">
                 <Text>Tổng Tiền:</Text>

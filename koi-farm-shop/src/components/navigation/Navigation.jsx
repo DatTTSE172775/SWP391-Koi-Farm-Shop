@@ -1,9 +1,10 @@
 import { ShoppingCartOutlined, UserOutlined } from "@ant-design/icons";
 import { Avatar, Badge, Button, Dropdown, Menu } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import { logout } from "../../store/actions/authActions";
+import { CartContext } from "../order/cart-context/CartContext";
 import "./Navigation.scss";
 
 const { SubMenu } = Menu;
@@ -13,6 +14,8 @@ const Navigation = () => {
   const dispatch = useDispatch();
 
   const [current, setCurrent] = useState("home");
+
+  const { cartItems } = useContext(CartContext);
 
   // Xác định tab được chọn dựa trên đường dẫn hiện tại
   useEffect(() => {
@@ -210,7 +213,7 @@ const Navigation = () => {
               </div>
             </Dropdown>
             <Link to="/cart" className="cart-link">
-              <Badge count={3} showZero>
+              <Badge count={cartItems.length} showZero>
                 <ShoppingCartOutlined className="cart-icon" />
               </Badge>
               <span className="cart-text">Giỏ hàng</span>
