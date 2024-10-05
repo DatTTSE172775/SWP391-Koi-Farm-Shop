@@ -1,4 +1,4 @@
-import { ShoppingCartOutlined, UserOutlined } from "@ant-design/icons";
+import { ShoppingCartOutlined, UserOutlined, BellOutlined } from "@ant-design/icons"; // Import Bell icon
 import { Avatar, Badge, Button, Dropdown, Menu } from "antd";
 import React, { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,12 +12,17 @@ const { SubMenu } = Menu;
 const Navigation = () => {
   const location = useLocation();
   const dispatch = useDispatch();
-
   const [current, setCurrent] = useState("home");
 
   const { cartItems } = useContext(CartContext);
+  const [notifications, setNotifications] = useState([
+    { id: 1, message: "Thông báo 1", read: false },
+    { id: 2, message: "Thông báo 2", read: true },
+    { id: 3, message: "Thông báo 3", read: false },
+  ]);
 
-  // Xác định tab được chọn dựa trên đường dẫn hiện tại
+  const unreadCount = notifications.filter((notif) => !notif.read).length;
+
   useEffect(() => {
     const path = location.pathname;
     if (path === "/home") {
@@ -64,7 +69,31 @@ const Navigation = () => {
     dispatch(logout());
   };
 
-  // Menu cho Dropdown khi click vào avatar
+  // Handle marking a notification as read
+  const markAsRead = (id) => {
+    setNotifications((prevNotifications) =>
+      prevNotifications.map((notif) =>
+        notif.id === id ? { ...notif, read: true } : notif
+      )
+    );
+  };
+
+  // Notification Dropdown Menu
+  const notificationMenu = (
+    <Menu>
+      {notifications.map((notif) => (
+        <Menu.Item key={notif.id} onClick={() => markAsRead(notif.id)}>
+          {notif.read ? (
+            <span style={{ color: "#888" }}>{notif.message} (Đã đọc)</span>
+          ) : (
+            <span style={{ fontWeight: "bold" }}>{notif.message} (Chưa đọc)</span>
+          )}
+        </Menu.Item>
+      ))}
+    </Menu>
+  );
+
+  // Menu for account dropdown
   const accountMenu = (
     <Menu>
       <Menu.Item key="view-info">
@@ -82,11 +111,7 @@ const Navigation = () => {
       {/* Logo */}
       <div className="logo">
         <Link to="/home">
-          <img
-            src="koi-farm-shop.png"
-            alt="Koi Farm Shop"
-            className="logo-image"
-          />
+          <img src="koi-farm-shop.png" alt="Koi Farm Shop" className="logo-image" />
         </Link>
       </div>
 
@@ -113,6 +138,7 @@ const Navigation = () => {
             <Link to="/koi-high-quality">Cá Koi chất lượng cao</Link>
           </Menu.Item>
           <SubMenu key="koi-varieties" title="Các giống cá Koi">
+            {/* Các giống cá Koi */}
             <Menu.Item key="koi-varieties-1">
               <Link to="/koi-varieties/1">Kohaku Koi</Link>
             </Menu.Item>
@@ -125,48 +151,9 @@ const Navigation = () => {
             <Menu.Item key="koi-varieties-4">
               <Link to="/koi-varieties/4">Shiro Utsuri Koi</Link>
             </Menu.Item>
-            <Menu.Item key="koi-varieties-5">
-              <Link to="/koi-varieties/5">Hi Utsuri Koi</Link>
-            </Menu.Item>
-            <Menu.Item key="koi-varieties-6">
-              <Link to="/koi-varieties/6">Goshiki Koi</Link>
-            </Menu.Item>
-            <Menu.Item key="koi-varieties-7">
-              <Link to="/koi-varieties/7">Kujyaku Koi</Link>
-            </Menu.Item>
-            <Menu.Item key="koi-varieties-8">
-              <Link to="/koi-varieties/8">Shusui Koi</Link>
-            </Menu.Item>
-            <Menu.Item key="koi-varieties-9">
-              <Link to="/koi-varieties/9">Asagi Koi</Link>
-            </Menu.Item>
-            <Menu.Item key="koi-varieties-10">
-              <Link to="/koi-varieties/10">Ginrin Koi</Link>
-            </Menu.Item>
-            <Menu.Item key="koi-varieties-11">
-              <Link to="/koi-varieties/11">Tancho Koi</Link>
-            </Menu.Item>
-            <Menu.Item key="koi-varieties-12">
-              <Link to="/koi-varieties/12">Doitsu Koi</Link>
-            </Menu.Item>
-            <Menu.Item key="koi-varieties-13">
-              <Link to="/koi-varieties/13">Butterfly Koi</Link>
-            </Menu.Item>
           </SubMenu>
-          <Menu.Item key="koi-breeders">
-            <Link to="/koi-breeders">Người nuôi cá Koi</Link>
-          </Menu.Item>
           <Menu.Item key="koi-package">
             <Link to="/koi-package">Lô cá Koi</Link>
-          </Menu.Item>
-          <Menu.Item key="koi-collection">
-            <Link to="/koi-collection">Bộ sưu tập cá Koi</Link>
-          </Menu.Item>
-          <Menu.Item key="koi-request">
-            <Link to="/koi-request">Đề xuất cá Koi</Link>
-          </Menu.Item>
-          <Menu.Item key="koi-sold">
-            <Link to="/koi-sold">Cá koi đã bán</Link>
           </Menu.Item>
         </SubMenu>
 
@@ -198,6 +185,20 @@ const Navigation = () => {
       <div className="nav-icons">
         {isAuthenticated ? (
           <>
+            {/* Notification Dropdown */}
+            <Dropdown
+              overlay={notificationMenu}
+              placement="bottomRight"
+              trigger={["click"]}
+            >
+              <div className="notification-dropdown">
+                <Badge count={unreadCount}>
+                  <BellOutlined className="notification-icon" />
+                </Badge>
+              </div>
+            </Dropdown>
+
+            {/* Account Dropdown */}
             <Dropdown
               overlay={accountMenu}
               placement="bottomRight"
@@ -212,6 +213,8 @@ const Navigation = () => {
                 <span className="username">{user}</span>
               </div>
             </Dropdown>
+
+            {/* Cart */}
             <Link to="/cart" className="cart-link">
               <Badge count={cartItems.length} showZero>
                 <ShoppingCartOutlined className="cart-icon" />
