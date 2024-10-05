@@ -63,6 +63,21 @@ const OrderSuccess = lazy(() =>
 );
 const Cart = lazy(() => import("./pages/order/cart/CartPage"));
 
+// staff page
+const WelcomeStaff = lazy(() => import("./pages/staff/layout/WelcomeStaff"));
+const StaffOrderManage = lazy(() =>
+  import("./pages/staff/order-manage/StaffOrderManage")
+);
+
+//admin page
+const WelcomeAdmin = lazy(() => import("./pages/admin/welcome/WelcomeAdmin"));
+const OrderDetails = lazy(() =>
+  import("./pages/admin/order-details/OrderDetails")
+);
+const OrdersManagement = lazy(() =>
+  import("./pages/admin/orderManagement/OrdersManagement")
+);
+
 function App() {
   return (
     <CartProvider>
@@ -107,6 +122,18 @@ function App() {
               <Route path="register" element={<Register />} />
               <Route path="forget-password" element={<ForgetPassword />} />
             </Route>
+
+            {/* Admin Routes */}
+            <Route path="/admin" element={<WelcomeAdmin />} />
+            <Route path="/admin/manage-orders" element={<OrdersManagement />} />
+            <Route
+              path="/admin/manage-orders/:orderId"
+              element={<OrderDetails />}
+            />
+
+            {/* Staff Routes */}
+            <Route path="/staff" element={<WelcomeStaff />} />
+            <Route path="/staff/orders" element={<StaffOrderManage />} />
 
             {/* Fallback Route */}
             <Route path="*" element={<NotFound />} />
