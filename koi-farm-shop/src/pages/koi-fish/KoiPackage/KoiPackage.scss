@@ -1,0 +1,102 @@
+.koi-package {
+  padding: 100px;
+
+  &__intro {
+    text-align: center;
+    margin-bottom: 40px;
+
+    h2 {
+      font-size: 2rem;
+      color: #333;
+    }
+
+    p {
+      font-size: 1.2rem;
+    }
+
+    h3 {
+      margin-top: 20px;
+      font-style: italic;
+      color: #777;
+    }
+  }
+
+  &__list {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+  }
+
+  .koi-package-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    margin: 20px;
+    text-align: center;
+    padding: 20px;
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+
+    &__image {
+      img {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+      }
+    }
+
+    &__info {
+      margin-top: 20px;
+
+      h3 {
+        font-size: 1.5rem;
+        color: #1a1a1a;
+      }
+
+      p {
+        margin: 10px 0;
+      }
+
+      .koi-package-card__price {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #4caf50;
+      }
+
+      .rating {
+        color: #ffd700;
+        margin-top: 10px;
+        font-size: 1.2rem;
+      }
+    }
+  }
+
+  .discount-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: red;
+    color: white;
+    padding: 5px 10px;
+    font-weight: bold;
+    border-radius: 5px;
+  }
+
+  .buy-now-button {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #45a049;
+    }
+  }
+}
