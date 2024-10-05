@@ -78,6 +78,9 @@ const OrdersManagement = lazy(() =>
   import("./pages/admin/orderManagement/OrdersManagement")
 );
 
+// customer page
+const WelcomeCustomer = lazy(() => import("./pages/customer/welcome/WelcomeCustomer"));
+
 function App() {
   return (
     <CartProvider>
@@ -134,6 +137,9 @@ function App() {
             {/* Staff Routes */}
             <Route path="/staff" element={<WelcomeStaff />} />
             <Route path="/staff/orders" element={<StaffOrderManage />} />
+
+            {/* Customer Route */}
+            <Route path="/customer" element={<WelcomeCustomer />} />
 
             {/* Fallback Route */}
             <Route path="*" element={<NotFound />} />

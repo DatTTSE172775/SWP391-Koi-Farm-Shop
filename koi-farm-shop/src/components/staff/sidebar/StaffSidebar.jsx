@@ -1,5 +1,3 @@
-// src/components/staff/StaffSidebar.jsx
-
 import {
   DashboardOutlined,
   InboxOutlined,

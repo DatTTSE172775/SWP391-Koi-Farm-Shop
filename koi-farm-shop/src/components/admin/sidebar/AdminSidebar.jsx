@@ -1,5 +1,3 @@
-// src/components/admin/AdminSidebar.jsx
-
 import {
   DashboardOutlined,
   SettingOutlined,
