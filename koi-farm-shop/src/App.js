@@ -60,6 +60,12 @@ const OrderSuccess = lazy(() =>
 );
 const Cart = lazy(() => import("./pages/order/cart/CartPage"));
 
+// staff page
+const WelcomeStaff = lazy(() => import("./pages/staff/layout/WelcomeStaff"));
+
+//admin page
+const WelcomeAdmin = lazy(() => import("./pages/admin/WelcomeAdmin"));
+
 function App() {
   return (
     <CartProvider>
@@ -103,6 +109,12 @@ function App() {
               <Route path="register" element={<Register />} />
               <Route path="forget-password" element={<ForgetPassword />} />
             </Route>
+
+            {/* Staff Routes */}
+            <Route path="/staff" element={<WelcomeStaff />} />
+
+            {/* Admin Routes */}
+            <Route path="/admin" element={<WelcomeAdmin />} />
 
             {/* Fallback Route */}
             <Route path="*" element={<NotFound />} />
