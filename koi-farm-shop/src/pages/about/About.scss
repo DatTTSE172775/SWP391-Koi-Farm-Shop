@@ -1,9 +1,9 @@
 // Variables
-$primary-color: #333;
+$primary-color: #e65100;
 $secondary-color: #f9f9f9;
-$accent-color: #e0e0e0;
-$font-family: Arial, sans-serif;
-$border-radius: 8px;
+$accent-color: #fff;
+$font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+$border-radius: 10px;
 
 // Mixins
 @mixin box-shadow($x: 0, $y: 2px, $blur: 4px, $color: rgba(0, 0, 0, 0.1)) {
@@ -35,6 +35,7 @@ $border-radius: 8px;
   font-size: 2em;
   color: $primary-color;
   margin-bottom: 20px;
+  animation: fadeIn 1s ease-in-out;
 }
 
 .about-section {
@@ -51,6 +52,8 @@ $border-radius: 8px;
   height: auto;
   border-radius: $border-radius;
   margin-top: 15px;
+  background-attachment: fixed;
+  background-size: cover;
 }
 
 .about-values {
@@ -79,8 +82,14 @@ $border-radius: 8px;
 
   img {
     width: 100%;
-    height: auto;
-    border-radius: $border-radius;
+  height: auto;
+  border-radius: $border-radius;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+    @include box-shadow(0, 4px, 8px, rgba(0, 0, 0, 0.2));
+  }
   }
 
   h3 {
@@ -97,15 +106,21 @@ $border-radius: 8px;
   display: block;
   margin: 20px auto;
   padding: 10px 20px;
-  background-color: $accent-color;
+  background-color: $primary-color;
+  color: #fff;
   border: none;
   border-radius: $border-radius;
   font-size: 1em;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.3s ease;
 
   &:hover {
-    background-color: darken($accent-color, 10%);
+    background-color: lighten($primary-color, 10%);
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
   }
 }
 
@@ -118,15 +133,34 @@ $border-radius: 8px;
 
 // Media Queries
 @media (max-width: 768px) {
-  .about-container {
-    padding: 10px;
-  }
-
-  .main-title {
-    font-size: 2.2em;
+  .team-images {
+    flex-direction: column;
   }
 
   .team-member {
     width: 100%;
   }
+
+  .about-section {
+    padding: 15px;
+  }
+
+  .show-more-btn {
+    font-size: 0.9em;
+    padding: 8px 16px;
+  }
 }
+
+
+.team-member img {
+  width: 100%;
+  height: auto;
+  border-radius: $border-radius;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+    @include box-shadow(0, 4px, 8px, rgba(0, 0, 0, 0.2));
+  }
+}
+

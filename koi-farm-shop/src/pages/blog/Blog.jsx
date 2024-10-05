@@ -1,7 +1,11 @@
 import React from "react";
-import Footer from "../../components/footer/Footer";
+//import Footer from "../../components/footer/Footer";
 import Navigation from "../../components/navigation/Navigation";
 import "./Blog.scss";
+import blogOverviewImage from "../../assets/images/BlogOverview.jpg";
+import koiBreedingImage from "../../assets/images/koi-breeding.jpg";
+import koiPondMaintenanceImage from "../../assets/images/koi-pond-maintenance.jpg";
+import koiBehaviorImage from "../../assets/images/koi-behavior.avif";
 
 const blogPosts = [
     {
@@ -9,21 +13,21 @@ const blogPosts = [
         title: "The Art of Koi Breeding",
         excerpt: "Learn about the intricate process of breeding Koi fish and the factors that contribute to their vibrant colors and patterns.",
         date: "2023-05-15",
-        image: "koi-breeding.jpg"
+        image: koiBreedingImage
     },
     {
         id: 2,
         title: "Essential Koi Pond Maintenance Tips",
         excerpt: "Discover the key practices for maintaining a healthy and thriving Koi pond, including water quality management and filtration systems.",
         date: "2023-06-02",
-        image: "koi-pond-maintenance.jpg"
+        image: koiPondMaintenanceImage
     },
     {
         id: 3,
         title: "Understanding Koi Fish Behavior",
         excerpt: "Explore the fascinating world of Koi fish behavior and learn how to interpret their actions for better care and interaction.",
         date: "2023-06-20",
-        image: "koi-behavior.jpg"
+        image: koiBehaviorImage
     }
 ];
 
@@ -41,7 +45,7 @@ const Blog = () => {
                         experts who are passionate about all things Koi.
                     </p>
                     <img
-                        src="BlogOverview.jpg"
+                        src={blogOverviewImage}
                         alt="Blog Overview"
                         className="blog-image"
                     />
@@ -85,7 +89,6 @@ const Blog = () => {
                     </form>
                 </section>
             </div>
-            <Footer />
         </div>
     );
 };

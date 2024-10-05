@@ -1,25 +1,48 @@
-// BlogPage.scss
-
-// Define variables
+// Variables
 $primary-color: #e65100;
+$secondary-color: #4caf50;
 $background-color: #f9f9f9;
 $text-color: #333;
 $card-background: #fff;
 
-// Cool font combinations without imports
+// Typography
 $heading-font: "Trebuchet MS", Helvetica, sans-serif;
 $body-font: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+
+// Mixins
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin card-style {
+  background-color: $card-background;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+}
+
+// Global styles
+body {
+  font-family: $body-font;
+  color: $text-color;
+  background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
+  animation: waterRipple 15s ease-in-out infinite;
+  background-size: 400% 400%;
+}
 
 .blog-container {
   max-width: 1200px;
   margin: 100px auto;
   padding: 2rem;
-  font-family: $body-font;
-  color: $text-color;
-  background-color: $background-color;
 
-  h1,
-  h2 {
+  h1, h2 {
     font-family: $heading-font;
     color: $primary-color;
     margin-bottom: 1rem;
@@ -32,55 +55,77 @@ $body-font: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   }
 }
 
+// Blog intro section
 .blog-intro {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 4rem;
 
   h1 {
-    font-size: 2.8rem;
+    font-size: 3rem;
     margin-bottom: 1.5rem;
     text-transform: uppercase;
     font-weight: bold;
+    color: $primary-color; // Fallback color
+    position: relative;
+    display: inline-block;
+    
+    // Gradient effect
+    &::before {
+      content: attr(data-text);
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: 2;
+      background: linear-gradient(45deg, $primary-color, $secondary-color);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
   }
 
   p {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     max-width: 800px;
     margin: 0 auto 2rem;
   }
+
+  .blog-image {
+    max-width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
 }
 
+// Blog posts section
 .blog-posts {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
-  margin-bottom: 3rem;
+  margin-bottom: 4rem;
 }
 
 .blog-post {
-  background-color: $card-background;
-  border-radius: 10px;
+  @include card-style;
   overflow: hidden;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  }
 
   .post-image {
     width: 100%;
     height: 200px;
     object-fit: cover;
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.05);
+    }
   }
 
   .post-content {
     padding: 1.5rem;
 
-    h2 {
+    h3 {
       font-size: 1.5rem;
       margin-bottom: 0.5rem;
+      color: $primary-color;
     }
 
     .post-date {
@@ -101,21 +146,21 @@ $body-font: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       color: white;
       text-decoration: none;
       border-radius: 5px;
-      transition: background-color 0.3s ease;
+      transition: background-color 0.3s ease, transform 0.2s ease;
 
       &:hover {
         background-color: darken($primary-color, 10%);
+        transform: translateY(-2px);
       }
     }
   }
 }
 
+// Blog categories section
 .blog-categories {
-  background-color: $card-background;
-  border-radius: 10px;
+  @include card-style;
   padding: 2rem;
-  margin-bottom: 2rem;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  margin-bottom: 3rem;
 
   h2 {
     font-size: 1.8rem;
@@ -129,23 +174,28 @@ $body-font: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     padding: 0;
 
     li {
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.8rem;
       font-size: 1.1rem;
+      transition: transform 0.2s ease;
 
       &:before {
         content: "🐠";
         margin-right: 10px;
       }
+
+      &:hover {
+        transform: translateX(5px);
+        color: $primary-color;
+      }
     }
   }
 }
 
+// Blog subscribe section
 .blog-subscribe {
-  background-color: $card-background;
-  border-radius: 10px;
+  @include card-style;
   padding: 2rem;
   text-align: center;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 
   h2 {
     font-size: 1.8rem;
@@ -157,31 +207,37 @@ $body-font: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   }
 
   form {
-    display: flex;
-    justify-content: center;
+    @include flex-center;
     gap: 1rem;
 
     input[type="email"] {
-      padding: 0.5rem 1rem;
+      padding: 0.7rem 1rem;
       border: 1px solid #ccc;
       border-radius: 5px;
       font-size: 1rem;
       width: 60%;
       max-width: 300px;
+      transition: border-color 0.3s ease;
+
+      &:focus {
+        outline: none;
+        border-color: $primary-color;
+      }
     }
 
     button {
-      padding: 0.5rem 1rem;
+      padding: 0.7rem 1.2rem;
       background-color: $primary-color;
       color: white;
       border: none;
       border-radius: 5px;
       font-size: 1rem;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      transition: background-color 0.3s ease, transform 0.2s ease;
 
       &:hover {
         background-color: darken($primary-color, 10%);
+        transform: translateY(-2px);
       }
     }
   }
@@ -217,13 +273,7 @@ $body-font: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   }
 }
 
-// Add a cool water ripple effect to the background
-body {
-  background: linear-gradient(to right, #e0f7fa, #b2ebf2);
-  animation: waterRipple 10s ease-in-out infinite;
-  background-size: 200% 200%;
-}
-
+// Water ripple animation
 @keyframes waterRipple {
   0% {
     background-position: 0% 50%;
