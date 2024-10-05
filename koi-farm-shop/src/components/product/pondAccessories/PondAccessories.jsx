@@ -40,7 +40,10 @@ const PondAccessories = () => {
       
       <div className="guide">
         <h2>Guide to Pond Accessories</h2>
-        <p>Transform your pond into a thriving, beautiful oasis with our wide selection of pond accessories. Designed to improve both the aesthetic appeal and overall functionality of your pond, our accessories help create the perfect environment for your fish, plants, and water features.</p>
+        <p>Biến ao của bạn thành một ốc đảo tươi tốt, xinh đẹp với nhiều loại phụ kiện ao của 
+          chúng tôi. Được thiết kế để cải thiện cả tính thẩm mỹ và chức năng tổng thể của ao,
+           các phụ kiện của chúng tôi giúp tạo ra môi trường hoàn hảo cho cá, cây trồng và các 
+           đặc điểm nước của bạn.</p>
       </div>
 
       <div className="pond-accessories-grid">

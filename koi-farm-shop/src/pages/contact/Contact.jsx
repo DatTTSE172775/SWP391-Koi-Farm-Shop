@@ -47,7 +47,7 @@ const Contact = () => {
         alt="Beautiful Koi Pond"
       />
       <h1>Contact Us</h1>
-      <p>We'd love to hear from you. Please fill out the form below!</p>
+      <p>Hãy để chúng tôi lắng nghe ý kiến của bạn bằng cách điền vào form dưới đây !</p>
       <form onSubmit={handleSubmit}>
         <div className="input-group">
           <input
@@ -85,6 +85,7 @@ const Contact = () => {
             onChange={handleChange}
             required
             placeholder="What can we help you with?*"
+            style={{resize: "none"}}
           />
         </div>
         <button type="submit" disabled={isSubmitting}>
