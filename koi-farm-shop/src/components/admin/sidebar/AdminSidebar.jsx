@@ -4,7 +4,7 @@ import {
   ShoppingOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { HomeMiniOutlined } from "@mui/icons-material";
+import { ContrastOutlined, HomeMiniOutlined } from "@mui/icons-material";
 import { Layout, Menu } from "antd";
 import React from "react";
 import { Link } from "react-router-dom";
@@ -29,7 +29,13 @@ const AdminSidebar = () => {
           <Link to="/admin/manage-orders">Quản lý đơn hàng</Link>
         </Menu.Item>
         <Menu.Item key="users" icon={<UserOutlined />}>
-          <Link to="/admin/users">Quản Lý Người Dùng</Link>
+          <Link to="/admin/users">Quản lý người dùng</Link>
+        </Menu.Item>
+        <Menu.Item key="users" icon={<ContrastOutlined />}>
+          <Link to="/admin/manage-consign">Quản lý ký gửi</Link>
+        </Menu.Item>
+        <Menu.Item key="approval" icon={<ContrastOutlined />}>
+          <Link to="/admin/approval">Ký kết</Link>
         </Menu.Item>
         <Menu.Item key="settings" icon={<SettingOutlined />}>
           <Link to="/admin/settings">Cài Đặt Hệ Thống</Link>

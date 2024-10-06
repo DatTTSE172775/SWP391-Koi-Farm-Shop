@@ -12,6 +12,7 @@ import CartProvider from "./components/order/cart-context/CartContext";
 // main layout
 import MainLayout from "./pages/MainLayout";
 import NotFound from "./pages/notfound/NotFound";
+import StaffAddKoiPage from "./pages/staff/add/add-koi/StaffAddKoiPage";
 
 // auth page
 const ForgetPassword = lazy(() =>
@@ -42,9 +43,7 @@ const KoiListPage = lazy(() =>
 const KoiBreeders = lazy(() =>
   import("./pages/koi-fish/koi-breeders/KoiBreeders")
 );
-const KoiPackage = lazy(() =>
-  import("./pages/koi-fish/KoiPackage/KoiPackage")
-);
+const KoiPackage = lazy(() => import("./pages/koi-fish/KoiPackage/KoiPackage"));
 
 // product page
 const KoiFeed = lazy(() => import("./components/product/koiFeed/KoiFeed"));
@@ -68,6 +67,12 @@ const WelcomeStaff = lazy(() => import("./pages/staff/layout/WelcomeStaff"));
 const StaffOrderManage = lazy(() =>
   import("./pages/staff/order-manage/StaffOrderManage")
 );
+const StaffNotificationPage = lazy(() =>
+  import("./pages/staff/notification/StaffNotificationPage")
+);
+const StaffConsignmentPage = lazy(() =>
+  import("./pages/staff/consign/StaffConsignmentPage")
+);
 
 //admin page
 const WelcomeAdmin = lazy(() => import("./pages/admin/welcome/WelcomeAdmin"));
@@ -77,9 +82,17 @@ const OrderDetails = lazy(() =>
 const OrdersManagement = lazy(() =>
   import("./pages/admin/orderManagement/OrdersManagement")
 );
+const ManagerConsignmentPage = lazy(() =>
+  import("./pages/admin/consign/AdminConsignment")
+);
+const ManagerConsignmentApprovalPage = lazy(() =>
+  import("./pages/admin/approval-consign/ManagerConsignmentApprovalPage")
+);
 
 // customer page
-const WelcomeCustomer = lazy(() => import("./pages/customer/welcome/WelcomeCustomer"));
+const WelcomeCustomer = lazy(() =>
+  import("./pages/customer/welcome/WelcomeCustomer")
+);
 
 function App() {
   return (
@@ -133,10 +146,27 @@ function App() {
               path="/admin/manage-orders/:orderId"
               element={<OrderDetails />}
             />
+            <Route
+              path="/admin/manage-consign"
+              element={<ManagerConsignmentPage />}
+            />
+            <Route
+              path="/admin/approval"
+              element={<ManagerConsignmentApprovalPage />}
+            />
 
             {/* Staff Routes */}
             <Route path="/staff" element={<WelcomeStaff />} />
             <Route path="/staff/orders" element={<StaffOrderManage />} />
+            <Route
+              path="/staff/notification"
+              element={<StaffNotificationPage />}
+            />
+            <Route
+              path="/staff/consignments"
+              element={<StaffConsignmentPage />}
+            />
+            <Route path="/staff/create" element={<StaffAddKoiPage />} />
 
             {/* Customer Route */}
             <Route path="/customer" element={<WelcomeCustomer />} />

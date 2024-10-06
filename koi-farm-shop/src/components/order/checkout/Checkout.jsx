@@ -121,16 +121,9 @@ const Checkout = () => {
               </Form.Item>
 
               {/* Nút Xác Nhận Thanh Toán */}
-              <Form.Item>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  block
-                  onClick={onFinish}
-                >
-                  Xác Nhận Thanh Toán
-                </Button>
-              </Form.Item>
+              <Button type="primary" onClick={onFinish}>
+                Xác Nhận Thanh Toán
+              </Button>
             </Form>
           </Card>
         </Col>

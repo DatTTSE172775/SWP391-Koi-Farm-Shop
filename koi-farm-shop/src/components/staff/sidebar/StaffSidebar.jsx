@@ -1,6 +1,8 @@
 import {
   DashboardOutlined,
   InboxOutlined,
+  NotificationFilled,
+  ProductOutlined,
   ShoppingCartOutlined,
 } from "@ant-design/icons";
 import { HomeMaxOutlined } from "@mui/icons-material";
@@ -29,6 +31,12 @@ const Sidebar = () => {
         </Menu.Item>
         <Menu.Item key="consignments" icon={<InboxOutlined />}>
           <Link to="/staff/consignments">Quản Lý Ký Gửi</Link>
+        </Menu.Item>
+        <Menu.Item key="create" icon={<ProductOutlined />}>
+          <Link to="/staff/create">Thêm cá koi</Link>
+        </Menu.Item>
+        <Menu.Item key="notification" icon={<NotificationFilled />}>
+          <Link to="/staff/notification">Thông báo</Link>
         </Menu.Item>
       </Menu>
     </Sider>
