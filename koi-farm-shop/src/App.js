@@ -42,9 +42,7 @@ const KoiListPage = lazy(() =>
 const KoiBreeders = lazy(() =>
   import("./pages/koi-fish/koi-breeders/KoiBreeders")
 );
-const KoiPackage = lazy(() =>
-  import("./pages/koi-fish/KoiPackage/KoiPackage")
-);
+const KoiPackage = lazy(() => import("./pages/koi-fish/KoiPackage/KoiPackage"));
 
 // product page
 const KoiFeed = lazy(() => import("./components/product/koiFeed/KoiFeed"));
@@ -76,6 +74,9 @@ const OrderDetails = lazy(() =>
 );
 const OrdersManagement = lazy(() =>
   import("./pages/admin/orderManagement/OrdersManagement")
+);
+const ManagerConsignmentPage = lazy(() =>
+  import("./pages/admin/consign/AdminConsignment")
 );
 
 function App() {
@@ -129,6 +130,10 @@ function App() {
             <Route
               path="/admin/manage-orders/:orderId"
               element={<OrderDetails />}
+            />
+            <Route
+              path="/admin/manage-consign"
+              element={<ManagerConsignmentPage />}
             />
 
             {/* Staff Routes */}
