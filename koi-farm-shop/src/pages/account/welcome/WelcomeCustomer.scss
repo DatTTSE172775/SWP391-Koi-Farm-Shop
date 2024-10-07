@@ -1,0 +1,21 @@
+.account-layout {
+  display: flex;
+  height: 100vh;
+}
+
+.site-layout {
+  flex: 1;
+  background-color: #f0f2f5;
+}
+
+.account-content {
+  padding: 24px;
+}
+
+.welcome-container {
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}

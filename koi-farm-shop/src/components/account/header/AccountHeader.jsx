@@ -2,11 +2,11 @@ import { LogoutOutlined } from "@mui/icons-material";
 import { Layout } from "antd";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import "./CustomerHeader.scss";
+import "./AccountHeader.scss";
 
 const { Header } = Layout;
 
-const CustomerHeader = () => {
+const AccountHeader = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -15,13 +15,13 @@ const CustomerHeader = () => {
   };
 
   return (
-    <Header className="customer-header">
+    <Header className="account-header">
       <div className="header-content">
-        <span className="welcome-message">Xin chào, Customer!</span>
+        <span className="welcome-message">Xin chào, quý khách!</span>
         <LogoutOutlined className="logout-icon" onClick={handleLogout} />
       </div>
     </Header>
   );
 };
 
-export default CustomerHeader;
+export default AccountHeader;

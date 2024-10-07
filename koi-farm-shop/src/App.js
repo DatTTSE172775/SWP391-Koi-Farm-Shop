@@ -12,6 +12,9 @@ import CartProvider from "./components/order/cart-context/CartContext";
 // main layout
 import MainLayout from "./pages/MainLayout";
 import NotFound from "./pages/notfound/NotFound";
+import AccountPage from "./pages/account/welcome/WelcomeCustomer";
+import AccountOrders from './pages/account/orders/AccountOrders';
+
 
 // auth page
 const ForgetPassword = lazy(() =>
@@ -78,8 +81,7 @@ const OrdersManagement = lazy(() =>
   import("./pages/admin/orderManagement/OrdersManagement")
 );
 
-// customer page
-const WelcomeCustomer = lazy(() => import("./pages/customer/welcome/WelcomeCustomer"));
+
 
 function App() {
   return (
@@ -117,7 +119,12 @@ function App() {
               <Route path="cart" element={<Cart />} />
               <Route path="checkout" element={<Checkout />} />
               <Route path="order-success" element={<OrderSuccess />} />
+ 
+              {/* Account Route */}
+              <Route path="account" element={<AccountPage />} />
+              <Route path="account/orders" element={<AccountOrders />} /> 
             </Route>
+            
 
             {/* Auth Routes without MainLayout */}
             <Route path="/" element={<AuthPage />}>
@@ -129,17 +136,12 @@ function App() {
             {/* Admin Routes */}
             <Route path="/admin" element={<WelcomeAdmin />} />
             <Route path="/admin/manage-orders" element={<OrdersManagement />} />
-            <Route
-              path="/admin/manage-orders/:orderId"
-              element={<OrderDetails />}
-            />
+            <Route path="/admin/manage-orders/:orderId" element={<OrderDetails />}/>
 
             {/* Staff Routes */}
             <Route path="/staff" element={<WelcomeStaff />} />
             <Route path="/staff/orders" element={<StaffOrderManage />} />
 
-            {/* Customer Route */}
-            <Route path="/customer" element={<WelcomeCustomer />} />
 
             {/* Fallback Route */}
             <Route path="*" element={<NotFound />} />
