@@ -1,34 +1,35 @@
 import React from "react";
 import "./PondAccessories.scss";
 
-import koiImg1 from "../../../assets/koi-list/koiImg1.jpg";
-import koiImg2 from "../../../assets/koi-list/koiImg2.jpg";
-import koiImg3 from "../../../assets/koi-list/koiImg3.jpg";
+import accessorie1 from "../../../assets/pondAccessories/fishCage.png";
+import accessorie2 from "../../../assets/pondAccessories/fishFeeder.png";
+import accessorie3 from "../../../assets/pondAccessories/fishRacket.png";
+
 
 const PondAccessoriesSampleList = [
   {
     id: 1,
-    name: "Máy bơm",
-    image: koiImg1,
-    origin: "China",
+    name: "Lồng ngăn cách cá",
+    image: accessorie1,
+    origin: "Vietnam",
     brand: "somewhere",
-    price: "2.000.000 VND",
+    price: "50.000 VND",
   },
   {
     id: 2,
-    name: "Chổi lọc hồ",
-    image: koiImg2,
-    origin: "Vietnam",
+    name: "Máy cho cá ăn tự động",
+    image: accessorie2,
+    origin: "Japan",
     brand: "somewhere",
     price: "2.000.000 VND",
   },
   {
     id: 3,
-    name: "bom",
-    image: koiImg3,
-    origin: "America",
+    name: "Lưới vớt cá",
+    image: accessorie3,
+    origin: "Vietnam",
     brand: "somewhere",
-    price: "2.000.000 VND",
+    price: "20.000 VND",
   },
 ];
 
@@ -39,7 +40,10 @@ const PondAccessories = () => {
       
       <div className="guide">
         <h2>Guide to Pond Accessories</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pond accessories are essential for maintaining a healthy and beautiful koi pond environment. From filtration systems to decorative elements, these products help create the perfect habitat for your koi fish.</p>
+        <p>Biến ao của bạn thành một ốc đảo tươi tốt, xinh đẹp với nhiều loại phụ kiện ao của 
+          chúng tôi. Được thiết kế để cải thiện cả tính thẩm mỹ và chức năng tổng thể của ao,
+           các phụ kiện của chúng tôi giúp tạo ra môi trường hoàn hảo cho cá, cây trồng và các 
+           đặc điểm nước của bạn.</p>
       </div>
 
       <div className="pond-accessories-grid">

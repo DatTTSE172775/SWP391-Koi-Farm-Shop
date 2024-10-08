@@ -55,7 +55,7 @@ const Tutorial = () => {
 
         <Button
           className="primary-button"
-          onClick={() => navigate("/tutorial")}
+          onClick={() => navigate("/guide")}
         >
           XEM HƯỚNG DẪN NGƯỜI DÙNG MỚI
         </Button>

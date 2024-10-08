@@ -10,8 +10,9 @@ import {
   Row,
   Typography,
 } from "antd";
-import React from "react";
+import React, { useContext } from "react";
 import { Link, useParams } from "react-router-dom";
+import { CartContext } from "../../order/cart-context/CartContext";
 import "./KoiDetail.scss";
 
 const { Title, Paragraph } = Typography;
@@ -169,6 +170,7 @@ const KoiDetail = () => {
   const { id } = useParams();
   const koiId = parseInt(id, 10);
   const koi = koiSampleList.find((item) => item.id === koiId);
+  const { handleAddToCart } = useContext(CartContext);
 
   if (!koi) {
     return (
@@ -255,6 +257,8 @@ const KoiDetail = () => {
               icon={<ShoppingCartOutlined />}
               size="large"
               style={{ marginRight: "16px" }}
+              block
+              onClick={() => handleAddToCart(koi)}
             >
               Thêm vào giỏ hàng
             </Button>

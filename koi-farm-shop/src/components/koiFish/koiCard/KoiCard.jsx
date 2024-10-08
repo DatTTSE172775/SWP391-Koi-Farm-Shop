@@ -1,14 +1,17 @@
 import { HeartOutlined, SwapOutlined } from "@ant-design/icons";
 import { Button, Card } from "antd";
 import { motion } from "framer-motion";
-import { memo } from "react";
+import { memo, useContext } from "react";
 import LazyLoad from "react-lazyload";
 import { Link } from "react-router-dom";
+import { CartContext } from "../../order/cart-context/CartContext";
 import "./KoiCard.scss";
 
 const { Meta } = Card;
 
-const KoiCard = ({ koi, isAuthenticated }) => {
+const KoiCard = ({ koi, isAuthenticated, onAddToCart }) => {
+  const { handleAddToCart } = useContext(CartContext);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -57,8 +60,8 @@ const KoiCard = ({ koi, isAuthenticated }) => {
         />
         <div className="koi-card-footer">
           {isAuthenticated ? (
-            <Button type="primary" block>
-              Đặt hàng ngay
+            <Button type="primary" block onClick={() => handleAddToCart(koi)}>
+              Thêm vào giỏ hàng
             </Button>
           ) : (
             <Link to="/login">

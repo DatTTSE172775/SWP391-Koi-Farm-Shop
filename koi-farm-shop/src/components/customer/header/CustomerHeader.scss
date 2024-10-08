@@ -1,0 +1,37 @@
+.customer-header {
+  background-color: #ffffff;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .header-content {
+    display: flex;
+    align-items: center;
+  }
+
+  .welcome-message {
+    margin-right: 20px;
+    font-weight: bold;
+  }
+
+  .logout-icon {
+    font-size: 20px;
+    cursor: pointer;
+  }
+}
+.customer-sidebar {
+  .sidebar-header {
+    padding: 16px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #001529;
+    white-space: normal;
+    word-wrap: break-word;
+    line-height: 1.2;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+  }
+}

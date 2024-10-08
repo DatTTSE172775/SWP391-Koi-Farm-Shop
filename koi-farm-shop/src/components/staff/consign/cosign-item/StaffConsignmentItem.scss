@@ -1,0 +1,14 @@
+.staff-consignment-item-card {
+  margin-bottom: 20px;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  .ant-typography {
+    display: block;
+  }
+
+  .status-select {
+    width: 100%;
+  }
+}
