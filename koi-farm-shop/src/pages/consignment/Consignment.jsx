@@ -13,30 +13,30 @@ const Consignment = () => {
     <div className="consignment-page">
       <h1>-----------------------------</h1>
       <h1>Hướng dẫn ký gửi cá Koi</h1>
-      <p>
-        Koi Farm Shop cung cấp dịch vụ ký gửi cá Koi cho những người nuôi cá nhưng 
-        không có đủ mối quan hệ để trao đổi hay bán những chú Koi đẹp của mình. Dịch 
-        vụ này đảm bảo rằng cá Koi sẽ được bán đúng giá trị cho những người thực sự đam 
-        mê và đảm bảo cuộc sống tương lai tốt đẹp cho cá.
-      </p>
+      <div className="intro">
+        <p>
+          Koi Farm Shop cung cấp dịch vụ ký gửi cá Koi cho những người nuôi cá nhưng 
+          không có đủ mối quan hệ để trao đổi hay bán những chú Koi đẹp của mình. Dịch 
+          vụ này đảm bảo rằng cá Koi sẽ được bán đúng giá trị cho những người thực sự đam 
+          mê và đảm bảo cuộc sống tương lai tốt đẹp cho cá.
+        </p>
+      </div>
 
-      <h2>Các loại ký gửi:</h2>
-      <p>
-        Có hai phương pháp chính để ký gửi cá Koi:
-      </p>
-      <ul>
-        <li>Ký gửi Offline: Phù hợp với những người nuôi Koi chưa có website hoặc phần mềm 
-          quản lý chuyên nghiệp. Họ thường chỉ tham gia các diễn đàn Koi và muốn nâng cấp Koi 
-          hoặc thay đổi kế hoạch cá nhân. Người gửi cần cung cấp thông tin chi tiết về cá Koi 
-          bằng <b>hình ảnh, video và giấy chứng nhận.</b></li>
-
-        <li>Ký gửi Online: Phù hợp với những người nuôi Koi để kinh doanh, đã có 
-          hệ thống website và phần mềm quản lý. Họ ký gửi cá tại các trang trại Koi lớn để mở 
-          rộng mạng lưới khách hàng.</li>
-      </ul>
+      <div className="consignment-types">
+        <h2>Phương pháp ký gửi:</h2>
+        <div className="types-container">
+          <div className="type-card">
+            <h3>Ký gửi Online</h3>
+            <p>- Phù hợp với những người nuôi Koi để kinh doanh, đã có 
+              hệ thống website và phần mềm quản lý. </p>
+            <p>- Ký gửi cá tại các trang trại Koi lớn để mở 
+              rộng mạng lưới khách hàng.</p>
+          </div>
+        </div>
+      </div>
 
       <div>
-        <h2>Các phương thức ký gửi đều phải đáp ứng các điều kiện sau:</h2>
+        <h2>Phương thức ký gửi phải đáp ứng các điều kiện sau:</h2>
         <ul>
         <li>Chụp ảnh và cung cấp video chi tiết về cá Koi.</li>
             <li>Cung cấp thông tin: Tên, tuổi, giới tính, nguồn gốc, chủng loại, tính cách, lượng thức ăn hàng ngày, các bệnh đã từng mắc (nếu có), và giấy chứng nhận.</li>
@@ -65,7 +65,7 @@ const Consignment = () => {
         <h2>Tại sao nên ký gửi cá Koi ?</h2>
         <p>
         Ký gửi cá Koi là dịch vụ phổ biến tại Nhật Bản, nhưng hiện nay cũng đang phát 
-        triển mạnh mẽ tại Việt Nam. Người chơi Koi muốn nâng cấp hoặc mở rộng đàn Koi 
+        triển mạnh mẽ tại Việt Nam. Người nuôi Koi muốn nâng cấp hoặc mở rộng đàn Koi 
         thường tìm đến dịch vụ ký gửi tại các trang trại lớn để tìm người mua.
         </p>
       </div>
@@ -90,8 +90,12 @@ const Consignment = () => {
           <li>Hỗ trợ tư vấn miễn phí về các bệnh liên quan đến cá Koi.</li>
         </ul>
       </div>
-          <button className="consignment-button" onClick={handleConsignmentClick}>
-          Ký gửi ngay</button>{" "}
+      <div className="cta-section">
+        <h2>Bắt đầu ký gửi cá Koi của bạn ngay hôm nay!</h2>
+        <button className="consignment-button" onClick={handleConsignmentClick}>
+          Ký gửi ngay
+        </button>
+      </div>
     </div>
   );
 };
