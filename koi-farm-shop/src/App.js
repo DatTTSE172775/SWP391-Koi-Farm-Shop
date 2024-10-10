@@ -12,9 +12,6 @@ import CartProvider from "./components/order/cart-context/CartContext";
 // main layout
 import MainLayout from "./pages/MainLayout";
 import NotFound from "./pages/notfound/NotFound";
-import AccountPage from "./pages/account/welcome/WelcomeCustomer";
-import AccountOrders from './pages/account/orders/AccountOrders';
-
 
 // auth page
 const ForgetPassword = lazy(() =>
@@ -45,9 +42,7 @@ const KoiListPage = lazy(() =>
 const KoiBreeders = lazy(() =>
   import("./pages/koi-fish/koi-breeders/KoiBreeders")
 );
-const KoiPackage = lazy(() =>
-  import("./pages/koi-fish/KoiPackage/KoiPackage")
-);
+const KoiPackage = lazy(() => import("./pages/koi-fish/KoiPackage/KoiPackage"));
 
 // product page
 const KoiFeed = lazy(() => import("./components/product/koiFeed/KoiFeed"));
@@ -66,6 +61,12 @@ const OrderSuccess = lazy(() =>
 );
 const Cart = lazy(() => import("./pages/order/cart/CartPage"));
 
+// customer page
+const AccountPage = lazy(() =>
+  import("./pages/account/welcome/WelcomeCustomer")
+);
+const OrderHistory = lazy(() => import("./pages/account/orders/OrderHistory"));
+
 // staff page
 const WelcomeStaff = lazy(() => import("./pages/staff/layout/WelcomeStaff"));
 const StaffOrderManage = lazy(() =>
@@ -80,8 +81,6 @@ const OrderDetails = lazy(() =>
 const OrdersManagement = lazy(() =>
   import("./pages/admin/orderManagement/OrdersManagement")
 );
-
-
 
 function App() {
   return (
@@ -119,12 +118,11 @@ function App() {
               <Route path="cart" element={<Cart />} />
               <Route path="checkout" element={<Checkout />} />
               <Route path="order-success" element={<OrderSuccess />} />
- 
-              {/* Account Route */}
-              <Route path="account" element={<AccountPage />} />
-              <Route path="account/orders" element={<AccountOrders />} /> 
             </Route>
-            
+
+            {/* Account Route */}
+            <Route path="/account" element={<AccountPage />} />
+            <Route path="/account/orders" element={<OrderHistory />} />
 
             {/* Auth Routes without MainLayout */}
             <Route path="/" element={<AuthPage />}>
@@ -136,12 +134,14 @@ function App() {
             {/* Admin Routes */}
             <Route path="/admin" element={<WelcomeAdmin />} />
             <Route path="/admin/manage-orders" element={<OrdersManagement />} />
-            <Route path="/admin/manage-orders/:orderId" element={<OrderDetails />}/>
+            <Route
+              path="/admin/manage-orders/:orderId"
+              element={<OrderDetails />}
+            />
 
             {/* Staff Routes */}
             <Route path="/staff" element={<WelcomeStaff />} />
             <Route path="/staff/orders" element={<StaffOrderManage />} />
-
 
             {/* Fallback Route */}
             <Route path="*" element={<NotFound />} />

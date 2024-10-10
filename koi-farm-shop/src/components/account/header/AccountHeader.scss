@@ -1,9 +1,11 @@
 .account-header {
-  background-color: #ffffff;
+  background: linear-gradient(145deg, #001529 0%, #002541 100%);
   padding: 0 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  color: white;
+  height: 64px;
 
   .header-content {
     display: flex;
@@ -13,25 +15,18 @@
   .welcome-message {
     margin-right: 20px;
     font-weight: bold;
+    font-size: 1.6rem;
+    color: #ffffff;
   }
 
   .logout-icon {
-    font-size: 20px;
+    font-size: 24px;
     cursor: pointer;
-  }
-}
-.account-sidebar {
-  .sidebar-header {
-    padding: 16px;
-    font-size: 18px;
-    font-weight: bold;
-    color: #ffffff;
-    background-color: #001529;
-    white-space: normal;
-    word-wrap: break-word;
-    line-height: 1.2;
-    min-height: 60px;
-    display: flex;
-    align-items: center;
+    color: #ff8c00;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: #ffffff;
+    }
   }
 }

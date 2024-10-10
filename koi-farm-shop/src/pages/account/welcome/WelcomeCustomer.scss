@@ -1,21 +1,29 @@
-.account-layout {
-  display: flex;
-  height: 100vh;
-}
-
-.site-layout {
-  flex: 1;
-  background-color: #f0f2f5;
-}
-
 .account-content {
-  padding: 24px;
-}
-
-.welcome-container {
   padding: 20px;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  text-align: center;
+  
+  .welcome-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    
+    .quick-access {
+      margin-top: 30px;
+      .ant-card {
+        text-align: center;
+        border-radius: 8px;
+        transition: transform 0.3s ease;
+        &:hover {
+          transform: scale(1.05);
+        }
+      }
+    }
+
+    .featured-products {
+      margin-top: 40px;
+      h3 {
+        font-size: 1.8rem;
+      }
+    }
+  }
 }

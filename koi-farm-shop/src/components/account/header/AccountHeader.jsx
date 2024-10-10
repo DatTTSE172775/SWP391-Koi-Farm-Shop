@@ -10,14 +10,13 @@ const AccountHeader = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    console.log("logout");
     navigate("/login");
   };
 
   return (
     <Header className="account-header">
       <div className="header-content">
-        <span className="welcome-message">Xin chào, quý khách!</span>
+        <span className="welcome-message">Xin chào quý khách</span>
         <LogoutOutlined className="logout-icon" onClick={handleLogout} />
       </div>
     </Header>

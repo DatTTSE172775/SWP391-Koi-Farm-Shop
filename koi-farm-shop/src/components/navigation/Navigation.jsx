@@ -115,6 +115,15 @@ const Navigation = () => {
 
   const accountMenu = (
     <Menu>
+      <Menu.Item key="view-orders">
+        <Link to="/account/orders">Lịch sử đơn hàng</Link>
+      </Menu.Item>
+      <Menu.Item key="consign">
+        <Link to="/account/consign">Thông tin ký gửi</Link>
+      </Menu.Item>
+      <Menu.Item key="wishlist">
+        <Link to="/account/wishlist">Danh sách yêu thích</Link>
+      </Menu.Item>
       <Menu.Item key="view-info">
         <Link to="/account">Xem Thông Tin</Link>
       </Menu.Item>
@@ -156,6 +165,7 @@ const Navigation = () => {
           <Menu.Item key="koi-high-quality">
             <Link to="/koi-high-quality">Cá Koi chất lượng cao</Link>
           </Menu.Item>
+          {/* Thêm các giống cá Koi */}
           <SubMenu key="koi-varieties" title="Các giống cá Koi">
             <Menu.Item key="koi-varieties-1">
               <Link to="/koi-varieties/1">Kohaku Koi</Link>
@@ -196,22 +206,8 @@ const Navigation = () => {
             <Menu.Item key="koi-varieties-13">
               <Link to="/koi-varieties/13">Butterfly Koi</Link>
             </Menu.Item>
+            {/* Thêm các mục khác nếu cần */}
           </SubMenu>
-          <Menu.Item key="koi-breeders">
-            <Link to="/koi-breeders">Người nuôi cá Koi</Link>
-          </Menu.Item>
-          <Menu.Item key="koi-package">
-            <Link to="/koi-package">Lô cá Koi</Link>
-          </Menu.Item>
-          <Menu.Item key="koi-collection">
-            <Link to="/koi-collection">Bộ sưu tập cá Koi</Link>
-          </Menu.Item>
-          <Menu.Item key="koi-request">
-            <Link to="/koi-request">Đề xuất cá Koi</Link>
-          </Menu.Item>
-          <Menu.Item key="koi-sold">
-            <Link to="/koi-sold">Cá koi đã bán</Link>
-          </Menu.Item>
         </SubMenu>
 
         {/* Sản phẩm SubMenu */}
