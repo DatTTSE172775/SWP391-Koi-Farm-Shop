@@ -98,10 +98,9 @@ const koiFoodSampleList = [
 const KoiFeed = () => {
   return (
     <div className="koi-feed-container">
-      <h1 className="koi-feed-title">Koi Feed Products</h1>
       
       <div className="guide">
-        <h2>Guide to Koi Feeding</h2>
+        <h2>Cám cho cá Koi</h2>
         <p>Cung cấp cho cá koi của bạn dinh dưỡng cần thiết để phát triển mạnh mẽ 
           với thức ăn cá koi được pha chế đặc biệt của chúng tôi. Được thiết kế để thúc 
           đẩy sức khỏe tối ưu, màu sắc rực rỡ và tăng trưởng mạnh mẽ, thức ăn cá koi của
