@@ -38,9 +38,10 @@ body {
 }
 
 .blog-container {
-  max-width: 1200px;
-  margin: 100px auto;
+  max-width: 1400px;
+  margin: 80px auto;
   padding: 2rem;
+  background-color: #f9f9f9;
 
   h1, h2 {
     font-family: $heading-font;
@@ -61,7 +62,7 @@ body {
   margin-bottom: 4rem;
 
   h1 {
-    font-size: 3rem;
+    font-size: 2.5rem;
     margin-bottom: 1.5rem;
     text-transform: uppercase;
     font-weight: bold;
@@ -84,7 +85,7 @@ body {
   }
 
   p {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     max-width: 800px;
     margin: 0 auto 2rem;
   }
@@ -164,6 +165,7 @@ body {
 
   h2 {
     font-size: 1.8rem;
+    color: $primary-color;
     border-bottom: 2px solid $primary-color;
     padding-bottom: 0.5rem;
     margin-bottom: 1.5rem;
@@ -243,10 +245,23 @@ body {
   }
 }
 
+// Blog latest posts section
+.blog-latest {
+  margin-bottom: 4rem;
+
+  h2 {
+    font-size: 2rem;
+    color: $primary-color;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+}
+
 // Responsive design
 @media (max-width: 768px) {
   .blog-container {
     padding: 1rem;
+    margin: 60px auto;  // Further reduced top margin for mobile
   }
 
   .blog-intro {
@@ -270,6 +285,12 @@ body {
         margin-bottom: 1rem;
       }
     }
+  }
+
+  .blog-latest h2,
+  .blog-categories h2,
+  .blog-subscribe h2 {
+    font-size: 1.6rem;
   }
 }
 

@@ -1,4 +1,4 @@
-import { Breadcrumb, Row, Space } from "antd";
+import { Breadcrumb, Row, Space, Col } from "antd";
 import React, { useMemo, useState } from "react";
 import KoiListHeader from "../header/KoiListHeader";
 import KoiCard from "../koiCard/KoiCard";
@@ -107,8 +107,8 @@ const KoiList = ({ isAuthenticated }) => {
 
   return (
     <div className="koi-list">
-      <div className="breadcrumb-background">
-        <Breadcrumb separator=">" style={{ margin: "16px 0" }}>
+      <div className="breadcrumb-container">
+        <Breadcrumb separator=">" className="breadcrumb">
           <Breadcrumb.Item>
             <Link to="/home">Trang chủ</Link>
           </Breadcrumb.Item>
@@ -117,22 +117,18 @@ const KoiList = ({ isAuthenticated }) => {
       </div>
       <KoiListHeader />
       <KoiSearch onFilter={handleFilter} onSearch={handleSearch} />
-      <Row justify="center">
-        <Space direction="vertical" size="40px" style={{ width: "100%" }}>
-          <Space wrap size={[32, 40]} justify="center">
-            {filteredKoiList.length > 0 ? (
-              filteredKoiList.map((koi) => (
-                <KoiCard
-                  key={koi.id}
-                  koi={koi}
-                  isAuthenticated={isAuthenticated}
-                />
-              ))
-            ) : (
-              <p>Không tìm thấy cá Koi nào phù hợp với yêu cầu của bạn.</p>
-            )}
-          </Space>
-        </Space>
+      <Row gutter={[24, 24]} justify="center" className="koi-grid">
+        {filteredKoiList.length > 0 ? (
+          filteredKoiList.map((koi) => (
+            <Col xs={24} sm={12} md={8} lg={6} key={koi.id}>
+              <KoiCard koi={koi} isAuthenticated={isAuthenticated} />
+            </Col>
+          ))
+        ) : (
+          <Col span={24}>
+            <p className="no-results">Không tìm thấy cá Koi nào phù hợp với yêu cầu của bạn.</p>
+          </Col>
+        )}
       </Row>
     </div>
   );

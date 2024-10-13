@@ -3,7 +3,7 @@ import {
   SolutionOutlined,
   TeamOutlined,
 } from "@ant-design/icons";
-import { Card, Col, Row, Typography } from "antd";
+import { Button, Card, Col, Row, Typography } from "antd";
 import React from "react";
 import { Link } from "react-router-dom";
 import "./AboutUs.scss";
@@ -21,7 +21,7 @@ const AboutUs = () => {
             cốt lõi mà chúng tôi mang đến cho khách hàng.
           </Paragraph>
           <Link to="/about" className="learn-more-button">
-            Tìm hiểu thêm
+            <Button type="primary">Tìm hiểu thêm</Button>
           </Link>
         </Col>
       </Row>

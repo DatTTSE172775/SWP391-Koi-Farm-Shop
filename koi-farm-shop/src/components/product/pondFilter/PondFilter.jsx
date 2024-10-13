@@ -44,10 +44,9 @@ const PondFilterSampleList = [
 const PondFilter = () => {
   return (
     <div className="pond-filter-container">
-      <h1 className="pond-filter-title">Pond Accessories</h1>
 
       <div className="guide">
-        <h2>Guide to Pond filter</h2>
+        <h2>Lọc nước hồ cá</h2>
         <p>
         Duy trì sức khỏe và vẻ đẹp của ao cá koi là điều tối quan trọng đối với sức khỏe của cá.
          Hệ thống lọc ao cá Koi tiên tiến của chúng tôi được thiết kế đặc biệt để đảm bảo nước ao 

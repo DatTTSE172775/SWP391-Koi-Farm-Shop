@@ -36,10 +36,9 @@ const PondAccessoriesSampleList = [
 const PondAccessories = () => {
   return (
     <div className="pond-accessories-container">
-      <h1 className="pond-accessories-title">Pond Accessories</h1>
       
       <div className="guide">
-        <h2>Guide to Pond Accessories</h2>
+        <h2>Phụ kiện hồ cá</h2>
         <p>Biến ao của bạn thành một ốc đảo tươi tốt, xinh đẹp với nhiều loại phụ kiện ao của 
           chúng tôi. Được thiết kế để cải thiện cả tính thẩm mỹ và chức năng tổng thể của ao,
            các phụ kiện của chúng tôi giúp tạo ra môi trường hoàn hảo cho cá, cây trồng và các 

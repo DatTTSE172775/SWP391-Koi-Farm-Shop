@@ -3,28 +3,43 @@
 
   &__intro {
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 60px;
+    background: linear-gradient(135deg, #f9f9f9 0%, #e6f7ff 100%);
+    padding: 40px 20px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    font-family: 'Poppins', 'Roboto', sans-serif;
 
     h2 {
       font-size: 2rem;
       color: #333;
+      font-weight: 700;
+      margin-bottom: 20px;
+      letter-spacing: 1px;
     }
 
     p {
-      font-size: 1.2rem;
+      font-size: 1.15rem;
+      line-height: 1.6;
+      color: #555;
+      max-width: 800px;
+      margin: 0 auto 20px;
     }
 
     h3 {
       margin-top: 20px;
       font-style: italic;
       color: #777;
+      font-size: 1.2rem;
+      font-weight: 500;
     }
   }
 
   &__list {
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
     flex-wrap: wrap;
+    gap: 30px;
   }
 
   .koi-package-card {
@@ -32,10 +47,10 @@
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 300px;
-    margin: 20px;
     text-align: center;
     padding: 20px;
     transition: transform 0.3s ease;
+    position: relative;
 
     &:hover {
       transform: scale(1.05);
@@ -44,7 +59,8 @@
     &__image {
       img {
         width: 100%;
-        height: auto;
+        height: 200px;
+        object-fit: cover;
         border-radius: 8px;
       }
     }
@@ -55,22 +71,53 @@
       h3 {
         font-size: 1.5rem;
         color: #1a1a1a;
+        margin-bottom: 10px;
       }
 
       p {
         margin: 10px 0;
+        font-size: 0.9rem;
       }
 
       .koi-package-card__price {
         font-size: 1.5rem;
         font-weight: bold;
         color: #4caf50;
+        margin: 15px 0;
       }
 
       .rating {
         color: #ffd700;
-        margin-top: 10px;
+        margin: 10px 0;
         font-size: 1.2rem;
+      }
+    }
+
+    &__discount-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: #ff4136;
+      color: white;
+      padding: 5px 10px;
+      font-weight: bold;
+      border-radius: 5px;
+      font-size: 0.9rem;
+    }
+
+    &__buy-now-button {
+      background-color: #4caf50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      font-size: 1rem;
+      margin-top: 10px;
+
+      &:hover {
+        background-color: #45a049;
       }
     }
   }
@@ -97,6 +144,33 @@
 
     &:hover {
       background-color: #45a049;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .koi-package {
+    padding: 30px 10px;
+
+    &__intro {
+      padding: 40px 20px;
+
+      h2 {
+        font-size: 2.2rem;
+      }
+
+      p {
+        font-size: 1.1rem;
+      }
+
+      h3 {
+        font-size: 1.2rem;
+      }
+    }
+
+    .koi-package-card {
+      width: 100%;
+      max-width: 350px;
     }
   }
 }
