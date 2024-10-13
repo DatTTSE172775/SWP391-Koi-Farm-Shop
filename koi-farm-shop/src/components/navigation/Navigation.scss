@@ -381,3 +381,18 @@
   }
 }
 
+.navigation {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  transition: transform 0.3s ease-in-out;
+}
+
+.navigation.hidden {
+  transform: translateY(-100%);
+}
+
+.navigation.active {
+  transform: translateY(0);
+}

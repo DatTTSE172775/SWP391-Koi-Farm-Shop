@@ -1,5 +1,5 @@
 import "antd/dist/reset.css";
-import React, { lazy, Suspense } from "react";
+import { lazy, Suspense } from "react";
 import {
   Navigate,
   Route,
@@ -12,7 +12,6 @@ import CartProvider from "./components/order/cart-context/CartContext";
 // main layout
 import MainLayout from "./pages/MainLayout";
 import NotFound from "./pages/notfound/NotFound";
-import StaffAddKoiPage from "./pages/staff/add/add-koi/StaffAddKoiPage";
 
 // auth page
 const ForgetPassword = lazy(() =>
@@ -62,17 +61,23 @@ const OrderSuccess = lazy(() =>
 );
 const Cart = lazy(() => import("./pages/order/cart/CartPage"));
 
+// customer page
+const AccountPage = lazy(() =>
+  import("./pages/account/welcome/WelcomeCustomer")
+);
+const OrderHistory = lazy(() => import("./pages/account/orders/OrderHistory"));
+
 // staff page
 const WelcomeStaff = lazy(() => import("./pages/staff/layout/WelcomeStaff"));
 const StaffOrderManage = lazy(() =>
   import("./pages/staff/order-manage/StaffOrderManage")
 );
-const StaffNotificationPage = lazy(() =>
-  import("./pages/staff/notification/StaffNotificationPage")
-);
-const StaffConsignmentPage = lazy(() =>
-  import("./pages/staff/consign/StaffConsignmentPage")
-);
+// const StaffNotificationPage = lazy(() =>
+//   import("./pages/staff/notification/StaffNotificationPage")
+// );
+// const StaffConsignmentPage = lazy(() =>
+//   import("./pages/staff/consign/StaffConsignmentPage")
+// );
 
 //admin page
 const WelcomeAdmin = lazy(() => import("./pages/admin/welcome/WelcomeAdmin"));
@@ -81,17 +86,6 @@ const OrderDetails = lazy(() =>
 );
 const OrdersManagement = lazy(() =>
   import("./pages/admin/orderManagement/OrdersManagement")
-);
-const ManagerConsignmentPage = lazy(() =>
-  import("./pages/admin/consign/AdminConsignment")
-);
-const ManagerConsignmentApprovalPage = lazy(() =>
-  import("./pages/admin/approval-consign/ManagerConsignmentApprovalPage")
-);
-
-// customer page
-const WelcomeCustomer = lazy(() =>
-  import("./pages/customer/welcome/WelcomeCustomer")
 );
 
 function App() {
@@ -132,6 +126,10 @@ function App() {
               <Route path="order-success" element={<OrderSuccess />} />
             </Route>
 
+            {/* Account Route */}
+            <Route path="/account" element={<AccountPage />} />
+            <Route path="/account/orders" element={<OrderHistory />} />
+
             {/* Auth Routes without MainLayout */}
             <Route path="/" element={<AuthPage />}>
               <Route path="login" element={<Login />} />
@@ -146,30 +144,18 @@ function App() {
               path="/admin/manage-orders/:orderId"
               element={<OrderDetails />}
             />
-            <Route
+            {/* <Route
               path="/admin/manage-consign"
               element={<ManagerConsignmentPage />}
             />
             <Route
               path="/admin/approval"
               element={<ManagerConsignmentApprovalPage />}
-            />
+            /> */}
 
             {/* Staff Routes */}
             <Route path="/staff" element={<WelcomeStaff />} />
             <Route path="/staff/orders" element={<StaffOrderManage />} />
-            <Route
-              path="/staff/notification"
-              element={<StaffNotificationPage />}
-            />
-            <Route
-              path="/staff/consignments"
-              element={<StaffConsignmentPage />}
-            />
-            <Route path="/staff/create" element={<StaffAddKoiPage />} />
-
-            {/* Customer Route */}
-            <Route path="/customer" element={<WelcomeCustomer />} />
 
             {/* Fallback Route */}
             <Route path="*" element={<NotFound />} />

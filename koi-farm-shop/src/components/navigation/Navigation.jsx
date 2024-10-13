@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import { logout } from "../../store/actions/authActions";
 import { CartContext } from "../order/cart-context/CartContext";
+import { useCallback } from "react";
 import "./Navigation.scss";
 
 const { SubMenu } = Menu;
@@ -13,6 +14,9 @@ const Navigation = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const [current, setCurrent] = useState("home");
+
+  const [showNavbar, setShowNavbar] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
 
   const { cartItems } = useContext(CartContext);
   const [notifications, setNotifications] = useState([
@@ -57,19 +61,36 @@ const Navigation = () => {
     }
   }, [location.pathname]);
 
+  // Lắng nghe sự kiện scroll để điều khiển navbar
+  const controlNavbar = useCallback(() => {
+    if (window.scrollY > lastScrollY) {
+      // Lăn xuống => ẩn navbar
+      setShowNavbar(false);
+    } else {
+      // Lăn lên => hiện navbar
+      setShowNavbar(true);
+    }
+    setLastScrollY(window.scrollY);
+  }, [lastScrollY]);
+  
+  useEffect(() => {
+    window.addEventListener("scroll", controlNavbar);
+  
+    return () => {
+      window.removeEventListener("scroll", controlNavbar);
+    };
+  }, [controlNavbar])
+
   const handleClick = (e) => {
     setCurrent(e.key);
   };
 
-  // Get auth state from redux store
   const { isAuthenticated, user } = useSelector((state) => state.auth);
 
-  // Handle logout
   const handleLogout = () => {
     dispatch(logout());
   };
 
-  // Handle marking a notification as read
   const markAsRead = (id) => {
     setNotifications((prevNotifications) =>
       prevNotifications.map((notif) =>
@@ -78,7 +99,6 @@ const Navigation = () => {
     );
   };
 
-  // Notification Dropdown Menu
   const notificationMenu = (
     <Menu>
       {notifications.map((notif) => (
@@ -93,9 +113,17 @@ const Navigation = () => {
     </Menu>
   );
 
-  // Menu for account dropdown
   const accountMenu = (
     <Menu>
+      <Menu.Item key="view-orders">
+        <Link to="/account/orders">Lịch sử đơn hàng</Link>
+      </Menu.Item>
+      <Menu.Item key="consign">
+        <Link to="/account/consign">Thông tin ký gửi</Link>
+      </Menu.Item>
+      <Menu.Item key="wishlist">
+        <Link to="/account/wishlist">Danh sách yêu thích</Link>
+      </Menu.Item>
       <Menu.Item key="view-info">
         <Link to="/account">Xem Thông Tin</Link>
       </Menu.Item>
@@ -107,7 +135,7 @@ const Navigation = () => {
   );
 
   return (
-    <div className="navigation">
+    <div className={`navigation ${showNavbar ? "active" : "hidden"}`}>
       {/* Logo */}
       <div className="logo">
         <Link to="/home">
@@ -137,8 +165,8 @@ const Navigation = () => {
           <Menu.Item key="koi-high-quality">
             <Link to="/koi-high-quality">Cá Koi chất lượng cao</Link>
           </Menu.Item>
+          {/* Thêm các giống cá Koi */}
           <SubMenu key="koi-varieties" title="Các giống cá Koi">
-            {/* Các giống cá Koi */}
             <Menu.Item key="koi-varieties-1">
               <Link to="/koi-varieties/1">Kohaku Koi</Link>
             </Menu.Item>
@@ -151,10 +179,35 @@ const Navigation = () => {
             <Menu.Item key="koi-varieties-4">
               <Link to="/koi-varieties/4">Shiro Utsuri Koi</Link>
             </Menu.Item>
+            <Menu.Item key="koi-varieties-5">
+              <Link to="/koi-varieties/5">Hi Utsuri Koi</Link>
+            </Menu.Item>
+            <Menu.Item key="koi-varieties-6">
+              <Link to="/koi-varieties/6">Goshiki Koi</Link>
+            </Menu.Item>
+            <Menu.Item key="koi-varieties-7">
+              <Link to="/koi-varieties/7">Kujyaku Koi</Link>
+            </Menu.Item>
+            <Menu.Item key="koi-varieties-8">
+              <Link to="/koi-varieties/8">Shusui Koi</Link>
+            </Menu.Item>
+            <Menu.Item key="koi-varieties-9">
+              <Link to="/koi-varieties/9">Asagi Koi</Link>
+            </Menu.Item>
+            <Menu.Item key="koi-varieties-10">
+              <Link to="/koi-varieties/10">Ginrin Koi</Link>
+            </Menu.Item>
+            <Menu.Item key="koi-varieties-11">
+              <Link to="/koi-varieties/11">Tancho Koi</Link>
+            </Menu.Item>
+            <Menu.Item key="koi-varieties-12">
+              <Link to="/koi-varieties/12">Doitsu Koi</Link>
+            </Menu.Item>
+            <Menu.Item key="koi-varieties-13">
+              <Link to="/koi-varieties/13">Butterfly Koi</Link>
+            </Menu.Item>
+            {/* Thêm các mục khác nếu cần */}
           </SubMenu>
-          <Menu.Item key="koi-package">
-            <Link to="/koi-package">Lô cá Koi</Link>
-          </Menu.Item>
         </SubMenu>
 
         {/* Sản phẩm SubMenu */}
@@ -163,10 +216,10 @@ const Navigation = () => {
             <Link to="/product/koi-feed">Cám cá Koi</Link>
           </Menu.Item>
           <Menu.Item key="product/pond-filter-system">
-            <Link to="/product/pond-filter-system">Hệ thống lọc hồ cá Koi</Link>
+            <Link to="/product/pond-filter-system">Hệ thống lọc hồ</Link>
           </Menu.Item>
           <Menu.Item key="product/pond-accessories">
-            <Link to="/product/pond-accessories">Phụ kiện hồ cá Koi</Link>
+            <Link to="/product/pond-accessories">Phụ kiện hồ cá</Link>
           </Menu.Item>
         </SubMenu>
 
@@ -181,16 +234,11 @@ const Navigation = () => {
         </Menu.Item>
       </Menu>
 
-      {/* Icons bên phải */}
+      {/* Icon */}
       <div className="nav-icons">
         {isAuthenticated ? (
           <>
-            {/* Notification Dropdown */}
-            <Dropdown
-              overlay={notificationMenu}
-              placement="bottomRight"
-              trigger={["click"]}
-            >
+            <Dropdown overlay={notificationMenu} placement="bottomRight" trigger={["click"]}>
               <div className="notification-dropdown">
                 <Badge count={unreadCount}>
                   <BellOutlined className="notification-icon" />
@@ -198,23 +246,13 @@ const Navigation = () => {
               </div>
             </Dropdown>
 
-            {/* Account Dropdown */}
-            <Dropdown
-              overlay={accountMenu}
-              placement="bottomRight"
-              trigger={["click"]}
-            >
+            <Dropdown overlay={accountMenu} placement="bottomRight" trigger={["click"]}>
               <div className="account-dropdown">
-                <Avatar
-                  className="user-avatar"
-                  src="/images/users/avatar.jpg"
-                  icon={<UserOutlined />}
-                />
+                <Avatar className="user-avatar" src="/images/users/avatar.jpg" icon={<UserOutlined />} />
                 <span className="username">{user}</span>
               </div>
             </Dropdown>
 
-            {/* Cart */}
             <Link to="/cart" className="cart-link">
               <Badge count={cartItems.length} showZero>
                 <ShoppingCartOutlined className="cart-icon" />

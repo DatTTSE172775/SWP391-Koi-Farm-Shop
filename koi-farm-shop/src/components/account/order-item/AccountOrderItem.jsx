@@ -2,15 +2,15 @@ import { EyeOutlined } from "@ant-design/icons";
 import { Button, Card, Col, Row, Tag, Typography } from "antd";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import "./CustomerOrderItem.scss";
+import "./AccountOrderItem.scss";
 
 const { Text } = Typography;
 
-const CustomerOrderItem = ({ order }) => {
+const AccountOrderItem = ({ order }) => {
   const navigate = useNavigate();
 
   return (
-    <Card className="customer-order-item-card">
+    <Card className="account-order-item-card">
       <Row gutter={[16, 16]} align="middle">
         {/* Order Info */}
         <Col xs={24} md={4}>
@@ -43,7 +43,7 @@ const CustomerOrderItem = ({ order }) => {
           <Button
             type="primary"
             icon={<EyeOutlined />}
-            onClick={() => navigate(`/customer/orders/${order.id}`)}
+            onClick={() => navigate(`/account/orders/${order.id}`)}
             className="view-details-button"
           >
             Xem Chi Tiết
@@ -54,4 +54,4 @@ const CustomerOrderItem = ({ order }) => {
   );
 };
 
-export default CustomerOrderItem;
+export default AccountOrderItem;
