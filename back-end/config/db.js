@@ -23,4 +23,4 @@ const connectDB = async () => {
   }
 };
 
-module.exports = { connectDB, sql };
+module.exports = { connectDB, sql };     // Xuất connectDB và sql để sử dụng ở các file khác
