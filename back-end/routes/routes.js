@@ -30,7 +30,7 @@ const {
  *             properties:
  *               username:
  *                 type: string
- *                 description: Địa chỉ email dùng làm tên đăng nhập
+ *                 description: Tên đăng nhập của người dùng (thường là email)
  *                 example: "user@example.com"
  *               password:
  *                 type: string
@@ -44,11 +44,15 @@ const {
  *                 type: string
  *                 description: Số điện thoại của người dùng
  *                 example: "123456789"
+ *               email:
+ *                 type: string
+ *                 description: Địa chỉ email của người dùng
+ *                 example: "john.doe@example.com"
  *     responses:
  *       201:
  *         description: Người dùng đăng ký thành công
  *       400:
- *         description: Lỗi về thông tin nhập vào (Tên đăng nhập hoặc số điện thoại đã tồn tại)
+ *         description: Lỗi về thông tin nhập vào (Tên đăng nhập, số điện thoại hoặc email đã tồn tại)
  *       500:
  *         description: Lỗi hệ thống
  */
