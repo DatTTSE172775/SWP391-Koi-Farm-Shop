@@ -1,31 +1,43 @@
-const { sql } = require('../config/db');
+const sql = require("mssql");
 
-// Lấy thông tin người dùng theo ID
-exports.getUserById = async (userID) => {
+// Function to create a new user (Sign Up)
+const createUser = async (
+  username,
+  passwordHash,
+  role = "Customer",
+  subscriptionStatus = "Active"
+) => {
   try {
-    const result = await sql.query`SELECT * FROM Users WHERE UserID = ${userID}`;
+    const pool = await sql.connect();
+    const result = await pool
+      .request()
+      .input("Username", sql.VarChar(255), username)
+      .input("PasswordHash", sql.VarChar(255), passwordHash)
+      .input("Role", sql.VarChar(50), role)
+      .input("SubscriptionStatus", sql.VarChar(50), subscriptionStatus).query(`
+                INSERT INTO Users (Username, PasswordHash, Role, SubscriptionStatus)
+                VALUES (@Username, @PasswordHash, @Role, @SubscriptionStatus);
+            `);
+    return result;
+  } catch (err) {
+    console.error("Error creating user:", err);
+    throw err;
+  }
+};
+
+// Function to find user by email (for Sign In)
+const findUserByUsername = async (username) => {
+  try {
+    const pool = await sql.connect();
+    const result = await pool
+      .request()
+      .input("Username", sql.VarChar(255), username)
+      .query("SELECT * FROM Users WHERE Username = @Username");
     return result.recordset[0];
-  } catch (error) {
-    throw new Error('Error fetching user by ID');
+  } catch (err) {
+    console.error("Error finding user by username:", err);
+    throw err;
   }
 };
 
-// Thêm người dùng mới
-exports.createUser = async (username, passwordHash, role = 'Guest') => {
-  try {
-    await sql.query`INSERT INTO Users (Username, PasswordHash, Role, SubscriptionStatus)
-                    VALUES (${username}, ${passwordHash}, ${role}, 'Active')`;
-  } catch (error) {
-    throw new Error('Error creating user');
-  }
-};
-
-// Xác thực người dùng bằng tên đăng nhập
-exports.getUserByUsername = async (username) => {
-  try {
-    const result = await sql.query`SELECT * FROM Users WHERE Username = ${username}`;
-    return result.recordset[0];
-  } catch (error) {
-    throw new Error('Error fetching user by username');
-  }
-};
+module.exports = { createUser, findUserByUsername };

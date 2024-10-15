@@ -1,17 +1,23 @@
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
+require("dotenv").config(); // Ensure you have a .env file with a secret key
 
-exports.authMiddleware = (req, res, next) => {
-  const token = req.header('Authorization').replace('Bearer ', '');
+// Middleware function to verify JWT token
+const authMiddleware = (req, res, next) => {
+  const token = req.header("Authorization")?.split(" ")[1]; // Assuming Bearer Token
 
   if (!token) {
-    return res.status(403).json({ error: 'Access denied, no token provided' });
+    return res
+      .status(401)
+      .json({ message: "No token provided. Access denied." });
   }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
+    req.user = decoded; // Add the user data to the request object
     next();
-  } catch (error) {
-    res.status(401).json({ error: 'Invalid token' });
+  } catch (err) {
+    return res.status(401).json({ message: "Invalid token. Access denied." });
   }
 };
+
+module.exports = authMiddleware;

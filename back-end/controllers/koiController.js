@@ -1,18 +1,30 @@
-exports.getKois = async (req, res) => {
+const KoiFish = require("../models/koiModel");
+
+// Get all Koi Fish
+const getAllKoiFish = async (req, res) => {
   try {
-    // Logic lấy danh sách cá Koi từ cơ sở dữ liệu
-    res.status(200).json({ kois: [] }); // Thay thế với dữ liệu thật
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to get Koi fishes' });
+    const koiFish = await KoiFish.findAll();
+    res.json(koiFish);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error." });
   }
 };
 
-exports.addKoi = async (req, res) => {
+// Get Koi Fish by ID
+const getKoiFishById = async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const { name, varietyID, price } = req.body;
-    // Logic thêm cá Koi mới vào cơ sở dữ liệu
-    res.status(201).json({ message: 'Koi fish added successfully' });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to add Koi fish' });
+    const koiFish = await KoiFish.findByPk(id);
+    if (!koiFish) {
+      return res.status(404).json({ message: "Koi Fish not found." });
+    }
+    res.json(koiFish);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error." });
   }
 };
+
+module.exports = { getAllKoiFish, getKoiFishById };

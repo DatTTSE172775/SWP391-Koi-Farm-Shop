@@ -1,19 +1,30 @@
-exports.createOrder = async (req, res) => {
+const Order = require("../models/orderModel");
+
+// Get all orders
+const getAllOrders = async (req, res) => {
   try {
-    const { customerID, totalAmount } = req.body;
-    // Logic tạo đơn hàng mới
-    res.status(201).json({ message: 'Order created successfully' });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to create order' });
+    const orders = await Order.findAll();
+    res.json(orders);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error." });
   }
 };
 
-exports.getOrderDetails = async (req, res) => {
+// Get order by ID
+const getOrderById = async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const orderId = req.params.id;
-    // Logic lấy chi tiết đơn hàng theo ID
-    res.status(200).json({ order: {} }); // Thay thế với dữ liệu thật
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to get order details' });
+    const order = await Order.findByPk(id);
+    if (!order) {
+      return res.status(404).json({ message: "Order not found." });
+    }
+    res.json(order);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error." });
   }
 };
+
+module.exports = { getAllOrders, getOrderById };

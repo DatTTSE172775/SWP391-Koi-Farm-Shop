@@ -1,37 +1,44 @@
-const express = require("express");
-const { connectDB } = require("./config/db");
-const dotenv = require("dotenv");
-const cors = require("cors");
-
-// Cấu hình môi trường từ file .env
-dotenv.config();
+const express = require('express');
+const { connectDB } = require('./config/db'); // Kết nối cơ sở dữ liệu
+const routes = require('./routes/routes'); // Import routes
+const swaggerJsDoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 
 const app = express();
 
-// Middleware để phân tích JSON
+// Middleware để phân tích dữ liệu JSON từ body request
 app.use(express.json());
 
-// Kích hoạt CORS
-app.use(cors());
-
-// Kết nối đến cơ sở dữ liệu SQL Server
+// Kết nối cơ sở dữ liệu
 connectDB();
 
-// Import các routes
-const authRoutes = require("./routes/authRoutes");
-const koiRoutes = require("./routes/koiRoutes");
-const orderRoutes = require("./routes/orderRoutes");
-const consignmentRoutes = require("./routes/consignmentRoutes.js");
+// Cấu hình Swagger
+const swaggerOptions = {
+  swaggerDefinition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'API Documentation',
+      version: '1.0.0',
+      description: 'Koi Fish Management API Documentation',
+      contact: {
+        name: 'Your Name',
+      },
+      servers: [{ url: 'http://localhost:5000' }],
+    },
+  },
+  apis: ['./routes/*.js'], // Đường dẫn đến file chứa các route và comment Swagger
+};
 
-// Sử dụng các routes với tiền tố /api
-app.use("/api/auth", authRoutes);
-app.use("/api/koi", koiRoutes);
-app.use("/api/orders", orderRoutes);
-app.use("/api/consignment", consignmentRoutes);
-// app.use('/api/payment/Momo', paymentMomoRe)
+// Khởi tạo Swagger docs
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-// Khởi động server
+// Sử dụng routes đã gộp
+app.use('/api', routes);
+
+// Lắng nghe server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server is running`);
+  console.log(`Server running on port ${PORT}`);
+  console.log(`Swagger API Docs available at http://localhost:${PORT}/api-docs`);
 });
