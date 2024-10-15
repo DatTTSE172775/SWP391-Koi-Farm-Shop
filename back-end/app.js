@@ -42,3 +42,19 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`Swagger API Docs available at http://localhost:${PORT}/api-docs`);
 });
+
+//cors 
+const express = require('express');
+const cors = require('cors');
+
+const app = express();
+
+// Cho phép tất cả các nguồn (origins) truy cập
+app.use(cors());
+
+// Hoặc chỉ cho phép frontend của bạn truy cập
+app.use(cors({ origin: 'http://localhost:3000' }));
+
+app.listen(5000, () => {
+  console.log('Server is running on port 5000');
+});
