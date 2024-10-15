@@ -23,7 +23,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   const auth = useSelector((state) => state.auth);
-  const { isAuthenticated, error } = auth;
+  const { isAuthenticated } = auth;
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -93,8 +93,6 @@ const Login = () => {
           <Button type="submit" variant="contained" color="primary" fullWidth>
             Đăng nhập
           </Button>
-
-          {error && <Typography className="message">{error}</Typography>}
 
           <Divider sx={{ my: 2 }}>HOẶC</Divider>
 

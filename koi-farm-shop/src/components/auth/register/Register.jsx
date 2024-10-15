@@ -23,7 +23,7 @@ const Register = () => {
   const dispatch = useDispatch();
 
   const auth = useSelector((state) => state.auth);
-  const { isAuthenticated, loading, error } = auth;
+  const { isAuthenticated, loading} = auth;
 
   const [formData, setFormData] = useState({
     username: "",
@@ -139,13 +139,6 @@ const Register = () => {
                 placeholder="Nhập email"
               />
             </Grid>
-            {error && (
-              <Grid item xs={12}>
-                <Typography color="error" align="center">
-                  {error}
-                </Typography>
-              </Grid>
-            )}
             <Grid item xs={12}>
               <Button
                 type="submit"

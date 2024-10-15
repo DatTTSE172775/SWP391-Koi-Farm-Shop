@@ -1,6 +1,6 @@
 import { Layout, Typography } from "antd";
 import { Content } from "antd/es/layout/layout";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import StaffHeader from "../../../components/staff/header/StaffHeader";
 import OrderItem from "../../../components/staff/order-item/OrderItem";
 import Sidebar from "../../../components/staff/sidebar/StaffSidebar";
