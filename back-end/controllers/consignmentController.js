@@ -1,20 +1,30 @@
-exports.createConsignment = async (req, res) => {
+const Consignment = require("../models/consignmentModel");
+
+// Get all consignments
+const getAllConsignments = async (req, res) => {
   try {
-    const { koiID, customerID, priceAgreed } = req.body;
-    // Logic tạo ký gửi mới
-    res.status(201).json({ message: 'Consignment created successfully' });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to create consignment' });
+    const consignments = await Consignment.findAll();
+    res.json(consignments);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error." });
   }
 };
 
-exports.updateConsignmentStatus = async (req, res) => {
+// Get consignment by ID
+const getConsignmentById = async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const consignmentId = req.params.id;
-    const { status } = req.body;
-    // Logic cập nhật trạng thái ký gửi
-    res.status(200).json({ message: 'Consignment status updated successfully' });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to update consignment status' });
+    const consignment = await Consignment.findByPk(id);
+    if (!consignment) {
+      return res.status(404).json({ message: "Consignment not found." });
+    }
+    res.json(consignment);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error." });
   }
 };
+
+module.exports = { getAllConsignments, getConsignmentById };

@@ -1,29 +1,73 @@
-const { sql } = require('../config/db');
+const {
+  createReport,
+  getAllReports,
+  getReportById,
+  updateReport,
+  deleteReport,
+} = require("../models/reportModel");
 
-// Tạo báo cáo
-exports.createReport = async (req, res) => {
-  const { consignmentID, careDetails } = req.body;
-
+// Create a new report
+const createReportController = async (req, res) => {
+  const { consignmentID, careDetails, careStartDate, careEndDate } = req.body;
   try {
-    await sql.query`INSERT INTO KoiReport (ConsignmentID, CareDetails)
-                    VALUES (${consignmentID}, ${careDetails})`;
-    res.status(201).json({ message: 'Report created successfully' });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to create report' });
+    await createReport(consignmentID, careDetails, careStartDate, careEndDate);
+    res.status(201).json({ message: "Report created successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Error creating report" });
   }
 };
 
-// Lấy báo cáo
-exports.getReport = async (req, res) => {
-  const { id } = req.params;
-
+// Get all reports
+const getAllReportsController = async (req, res) => {
   try {
-    const result = await sql.query`SELECT * FROM KoiReport WHERE ReportID = ${id}`;
-    const report = result.recordset[0];
-    if (!report) return res.status(404).json({ error: 'Report not found' });
-
-    res.json(report);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to get report' });
+    const reports = await getAllReports();
+    res.status(200).json(reports);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching reports" });
   }
+};
+
+// Get a single report by ID
+const getReportByIdController = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const report = await getReportById(id);
+    if (!report) {
+      return res.status(404).json({ message: "Report not found" });
+    }
+    res.status(200).json(report);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching report" });
+  }
+};
+
+// Update a report
+const updateReportController = async (req, res) => {
+  const { id } = req.params;
+  const { careDetails, careEndDate } = req.body;
+  try {
+    await updateReport(id, careDetails, careEndDate);
+    res.status(200).json({ message: "Report updated successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Error updating report" });
+  }
+};
+
+// Delete a report
+const deleteReportController = async (req, res) => {
+  const { id } = req.params;
+  try {
+    await deleteReport(id);
+    res.status(200).json({ message: "Report deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Error deleting report" });
+  }
+};
+
+module.exports = {
+  createReportController,
+  getAllReportsController,
+  getReportByIdController,
+  updateReportController,
+  deleteReportController,
 };
