@@ -28,6 +28,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/koi", koiRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/consignment", consignmentRoutes);
+// app.use('/api/payment/Momo', paymentMomoRe)
 
 // Khởi động server
 const PORT = process.env.PORT || 5000;
