@@ -9,7 +9,8 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { notification } from "antd";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { login } from "../../../store/actions/authActions";
@@ -32,7 +33,21 @@ const Login = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    dispatch(login(username, password));
+    dispatch(login(username, password))
+      .then(() => {
+        notification.success({
+          message: "Đăng nhập thành công",
+          description: "Bạn đã đăng nhập thành công!",
+          placement: "topRight",
+        });
+      })
+      .catch((error) => {
+        notification.error({
+          message: "Đăng nhập thất bại",
+          description: error || "Tên tài khoản hoặc mật khẩu không đúng.",
+          placement: "topRight",
+        });
+      });
   };
 
   return (

@@ -31,6 +31,24 @@ const authReducer = (state = initialState, action) => {
         user: null,
         token: null,
       };
+    case "REGISTER_REQUEST":
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+    case "REGISTER_SUCCESS":
+      return {
+        ...state,
+        loading: false,
+        isAuthenticated: false, // User is not logged in right after registration
+      };
+    case "REGISTER_FAILURE":
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
     case "LOGOUT":
       return {
         ...state,

@@ -10,14 +10,17 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { notification } from "antd";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { register } from "../../../store/actions/authActions";
 import "./Register.scss";
 
 const Register = () => {
   // const dispatch = useDispatch();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const auth = useSelector((state) => state.auth);
   const { isAuthenticated, loading, error } = auth;
@@ -41,8 +44,24 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
-    // dispatch(register(username, password, fullname, phone, email));
+
+    // Dispatch the registration action
+    dispatch(register(username, password, fullname, phone, email))
+      .then(() => {
+        notification.success({
+          message: "Đăng ký thành công",
+          description: "Tài khoản của bạn đã được tạo thành công!",
+          placement: "topRight",
+        });
+        navigate("/login"); // Redirect to login page after successful registration
+      })
+      .catch((error) => {
+        notification.error({
+          message: "Đăng ký thất bại",
+          description: error || "Có lỗi xảy ra trong quá trình đăng ký.",
+          placement: "topRight",
+        });
+      });
   };
 
   // Redirect nếu đã đăng nhập
