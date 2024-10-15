@@ -1,5 +1,5 @@
-import React, { useState } from "react";
 import axios from "axios";
+import { useState } from "react";
 import "./Consignment.scss";
 
 const ConsignmentForm = () => {
@@ -13,7 +13,7 @@ const ConsignmentForm = () => {
     notes: "",
     name: "",
     phone: "",
-    email: "", 
+    email: "",
     koiBreed: "",
     koiColor: "",
     koiAge: "",
@@ -32,24 +32,10 @@ const ConsignmentForm = () => {
     }));
   };
 
-<<<<<<< HEAD
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFormData((prevData) => ({
-        ...prevData,
-        image: file,
-      }));
-    }
-  };
-
-  const handleSubmit = (e) => {
-=======
   const handleSubmit = async (e) => {
->>>>>>> 9952163afcbdb2ad673fd33af27577b784cd5cfc
     e.preventDefault();
     try {
-      const response = await axios.post('/api/consignments', {
+      const response = await axios.post("/api/consignments", {
         customerID: formData.customerID,
         koiID: formData.koiID,
         consignmentType: formData.consignmentType,
@@ -59,19 +45,19 @@ const ConsignmentForm = () => {
         notes: formData.notes,
       });
       console.log(response.data);
-      alert('Consignment created successfully');
+      alert("Consignment created successfully");
       // Reset form or redirect user
     } catch (error) {
-      console.error('Error creating consignment:', error);
-      alert('Error creating consignment');
+      console.error("Error creating consignment:", error);
+      alert("Error creating consignment");
     }
   };
 
   const formatCurrency = (value) => {
     // Remove non-digit characters
-    const number = value.replace(/\D/g, '');
+    const number = value.replace(/\D/g, "");
     // Format number with thousands separators
-    return new Intl.NumberFormat('vi-VN').format(number);
+    return new Intl.NumberFormat("vi-VN").format(number);
   };
 
   const handleMoneyChange = (e) => {
@@ -86,7 +72,6 @@ const ConsignmentForm = () => {
     <div className="consign-form">
       <h2>Ký gửi cá Koi</h2>
       <form onSubmit={handleSubmit}>
-
         <div className="customer-info">
           <div className="form-group">
             <label>Tên của bạn</label>
@@ -125,7 +110,7 @@ const ConsignmentForm = () => {
             />
           </div>
         </div>
-        
+
         <div className="koi-info">
           <div className="form-group">
             <label>Giống cá Koi</label>
@@ -173,7 +158,7 @@ const ConsignmentForm = () => {
               type="file"
               name="image"
               accept="image/*"
-              onChange={handleImageChange}
+              onChange={handleInputChange}
             />
           </div>
 
@@ -202,7 +187,6 @@ const ConsignmentForm = () => {
             />
           </div>
         </div>
-        
 
         <div className="form-group">
           <label>Loại ký gửi</label>
