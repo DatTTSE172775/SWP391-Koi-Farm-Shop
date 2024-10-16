@@ -1,84 +1,147 @@
 .consignment-page {
-  max-width: 800px;
-  margin: 100px auto;
-  padding: 20px;
-  background-color: #f0f8ff;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  max-width: 1450px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  font-family: 'Arial', sans-serif;
+  color: #333;
+  background-color: #f9f9f9;
+
+  h1 {
+    color: #e65100;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2.5em;
+  }
 
   h2 {
-    text-align: center;
-    color: #333;
+    color: #3498db;
+    margin-top: 40px;
     margin-bottom: 20px;
+    font-size: 1.8em;
+  }
+
+  h3 {
+    color: #e74c3c;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    font-size: 1.5em;
+  }
+
+  p, ul {
+    line-height: 1.8;
+    color: #34495e;
+    font-size: 1.1em;
   }
 
   ul {
-    list-style-type: none;
-    padding: 0;
+    padding-left: 20px;
   }
 
   li {
-    background-color: #ffffff;
-    margin: 10px 0;
-    padding: 15px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin: 15px 0;
   }
 
   strong {
     color: #2980b9;
   }
 
+  .intro {
+    background-color: #ecf0f1;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+  }
+
+  .consignment-types {
+    .types-container {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .type-card {
+      flex: 1;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+
+      &:hover {
+        transform: translateY(-5px);
+      }
+    }
+  }
+
+  .cta-section {
+    text-align: center;
+    margin-top: 50px;
+    padding: 40px;
+    background-color: #3498db;
+    color: #fff;
+    border-radius: 10px;
+
+    h2 {
+      color: #fff;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+  }
+
   .consignment-button {
-    display: block;
-    width: 100%;
-    padding: 10px 20px;
-    margin-top: 20px;
-    background-color: #4caf50;
+    display: inline-block;
+    padding: 15px 30px;
+    background-color: #2ecc71;
     color: white;
     border: none;
     border-radius: 5px;
+    font-size: 1.2em;
     cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s;
-  }
+    transition: background-color 0.3s ease, transform 0.2s ease;
 
-  .consignment-button:hover {
-    background-color: #45a049;
-  }
-
-  .sections-container {
-    display: flex;
-    justify-content: space-between;
-    margin: 20px;
-  }
-
-  .offlineSection,
-  .onlineSection {
-    flex: 1;
-    margin: 0 15px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #f9f9f9;
+    &:hover {
+      background-color: #27ae60;
+      transform: scale(1.05);
+    }
   }
 }
 
 .consign-form {
-  max-width: 600px;
-  margin: 100px auto;
-  padding: 20px;
-  border: 1px solid #ccc;
+  max-width: 1450px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #ffffff;
   border-radius: 8px;
-  background-color: #f9f9f9;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
   h2 {
     text-align: center;
     color: #333;
+    margin-bottom: 30px;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .customer-info,
+  .koi-info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+
+    .desc{
+      width: 100%;
+    }
   }
 
   .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 
     label {
       display: block;
@@ -88,31 +151,53 @@
     }
 
     input[type="text"],
+    input[type="number"],
+    select,
     textarea {
       width: 100%;
       padding: 10px;
-      border: 1px solid #ccc;
+      border: 1px solid #ddd;
       border-radius: 4px;
       font-size: 16px;
+
+      &:focus {
+        outline: none;
+        border-color: #4a90e2;
+      }
     }
 
     textarea {
       height: 100px;
+      resize: vertical;
+    }
+
+    input[type="file"] {
+      border: none;
+      padding: 10px 0;
+    }
+
+    &.desc {
+      grid-column: 1 / -1;
     }
   }
 
-  button {
-    width: 100%;
-    padding: 10px;
-    background-color: #4caf50;
+  button[type="submit"] {
+    background-color: #4a90e2;
     color: white;
     border: none;
-    border-radius: 4px;
+    padding: 12px 20px;
     font-size: 16px;
+    border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 
     &:hover {
-      background-color: #45a049;
+      background-color: #357abd;
+    }
+
+    &:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
     }
   }
 }

@@ -64,6 +64,9 @@
 
   .ant-card-body {
     padding: 16px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
   }
 
   .koi-meta-description {
@@ -131,6 +134,56 @@
         font-size: 0.9rem;
         padding: 8px 12px;
       }
+    }
+  }
+
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .ant-card-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .ant-card-meta {
+    margin-bottom: 1rem;
+  }
+
+  .koi-details {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .ant-btn {
+    margin-top: auto;
+  }
+
+  .image-container {
+    position: relative;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .view-detail-btn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    &:hover .view-detail-btn {
+      opacity: 1;
     }
   }
 }

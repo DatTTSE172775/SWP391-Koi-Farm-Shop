@@ -1,81 +1,33 @@
 .koi-list {
-  .breadcrumb-background {
-    padding: 20px 0;
-    position: relative;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 0 16px;
 
-    &:before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(255, 255, 255, 0.6); /* Lớp phủ màu trắng nhẹ */
-      z-index: 1;
-    }
-
-    .ant-breadcrumb {
-      position: relative;
-      z-index: 2;
-    }
+  .breadcrumb-container {
+    background-color: #f0f2f5;
+    padding: 16px 0;
+    margin-bottom: 24px;
   }
 
-  .ant-breadcrumb {
-    padding: 10px 40px;
+  .breadcrumb {
+    font-size: 14px;
+  }
+
+  .koi-grid {
+    margin-top: 24px;
+  }
+
+  .no-results {
+    text-align: center;
     font-size: 16px;
-    background-color: transparent;
-    border-radius: 8px;
-    max-width: 1200px;
-    margin: auto;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: #888;
+    margin-top: 40px;
   }
+}
 
-  .ant-breadcrumb a {
-    color: #333;
-    transition: color 0.3s ease;
-
-    &:hover {
-      color: #ff9800;
-      text-decoration: underline;
-    }
-  }
-
-  .koi-list-header {
-    margin-bottom: 40px;
-  }
-
-  .koi-search-filter {
-    margin-bottom: 40px;
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 0 20px;
-  }
-
-  .ant-breadcrumb .ant-breadcrumb-item span {
-    color: #555;
-    font-weight: bold;
-  }
-
-  .koi-cards {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 32px 40px;
-  }
-
-  @media (max-width: 768px) {
-    .breadcrumb-background {
-      padding: 10px 0;
-    }
-
-    .ant-breadcrumb {
-      padding: 0 20px;
-      font-size: 14px;
-    }
-
-    .koi-search-filter {
-      padding: 0 10px;
-    }
+// Media queries for responsiveness
+@media (max-width: 768px) {
+  .koi-list {
+    padding: 0 8px;
   }
 }
