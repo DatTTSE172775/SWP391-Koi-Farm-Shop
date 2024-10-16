@@ -15,6 +15,8 @@ const {
     deleteReportController
 } = require('../controllers/reportController');
 
+const logoutUser = require('../controllers/userLogout'); // Import logout controller
+
 /**
  * @swagger
  * /api/signup:
@@ -58,7 +60,6 @@ const {
  */
 router.post('/signup', userSignUp);
 
-
 /**
  * @swagger
  * /api/signin:
@@ -81,6 +82,18 @@ router.post('/signup', userSignUp);
  *         description: Đăng nhập thành công
  */
 router.post('/signin', userSignIn);
+
+/**
+ * @swagger
+ * /api/logout:
+ *   post:
+ *     summary: Đăng xuất người dùng
+ *     tags: [Users]
+ *     responses:
+ *       200:
+ *         description: Đăng xuất thành công
+ */
+router.post('/logout', logoutUser); // Route cho logout
 
 /**
  * @swagger

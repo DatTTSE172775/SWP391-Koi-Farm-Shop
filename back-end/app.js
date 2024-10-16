@@ -3,16 +3,8 @@ const { connectDB } = require('./config/db'); // Kết nối cơ sở dữ liệ
 const routes = require('./routes/routes'); // Import routes
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
-const cors = require('cors');
 
 const app = express();
-
-// Cấu hình CORS
-app.use(cors({
-    origin: 'http://localhost:3000',  // Cho phép frontend từ localhost:3000
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],  // Cho phép các phương thức này
-    credentials: true,  // Cho phép gửi thông tin xác thực (cookie) nếu cần
-}));
 
 // Middleware để phân tích dữ liệu JSON từ body request
 app.use(express.json());
@@ -43,11 +35,6 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Sử dụng routes đã gộp
 app.use('/api', routes);
-
-// Ví dụ về route login
-app.post('/api/auth/login', (req, res) => {
-    res.json({ message: 'Login successful' });
-});
 
 // Lắng nghe server
 const PORT = process.env.PORT || 5000;
