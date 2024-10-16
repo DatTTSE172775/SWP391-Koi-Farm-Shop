@@ -1,5 +1,3 @@
-// src/components/Register/Register.jsx
-
 import { Google as GoogleIcon } from "@mui/icons-material";
 import {
   Box,
@@ -11,12 +9,13 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { register } from "../../../store/actions/authActions";
 import "./Register.scss";
 
 const Register = () => {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const auth = useSelector((state) => state.auth);
@@ -24,13 +23,13 @@ const Register = () => {
 
   const [formData, setFormData] = useState({
     username: "",
+    email: "",
     password: "",
     fullname: "",
     phone: "",
-    email: "",
   });
 
-  const { username, password, fullname, phone, email } = formData;
+  const { username, email, password, fullname, phone } = formData;
 
   const handleChange = (e) => {
     setFormData({
@@ -42,7 +41,7 @@ const Register = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(formData);
-    // dispatch(register(username, password, fullname, phone, email));
+    dispatch(register(username, email, password, fullname, phone));
   };
 
   // Redirect nếu đã đăng nhập
@@ -68,6 +67,19 @@ const Register = () => {
                 value={username}
                 onChange={handleChange}
                 placeholder="Nhập tên tài khoản"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Email"
+                type="email"
+                variant="outlined"
+                fullWidth
+                required
+                name="email"
+                value={email}
+                onChange={handleChange}
+                placeholder="Nhập email"
               />
             </Grid>
             <Grid item xs={12}>
@@ -105,19 +117,6 @@ const Register = () => {
                 value={phone}
                 onChange={handleChange}
                 placeholder="Nhập số điện thoại"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Email"
-                type="email"
-                variant="outlined"
-                fullWidth
-                required
-                name="email"
-                value={email}
-                onChange={handleChange}
-                placeholder="Nhập email"
               />
             </Grid>
             {error && (

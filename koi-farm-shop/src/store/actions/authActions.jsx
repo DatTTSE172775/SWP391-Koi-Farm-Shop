@@ -51,3 +51,40 @@ export const login = (username, password) => async (dispatch) => {
 export const logout = () => (dispatch) => {
   dispatch({ type: LOGOUT });
 };
+
+// Register action
+export const register = (username, email, password, fullname, phone) => async (dispatch) => {
+  dispatch({ type: REGISTER_REQUEST });
+
+  try {
+    console.log('Attempting registration with:', { username, email, password: '*****', fullname, phone });
+    const response = await axiosPublic.post("signup", {
+      username,
+      email,
+      password,
+      fullname,
+      phone,
+    }, {
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+
+    console.log('Registration response:', response.data);
+
+    if (response.data && response.data.message) {
+      dispatch({ type: REGISTER_SUCCESS, payload: response.data.message });
+    } else {
+      dispatch({
+        type: REGISTER_FAILURE,
+        payload: "Đăng ký thất bại: Không nhận được phản hồi hợp lệ",
+      });
+    }
+  } catch (error) {
+    console.error('Registration error:', error.response?.data || error);
+    dispatch({
+      type: REGISTER_FAILURE,
+      payload: error.response?.data?.message || "Đăng ký thất bại",
+    });
+  }
+};
