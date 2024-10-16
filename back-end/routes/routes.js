@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const consignmentController = require('../controllers/consignmentController');
 
 // Import Controllers
 const userSignUp = require('../controllers/userSignUp');
@@ -174,5 +175,83 @@ router.get('/customers', getAllCustomers);
  *         description: Chi tiết khách hàng
  */
 router.get('/customers/:customerId', getCustomerById);
+
+
+// Route POST tạo ký gửi cá Koi
+/**
+ * @swagger
+ * /api/createConsignment:
+ *   post:
+ *     summary: Create a new consignment
+ *     tags: [Consignments]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               customerID:
+ *                 type: string
+ *                 description: ID of the customer
+ *               koiID:
+ *                 type: string
+ *                 description: ID of the Koi fish (if applicable)
+ *               consignmentType:
+ *                 type: string
+ *                 enum: [Chăm sóc, Bán hộ]
+ *                 description: Type of consignment
+ *               consignmentMode:
+ *                 type: string
+ *                 enum: [Online, Offline]
+ *                 description: Mode of consignment
+ *               priceAgreed:
+ *                 type: string
+ *                 description: Agreed price for the consignment (in VND)
+ *               notes:
+ *                 type: string
+ *                 description: Additional notes for the consignment
+ *               koiType:
+ *                 type: string
+ *                 description: Type of Koi fish
+ *               koiColor:
+ *                 type: string
+ *                 description: Color of Koi fish
+ *               koiAge:
+ *                 type: string
+ *                 description: Age of Koi fish
+ *               koiSize:
+ *                 type: string
+ *                 description: Size of Koi fish
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: Image file of the Koi fish
+ *     responses:
+ *       201:
+ *         description: Consignment created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Consignment created successfully
+ *       400:
+ *         description: Bad request - invalid input data
+ *       500:
+ *         description: Server error
+ */
+router.post('/createConsignment', consignmentController.createConsignment);
+
+// Route PUT cập nhật trạng thái ký gửi
+router.put('/:id/status', consignmentController.updateConsignmentStatus);
+
+// Route GET all consignments
+router.get('/consignments', consignmentController.getAllConsignments);
+
+// Route GET consignment by ID
+router.get('/consignments/:id', consignmentController.getConsignmentById);
 
 module.exports = router;
