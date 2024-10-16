@@ -4,7 +4,10 @@ const routes = require('./routes/routes'); // Import routes
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 
-const app = express();
+// Import route xử lý thanh toán MoMo
+const paymentRoutes = require('../payment/paymentRoutes');
+
+const app = express(); // Khởi tạo ứng dụng Express
 
 // Middleware để phân tích dữ liệu JSON từ body request
 app.use(express.json());
@@ -26,7 +29,7 @@ const swaggerOptions = {
       servers: [{ url: 'http://localhost:5000' }],
     },
   },
-  apis: ['./routes/*.js'], // Đường dẫn đến file chứa các route và comment Swagger
+  apis: ['./routes/*.js', '../payment/*.js'], // Đường dẫn đến file chứa các route và comment Swagger
 };
 
 // Khởi tạo Swagger docs
@@ -35,6 +38,9 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Sử dụng routes đã gộp
 app.use('/api', routes);
+
+// Sử dụng routes cho payment
+app.use('/api/payment', paymentRoutes);
 
 // Lắng nghe server
 const PORT = process.env.PORT || 5000;
