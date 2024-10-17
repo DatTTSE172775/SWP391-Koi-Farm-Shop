@@ -1,6 +1,7 @@
 const express = require('express');
 const { connectDB } = require('./config/db'); // Kết nối cơ sở dữ liệu
-const routes = require('./routes/routes'); // Import routes
+const routes = require('./routes/routes');  // Import các route chính
+const orderRoutes = require('./routes/orderRoutes'); // Import orderRoutes.js
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 
@@ -35,6 +36,9 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Sử dụng routes đã gộp
 app.use('/api', routes);
+
+// Sử dụng route cho order
+app.use('/api/orders', orderRoutes); // Thêm route cho order
 
 // Lắng nghe server
 const PORT = process.env.PORT || 5000;
