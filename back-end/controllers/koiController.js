@@ -13,10 +13,10 @@ const getAllKoiFish = async (req, res) => {
 
 // Get Koi Fish by ID
 const getKoiFishById = async (req, res) => {
-    const { id } = req.params;
+    const { koiId } = req.params;
 
     try {
-        const koiFish = await KoiFish.getKoiFishById(id);
+        const koiFish = await KoiFish.getKoiFishById(koiId);
         if (!koiFish) {
             return res.status(404).json({ message: 'Koi Fish not found.' });
         }

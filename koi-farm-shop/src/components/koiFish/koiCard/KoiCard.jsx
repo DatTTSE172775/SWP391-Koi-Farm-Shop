@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { Card, Button, Typography } from "antd";
+import { useNavigate } from "react-router-dom";
 import "./KoiCard.scss";
 
 const { Text } = Typography;
 
 const KoiCard = ({ koifish, isAuthenticated }) => {
   const [imageError, setImageError] = useState(false);
+  const navigate = useNavigate();
 
   const handleImageError = () => {
     console.error(`Failed to load image for ${koifish.Name}`);
@@ -14,9 +16,17 @@ const KoiCard = ({ koifish, isAuthenticated }) => {
 
   const imageUrl = koifish.ImagesLink || '';
 
-  const handleBuyNow = () => {
-    // Implement buy now functionality here
-    console.log("Buy now clicked for:", koifish.Name);
+  const handleViewDetail = () => {
+    if (koifish.KoiID) {
+      navigate(`/koiDetail/${koifish.KoiID}`);
+    } else {
+      console.error("Koi fish ID is undefined", koifish);
+    }
+  };
+
+  const handleAddToCart = () => {
+    // Implement add to cart functionality here
+    console.log("Add to cart clicked for:", koifish.Name);
   };
 
   return (
@@ -32,7 +42,7 @@ const KoiCard = ({ koifish, isAuthenticated }) => {
               src={imageUrl} 
               onError={handleImageError}
             />
-            <Button className="view-detail-btn">View Detail</Button>
+            <Button className="view-detail-btn" onClick={handleViewDetail}>View Detail</Button>
           </div>
         )
       }
@@ -49,7 +59,7 @@ const KoiCard = ({ koifish, isAuthenticated }) => {
         <Text strong>Price: ${koifish.Price}</Text>
         <Text>Health Status: {koifish.HealthStatus}</Text>
       </div>
-      <Button type="primary" onClick={handleBuyNow} block>
+      <Button type="primary" onClick={handleAddToCart} block>
         Thêm vào giỏ hàng
       </Button>
     </Card>

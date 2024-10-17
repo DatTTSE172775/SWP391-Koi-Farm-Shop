@@ -75,7 +75,7 @@ function App() {
 
               {/* Koi Routes */}
               <Route path="koi-list" element={<KoiListPage />} />
-              <Route path="koi-details/:id" element={<KoiDetail />} />
+              <Route path="koiDetail/:id" element={<KoiDetail />} />
               <Route path="koi-breeders" element={<KoiBreeders />} />
 
               {/* Product Routes */}
