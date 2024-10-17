@@ -19,7 +19,7 @@ export const login = (username, password) => async (dispatch) => {
 
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await axiosPublic.post("/api/signin", {
+      const response = await axiosPublic.post("/signin", {
         username,
         password,
       });
