@@ -17,34 +17,33 @@ export const REGISTER_FAILURE = "REGISTER_FAILURE";
 export const login = (username, password) => async (dispatch) => {
   dispatch({ type: LOGIN_REQUEST });
 
-  try {
-    console.log('Attempting login with:', { username, password: '*****' });
-    const response = await axiosPublic.post("signin", {
-      username,
-      password,
-    }, {
-      headers: {
-        'Content-Type': 'application/json',
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await axiosPublic.post("/api/signin", {
+        username,
+        password,
+      });
+
+      if (response.status === 200 && response.data.token) {
+        const { token, username } = response.data;
+
+        dispatch({ type: LOGIN_SUCCESS, payload: { username, token } });
+        resolve();
+      } else {
+        dispatch({
+          type: LOGIN_FAILURE,
+          payload: "Đăng nhập thất bại",
+        });
+        reject("Đăng nhập thất bại");
       }
-    });
-
-    console.log('Login response:', response.data);
-
-    if (response.data && response.data.token) {
-      dispatch({ type: LOGIN_SUCCESS, payload: response.data });
-    } else {
+    } catch (error) {
       dispatch({
         type: LOGIN_FAILURE,
-        payload: "Đăng nhập thất bại: Không nhận được token",
+        payload: error.response?.data?.message || "Đăng nhập thất bại",
       });
+      reject(error.response?.data?.message || "Đăng nhập thất bại");
     }
-  } catch (error) {
-    console.error('Login error:', error.response?.data || error);
-    dispatch({
-      type: LOGIN_FAILURE,
-      payload: error.response?.data?.message || "Đăng nhập thất bại",
-    });
-  }
+  });
 };
 
 // Logout action
@@ -53,38 +52,49 @@ export const logout = () => (dispatch) => {
 };
 
 // Register action
-export const register = (username, email, password, fullname, phone) => async (dispatch) => {
-  dispatch({ type: REGISTER_REQUEST });
+export const register =
+  (username, email, password, fullname, phone) => async (dispatch) => {
+    dispatch({ type: REGISTER_REQUEST });
 
-  try {
-    console.log('Attempting registration with:', { username, email, password: '*****', fullname, phone });
-    const response = await axiosPublic.post("signup", {
-      username,
-      email,
-      password,
-      fullname,
-      phone,
-    }, {
-      headers: {
-        'Content-Type': 'application/json',
+    try {
+      console.log("Attempting registration with:", {
+        username,
+        email,
+        password: "*****",
+        fullname,
+        phone,
+      });
+      const response = await axiosPublic.post(
+        "signup",
+        {
+          username,
+          email,
+          password,
+          fullname,
+          phone,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("Registration response:", response.data);
+
+      if (response.data && response.data.message) {
+        dispatch({ type: REGISTER_SUCCESS, payload: response.data.message });
+      } else {
+        dispatch({
+          type: REGISTER_FAILURE,
+          payload: "Đăng ký thất bại: Không nhận được phản hồi hợp lệ",
+        });
       }
-    });
-
-    console.log('Registration response:', response.data);
-
-    if (response.data && response.data.message) {
-      dispatch({ type: REGISTER_SUCCESS, payload: response.data.message });
-    } else {
+    } catch (error) {
+      console.error("Registration error:", error.response?.data || error);
       dispatch({
         type: REGISTER_FAILURE,
-        payload: "Đăng ký thất bại: Không nhận được phản hồi hợp lệ",
+        payload: error.response?.data?.message || "Đăng ký thất bại",
       });
     }
-  } catch (error) {
-    console.error('Registration error:', error.response?.data || error);
-    dispatch({
-      type: REGISTER_FAILURE,
-      payload: error.response?.data?.message || "Đăng ký thất bại",
-    });
-  }
-};
+  };

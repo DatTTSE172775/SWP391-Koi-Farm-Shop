@@ -8,7 +8,8 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import { notification } from "antd";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { register } from "../../../store/actions/authActions";
@@ -19,7 +20,7 @@ const Register = () => {
   const navigate = useNavigate();
 
   const auth = useSelector((state) => state.auth);
-  const { isAuthenticated, loading, error } = auth;
+  const { isAuthenticated, loading } = auth;
 
   const [formData, setFormData] = useState({
     username: "",
@@ -40,8 +41,24 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
-    dispatch(register(username, email, password, fullname, phone));
+
+    // Dispatch the registration action
+    dispatch(register(username, password, fullname, phone, email))
+      .then(() => {
+        notification.success({
+          message: "Đăng ký thành công",
+          description: "Tài khoản của bạn đã được tạo thành công!",
+          placement: "topRight",
+        });
+        navigate("/login");
+      })
+      .catch((error) => {
+        notification.error({
+          message: "Đăng ký thất bại",
+          description: error || "Có lỗi xảy ra trong quá trình đăng ký.",
+          placement: "topRight",
+        });
+      });
   };
 
   // Redirect nếu đã đăng nhập
@@ -119,13 +136,19 @@ const Register = () => {
                 placeholder="Nhập số điện thoại"
               />
             </Grid>
-            {error && (
-              <Grid item xs={12}>
-                <Typography color="error" align="center">
-                  {error}
-                </Typography>
-              </Grid>
-            )}
+            <Grid item xs={12}>
+              <TextField
+                label="Email"
+                type="email"
+                variant="outlined"
+                fullWidth
+                required
+                name="email"
+                value={email}
+                onChange={handleChange}
+                placeholder="Nhập email"
+              />
+            </Grid>
             <Grid item xs={12}>
               <Button
                 type="submit"

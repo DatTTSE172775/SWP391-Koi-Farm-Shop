@@ -1,0 +1,22 @@
+.consignment-request-item-card {
+  margin-bottom: 20px;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  .ant-typography {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+  }
+
+  .assign-staff-select {
+    width: 100%;
+  }
+}

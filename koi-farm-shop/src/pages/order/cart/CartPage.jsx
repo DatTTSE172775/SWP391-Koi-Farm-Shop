@@ -10,13 +10,14 @@ import {
   Typography,
 } from "antd";
 import React, { useContext } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { CartContext } from "../../../components/order/cart-context/CartContext";
 import "./CartPage.scss";
 
 const { Title, Text } = Typography;
 
 const CartPage = () => {
+  const navigate = useNavigate();
   const { cartItems, handleRemoveFromCart, handleUpdateQuantity } =
     useContext(CartContext);
 
@@ -86,6 +87,10 @@ const CartPage = () => {
     },
   ];
 
+  const handleCheckOut = () => {
+    navigate("/checkout");
+  };
+
   // Tổng tiền tất cả sản phẩm
   const totalPrice = cartItems.reduce((acc, item) => acc + item.total, 0);
 
@@ -108,16 +113,22 @@ const CartPage = () => {
           </div>
           {/* Bạn có thể thêm thuế, phí vận chuyển ở đây */}
           <div className="summary-actions">
-            <Link to="/koi-list">
-              <Button type="default" className="continue-shopping">
-                Tiếp Tục Mua Sắm
-              </Button>
-            </Link>
-            <Link to="/checkout">
-              <Button type="primary" className="proceed-to-checkout">
-                Thanh Toán
-              </Button>
-            </Link>
+            =
+            <Button
+              type="default"
+              className="continue-shopping"
+              onClick={() => navigate("/koi-list")}
+            >
+              Tiếp Tục Mua Sắm
+            </Button>
+            =
+            <Button
+              type="primary"
+              className="proceed-to-checkout"
+              onClick={handleCheckOut}
+            >
+              Thanh Toán
+            </Button>
           </div>
         </Col>
       </Row>

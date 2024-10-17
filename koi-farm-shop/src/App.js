@@ -1,5 +1,5 @@
 import "antd/dist/reset.css";
-import React, { lazy, Suspense } from "react";
+import { lazy, Suspense } from "react";
 import {
   Navigate,
   Route,
@@ -42,6 +42,7 @@ const KoiListPage = lazy(() =>
 const KoiBreeders = lazy(() =>
   import("./pages/koi-fish/koi-breeders/KoiBreeders")
 );
+const KoiPackage = lazy(() => import("./pages/koi-fish/KoiPackage/KoiPackage"));
 
 // product page
 const KoiFeed = lazy(() => import("./components/product/koiFeed/KoiFeed"));
@@ -60,6 +61,33 @@ const OrderSuccess = lazy(() =>
 );
 const Cart = lazy(() => import("./pages/order/cart/CartPage"));
 
+// customer page
+const AccountPage = lazy(() =>
+  import("./pages/account/welcome/WelcomeCustomer")
+);
+const OrderHistory = lazy(() => import("./pages/account/orders/OrderHistory"));
+
+// staff page
+const WelcomeStaff = lazy(() => import("./pages/staff/layout/WelcomeStaff"));
+const StaffOrderManage = lazy(() =>
+  import("./pages/staff/order-manage/StaffOrderManage")
+);
+// const StaffNotificationPage = lazy(() =>
+//   import("./pages/staff/notification/StaffNotificationPage")
+// );
+// const StaffConsignmentPage = lazy(() =>
+//   import("./pages/staff/consign/StaffConsignmentPage")
+// );
+
+//admin page
+const WelcomeAdmin = lazy(() => import("./pages/admin/welcome/WelcomeAdmin"));
+const OrderDetails = lazy(() =>
+  import("./pages/admin/order-details/OrderDetails")
+);
+const OrdersManagement = lazy(() =>
+  import("./pages/admin/orderManagement/OrdersManagement")
+);
+
 function App() {
   return (
     <CartProvider>
@@ -77,6 +105,7 @@ function App() {
               <Route path="koi-list" element={<KoiListPage />} />
               <Route path="koi-details/:id" element={<KoiDetail />} />
               <Route path="koi-breeders" element={<KoiBreeders />} />
+              <Route path="koi-package" element={<KoiPackage />} />
 
               {/* Product Routes */}
               <Route path="product" element={<ProductPage />}>
@@ -97,12 +126,36 @@ function App() {
               <Route path="order-success" element={<OrderSuccess />} />
             </Route>
 
+            {/* Account Route */}
+            <Route path="/account" element={<AccountPage />} />
+            <Route path="/account/orders" element={<OrderHistory />} />
+
             {/* Auth Routes without MainLayout */}
             <Route path="/" element={<AuthPage />}>
               <Route path="login" element={<Login />} />
               <Route path="register" element={<Register />} />
               <Route path="forget-password" element={<ForgetPassword />} />
             </Route>
+
+            {/* Admin Routes */}
+            <Route path="/admin" element={<WelcomeAdmin />} />
+            <Route path="/admin/manage-orders" element={<OrdersManagement />} />
+            <Route
+              path="/admin/manage-orders/:orderId"
+              element={<OrderDetails />}
+            />
+            {/* <Route
+              path="/admin/manage-consign"
+              element={<ManagerConsignmentPage />}
+            />
+            <Route
+              path="/admin/approval"
+              element={<ManagerConsignmentApprovalPage />}
+            /> */}
+
+            {/* Staff Routes */}
+            <Route path="/staff" element={<WelcomeStaff />} />
+            <Route path="/staff/orders" element={<StaffOrderManage />} />
 
             {/* Fallback Route */}
             <Route path="*" element={<NotFound />} />
