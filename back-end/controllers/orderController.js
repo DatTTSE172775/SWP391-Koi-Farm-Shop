@@ -2,7 +2,7 @@ const sql = require('mssql');
 
 const Order = require("../models/orderModel");
 
-// Tạo đơn hàng
+// // Tạo đơn hàng
 const createOrder = async (req, res) => {
   const { customerID, totalAmount, shippingAddress, paymentMethod } = req.body;
 
@@ -72,5 +72,5 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
-module.exports = { getAllOrders, getOrderById, updateOrderStatus };
+module.exports = { getAllOrders, getOrderById, updateOrderStatus, createOrder };
 
