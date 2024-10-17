@@ -6,8 +6,11 @@ const consignmentController = require('../controllers/consignmentController');
 const userSignUp = require('../controllers/userSignUp');
 const userSignIn = require('../controllers/userSignIn');
 const { getAllKoiFish, getKoiFishById } = require('../controllers/koiController');
-const { getAllOrders, getOrderById } = require('../controllers/orderController');
 const { getAllCustomers, getCustomerById } = require('../controllers/customerController');
+// const orderModel = require('../models/orderModel'); // Import orderModel
+const { getAllOrders, getOrderById } = require('../controllers/orderController');
+const orderController = require('../controllers/orderController');
+
 const {
     createReportController,
     getAllReportsController,
@@ -176,6 +179,85 @@ router.get('/customers', getAllCustomers);
  */
 router.get('/customers/:customerId', getCustomerById);
 
+/**
+ * @swagger
+ * /api/orders:
+ *   post:
+ *     summary: Tạo đơn hàng mới
+ *     tags: [Orders]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - customerID
+ *               - totalAmount
+ *               - shippingAddress
+ *               - paymentMethod
+ *             properties:
+ *               customerID:
+ *                 type: integer
+ *               totalAmount:
+ *                 type: number
+ *               shippingAddress:
+ *                 type: string
+ *               paymentMethod:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Đơn hàng được tạo thành công
+ *       500:
+ *         description: Lỗi khi tạo đơn hàng
+ */
+router.post('/orders', async (req, res) => {
+    try {
+        const { customerID, totalAmount, shippingAddress, paymentMethod } = req.body;
+        await orderModel.createOrder(customerID, totalAmount, shippingAddress, paymentMethod);
+        res.status(201).json({ message: 'Order created successfully' });
+    } catch (error) {
+        console.error('Error creating order:', error);
+        res.status(500).json({ message: 'Error creating order' });
+    }
+});
+
+/**
+ * @swagger
+ * /api/orders/{id}/status:
+ *   put:
+ *     summary: Cập nhật trạng thái của đơn hàng
+ *     tags: [Orders]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID của đơn hàng
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - status
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 enum: [inprogress, delivering, delivered, cancelled]
+ *     responses:
+ *       200:
+ *         description: Trạng thái đơn hàng được cập nhật thành công
+ *       400:
+ *         description: Trạng thái không hợp lệ
+ *       404:
+ *         description: Không tìm thấy đơn hàng
+ *       500:
+ *         description: Lỗi khi cập nhật trạng thái đơn hàng
+ */
+router.put('/orders/:id/status', orderController.updateOrderStatus);
 
 // Route POST tạo ký gửi cá Koi
 /**

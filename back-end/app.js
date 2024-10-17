@@ -4,7 +4,7 @@ const routes = require('./routes/routes'); // Import routes
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const cors = require('cors');
-
+const orderRoutes = require('./routes/orderRoutes'); // Import orderRoutes
 const app = express();
 
 // Cấu hình CORS
@@ -43,6 +43,9 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Sử dụng routes đã gộp
 app.use('/api', routes);
+
+// Sử dụng route cho order
+app.use('/api/orders', orderRoutes); // Thêm route cho order
 
 // Ví dụ về route login
 app.post('/api/auth/login', (req, res) => {
