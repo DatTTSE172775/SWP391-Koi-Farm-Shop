@@ -152,7 +152,7 @@ const About = () => {
           <p>
           Koi Farm Shop không chỉ là nơi mua cá Koi, mà còn là một cộng đồng. Chúng tôi tự hào là đối tác đáng tin cậy, giúp bạn tạo ra và duy trì một hồ cá tuyệt đẹp, khỏe mạnh. Dù bạn là người mới bắt đầu hay là chuyên gia có kinh nghiệm về cá Koi, chúng tôi luôn sẵn sàng hỗ trợ bạn trên mọi chặng đường.
           </p>
-          <p className="closing-message">Chúng tôi hân hạnh được phục vụ bạn!</p>
+          <p className="closing-message">Chúng tôi mong được phục vụ bạn!</p>
         </AboutSection>
       </div>
     </div>

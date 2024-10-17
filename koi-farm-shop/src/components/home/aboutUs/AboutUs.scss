@@ -1,130 +1,92 @@
-// Variables
-$primary-color: #008cba;
-$secondary-color: #f56a00;
-$background-color: #f9f9f9;
-$card-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-$card-hover-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-$border-radius: 10px;
-$font-family: "Open Sans", sans-serif;
+@import "../../../styles/Variables.scss";
 
 .about-us-section {
-  background-color: $background-color;
-  padding: 50px 20px;
-  font-family: $font-family;
+  padding: 60px 20px;
+  background-color: #e6f7ff;
+  transition: background-color 0.3s ease;
 
   .section-header {
-    text-align: center;
     margin-bottom: 40px;
+    text-align: center;
 
     h2 {
-      color: $primary-color;
-      font-weight: bold;
-      font-size: 2.5rem;
-    }
-
-    p {
-      color: #555;
-      font-size: 1.2rem;
+      color: var(--color-primary);
       margin-bottom: 20px;
     }
 
+    p {
+      max-width: 600px;
+      margin: 0 auto 20px auto;
+      color: var(--color-neutral-dark);
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
     .learn-more-button {
-      color: white;
+      display: inline-block;
       padding: 10px 20px;
-      border-radius: $border-radius;
+      background-color: var(--color-secondary); // Màu nhấn - Gold
+      color: var(--color-primary); // Màu chủ đạo - Sea Green
+      border-radius: 4px;
       text-decoration: none;
-      font-weight: 600;
-      transition: all 0.3s ease;
+      font-weight: bold;
+      transition: background-color 0.3s ease, color 0.3s ease;
 
       &:hover {
-        transform: translateY(-2px);
+        color: #555;
       }
     }
   }
 
   .about-us-content {
-    display: flex;
-    justify-content: center;
-  }
-
-  .about-card {
-    background-color: white;
-    padding: 30px;
-    border-radius: $border-radius;
-    box-shadow: $card-shadow;
-    transition: all 0.3s ease;
-    text-align: center;
-
-    &:hover {
-      box-shadow: $card-hover-shadow;
-      transform: translateY(-5px);
-    }
-
-    .icon {
-      font-size: 3rem;
-      color: $secondary-color;
-      margin-bottom: 20px;
-    }
-
-    h4 {
-      font-size: 1.8rem;
-      color: $primary-color;
-      margin-bottom: 15px;
-    }
-
-    p {
-      color: #666;
-      font-size: 1rem;
-      line-height: 1.6;
-    }
-  }
-}
-
-@media (max-width: 768px) {
-  .about-us-section {
-    padding: 30px 10px;
-
-    .section-header {
-      h2 {
-        font-size: 2rem;
-      }
-
-      p {
-        font-size: 1rem;
-      }
-    }
+    margin-bottom: 60px;
 
     .about-card {
+      text-align: center;
       padding: 20px;
-    }
-  }
-}
-
-@media (max-width: 480px) {
-  .about-us-section {
-    .section-header {
-      h2 {
-        font-size: 1.8rem;
-      }
-
-      p {
-        font-size: 0.9rem;
-      }
-    }
-
-    .about-card {
-      padding: 15px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      height: 100%;
 
       .icon {
-        font-size: 2.5rem;
+        font-size: 3rem;
+        color: var(--color-primary);
+        margin-bottom: 15px;
       }
 
       h4 {
-        font-size: 1.5rem;
+        color: var(--color-primary);
+        margin-bottom: 10px;
       }
 
       p {
-        font-size: 0.9rem;
+        color: #555;
+        font-size: 0.95rem;
+        line-height: 1.6;
+      }
+
+      &:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .about-us-content {
+      .about-card {
+        padding: 15px;
+
+        .icon {
+          font-size: 2.5rem;
+        }
+
+        h4 {
+          font-size: 1.2rem;
+        }
+
+        p {
+          font-size: 0.9rem;
+        }
       }
     }
   }

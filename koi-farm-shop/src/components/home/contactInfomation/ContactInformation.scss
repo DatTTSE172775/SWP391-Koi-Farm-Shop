@@ -1,68 +1,71 @@
 .contact-information-container {
+  padding: 60px 20px;
   background-color: #f5f5f5;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 40px 20px;
-}
 
-.contact-information-title {
-  text-align: center;
-  margin-bottom: 40px;
-  color: #333;
-}
-
-.contact-information-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
-
-.contact-details {
-  background-color: #ededed;
-  padding: 30px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.contact-detail-item {
-  margin-bottom: 20px;
-  font-size: 1rem;
-  line-height: 1.5;
-}
-
-.contact-detail-item strong {
-  color: #1976d2;
-  margin-right: 10px;
-}
-
-.contact-form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.contact-form-field {
-  width: 100%;
-}
-
-.contact-form-button {
-  align-self: flex-start;
-  padding: 10px 20px;
-  font-size: 1rem;
-  text-transform: uppercase;
-}
-
-@media (max-width: 960px) {
-  .contact-information-grid {
-    flex-direction: column;
+  .contact-information-title {
+    text-align: center;
+    margin-bottom: 40px;
+    color: #333;
+    font-weight: bold;
   }
 
-  .contact-details,
+  .contact-information-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .contact-details {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    .contact-detail-item {
+      font-size: 1rem;
+      color: #555;
+    }
+  }
+
   .contact-form {
-    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .contact-form-field {
+    background-color: #fff;
   }
 
   .contact-form-button {
-    align-self: center;
+    align-self: flex-start;
+    padding: 10px 20px;
+    font-size: 1rem;
+    text-transform: none;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+
+    &:hover {
+      background-color: #ff9800; // Màu khi hover, điều chỉnh theo ý bạn
+      transform: translateY(-2px);
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 40px 10px;
+
+    .contact-information-title {
+      font-size: 1.8rem;
+      margin-bottom: 30px;
+    }
+
+    .contact-details {
+      .contact-detail-item {
+        font-size: 0.95rem;
+      }
+    }
+
+    .contact-form {
+      .contact-form-button {
+        width: 100%;
+      }
+    }
   }
 }

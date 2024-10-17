@@ -1,11 +1,10 @@
-import { ShoppingCartOutlined, UserOutlined, BellOutlined } from "@ant-design/icons"; // Import Bell icon
+import { ShoppingCartOutlined, UserOutlined } from "@ant-design/icons";
 import { Avatar, Badge, Button, Dropdown, Menu } from "antd";
 import React, { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import { logout } from "../../store/actions/authActions";
 import { CartContext } from "../order/cart-context/CartContext";
-import { useCallback } from "react";
 import "./Navigation.scss";
 
 const { SubMenu } = Menu;
@@ -13,20 +12,12 @@ const { SubMenu } = Menu;
 const Navigation = () => {
   const location = useLocation();
   const dispatch = useDispatch();
+
   const [current, setCurrent] = useState("home");
 
-  const [showNavbar, setShowNavbar] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
-
   const { cartItems } = useContext(CartContext);
-  const [notifications, setNotifications] = useState([
-    { id: 1, message: "Thông báo 1", read: false },
-    { id: 2, message: "Thông báo 2", read: true },
-    { id: 3, message: "Thông báo 3", read: false },
-  ]);
 
-  const unreadCount = notifications.filter((notif) => !notif.read).length;
-
+  // Xác định tab được chọn dựa trên đường dẫn hiện tại
   useEffect(() => {
     const path = location.pathname;
     if (path === "/home") {
@@ -61,69 +52,21 @@ const Navigation = () => {
     }
   }, [location.pathname]);
 
-  // Lắng nghe sự kiện scroll để điều khiển navbar
-  const controlNavbar = useCallback(() => {
-    if (window.scrollY > lastScrollY) {
-      // Lăn xuống => ẩn navbar
-      setShowNavbar(false);
-    } else {
-      // Lăn lên => hiện navbar
-      setShowNavbar(true);
-    }
-    setLastScrollY(window.scrollY);
-  }, [lastScrollY]);
-  
-  useEffect(() => {
-    window.addEventListener("scroll", controlNavbar);
-  
-    return () => {
-      window.removeEventListener("scroll", controlNavbar);
-    };
-  }, [controlNavbar])
-
   const handleClick = (e) => {
     setCurrent(e.key);
   };
 
+  // Get auth state from redux store
   const { isAuthenticated, user } = useSelector((state) => state.auth);
 
+  // Handle logout
   const handleLogout = () => {
     dispatch(logout());
   };
 
-  const markAsRead = (id) => {
-    setNotifications((prevNotifications) =>
-      prevNotifications.map((notif) =>
-        notif.id === id ? { ...notif, read: true } : notif
-      )
-    );
-  };
-
-  const notificationMenu = (
-    <Menu>
-      {notifications.map((notif) => (
-        <Menu.Item key={notif.id} onClick={() => markAsRead(notif.id)}>
-          {notif.read ? (
-            <span style={{ color: "#888" }}>{notif.message} (Đã đọc)</span>
-          ) : (
-            <span style={{ fontWeight: "bold" }}>{notif.message} (Chưa đọc)</span>
-          )}
-        </Menu.Item>
-      ))}
-    </Menu>
-  );
-
+  // Menu cho Dropdown khi click vào avatar
   const accountMenu = (
     <Menu>
-      <Menu.Item key="view-orders">
-        <Link to="/account/orders">Lịch sử đơn hàng</Link>
-      </Menu.Item>
-      <Menu.Item key="consign">
-        <Link to="/account/consign">Thông tin ký gửi</Link>
-      </Menu.Item>
-      <Menu.Item key="wishlist">
-        <Link to="/account/wishlist">Danh sách yêu thích</Link>
-      </Menu.Item>
       <Menu.Item key="view-info">
         <Link to="/account">Xem Thông Tin</Link>
       </Menu.Item>
@@ -135,11 +78,15 @@ const Navigation = () => {
   );
 
   return (
-    <div className={`navigation ${showNavbar ? "active" : "hidden"}`}>
+    <div className="navigation">
       {/* Logo */}
       <div className="logo">
         <Link to="/home">
-          <img src="koi-farm-shop.png" alt="Koi Farm Shop" className="logo-image" />
+          <img
+            src="koi-farm-shop.png"
+            alt="Koi Farm Shop"
+            className="logo-image"
+          />
         </Link>
       </div>
 
@@ -165,7 +112,6 @@ const Navigation = () => {
           <Menu.Item key="koi-high-quality">
             <Link to="/koi-high-quality">Cá Koi chất lượng cao</Link>
           </Menu.Item>
-          {/* Thêm các giống cá Koi */}
           <SubMenu key="koi-varieties" title="Các giống cá Koi">
             <Menu.Item key="koi-varieties-1">
               <Link to="/koi-varieties/1">Kohaku Koi</Link>
@@ -206,8 +152,22 @@ const Navigation = () => {
             <Menu.Item key="koi-varieties-13">
               <Link to="/koi-varieties/13">Butterfly Koi</Link>
             </Menu.Item>
-            {/* Thêm các mục khác nếu cần */}
           </SubMenu>
+          <Menu.Item key="koi-breeders">
+            <Link to="/koi-breeders">Người nuôi cá Koi</Link>
+          </Menu.Item>
+          <Menu.Item key="koi-package">
+            <Link to="/koi-package">Lô cá Koi</Link>
+          </Menu.Item>
+          <Menu.Item key="koi-collection">
+            <Link to="/koi-collection">Bộ sưu tập cá Koi</Link>
+          </Menu.Item>
+          <Menu.Item key="koi-request">
+            <Link to="/koi-request">Đề xuất cá Koi</Link>
+          </Menu.Item>
+          <Menu.Item key="koi-sold">
+            <Link to="/koi-sold">Cá koi đã bán</Link>
+          </Menu.Item>
         </SubMenu>
 
         {/* Sản phẩm SubMenu */}
@@ -216,10 +176,10 @@ const Navigation = () => {
             <Link to="/product/koi-feed">Cám cá Koi</Link>
           </Menu.Item>
           <Menu.Item key="product/pond-filter-system">
-            <Link to="/product/pond-filter-system">Hệ thống lọc hồ</Link>
+            <Link to="/product/pond-filter-system">Hệ thống lọc hồ cá Koi</Link>
           </Menu.Item>
           <Menu.Item key="product/pond-accessories">
-            <Link to="/product/pond-accessories">Phụ kiện hồ cá</Link>
+            <Link to="/product/pond-accessories">Phụ kiện hồ cá Koi</Link>
           </Menu.Item>
         </SubMenu>
 
@@ -234,25 +194,24 @@ const Navigation = () => {
         </Menu.Item>
       </Menu>
 
-      {/* Icon */}
+      {/* Icons bên phải */}
       <div className="nav-icons">
         {isAuthenticated ? (
           <>
-            <Dropdown overlay={notificationMenu} placement="bottomRight" trigger={["click"]}>
-              <div className="notification-dropdown">
-                <Badge count={unreadCount}>
-                  <BellOutlined className="notification-icon" />
-                </Badge>
-              </div>
-            </Dropdown>
-
-            <Dropdown overlay={accountMenu} placement="bottomRight" trigger={["click"]}>
+            <Dropdown
+              overlay={accountMenu}
+              placement="bottomRight"
+              trigger={["click"]}
+            >
               <div className="account-dropdown">
-                <Avatar className="user-avatar" src="/images/users/avatar.jpg" icon={<UserOutlined />} />
+                <Avatar
+                  className="user-avatar"
+                  src="/images/users/avatar.jpg"
+                  icon={<UserOutlined />}
+                />
                 <span className="username">{user}</span>
               </div>
             </Dropdown>
-
             <Link to="/cart" className="cart-link">
               <Badge count={cartItems.length} showZero>
                 <ShoppingCartOutlined className="cart-icon" />

@@ -36,7 +36,6 @@ const ConsignmentForm = () => {
   //   fetchCustomerID();
   // }, []);
 
-  //Xử lý back-end
   const handleInputChange = (e) => {
     const { name, value, type, files } = e.target;
     setFormData((prevData) => {
@@ -49,7 +48,6 @@ const ConsignmentForm = () => {
     });
   };
 
-  const handleSubmit = async (e) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -129,25 +127,7 @@ const ConsignmentForm = () => {
               onChange={handleInputChange}
             />
           </div>
-          <div className="form-group">
-            <label>Tuổi của cá Koi</label>
-            <input
-              type="text"
-              name="koiAge"
-              value={formData.koiAge}
-              onChange={handleInputChange}
-            />
-          </div>
 
-          <div className="form-group">
-            <label>Kích thước cá Koi</label>
-            <input
-              type="text"
-              name="koiSize"
-              value={formData.koiSize}
-              onChange={handleInputChange}
-            />
-          </div>
           <div className="form-group">
             <label>Kích thước cá Koi</label>
             <input
@@ -228,5 +208,5 @@ const ConsignmentForm = () => {
     </div>
   );
 };
-}
+
 export default ConsignmentForm;

@@ -18,29 +18,24 @@ $border-radius: 10px;
 
 // Styles
 .about-container {
-  max-width: 1400px;
+  max-width: 1000px;
   margin: 100px auto;
   padding: 20px;
   font-family: $font-family;
 }
 
 .main-title {
-  color: $primary-color;
-  width: 50%;
-  background-color: #fff;
   font-size: 2.8em;
+  color: $primary-color;
   text-align: center;
-  margin: 0 auto 60px;
-  position: relative;
-  overflow: hidden;
-  padding: 15px;
-  border-radius: $border-radius;
+  margin-bottom: 40px;
 }
 
 .section-title {
   font-size: 2em;
   color: $primary-color;
   margin-bottom: 20px;
+  animation: fadeIn 1s ease-in-out;
 }
 
 .about-section {
@@ -53,11 +48,10 @@ $border-radius: 10px;
 }
 
 .about-image {
-  width: 80%;
+  width: 100%;
   height: auto;
   border-radius: $border-radius;
-  margin: 15px auto; // Changed from margin-top to margin
-  display: block; // Added to center the image
+  margin-top: 15px;
   background-attachment: fixed;
   background-size: cover;
 }
@@ -88,14 +82,14 @@ $border-radius: 10px;
 
   img {
     width: 100%;
-    height: auto;
-    border-radius: $border-radius;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: auto;
+  border-radius: $border-radius;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 
-    &:hover {
-      transform: scale(1.05);
-      @include box-shadow(0, 4px, 8px, rgba(0, 0, 0, 0.2));
-    }
+  &:hover {
+    transform: scale(1.05);
+    @include box-shadow(0, 4px, 8px, rgba(0, 0, 0, 0.2));
+  }
   }
 
   h3 {
@@ -139,18 +133,12 @@ $border-radius: 10px;
 
 // Media Queries
 @media (max-width: 768px) {
-  .about-container {
-    margin: 60px auto;
-  }
-
   .team-images {
     flex-direction: column;
-    align-items: center;
   }
 
   .team-member {
     width: 100%;
-    max-width: 250px;
   }
 
   .about-section {
@@ -160,6 +148,19 @@ $border-radius: 10px;
   .show-more-btn {
     font-size: 0.9em;
     padding: 8px 16px;
+  }
+}
+
+
+.team-member img {
+  width: 100%;
+  height: auto;
+  border-radius: $border-radius;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+    @include box-shadow(0, 4px, 8px, rgba(0, 0, 0, 0.2));
   }
 }
 

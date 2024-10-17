@@ -46,8 +46,8 @@ const Contact = () => {
         src={Koiimage}
         alt="Beautiful Koi Pond"
       />
-      <h1>Liên hệ với chúng tôi</h1>
-      <p>Hãy để chúng tôi lắng nghe ý kiến của bạn bằng cách điền vào form dưới đây !</p>
+      <h1>Contact Us</h1>
+      <p>We'd love to hear from you. Please fill out the form below!</p>
       <form onSubmit={handleSubmit}>
         <div className="input-group">
           <input
@@ -56,7 +56,7 @@ const Contact = () => {
             value={formData.firstName}
             onChange={handleChange}
             required
-            placeholder="Họ*"
+            placeholder="First Name*"
           />
         </div>
         <div className="input-group">
@@ -65,7 +65,7 @@ const Contact = () => {
             name="lastName"
             value={formData.lastName}
             onChange={handleChange}
-            placeholder="Tên*"
+            placeholder="Last Name"
           />
         </div>
         <div className="input-group">
@@ -84,8 +84,7 @@ const Contact = () => {
             value={formData.message}
             onChange={handleChange}
             required
-            placeholder="Bạn cần chúng tôi giúp gì?*"
-            style={{resize: "none"}}
+            placeholder="What can we help you with?*"
           />
         </div>
         <button type="submit" disabled={isSubmitting}>

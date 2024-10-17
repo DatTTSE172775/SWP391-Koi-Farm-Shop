@@ -1,4 +1,4 @@
-const KoiFish = require("../models/koiModel");
+const KoiFish = require('../models/koiModel');
 
 // Get all Koi Fish
 const getAllKoiFish = async (req, res) => {
@@ -13,7 +13,7 @@ const getAllKoiFish = async (req, res) => {
 
 // Get Koi Fish by ID
 const getKoiFishById = async (req, res) => {
-  const { id } = req.params;
+    const { id } = req.params;
 
     try {
         const koiFish = await KoiFish.getKoiFishById(id);

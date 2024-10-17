@@ -10,22 +10,22 @@ import koiBehaviorImage from "../../assets/images/koi-behavior.avif";
 const blogPosts = [
     {
         id: 1,
-        title: "Nghệ thuật nhân giống cá Koi",
-        excerpt: "Tìm hiểu về quá trình nhân giống cá Koi và các yếu tố tạo nên sắc màu và hình dáng đa dạng của chúng.",
+        title: "The Art of Koi Breeding",
+        excerpt: "Learn about the intricate process of breeding Koi fish and the factors that contribute to their vibrant colors and patterns.",
         date: "2023-05-15",
         image: koiBreedingImage
     },
     {
         id: 2,
-        title: "Mẹo bảo trì ao cá Koi cần biết",
-        excerpt: "Khám phá những thực phẩm chăm sóc ao cá Koi và các hệ thống lọc thiết yếu để giữ cho ao cá Koi khỏe mạnh và thật sự.",
+        title: "Essential Koi Pond Maintenance Tips",
+        excerpt: "Discover the key practices for maintaining a healthy and thriving Koi pond, including water quality management and filtration systems.",
         date: "2023-06-02",
         image: koiPondMaintenanceImage
     },
     {
         id: 3,
-        title: "Hiểu biết về hành vi cá Koi",
-        excerpt: "Khám phá thế giới hành vi cá Koi và tìm hiểu cách diễn giải hành vi của chúng để có sự chăm sóc và tương tác tốt hơn.",
+        title: "Understanding Koi Fish Behavior",
+        excerpt: "Explore the fascinating world of Koi fish behavior and learn how to interpret their actions for better care and interaction.",
         date: "2023-06-20",
         image: koiBehaviorImage
     }
@@ -37,12 +37,12 @@ const Blog = () => {
             <Navigation />
             <div className="blog-container">
                 <section className="blog-intro">
-                    <h1>Tin tức</h1>
+                    <h1>Our Blog</h1>
                     <p>
-                    Chào mừng bạn đến với blog Koi Farm Shop, nơi chúng tôi đi sâu vào
-                    thế giới hấp dẫn của cá Koi, cách chăm sóc ao, kỹ thuật nhân giống và
-                    nhiều hơn nữa. Hãy theo dõi để biết thêm thông tin chi tiết, mẹo và câu chuyện từ nhóm
-                    chuyên gia của chúng tôi, những người đam mê mọi thứ liên quan đến cá Koi.
+                        Welcome to the Koi Farm Shop blog, where we dive deep into the
+                        fascinating world of Koi fish, pond care, breeding techniques, and
+                        much more. Stay tuned for insights, tips, and stories from our team of
+                        experts who are passionate about all things Koi.
                     </p>
                     <img
                         src={blogOverviewImage}
@@ -52,7 +52,7 @@ const Blog = () => {
                 </section>
 
                 <section className="blog-latest">
-                    <h2>Bài đăng mới nhất</h2>
+                    <h2>Latest Posts</h2>
                     <div className="blog-posts">
                         {blogPosts.map((post) => (
                             <article key={post.id} className="blog-post">
@@ -62,7 +62,7 @@ const Blog = () => {
                                     <p className="post-date">{post.date}</p>
                                     <p className="post-excerpt">{post.excerpt}</p>
                                     <a href={`/blog/${post.id}`} className="read-more">
-                                        Đọc thêm
+                                        Read More
                                     </a>
                                 </div>
                             </article>
@@ -71,21 +71,21 @@ const Blog = () => {
                 </section>
 
                 <section className="blog-categories">
-                    <h2>Danh mục</h2>
+                    <h2>Categories</h2>
                     <ul>
-                        <li>Chăm sóc cá Koi</li>
-                        <li>Kỹ thuật nhân giống</li>
-                        <li>Quản lý ao</li>
-                        <li>Các giống cá Koi</li>
+                        <li>Koi Care</li>
+                        <li>Breeding Techniques</li>
+                        <li>Pond Management</li>
+                        <li>Koi Varieties</li>
                     </ul>
                 </section>
 
                 <section className="blog-subscribe">
-                    <h2>Đăng ký chúng tôi</h2>
-                    <p>Không bỏ lỡ bất kỳ bài viết nào! Đăng ký để cập nhật những mẹo, hướng dẫn và tin tức mới nhất từ blog của chúng tôi.</p>
+                    <h2>Subscribe to Our Blog</h2>
+                    <p>Never miss a post! Subscribe to stay updated with the latest tips, guides, and news from our blog.</p>
                     <form>
-                        <input type="email" placeholder="Nhập địa chỉ email" required />
-                        <button type="submit">Đăng ký</button>
+                        <input type="email" placeholder="Enter your email" required />
+                        <button type="submit">Subscribe</button>
                     </form>
                 </section>
             </div>

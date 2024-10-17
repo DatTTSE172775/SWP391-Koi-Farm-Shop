@@ -53,7 +53,10 @@ const Tutorial = () => {
           </Col>
         </Row>
 
-        <Button className="primary-button" onClick={() => navigate("/guide")}>
+        <Button
+          className="primary-button"
+          onClick={() => navigate("/guide")}
+        >
           XEM HƯỚNG DẪN NGƯỜI DÙNG MỚI
         </Button>
       </div>
