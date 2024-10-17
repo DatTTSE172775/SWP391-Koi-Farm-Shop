@@ -12,6 +12,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { register } from "../../../store/actions/authActions";
+import { register } from "../../../store/actions/authActions";
 import "./Register.scss";
 
 const Register = () => {
@@ -19,7 +20,7 @@ const Register = () => {
   const navigate = useNavigate();
 
   const auth = useSelector((state) => state.auth);
-  const { isAuthenticated, loading, error } = auth;
+  const { isAuthenticated, loading} = auth;
 
   const [formData, setFormData] = useState({
     username: "",

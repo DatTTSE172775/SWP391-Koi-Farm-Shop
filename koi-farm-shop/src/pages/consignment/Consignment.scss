@@ -8,7 +8,23 @@
 
   h1 {
     color: #e65100;
+  max-width: 1450px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  font-family: 'Arial', sans-serif;
+  color: #333;
+  background-color: #f9f9f9;
+
+  h1 {
+    color: #e65100;
     text-align: center;
+    margin-bottom: 30px;
+    font-size: 2.5em;
+  }
+
+  h2 {
+    color: #3498db;
+    margin-top: 40px;
     margin-bottom: 30px;
     font-size: 2.5em;
   }
@@ -31,13 +47,29 @@
     line-height: 1.8;
     color: #34495e;
     font-size: 1.1em;
+    font-size: 1.8em;
+  }
+
+  h3 {
+    color: #e74c3c;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    font-size: 1.5em;
+  }
+
+  p, ul {
+    line-height: 1.8;
+    color: #34495e;
+    font-size: 1.1em;
   }
 
   ul {
     padding-left: 20px;
+    padding-left: 20px;
   }
 
   li {
+    margin: 15px 0;
     margin: 15px 0;
   }
 
@@ -88,7 +120,53 @@
     }
   }
 
+  .intro {
+    background-color: #ecf0f1;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+  }
+
+  .consignment-types {
+    .types-container {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .type-card {
+      flex: 1;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+
+      &:hover {
+        transform: translateY(-5px);
+      }
+    }
+  }
+
+  .cta-section {
+    text-align: center;
+    margin-top: 50px;
+    padding: 40px;
+    background-color: #3498db;
+    color: #fff;
+    border-radius: 10px;
+
+    h2 {
+      color: #fff;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+  }
+
   .consignment-button {
+    display: inline-block;
+    padding: 15px 30px;
+    background-color: #2ecc71;
     display: inline-block;
     padding: 15px 30px;
     background-color: #2ecc71;
@@ -96,7 +174,14 @@
     border: none;
     border-radius: 5px;
     font-size: 1.2em;
+    font-size: 1.2em;
     cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+
+    &:hover {
+      background-color: #27ae60;
+      transform: scale(1.05);
+    }
     transition: background-color 0.3s ease, transform 0.2s ease;
 
     &:hover {
@@ -142,12 +227,13 @@
 
   .form-group {
     margin-bottom: 20px;
+    margin-bottom: 20px;
 
     label {
       display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-      color: #555;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #34495e;
     }
 
     input[type="text"],
@@ -200,4 +286,5 @@
       cursor: not-allowed;
     }
   }
+}
 }

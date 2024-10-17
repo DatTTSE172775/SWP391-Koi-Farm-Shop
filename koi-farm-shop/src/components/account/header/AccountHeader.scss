@@ -1,0 +1,32 @@
+.account-header {
+  background: linear-gradient(145deg, #001529 0%, #002541 100%);
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  height: 64px;
+
+  .header-content {
+    display: flex;
+    align-items: center;
+  }
+
+  .welcome-message {
+    margin-right: 20px;
+    font-weight: bold;
+    font-size: 1.6rem;
+    color: #ffffff;
+  }
+
+  .logout-icon {
+    font-size: 24px;
+    cursor: pointer;
+    color: #ff8c00;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: #ffffff;
+    }
+  }
+}

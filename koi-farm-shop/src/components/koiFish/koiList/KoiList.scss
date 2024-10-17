@@ -15,11 +15,31 @@
 
   .koi-grid {
     margin-top: 24px;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 0 16px;
+
+  .breadcrumb-container {
+    background-color: #f0f2f5;
+    padding: 16px 0;
+    margin-bottom: 24px;
+  }
+
+  .breadcrumb {
+    font-size: 14px;
+  }
+
+  .koi-grid {
+    margin-top: 24px;
   }
 
   .no-results {
     text-align: center;
+  .no-results {
+    text-align: center;
     font-size: 16px;
+    color: #888;
+    margin-top: 40px;
     color: #888;
     margin-top: 40px;
   }
@@ -29,5 +49,12 @@
 @media (max-width: 768px) {
   .koi-list {
     padding: 0 8px;
-  }
 }
+
+// Media queries for responsiveness
+@media (max-width: 768px) {
+  .koi-list {
+    padding: 0 8px;
+  }
+}}
+  }}
