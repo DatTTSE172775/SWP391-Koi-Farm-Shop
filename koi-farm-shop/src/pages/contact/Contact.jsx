@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import "./Contact.scss";
 import Koiimage from "../../assets/images/Koiimage.jpg";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser, faEnvelope, faComment } from '@fortawesome/free-solid-svg-icons';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -34,6 +36,12 @@ const Contact = () => {
           <div className="check-mark">✓</div>
           <h2>Thank you for your message!</h2>
           <p>We'll get back to you as soon as possible.</p>
+          <div className="social-links">
+  <button onClick={() => window.open('https://www.facebook.com', '_blank')} className="link-button">Facebook</button>
+  <button onClick={() => window.open('https://www.instagram.com', '_blank')} className="link-button">Instagram</button>
+  <button onClick={() => window.open('https://www.twitter.com', '_blank')} className="link-button">Twitter</button>
+</div>
+
         </div>
       </div>
     );
@@ -41,15 +49,12 @@ const Contact = () => {
 
   return (
     <div className="contact-container">
-      <img
-        className="koi-banner"
-        src={Koiimage}
-        alt="Beautiful Koi Pond"
-      />
+      <img className="koi-banner" src={Koiimage} alt="Beautiful Koi Pond" />
       <h1>Contact Us</h1>
       <p>We'd love to hear from you. Please fill out the form below!</p>
       <form onSubmit={handleSubmit}>
         <div className="input-group">
+          <FontAwesomeIcon icon={faUser} className="icon" />
           <input
             type="text"
             name="firstName"
@@ -60,6 +65,7 @@ const Contact = () => {
           />
         </div>
         <div className="input-group">
+          <FontAwesomeIcon icon={faUser} className="icon" />
           <input
             type="text"
             name="lastName"
@@ -69,6 +75,7 @@ const Contact = () => {
           />
         </div>
         <div className="input-group">
+          <FontAwesomeIcon icon={faEnvelope} className="icon" />
           <input
             type="email"
             name="email"
@@ -79,6 +86,7 @@ const Contact = () => {
           />
         </div>
         <div className="input-group">
+          <FontAwesomeIcon icon={faComment} className="icon" />
           <textarea
             name="message"
             value={formData.message}

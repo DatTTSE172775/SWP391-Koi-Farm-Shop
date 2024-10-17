@@ -190,6 +190,33 @@ body {
     }
   }
 }
+.blog-categories ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.blog-categories li {
+  margin: 10px 0;
+}
+
+.category-button {
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  font-size: 1rem;
+  text-decoration: underline;
+}
+
+.category-button.active {
+  font-weight: bold;
+  color: #0056b3;
+}
+
+.category-button:hover {
+  color: #0056b3;
+}
+
 
 // Blog subscribe section
 .blog-subscribe {
@@ -285,3 +312,48 @@ body {
     background-position: 0% 50%;
   }
 }
+
+// Thanh tìm kiếm
+.search-bar {
+  @include flex-center;
+  margin-bottom: 2rem;
+
+  input[type="text"] {
+    width: 60%;
+    padding: 0.7rem 1rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+    }
+  }
+}
+
+// Cải thiện nút CTA
+.post-cta {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+
+  .cta-button {
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    background-color: $primary-color; // Màu cam
+    color: white;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    border: none;
+
+    &:hover {
+      background-color: darken($primary-color, 10%);
+      transform: translateY(-2px);
+    }
+  }
+}
+
+// Cải tiến cho các phần tử khác...

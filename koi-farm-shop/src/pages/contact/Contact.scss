@@ -150,3 +150,19 @@
     }
   }
 }
+
+.link-button {
+  background: none;
+  border: none;
+  color: #008cba;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: underline;
+  font-weight: bold;
+  padding: 0;
+
+  &:hover {
+    text-decoration: none;
+    color: #007bb5;
+  }
+}

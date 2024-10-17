@@ -4,10 +4,17 @@ $secondary-color: #f9f9f9;
 $accent-color: #fff;
 $font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 $border-radius: 10px;
+$hover-brighten: 10%; // Mức sáng khi hover
+$primary-hover-color: lighten($primary-color, $hover-brighten);
+$primary-active-color: darken($primary-color, 10%);
 
 // Mixins
-@mixin box-shadow($x: 0, $y: 2px, $blur: 4px, $color: rgba(0, 0, 0, 0.1)) {
+@mixin box-shadow($x: 0, $y: 2px, $blur: 4px, $color: rgba(0, 0, 0, 0.1), $hover-color: rgba(0, 0, 0, 0.2)) {
   box-shadow: $x $y $blur $color;
+
+  &:hover {
+    box-shadow: $x $y $blur $hover-color;
+  }
 }
 
 @mixin flex-center {
@@ -19,7 +26,7 @@ $border-radius: 10px;
 // Styles
 .about-container {
   max-width: 1000px;
-  margin: 100px auto;
+  margin: 0px auto;
   padding: 20px;
   font-family: $font-family;
 }
@@ -35,7 +42,12 @@ $border-radius: 10px;
   font-size: 2em;
   color: $primary-color;
   margin-bottom: 20px;
-  animation: fadeIn 1s ease-in-out;
+  animation: fadeIn 0.8s ease-in-out; // Làm animation nhẹ nhàng hơn
+  transition: color 0.3s ease; // Thêm transition khi hover
+
+  &:hover {
+    color: darken($primary-color, 10%);
+  }
 }
 
 .about-section {
@@ -47,15 +59,23 @@ $border-radius: 10px;
   padding: 20px;
 }
 
-.about-image {
+.about-image, .team-member img {
   width: 100%;
+  max-width: 100%;
   height: auto;
   border-radius: $border-radius;
   margin-top: 15px;
   background-attachment: fixed;
   background-size: cover;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05); // Phóng to hình ảnh nhẹ khi hover
+    @include box-shadow(0, 4px, 8px, rgba(0, 0, 0, 0.2));
+  }
 }
 
+// Values section styling
 .about-values {
   ul {
     list-style-type: disc;
@@ -64,9 +84,17 @@ $border-radius: 10px;
 
   li {
     margin-bottom: 10px;
+    line-height: 1.6;
+    font-size: 1.1rem;
+    color: #333;
+
+    strong {
+      color: $primary-color;
+    }
   }
 }
 
+// Team member section
 .team-images {
   @include flex-center;
   flex-wrap: wrap;
@@ -80,21 +108,10 @@ $border-radius: 10px;
   text-align: center;
   margin-bottom: 20px;
 
-  img {
-    width: 100%;
-  height: auto;
-  border-radius: $border-radius;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-
-  &:hover {
-    transform: scale(1.05);
-    @include box-shadow(0, 4px, 8px, rgba(0, 0, 0, 0.2));
-  }
-  }
-
   h3 {
     margin-top: 10px;
     margin-bottom: 5px;
+    font-size: 1.2rem;
   }
 
   p {
@@ -102,12 +119,13 @@ $border-radius: 10px;
   }
 }
 
+// Button to show/hide more team members
 .show-more-btn {
   display: block;
   margin: 20px auto;
   padding: 10px 20px;
   background-color: $primary-color;
-  color: #fff;
+  color: $accent-color;
   border: none;
   border-radius: $border-radius;
   font-size: 1em;
@@ -115,15 +133,22 @@ $border-radius: 10px;
   transition: background-color 0.3s ease, transform 0.3s ease;
 
   &:hover {
-    background-color: lighten($primary-color, 10%);
+    background-color: $primary-hover-color;
     transform: scale(1.05);
   }
 
   &:active {
+    background-color: $primary-active-color;
     transform: scale(0.95);
+  }
+
+  &:focus {
+    outline: 3px solid lighten($primary-color, 20%);
+    outline-offset: 2px;
   }
 }
 
+// Closing message styling
 .closing-message {
   font-size: 1.2em;
   font-weight: bold;
@@ -131,14 +156,89 @@ $border-radius: 10px;
   margin-top: 30px;
 }
 
-// Media Queries
-@media (max-width: 768px) {
-  .team-images {
+// Testimonials section styling
+.about-testimonials {
+  padding: 50px;
+  background-color: #f1f1f1;
+  border-radius: $border-radius;
+  @include box-shadow(0, 4px, 8px, rgba(0, 0, 0, 0.1));
+
+  .testimonial-item {
+    display: flex;
     flex-direction: column;
+    align-items: center;
+    background-color: $accent-color;
+    border-radius: $border-radius;
+    padding: 30px;
+    margin-bottom: 40px;
+    max-width: 700px;
+    margin: 0 auto 40px;
+
+    img.testimonial-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      margin-bottom: 20px;
+    }
+
+    h3 {
+      font-size: 1.5rem;
+      color: $primary-color;
+      margin-bottom: 10px;
+    }
+
+    p.testimonial-quote {
+      font-size: 1.2rem;
+      font-style: italic;
+      color: #444;
+      margin-bottom: 10px;
+      text-align: left;
+    }
+
+    h4.testimonial-author {
+      font-size: 1rem;
+      font-weight: bold;
+      color: #666;
+      margin-top: 20px;
+    }
+  }
+}
+
+// Call-to-action section styling
+.call-to-action {
+  padding: 50px;
+  background-color: #004d40;
+  color: white;
+  text-align: center;
+
+  h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
   }
 
-  .team-member {
-    width: 100%;
+  .cta-button {
+    background-color: #ff9800;
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.2rem;
+
+    &:hover {
+      background-color: #e68900;
+    }
+  }
+}
+
+// Media Queries - Giảm kích thước cho mobile
+@media (max-width: 768px) {
+  .main-title {
+    font-size: 2.4em;
+  }
+
+  .section-title {
+    font-size: 1.6em;
   }
 
   .about-section {
@@ -149,18 +249,130 @@ $border-radius: 10px;
     font-size: 0.9em;
     padding: 8px 16px;
   }
+
+  .team-member {
+    width: 100%;
+  }
+
+  .testimonial-item {
+    img.testimonial-avatar {
+      width: 60px;
+      height: 60px;
+    }
+
+    .testimonial-content {
+      max-width: 100%;
+      padding: 15px;
+    }
+  }
 }
 
+// Animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-.team-member img {
-  width: 100%;
-  height: auto;
+// Specific Mission Section Styling
+.about-mission {
+  background-color: $secondary-color;
+  padding: 30px;
   border-radius: $border-radius;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-bottom: 40px;
+  @include box-shadow(0, 4px, 8px, rgba(0, 0, 0, 0.1));
 
-  &:hover {
-    transform: scale(1.05);
-    @include box-shadow(0, 4px, 8px, rgba(0, 0, 0, 0.2));
+  p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #333;
+    margin-bottom: 20px;
+  }
+
+  .section-title {
+    color: $primary-color;
+    font-size: 2.4rem;
+    text-align: center;
+    margin-bottom: 20px;
+    animation: fadeIn 0.8s ease-in-out;
+  }
+}
+
+.about-container {
+  padding: 20px;
+  background-color: #fafafa;
+  border-radius: $border-radius;
+  @include box-shadow(0, 4px, 8px, rgba(0, 0, 0, 0.05));
+}
+
+.about-values {
+  background-color: $secondary-color;
+  padding: 20px;
+  border-radius: $border-radius;
+  margin-bottom: 40px;
+  @include box-shadow(0, 4px, 8px, rgba(0, 0, 0, 0.1));
+
+  ul {
+    padding-left: 20px;
+
+    li {
+      font-size: 1.1rem;
+      color: #333;
+      margin-bottom: 10px;
+      line-height: 1.6;
+      
+      strong {
+        color: $primary-color;
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .about-mission, .about-values {
+    padding: 15px;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+  }
+
+  .about-container {
+    padding: 15px;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+}
+
+.value-item {
+  display: flex;
+  align-items: center; // Căn giữa icon và text theo chiều dọc
+  margin-bottom: 20px;
+
+  .value-icon {
+    width: 30px;  // Tăng kích thước icon lên
+    height: 30px; // Đảm bảo kích thước cân đối
+    margin-right: 10px; // Khoảng cách giữa icon và text, bạn có thể điều chỉnh nếu cần
+  }
+
+  .value-text {
+    font-size: 1.1rem;
+    color: #333;
+    line-height: 1.6;
+  }
+
+  strong {
+    color: $primary-color;
+    font-weight: bold;
   }
 }
 

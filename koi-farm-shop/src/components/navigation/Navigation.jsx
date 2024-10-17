@@ -14,8 +14,9 @@ const Navigation = () => {
   const dispatch = useDispatch();
 
   const [current, setCurrent] = useState("home");
-
   const { cartItems } = useContext(CartContext);
+  const [isScrollingUp, setIsScrollingUp] = useState(true);
+  const [lastScrollTop, setLastScrollTop] = useState(0);
 
   // Xác định tab được chọn dựa trên đường dẫn hiện tại
   useEffect(() => {
@@ -52,6 +53,26 @@ const Navigation = () => {
     }
   }, [location.pathname]);
 
+  // Lắng nghe sự kiện scroll để ẩn/hiện thanh điều hướng
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+      if (scrollTop > lastScrollTop) {
+        setIsScrollingUp(false); // Ẩn khi lăn xuống
+      } else {
+        setIsScrollingUp(true); // Hiện khi lăn lên
+      }
+      setLastScrollTop(scrollTop <= 0 ? 0 : scrollTop);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [lastScrollTop]);
+
   const handleClick = (e) => {
     setCurrent(e.key);
   };
@@ -77,8 +98,8 @@ const Navigation = () => {
     </Menu>
   );
 
-  return (
-    <div className="navigation">
+  return (   
+    <div className={`navigation ${isScrollingUp ? "show" : "hide"}`}>
       {/* Logo */}
       <div className="logo">
         <Link to="/home">
@@ -176,7 +197,9 @@ const Navigation = () => {
             <Link to="/product/koi-feed">Cám cá Koi</Link>
           </Menu.Item>
           <Menu.Item key="product/pond-filter-system">
-            <Link to="/product/pond-filter-system">Hệ thống lọc hồ cá Koi</Link>
+            <Link to="/product/pond-filter-system">
+              Hệ thống lọc hồ cá Koi
+            </Link>
           </Menu.Item>
           <Menu.Item key="product/pond-accessories">
             <Link to="/product/pond-accessories">Phụ kiện hồ cá Koi</Link>

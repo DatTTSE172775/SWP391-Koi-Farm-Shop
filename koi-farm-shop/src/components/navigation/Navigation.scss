@@ -11,7 +11,15 @@
   height: 80px; // Giảm chiều cao để tạo cảm giác hiện đại
   background-color: #004d40; // Màu xanh ngọc ngà đậm
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, top 0.3s ease;
+
+  &.hide {
+    top: -80px; /* Ẩn thanh điều hướng khi cuộn xuống */
+  }
+
+  &.show {
+    top: 0; /* Hiện thanh điều hướng khi cuộn lên */
+  }
 
   .logo {
     display: flex;
@@ -26,7 +34,7 @@
       transition: transform 0.3s ease;
 
       &:hover {
-        transform: scale(1.05);
+        transform: scale(1.05); /* Tạo hiệu ứng phóng to nhẹ khi hover */
       }
     }
 
@@ -58,7 +66,7 @@
 
     .ant-menu-item:hover,
     .ant-menu-submenu-title:hover {
-      color: #ff9800;
+      color: #ff9800; /* Màu cam khi hover */
     }
 
     .ant-menu-submenu-arrow {
