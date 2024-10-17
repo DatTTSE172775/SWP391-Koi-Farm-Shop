@@ -45,7 +45,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use('/api', routes);
 
 // Sử dụng route cho order
-app.use('/api/orders', orderRoutes); // Thêm route cho order
+app.use('/api/orders', orderRoutes); // Thêm route cho order ...cái ở trên làm gì ???
 
 // Ví dụ về route login
 app.post('/api/auth/login', (req, res) => {

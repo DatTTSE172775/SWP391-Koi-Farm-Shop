@@ -157,7 +157,7 @@ const Navigation = () => {
             <Link to="/koi-breeders">Người nuôi cá Koi</Link>
           </Menu.Item>
           <Menu.Item key="koi-package">
-            <Link to="/koi-package">Lô cá Koi</Link>
+            <Link to="/koipackages">Lô cá Koi</Link>
           </Menu.Item>
           <Menu.Item key="koi-collection">
             <Link to="/koi-collection">Bộ sưu tập cá Koi</Link>

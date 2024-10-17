@@ -10,6 +10,8 @@ const { getAllCustomers, getCustomerById } = require('../controllers/customerCon
 // const orderModel = require('../models/orderModel'); // Import orderModel
 const { getAllOrders, getOrderById } = require('../controllers/orderController');
 const orderController = require('../controllers/orderController');
+const { getAllKoiPackages, getKoiPackageById } = require('../controllers/koiPackageController');
+
 
 const {
     createReportController,
@@ -335,5 +337,42 @@ router.get('/consignments', consignmentController.getAllConsignments);
 
 // Route GET consignment by ID
 router.get('/consignments/:id', consignmentController.getConsignmentById);
+
+/**
+ * @swagger
+ * /api/koipackages:
+ *   get:
+ *     summary: Get all koi packages
+ *     tags: [Koi Packages]
+ *     responses:
+ *       200:
+ *         description: List of all koi packages
+ *       500:
+ *         description: Server error
+ */
+router.get('/koipackages', getAllKoiPackages);
+
+/**
+ * @swagger
+ * /api/koipackages/{id}:
+ *   get:
+ *     summary: Get a koi package by ID
+ *     tags: [Koi Packages]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the koi package
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Details of the koi package
+ *       404:
+ *         description: Koi package not found
+ *       500:
+ *         description: Server error
+ */
+router.get('/koipackages/:id', getKoiPackageById);
 
 module.exports = router;

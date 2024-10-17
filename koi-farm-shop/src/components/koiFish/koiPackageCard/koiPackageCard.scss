@@ -1,0 +1,47 @@
+.koi-package-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .ant-card-cover {
+    height: 200px;
+
+    .image-container {
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #f0f0f0;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+  }
+
+  .ant-card-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .ant-card-meta-title {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+
+  .koi-details {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 15px;
+  }
+
+  .ant-btn {
+    margin-top: auto;
+  }
+}
