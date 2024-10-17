@@ -1,6 +1,12 @@
-import React, { useState } from "react";
-import "./Contact.scss";
+import {
+  faComment,
+  faEnvelope,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useState } from "react";
 import Koiimage from "../../assets/images/Koiimage.jpg";
+import "./Contact.scss";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -34,6 +40,26 @@ const Contact = () => {
           <div className="check-mark">✓</div>
           <h2>Thank you for your message!</h2>
           <p>We'll get back to you as soon as possible.</p>
+          <div className="social-links">
+            <button
+              onClick={() => window.open("https://www.facebook.com", "_blank")}
+              className="link-button"
+            >
+              Facebook
+            </button>
+            <button
+              onClick={() => window.open("https://www.instagram.com", "_blank")}
+              className="link-button"
+            >
+              Instagram
+            </button>
+            <button
+              onClick={() => window.open("https://www.twitter.com", "_blank")}
+              className="link-button"
+            >
+              Twitter
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -41,15 +67,12 @@ const Contact = () => {
 
   return (
     <div className="contact-container">
-      <img
-        className="koi-banner"
-        src={Koiimage}
-        alt="Beautiful Koi Pond"
-      />
-      <h1>Liên hệ với chúng tôi</h1>
-      <p>Hãy để chúng tôi lắng nghe ý kiến của bạn bằng cách điền vào form dưới đây !</p>
+      <img className="koi-banner" src={Koiimage} alt="Beautiful Koi Pond" />
+      <h1>Contact Us</h1>
+      <p>We'd love to hear from you. Please fill out the form below!</p>
       <form onSubmit={handleSubmit}>
         <div className="input-group">
+          <FontAwesomeIcon icon={faUser} className="icon" />
           <input
             type="text"
             name="firstName"
@@ -60,6 +83,7 @@ const Contact = () => {
           />
         </div>
         <div className="input-group">
+          <FontAwesomeIcon icon={faUser} className="icon" />
           <input
             type="text"
             name="lastName"
@@ -69,6 +93,7 @@ const Contact = () => {
           />
         </div>
         <div className="input-group">
+          <FontAwesomeIcon icon={faEnvelope} className="icon" />
           <input
             type="email"
             name="email"
@@ -79,13 +104,14 @@ const Contact = () => {
           />
         </div>
         <div className="input-group">
+          <FontAwesomeIcon icon={faComment} className="icon" />
           <textarea
             name="message"
             value={formData.message}
             onChange={handleChange}
             required
             placeholder="Bạn cần chúng tôi giúp gì?*"
-            style={{resize: "none"}}
+            style={{ resize: "none" }}
           />
         </div>
         <button type="submit" disabled={isSubmitting}>

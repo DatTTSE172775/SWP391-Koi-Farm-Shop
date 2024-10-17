@@ -1,11 +1,14 @@
-import { ShoppingCartOutlined, UserOutlined, BellOutlined } from "@ant-design/icons"; // Import Bell icon
+import {
+  BellOutlined,
+  ShoppingCartOutlined,
+  UserOutlined,
+} from "@ant-design/icons"; // Import Bell icon
 import { Avatar, Badge, Button, Dropdown, Menu } from "antd";
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import { logout } from "../../store/actions/authActions";
 import { CartContext } from "../order/cart-context/CartContext";
-import { useCallback } from "react";
 import "./Navigation.scss";
 
 const { SubMenu } = Menu;
@@ -14,19 +17,13 @@ const Navigation = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const [current, setCurrent] = useState("home");
-
-  const [showNavbar, setShowNavbar] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
-
   const { cartItems } = useContext(CartContext);
-  const [notifications, setNotifications] = useState([
-    { id: 1, message: "Thông báo 1", read: false },
-    { id: 2, message: "Thông báo 2", read: true },
-    { id: 3, message: "Thông báo 3", read: false },
-  ]);
-
+  const [isScrollingUp, setIsScrollingUp] = useState(true);
+  const [lastScrollTop, setLastScrollTop] = useState(0);
+  const [notifications, setNotifications] = useState([]);
   const unreadCount = notifications.filter((notif) => !notif.read).length;
 
+  // Xác định tab được chọn dựa trên đường dẫn hiện tại
   useEffect(() => {
     const path = location.pathname;
     if (path === "/home") {
@@ -61,25 +58,26 @@ const Navigation = () => {
     }
   }, [location.pathname]);
 
-  // Lắng nghe sự kiện scroll để điều khiển navbar
-  const controlNavbar = useCallback(() => {
-    if (window.scrollY > lastScrollY) {
-      // Lăn xuống => ẩn navbar
-      setShowNavbar(false);
-    } else {
-      // Lăn lên => hiện navbar
-      setShowNavbar(true);
-    }
-    setLastScrollY(window.scrollY);
-  }, [lastScrollY]);
-  
+  // Lắng nghe sự kiện scroll để ẩn/hiện thanh điều hướng
   useEffect(() => {
-    window.addEventListener("scroll", controlNavbar);
-  
-    return () => {
-      window.removeEventListener("scroll", controlNavbar);
+    const handleScroll = () => {
+      const scrollTop =
+        window.pageYOffset || document.documentElement.scrollTop;
+
+      if (scrollTop > lastScrollTop) {
+        setIsScrollingUp(false); // Ẩn khi lăn xuống
+      } else {
+        setIsScrollingUp(true); // Hiện khi lăn lên
+      }
+      setLastScrollTop(scrollTop <= 0 ? 0 : scrollTop);
     };
-  }, [controlNavbar])
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [lastScrollTop]);
 
   const handleClick = (e) => {
     setCurrent(e.key);
@@ -106,7 +104,9 @@ const Navigation = () => {
           {notif.read ? (
             <span style={{ color: "#888" }}>{notif.message} (Đã đọc)</span>
           ) : (
-            <span style={{ fontWeight: "bold" }}>{notif.message} (Chưa đọc)</span>
+            <span style={{ fontWeight: "bold" }}>
+              {notif.message} (Chưa đọc)
+            </span>
           )}
         </Menu.Item>
       ))}
@@ -135,11 +135,15 @@ const Navigation = () => {
   );
 
   return (
-    <div className={`navigation ${showNavbar ? "active" : "hidden"}`}>
+    <div className={`navigation ${isScrollingUp ? "show" : "hide"}`}>
       {/* Logo */}
       <div className="logo">
         <Link to="/home">
-          <img src="koi-farm-shop.png" alt="Koi Farm Shop" className="logo-image" />
+          <img
+            src="koi-farm-shop.png"
+            alt="Koi Farm Shop"
+            className="logo-image"
+          />
         </Link>
       </div>
 
@@ -216,7 +220,7 @@ const Navigation = () => {
             <Link to="/product/koi-feed">Cám cá Koi</Link>
           </Menu.Item>
           <Menu.Item key="product/pond-filter-system">
-            <Link to="/product/pond-filter-system">Hệ thống lọc hồ</Link>
+            <Link to="/product/pond-filter-system">Hệ thống lọc hồ cá Koi</Link>
           </Menu.Item>
           <Menu.Item key="product/pond-accessories">
             <Link to="/product/pond-accessories">Phụ kiện hồ cá</Link>
@@ -238,7 +242,11 @@ const Navigation = () => {
       <div className="nav-icons">
         {isAuthenticated ? (
           <>
-            <Dropdown overlay={notificationMenu} placement="bottomRight" trigger={["click"]}>
+            <Dropdown
+              overlay={notificationMenu}
+              placement="bottomRight"
+              trigger={["click"]}
+            >
               <div className="notification-dropdown">
                 <Badge count={unreadCount}>
                   <BellOutlined className="notification-icon" />
@@ -246,9 +254,17 @@ const Navigation = () => {
               </div>
             </Dropdown>
 
-            <Dropdown overlay={accountMenu} placement="bottomRight" trigger={["click"]}>
+            <Dropdown
+              overlay={accountMenu}
+              placement="bottomRight"
+              trigger={["click"]}
+            >
               <div className="account-dropdown">
-                <Avatar className="user-avatar" src="/images/users/avatar.jpg" icon={<UserOutlined />} />
+                <Avatar
+                  className="user-avatar"
+                  src="/images/users/avatar.jpg"
+                  icon={<UserOutlined />}
+                />
                 <span className="username">{user}</span>
               </div>
             </Dropdown>

@@ -1,65 +1,66 @@
 import React from "react";
 import "./KoiBreeders.scss";
+import koibreeder from "../../../assets/koibreeder/koibreeeder.jpg";
 
 const BreedersList = [
   {
       id: 1,
       name: "Koi Breeder 1",
-      image: "",
+      image: koibreeder,
       description: "Expert in Kohaku and Sanke varieties",
   },
   {
       id: 2,
       name: "Koi Breeder 2",
-      image: "",
+      image: koibreeder,
       description: "Specializes in rare Gin Rin koi",
   },
   {
       id: 3,
       name: "Koi Breeder 3",
-      image: "",
+      image: koibreeder,
       description: "Known for high-quality Showa koi",
   },
   {
       id: 4,
       name: "Koi Breeder 4",
-      image: "",
+      image: koibreeder,
       description: "Focuses on butterfly koi breeding",
   },
   {
       id: 5,
       name: "Koi Breeder 5",
-      image: "",
+      image: koibreeder,
       description: "Produces award-winning Taisho Sanshoku",
   },
   {
       id: 6,
       name: "Koi Breeder 6",
-      image: "",
+      image: koibreeder,
       description: "Specializes in Doitsu koi varieties",
   },
   {
       id: 7,
       name: "Koi Breeder 7",
-      image: "",
+      image: koibreeder,
       description: "Expert in Asagi and Shusui breeding",
   },
   {
       id: 8,
       name: "Koi Breeder 8",
-      image: "",
+      image: koibreeder,
       description: "Focuses on Ogon and metallic koi",
   },
   {
       id: 9,
       name: "Koi Breeder 9",
-      image: "",
+      image: koibreeder,
       description: "Produces high-quality Kumonryu koi",
   },
   {
       id: 10,
       name: "Koi Breeder 10",
-      image: "",
+      image: koibreeder,
       description: "Specializes in Kikokuryu and Beni Kikokuryu",
   },
 ]
@@ -69,9 +70,9 @@ const KoiBreeders = () => {
     <div className="koi-breeders">
       <h1 className="koi-breeders_title">Koi Breeders</h1>
       <div className="koi-breeders__intro">
-        <h2>Famous Koi Breeders</h2>
-        <p>If you're looking to add beautiful, healthy koi to your pond, our trusted network of koi breeders offers a diverse selection of premium koi fish. Whether you're searching for vibrant, show-quality koi or hardy varieties for your personal pond, our breeders provide top-tier fish known for their color, size, and health.</p>
-        <h3>Click on the image to view detail</h3>
+        <h2>Những Nhà Lai Tạo Cá Koi Nổi Tiếng</h2>
+        <p>Nếu bạn đang tìm kiếm những chú cá Koi đẹp và khỏe mạnh để thêm vào hồ cá của mình, mạng lưới các nhà lai tạo uy tín của chúng tôi cung cấp đa dạng các giống cá Koi cao cấp. Dù bạn đang tìm kiếm những chú cá Koi sặc sỡ, đạt chất lượng trình diễn hay những giống cá bền bỉ cho hồ cá riêng, các nhà lai tạo của chúng tôi đều mang đến những chú cá hàng đầu với màu sắc, kích thước và sức khỏe vượt trội.</p>
+        <h3>Nhấn vào hình ảnh để xem chi tiết.</h3>
       </div>
 
       <div className="koi-breeders__list">
