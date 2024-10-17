@@ -1,9 +1,11 @@
 .admin-header {
-  background-color: #ffffff;
-  padding: 0 20px;
+  background: linear-gradient(135deg, #ffffff, #f0f0f5); // Thêm hiệu ứng màu nền nhẹ
+  padding: 0 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); // Tạo hiệu ứng đổ bóng nhẹ
+  transition: all 0.3s ease;
 
   .header-content {
     display: flex;
@@ -13,10 +15,24 @@
   .welcome-message {
     margin-right: 20px;
     font-weight: bold;
+    font-size: 1.2rem; // Tăng kích thước chữ cho nổi bật
+    color: #4e4e4e;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: #4e9efc; // Đổi màu khi hover
+    }
   }
 
   .logout-icon {
-    font-size: 20px;
+    font-size: 24px; // Tăng kích thước icon
     cursor: pointer;
+    color: #ff4d4f; // Màu sắc nổi bật cho icon đăng xuất
+    transition: transform 0.3s ease, color 0.3s ease;
+
+    &:hover {
+      transform: scale(1.2); // Phóng to nhẹ khi hover
+      color: #ff7875;
+    }
   }
 }

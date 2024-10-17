@@ -1,124 +1,110 @@
-import axios from "axios";
-import { useState } from "react";
+import axiosPublic from "../../api/axiosPublic";
+import { useState, useEffect } from "react";
 import "./Consignment.scss";
 
 const ConsignmentForm = () => {
   const [formData, setFormData] = useState({
-    customerID: "", // You might want to get this from the user's session
-    koiID: "", // You might want to create a separate form or API to create a new Koi first
+    customerID: "",
+    koiID: "",
     consignmentType: "Care",
-    consignmentMode: "Offline",
+    consignmentMode: "Online",
     priceAgreed: "",
-    pickupDate: "",
     notes: "",
-    name: "",
-    phone: "",
-    email: "",
-    koiBreed: "",
+    koiType: "",
     koiColor: "",
     koiAge: "",
     koiSize: "",
-    description: "",
     image: null,
-    money: "",
   });
 
-  //Xử lý back-end
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Add this useEffect hook to fetch the customerID when the component mounts
+  // useEffect(() => {
+  //   const fetchCustomerID = async () => {
+  //     try {
+  //       // const response = await axiosPublic.get("customer/id");
+  //       setFormData(prevData => ({
+  //         ...prevData,
+  //         customerID: response.data.customerID
+  //       }));
+  //     } catch (error) {
+  //       console.error("Error fetching customer ID:", error);
+  //     }
+  //   };
+
+  //   fetchCustomerID();
+  // }, []);
+
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    const { name, value, type, files } = e.target;
+    setFormData((prevData) => {
+      const newData = {
+        ...prevData,
+        [name]: type === "file" ? files[0] : value,
+      };
+      console.log("Updated form data:", newData);  // Log the updated state
+      return newData;
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
-      const response = await axios.post("/api/consignments", {
-        customerID: formData.customerID,
-        koiID: formData.koiID,
-        consignmentType: formData.consignmentType,
-        consignmentMode: formData.consignmentMode,
-        priceAgreed: formData.priceAgreed,
-        pickupDate: formData.pickupDate,
-        notes: formData.notes,
+      const formDataToSend = new FormData();
+      for (const key in formData) {
+        if (key === 'consignmentType') {
+          formDataToSend.append(key, formData[key] || 'Care');  // Ensure a default value
+        } else {
+          formDataToSend.append(key, formData[key]);
+        }
+      }
+
+      // Log the form data before sending
+      console.log("Form data being sent:", Object.fromEntries(formDataToSend));
+
+      const response = await axiosPublic.post("createConsignment", formDataToSend, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
-      console.log(response.data);
-      alert("Consignment created successfully");
-      // Reset form or redirect user
+      console.log("Response from server:", response.data);
+      alert("Yêu cầu ký gửi đã được gửi thành công");
+      // Reset form after successful submission, but keep the customerID
+      setFormData(prevData => ({
+        ...prevData,
+        koiID: "",
+        consignmentType: "Chăm sóc",
+        consignmentMode: "Online",
+        priceAgreed: "",
+        notes: "",
+        koiType: "",
+        koiColor: "",
+        koiAge: "",
+        koiSize: "",
+        image: null,
+      }));
     } catch (error) {
-      console.error("Error creating consignment:", error);
-      alert("Error creating consignment");
+      console.error("Lỗi khi tạo yêu cầu ký gửi:", error);
+      alert("Đã xảy ra lỗi khi gửi yêu cầu ký gửi");
+    } finally {
+      setIsLoading(false);
     }
-  };
-
-  const formatCurrency = (value) => {
-    // Remove non-digit characters
-    const number = value.replace(/\D/g, "");
-    // Format number with thousands separators
-    return new Intl.NumberFormat("vi-VN").format(number);
-  };
-
-  const handleMoneyChange = (e) => {
-    const formattedValue = formatCurrency(e.target.value);
-    setFormData((prevData) => ({
-      ...prevData,
-      money: formattedValue,
-    }));
   };
 
   return (
     <div className="consign-form">
       <h2>Ký gửi cá Koi</h2>
       <form onSubmit={handleSubmit}>
-        <div className="customer-info">
-          <div className="form-group">
-            <label>Tên của bạn</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="phone">Số điện thoại</label>
-            <input
-              type="tel"
-              id="phone"
-              name="phone"
-              value={formData.phone}
-              onChange={handleInputChange}
-              pattern="[0-9]{10}"
-              placeholder="Nhập số điện thoại 10 chữ số"
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              placeholder="example@email.com"
-              required
-            />
-          </div>
-        </div>
-
         <div className="koi-info">
+          
           <div className="form-group">
             <label>Giống cá Koi</label>
             <input
               type="text"
-              name="koiBreed"
-              value={formData.koiBreed}
+              name="koiType"
+              value={formData.koiType}
               onChange={handleInputChange}
+              required
             />
           </div>
 
@@ -159,90 +145,65 @@ const ConsignmentForm = () => {
               name="image"
               accept="image/*"
               onChange={handleInputChange}
+              required
             />
           </div>
 
           <div className="form-group">
+            <label>Loại ký gửi</label>
+            <select
+              name="consignmentType"
+              value={formData.consignmentType}
+              onChange={handleInputChange}
+              required
+            >
+              <option value="Care">Chăm sóc</option>
+              <option value="Sell">Bán</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label>Hình thức ký gửi</label>
+            <select
+              name="consignmentMode"
+              value={formData.consignmentMode}
+              onChange={handleInputChange}
+              required
+            >
+              <option value="Online">Online</option>
+              <option value="Offline">Offline</option>
+            </select>
+          </div>
+
+          <div className="form-group">
             <label>Số tiền ký gửi mong muốn (VND)</label>
-            <div className="input-wrapper">
-              <input
-                type="text"
-                id="money"
-                name="money"
-                value={formData.money}
-                onChange={handleMoneyChange}
-                required
-              />
-              <span className="currency-symbol">Đồng</span>
-            </div>
+            <input
+              type="number"
+              step="0.01"
+              min="0"
+              max="99999999.99"
+              id="priceAgreed"
+              name="priceAgreed"
+              value={formData.priceAgreed}
+              onChange={handleInputChange}
+              required
+            />
           </div>
 
           <div className="form-group desc">
             <label>Ghi chú</label>
             <textarea
-              name="description"
-              value={formData.description}
+              name="notes"
+              value={formData.notes}
               onChange={handleInputChange}
               style={{ resize: "none" }}
             />
           </div>
         </div>
 
-        <div className="form-group">
-          <label>Loại ký gửi</label>
-          <select
-            name="consignmentType"
-            value={formData.consignmentType}
-            onChange={handleInputChange}
-          >
-            <option value="Care">Chăm sóc</option>
-            <option value="Sell">Bán</option>
-          </select>
-        </div>
-
-        <div className="form-group">
-          <label>Hình thức ký gửi</label>
-          <select
-            name="consignmentMode"
-            value={formData.consignmentMode}
-            onChange={handleInputChange}
-          >
-            <option value="Offline">Offline</option>
-            <option value="Online">Online</option>
-          </select>
-        </div>
-
-        <div className="form-group">
-          <label>Giá thỏa thuận</label>
-          <input
-            type="number"
-            name="priceAgreed"
-            value={formData.priceAgreed}
-            onChange={handleInputChange}
-          />
-        </div>
-
-        <div className="form-group">
-          <label>Ngày nhận cá</label>
-          <input
-            type="date"
-            name="pickupDate"
-            value={formData.pickupDate}
-            onChange={handleInputChange}
-          />
-        </div>
-
-        <div className="form-group">
-          <label>Ghi chú</label>
-          <textarea
-            name="notes"
-            value={formData.notes}
-            onChange={handleInputChange}
-            style={{ resize: "none" }}
-          />
-        </div>
-
-        <button type="submit">Gửi yêu cầu ký gửi</button>
+        <button type="submit" disabled={isLoading}>
+          {isLoading ? "Đang gửi..." : "Gửi yêu cầu ký gửi"}
+        </button>
       </form>
     </div>
   );

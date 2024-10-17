@@ -2,7 +2,7 @@
 import koiBanner from "../../assets/images/KoiFishOverview.jpg";
 import Navigation from "../../components/navigation/Navigation";
 import "./About.scss";
-import teamMember1 from "../../assets/images/team-member1.jpg";
+import teamMember1 from "../../assets/images/team-member2.jpg";
 import teamMember2 from "../../assets/images/team-member2.jpg";
 import teamMember3 from "../../assets/images/team-member3.jpg";
 import teamMember4 from "../../assets/images/team-member4.jpg";

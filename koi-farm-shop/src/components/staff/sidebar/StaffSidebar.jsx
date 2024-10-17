@@ -1,46 +1,55 @@
+import { Layout, Menu } from "antd";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   DashboardOutlined,
-  InboxOutlined,
+  SettingOutlined,
+  ShoppingOutlined,
+  UserOutlined,
   NotificationFilled,
-  ProductOutlined,
-  ShoppingCartOutlined,
+  InboxOutlined,
 } from "@ant-design/icons";
-import { HomeMaxOutlined } from "@mui/icons-material";
-import { Layout, Menu } from "antd";
-import React from "react";
-import { Link } from "react-router-dom";
 import "./StaffSidebar.scss";
 
 const { Sider } = Layout;
 
-const Sidebar = () => {
+const StaffSidebar = () => {
+  const [collapsed, setCollapsed] = useState(false);
+
   return (
-    <Sider className="staff-sidebar">
-      <div className="logo">
-        <h2>Staff Portal</h2>
-      </div>
+    <Sider
+      className={`staff-sidebar ${collapsed ? "collapsed" : ""}`}
+      collapsible
+      collapsed={collapsed}
+      onCollapse={(value) => setCollapsed(value)}
+    >
+      <div className="logo">Staff Portal</div>
       <Menu theme="dark" mode="inline" defaultSelectedKeys={["staff"]}>
-        <Menu.Item key="staff" icon={<HomeMaxOutlined />}>
+        <Menu.Item key="staff" icon={<DashboardOutlined />}>
           <Link to="/staff">Trang chủ</Link>
         </Menu.Item>
         <Menu.Item key="dashboard" icon={<DashboardOutlined />}>
-          <Link to="/dashboard">Dashboard</Link>
+          <Link to="/staff/dashboard">Dashboard</Link>
         </Menu.Item>
-        <Menu.Item key="orders" icon={<ShoppingCartOutlined />}>
+        <Menu.Item key="orders" icon={<ShoppingOutlined />}>
           <Link to="/staff/orders">Quản Lý Đơn Hàng</Link>
         </Menu.Item>
         <Menu.Item key="consignments" icon={<InboxOutlined />}>
           <Link to="/staff/consignments">Quản Lý Ký Gửi</Link>
         </Menu.Item>
-        <Menu.Item key="create" icon={<ProductOutlined />}>
+        <Menu.Item key="add-koi" icon={<UserOutlined />}>
           <Link to="/staff/create">Thêm cá koi</Link>
         </Menu.Item>
         <Menu.Item key="notification" icon={<NotificationFilled />}>
-          <Link to="/staff/notification">Thông báo</Link>
+          <Link to="/staff/notifications">Thông báo</Link>
+        </Menu.Item>
+        <Menu.Item key="settings" icon={<SettingOutlined />}>
+          <Link to="/staff/settings">Cài Đặt</Link>
         </Menu.Item>
       </Menu>
+      <div className="footer">© 2024 Staff Portal</div>
     </Sider>
   );
 };
 
-export default Sidebar;
+export default StaffSidebar;

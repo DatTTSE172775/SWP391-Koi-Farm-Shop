@@ -1,12 +1,26 @@
 const { sql } = require('../config/db');
 
 // Tạo yêu cầu ký gửi mới
-exports.createConsignment = async (customerID, koiID, consignmentType, consignmentMode, priceAgreed) => {
+exports.createConsignment = async (customerID, koiID, consignmentType, consignmentMode, priceAgreed, notes, koiType, koiColor, koiAge, koiSize, imagePath) => {
   try {
-    await sql.query`INSERT INTO KoiConsignment (CustomerID, KoiID, ConsignmentType, ConsignmentMode, PriceAgreed, Status, StartDate)
-                    VALUES (${customerID}, ${koiID}, ${consignmentType}, ${consignmentMode}, ${priceAgreed}, 'Pending', GETDATE())`;
+    const result = await sql.query`
+      INSERT INTO KoiConsignment (
+        CustomerID, KoiID, ConsignmentType, ConsignmentMode, 
+        PriceAgreed, Notes, KoiType, KoiColor, KoiAge, KoiSize, 
+        ImagePath, Status, ApprovedStatus
+      )
+      VALUES (
+        ${customerID}, ${koiID}, ${consignmentType}, 'Online', 
+        ${priceAgreed}, ${notes}, ${koiType}, ${koiColor}, ${koiAge}, ${koiSize}, 
+        ${imagePath}, 'Pending', 'Rejected'
+      );
+      SELECT SCOPE_IDENTITY() AS ConsignmentID;
+    `;
+    
+    return result.recordset[0].ConsignmentID;
   } catch (error) {
-    throw new Error('Error creating consignment');
+    console.error('Database error:', error);
+    throw new Error(`Error creating consignment: ${error.message}`);
   }
 };
 
@@ -21,6 +35,26 @@ exports.updateConsignmentStatus = async (consignmentID, status) => {
 
 // Lấy thông tin ký gửi theo ID
 exports.getConsignmentById = async (consignmentID) => {
+  try {
+    const result = await sql.query`SELECT * FROM KoiConsignment WHERE ConsignmentID = ${consignmentID}`;
+    return result.recordset[0];
+  } catch (error) {
+    throw new Error('Error fetching consignment by ID');
+  }
+};
+
+// Get all consignments
+exports.findAll = async () => {
+  try {
+    const result = await sql.query`SELECT * FROM KoiConsignment`;
+    return result.recordset;
+  } catch (error) {
+    throw new Error('Error fetching all consignments');
+  }
+};
+
+// Get consignment by ID
+exports.findByPk = async (consignmentID) => {
   try {
     const result = await sql.query`SELECT * FROM KoiConsignment WHERE ConsignmentID = ${consignmentID}`;
     return result.recordset[0];

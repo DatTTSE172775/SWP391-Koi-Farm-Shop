@@ -29,3 +29,13 @@ exports.getOrdersByCustomerId = async (customerID) => {
     throw new Error('Error fetching orders by customer ID');
   }
 };
+
+// Cập nhật trạng thái của đơn hàng
+exports.updateOrderStatus = async (orderID, status) => {
+  try {
+      await sql.query`UPDATE Orders SET OrderStatus = ${status} WHERE OrderID = ${orderID}`;
+  } catch (error) {
+      throw new Error('Error updating order status');
+  }
+};
+

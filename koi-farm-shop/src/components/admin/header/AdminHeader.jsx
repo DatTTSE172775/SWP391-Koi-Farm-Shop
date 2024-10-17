@@ -10,7 +10,6 @@ const AdminHeader = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Logic đăng xuất
     console.log("Đăng xuất...");
     navigate("/login");
   };

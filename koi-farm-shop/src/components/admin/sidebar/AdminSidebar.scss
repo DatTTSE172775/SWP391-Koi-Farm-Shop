@@ -1,10 +1,94 @@
 .admin-sidebar {
-  background-color: #001529;
+  background: linear-gradient(135deg, #001529, #003b5c);
+  height: 100vh;
+  width: 260px; // Đảm bảo đủ chiều rộng cho chữ dài
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
 
   .logo {
     color: #fff;
     text-align: center;
-    padding: 20px;
+    padding: 15px;
     font-weight: bold;
+    font-size: 1.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .ant-menu {
+    background: none;
+    border: none;
+    flex-grow: 1;
+    padding-top: 10px;
+
+    .ant-menu-item {
+      margin: 12px 0;
+      padding: 10px 16px; // Thêm padding để tạo không gian cho chữ
+      height: auto; // Đảm bảo chiều cao tự động với nội dung dài
+      line-height: 1.5; // Tăng khoảng cách giữa các dòng
+      transition: all 0.3s ease;
+
+      a {
+        display: flex;
+        align-items: center;
+        gap: 15px; // Khoảng cách giữa icon và text
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1rem;
+        font-weight: 500;
+        white-space: normal; // Cho phép xuống dòng
+        word-wrap: break-word; // Đảm bảo chữ dài không bị cắt
+        overflow: visible; // Hiển thị đầy đủ nội dung
+        transition: color 0.3s ease;
+
+        &:hover {
+          color: #4e9efc;
+        }
+      }
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        transform: translateX(5px);
+      }
+
+      &.ant-menu-item-selected {
+        background-color: rgba(69, 123, 157, 0.8);
+
+        a {
+          color: #ffffff;
+        }
+      }
+    }
+  }
+
+  .footer {
+    padding: 10px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.8rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  &.collapsed {
+    width: 80px;
+
+    .logo {
+      font-size: 1rem;
+      padding: 10px;
+    }
+
+    .ant-menu-item a {
+      justify-content: center;
+      gap: 0;
+    }
+  }
+}
+
+// Responsive cho màn hình nhỏ
+@media (max-width: 768px) {
+  .admin-sidebar {
+    width: 200px; // Vừa đủ cho màn hình nhỏ
   }
 }

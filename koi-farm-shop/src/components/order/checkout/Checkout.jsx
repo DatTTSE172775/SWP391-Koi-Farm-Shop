@@ -5,14 +5,12 @@ import {
   Divider,
   Form,
   Input,
-  notification,
   Radio,
   Row,
   Typography,
 } from "antd";
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "../../../api/axiosInstance";
 import momoLogo from "../../../assets/checkout/momo-logo.png";
 import vnpayLogo from "../../../assets/checkout/vnpay-logo.png";
 import { CartContext } from "../cart-context/CartContext";
@@ -25,39 +23,10 @@ const Checkout = () => {
   const navigate = useNavigate();
   const { cartItems } = useContext(CartContext);
 
-  const onFinish = async (values) => {
-    try {
-      // Data to send to the backend
-      const orderData = {
-        customerID: "sampleCustomerId", // Replace with actual customer ID
-        totalAmount: cartItems.reduce((total, item) => total + item.total, 0),
-        shippingAddress: values.address,
-        paymentMethod: values.paymentMethod,
-      };
-
-      // Call the API to create the order
-      const response = await axiosInstance.post("/orders", orderData);
-
-      if (response.status === 201) {
-        notification.success({
-          message: "Đặt hàng thành công",
-          description: "Đơn hàng của bạn đã được tạo thành công!",
-          placement: "topRight",
-        });
-
-        // Navigate to success page
-        navigate("/order-success", {
-          state: { cartItems, customerInfo: values },
-        });
-      }
-    } catch (error) {
-      notification.error({
-        message: "Đặt hàng thất bại",
-        description:
-          error.response?.data?.error || "Đã xảy ra lỗi khi đặt hàng.",
-        placement: "topRight",
-      });
-    }
+  const onFinish = (values) => {
+    console.log("Received values of form: ", values);
+    // Xử lý thanh toán ở đây (sau này tích hợp với backend)
+    navigate("/order-success", { state: { cartItems, customerInfo: values } });
   };
 
   return (
@@ -152,9 +121,16 @@ const Checkout = () => {
               </Form.Item>
 
               {/* Nút Xác Nhận Thanh Toán */}
-              <Button type="primary" onClick={onFinish}>
-                Xác Nhận Thanh Toán
-              </Button>
+              <Form.Item>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  block
+                  onClick={onFinish}
+                >
+                  Xác Nhận Thanh Toán
+                </Button>
+              </Form.Item>
             </Form>
           </Card>
         </Col>
