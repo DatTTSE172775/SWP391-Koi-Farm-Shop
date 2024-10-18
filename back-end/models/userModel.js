@@ -34,4 +34,38 @@ const findUserByUsername = async (username) => {
     }
 };
 
-module.exports = { createUser, findUserByUsername };
+// Function to find user by ID
+const findUserById = async (userId) => {
+    try {
+        const pool = await sql.connect();
+        const result = await pool.request()
+            .input('UserID', sql.Int, userId)
+            .query('SELECT * FROM Users WHERE UserID = @UserID');
+        return result.recordset[0];
+    } catch (err) {
+        console.error('Error finding user by ID:', err);
+        throw err;
+    }
+};
+
+// Function to update user password
+const updateUserPassword = async (userId, newPasswordHash) => {
+    try {
+        const pool = await sql.connect();
+        const result = await pool.request()
+            .input('UserID', sql.Int, userId)
+            .input('PasswordHash', sql.VarChar(255), newPasswordHash)
+            .query('UPDATE Users SET PasswordHash = @PasswordHash WHERE UserID = @UserID');
+        return result;
+    } catch (err) {
+        console.error('Error updating user password:', err);
+        throw err;
+    }
+};
+
+module.exports = {
+    createUser,
+    findUserByUsername,
+    findUserById,       // Export findUserById for use in other modules
+    updateUserPassword  // Export updateUserPassword for password update functionality
+};

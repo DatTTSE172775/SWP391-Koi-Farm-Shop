@@ -25,6 +25,18 @@ const swaggerOptions = {
       },
       servers: [{ url: 'http://localhost:5000' }],
     },
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
+    security: [{
+      bearerAuth: []
+    }],
   },
   apis: ['./routes/*.js'], // Đường dẫn đến file chứa các route và comment Swagger
 };
