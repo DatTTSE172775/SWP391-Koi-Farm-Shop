@@ -10,8 +10,13 @@ import {
 import Loading from "./components/loading/Loading";
 import CartProvider from "./components/order/cart-context/CartContext";
 // main layout
+import OrderDetails from "./pages/admin/order-details/OrderDetails";
+import OrdersManagement from "./pages/admin/orderManagement/OrdersManagement";
+import WelcomeAdmin from "./pages/admin/welcome/WelcomeAdmin";
 import MainLayout from "./pages/MainLayout";
 import NotFound from "./pages/notfound/NotFound";
+import WelcomeStaff from "./pages/staff/layout/WelcomeStaff";
+import StaffOrderManage from "./pages/staff/order-manage/StaffOrderManage";
 
 // auth page
 const ForgetPassword = lazy(() =>
@@ -103,6 +108,26 @@ function App() {
               <Route path="register" element={<Register />} />
               <Route path="forget-password" element={<ForgetPassword />} />
             </Route>
+
+            {/* Admin Routes */}
+            <Route path="/admin" element={<WelcomeAdmin />} />
+            <Route path="/admin/manage-orders" element={<OrdersManagement />} />
+            <Route
+              path="/admin/manage-orders/:orderId"
+              element={<OrderDetails />}
+            />
+            {/* <Route
+              path="/admin/manage-consign"
+              element={<ManagerConsignmentPage />}
+            />
+            <Route
+              path="/admin/approval"
+              element={<ManagerConsignmentApprovalPage />}
+            /> */}
+
+            {/* Staff Routes */}
+            <Route path="/staff" element={<WelcomeStaff />} />
+            <Route path="/staff/orders" element={<StaffOrderManage />} />
 
             {/* Fallback Route */}
             <Route path="*" element={<NotFound />} />
