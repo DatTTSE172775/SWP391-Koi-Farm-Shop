@@ -23,9 +23,17 @@ const Checkout = () => {
   const navigate = useNavigate();
   const { cartItems } = useContext(CartContext);
 
+  // Function to calculate total amount dynamically
+  const calculateTotal = () => {
+    return cartItems.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
+    );
+  };
+
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
-    // Xử lý thanh toán ở đây (sau này tích hợp với backend)
+    // Handle payment logic here (backend integration can be added later)
     navigate("/order-success", { state: { cartItems, customerInfo: values } });
   };
 
@@ -35,7 +43,7 @@ const Checkout = () => {
         Thanh Toán
       </Title>
       <Row gutter={16}>
-        {/* Phần Thông Tin Giao Hàng */}
+        {/* Shipping Information Section */}
         <Col xs={24} lg={16}>
           <Card title="Thông Tin Giao Hàng" bordered={false}>
             <Form
@@ -94,7 +102,7 @@ const Checkout = () => {
                 <Divider />
               </Form.Item>
 
-              {/* Phần Hình Thức Thanh Toán */}
+              {/* Payment Method Section */}
               <Form.Item
                 name="paymentMethod"
                 label="Hình Thức Thanh Toán"
@@ -120,7 +128,7 @@ const Checkout = () => {
                 <Divider />
               </Form.Item>
 
-              {/* Nút Xác Nhận Thanh Toán */}
+              {/* Submit Button */}
               <Form.Item>
                 <Button
                   type="primary"
@@ -135,21 +143,22 @@ const Checkout = () => {
           </Card>
         </Col>
 
-        {/* Phần Xem Lại Đơn Hàng */}
+        {/* Order Review Section */}
         <Col xs={24} lg={8}>
           <Card title="Đơn Hàng Của Bạn" bordered={false}>
-            {/* Dữ liệu mẫu, bạn sẽ thay thế bằng dữ liệu thực tế sau */}
             <div className="order-summary">
               {cartItems.map((item) => (
                 <div className="order-item" key={item.id}>
-                  <Text>{`1x ${item.name}`}</Text>
-                  <Text strong>{`${item.price.toLocaleString()}`}</Text>
+                  <Text>{`${item.quantity}x ${item.name}`}</Text>
+                  <Text strong>{`${(
+                    item.price * item.quantity
+                  ).toLocaleString()} VND`}</Text>
                 </div>
               ))}
               <Divider />
               <div className="order-total">
                 <Text>Tổng Tiền:</Text>
-                <Text strong>3,800,000 VND</Text>
+                <Text strong>{`${calculateTotal().toLocaleString()} VND`}</Text>
               </div>
             </div>
           </Card>

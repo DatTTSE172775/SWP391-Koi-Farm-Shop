@@ -17,10 +17,9 @@ import "./CartPage.scss";
 const { Title, Text } = Typography;
 
 const CartPage = () => {
-  const { cartItems, handleRemoveFromCart, handleUpdateQuantity } =
-    useContext(CartContext);
+  const { cartItems, handleRemoveFromCart } = useContext(CartContext);
 
-  // Định nghĩa các cột cho bảng
+  // Define columns for the table
   const columns = [
     {
       title: "Hình Ảnh",
@@ -48,19 +47,15 @@ const CartPage = () => {
       title: "Giá",
       dataIndex: "price",
       key: "price",
-      render: (price) => <Text>{price.toLocaleString()}</Text>,
+      render: (price) => <Text>{price.toLocaleString()} VND</Text>,
       responsive: ["sm", "md", "lg"],
     },
     {
       title: "Số Lượng",
       dataIndex: "quantity",
       key: "quantity",
-      render: (quantity, record) => (
-        <InputNumber
-          min={1}
-          defaultValue={quantity}
-          onChange={(value) => handleUpdateQuantity(record.key, value)}
-        />
+      render: (quantity) => (
+        <InputNumber min={1} max={1} value={quantity} disabled />
       ),
       responsive: ["sm", "md", "lg"],
     },
@@ -68,7 +63,7 @@ const CartPage = () => {
       title: "Tổng Tiền",
       dataIndex: "total",
       key: "total",
-      render: (total) => <Text strong>{total.toLocaleString()}</Text>,
+      render: (total) => <Text strong>{total.toLocaleString()} VND</Text>,
       responsive: ["sm", "md", "lg"],
     },
     {
@@ -86,7 +81,7 @@ const CartPage = () => {
     },
   ];
 
-  // Tổng tiền tất cả sản phẩm
+  // Calculate total price of all items
   const totalPrice = cartItems.reduce((acc, item) => acc + item.total, 0);
 
   return (
@@ -104,9 +99,9 @@ const CartPage = () => {
         <Col xs={24} sm={12} md={8} lg={6}>
           <div className="summary-item">
             <Text>Tổng Tiền:</Text>
-            <Text strong>{totalPrice.toLocaleString()}</Text>
+            <Text strong>{totalPrice.toLocaleString()} VND</Text>
           </div>
-          {/* Bạn có thể thêm thuế, phí vận chuyển ở đây */}
+          {/* Add tax or shipping fees here if needed */}
           <div className="summary-actions">
             <Link to="/koi-list">
               <Button type="default" className="continue-shopping">
