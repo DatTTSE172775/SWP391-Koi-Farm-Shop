@@ -1,4 +1,4 @@
-import { Button, Card, Typography } from "antd";
+import { Button, Card, Typography, notification } from "antd";
 import { memo, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CartContext } from "../../order/cart-context/CartContext";
@@ -9,7 +9,7 @@ const { Text } = Typography;
 const KoiCard = ({ koifish, isAuthenticated }) => {
   const [imageError, setImageError] = useState(false);
   const navigate = useNavigate();
-  const { handleAddToCart } = useContext(CartContext);
+  const { cartItems, handleAddToCart } = useContext(CartContext);
 
   const handleImageError = () => {
     console.error(`Failed to load image for ${koifish.Name}`);
@@ -27,16 +27,40 @@ const KoiCard = ({ koifish, isAuthenticated }) => {
   };
 
   const onAddToCart = () => {
-    const koi = {
-      id: koifish.KoiID,
-      name: koifish.Name,
-      price: koifish.Price,
-      image: koifish.ImagesLink,
-      origin: koifish.Origin,
-      size: koifish.Size,
-      weight: koifish.Weight,
-    };
-    handleAddToCart(koi); // Call handleAddToCart properly
+    // Check if the user is authenticated
+    if (!isAuthenticated) {
+      notification.warning({
+        message: "Vui Lòng Đăng Nhập",
+        description: "Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.",
+        placement: "bottomRight",
+      });
+      navigate("/login"); // Redirect to login page
+      return;
+    }
+
+    // Check if the koi fish is already in the cart
+    const isAlreadyInCart = cartItems.some((item) => item.id === koifish.KoiID);
+
+    if (isAlreadyInCart) {
+      // Show a warning notification if the koi fish is already added
+      notification.warning({
+        message: "Cá Koi Đã Có Trong Giỏ Hàng",
+        description: `${koifish.Name} đã được thêm vào giỏ hàng trước đó.`,
+        placement: "bottomRight",
+      });
+    } else {
+      // Add the koi fish to the cart if not already added
+      const koi = {
+        id: koifish.KoiID,
+        name: koifish.Name,
+        price: koifish.Price,
+        image: koifish.ImagesLink,
+        origin: koifish.Origin,
+        size: koifish.Size,
+        weight: koifish.Weight,
+      };
+      handleAddToCart(koi); // Call handleAddToCart properly
+    }
   };
 
   return (
@@ -64,7 +88,7 @@ const KoiCard = ({ koifish, isAuthenticated }) => {
         <Text>Variety: {koifish.VarietyID}</Text>
         <Text>Size: {koifish.Size} cm</Text>
         <Text>Weight: {koifish.Weight} kg</Text>
-        <Text strong>Price: ${koifish.Price}</Text>
+        <Text strong>Price: {koifish.Price.toLocaleString()} VND</Text>
         <Text>Health Status: {koifish.HealthStatus}</Text>
       </div>
       <Button type="primary" onClick={onAddToCart} block>
