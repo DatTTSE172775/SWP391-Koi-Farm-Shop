@@ -1,4 +1,5 @@
 import { notification } from "antd";
+import PropTypes from "prop-types";
 import React, { createContext, useState } from "react";
 
 export const CartContext = createContext();
@@ -59,6 +60,9 @@ const CartProvider = ({ children }) => {
       {children}
     </CartContext.Provider>
   );
+};
+CartProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 export default CartProvider;
