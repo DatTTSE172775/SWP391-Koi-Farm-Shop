@@ -8,7 +8,7 @@ const userSignIn = require('../controllers/userSignIn');
 const { getAllKoiFish, getKoiFishById } = require('../controllers/koiController');
 const { getAllCustomers, getCustomerById } = require('../controllers/customerController');
 // const orderModel = require('../models/orderModel'); // Import orderModel
-const { getAllOrders, getOrderById } = require('../controllers/orderController');
+const { getAllOrders, getOrderById, createOrder, getOrderByCustomerID } = require('../controllers/orderController');
 const orderController = require('../controllers/orderController');
 const { getAllKoiPackages, getKoiPackageById } = require('../controllers/koiPackageController');
 
@@ -213,16 +213,8 @@ router.get('/customers/:customerId', getCustomerById);
  *       500:
  *         description: Lỗi khi tạo đơn hàng
  */
-router.post('/orders', async (req, res) => {
-    try {
-        const { customerID, totalAmount, shippingAddress, paymentMethod } = req.body;
-        await orderModel.createOrder(customerID, totalAmount, shippingAddress, paymentMethod);
-        res.status(201).json({ message: 'Order created successfully' });
-    } catch (error) {
-        console.error('Error creating order:', error);
-        res.status(500).json({ message: 'Error creating order' });
-    }
-});
+
+router.post('/orders', createOrder);
 
 /**
  * @swagger
@@ -259,7 +251,7 @@ router.post('/orders', async (req, res) => {
  *       500:
  *         description: Lỗi khi cập nhật trạng thái đơn hàng
  */
-router.put('/orders/:id/status', orderController.updateOrderStatus);
+router.put('/orders/:orderId/status', orderController.updateOrderStatus);
 
 // Route POST tạo ký gửi cá Koi
 /**
@@ -374,5 +366,51 @@ router.get('/koipackages', getAllKoiPackages);
  *         description: Server error
  */
 router.get('/koipackages/:id', getKoiPackageById);
+
+/**
+ * @swagger
+ * /api/orders/customer/{customerID}:
+ *   get:
+ *     summary: Lấy danh sách đơn hàng theo ID khách hàng
+ *     tags: [Orders]
+ *     parameters:
+ *       - in: path
+ *         name: customerID
+ *         required: true
+ *         description: ID của khách hàng
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Danh sách đơn hàng của khách hàng
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                     description: ID của đơn hàng
+ *                   customerID:
+ *                     type: integer
+ *                     description: ID của khách hàng
+ *                   totalAmount:
+ *                     type: number
+ *                     description: Tổng giá trị đơn hàng
+ *                   status:
+ *                     type: string
+ *                     description: Trạng thái đơn hàng
+ *                   createdAt:
+ *                     type: string
+ *                     format: date-time
+ *                     description: Thời gian tạo đơn hàng
+ *       404:
+ *         description: Không tìm thấy đơn hàng cho khách hàng này
+ *       500:
+ *         description: Lỗi server
+ */
+router.get('/orders/customer/:customerID', orderController.getOrderByCustomerID);
 
 module.exports = router;

@@ -10,12 +10,14 @@ console.log(orderController); // Kiểm tra xem các hàm có tồn tại hay kh
 router.get('/all', orderController.getAllOrders);
 
 // Lấy đơn hàng theo ID
-router.get('/:id', orderController.getOrderById);
+router.get('/:orderId', orderController.getOrderById);
 
 // Cập nhật trạng thái của đơn hàng
 router.put('/:id/status', orderController.updateOrderStatus);
 
 // Thêm route để tạo đơn hàng
 router.post('/create', orderController.createOrder);
+
+router.get('/customer/:customerId', orderController.getOrderByCustomerID);
 
 module.exports = router;

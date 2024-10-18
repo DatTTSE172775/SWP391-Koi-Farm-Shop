@@ -36,4 +36,18 @@ const getCustomerById = async (customerId) => {
     }
 };
 
-module.exports = { createCustomer, getCustomerById };
+// Add this new function
+const getCustomerByEmail = async (email) => {
+    try {
+        const pool = await sql.connect();
+        const result = await pool.request()
+            .input('Email', sql.VarChar(255), email)
+            .query('SELECT * FROM Customers WHERE Email = @Email');
+        return result.recordset[0];
+    } catch (err) {
+        console.error('SQL error', err);
+        throw err;
+    }
+};
+
+module.exports = { createCustomer, getCustomerById, getCustomerByEmail };

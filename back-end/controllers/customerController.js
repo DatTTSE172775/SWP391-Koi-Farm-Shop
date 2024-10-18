@@ -13,10 +13,10 @@ const getAllCustomers = async (req, res) => {
 
 // Get customer by ID
 const getCustomerById = async (req, res) => {
-    const { id } = req.params;
+    const { customerId } = req.params;
 
     try {
-        const customer = await Customer.findByPk(id);
+        const customer = await Customer.getCustomerById(customerId);
         if (!customer) {
             return res.status(404).json({ message: 'Customer not found.' });
         }
@@ -27,4 +27,20 @@ const getCustomerById = async (req, res) => {
     }
 };
 
-module.exports = { getAllCustomers, getCustomerById };
+// Add this new function
+const getCustomerByEmail = async (req, res) => {
+    const { email } = req.params;
+
+    try {
+        const customer = await Customer.getCustomerByEmail(email);
+        if (!customer) {
+            return res.status(404).json({ message: 'Customer not found.' });
+        }
+        res.json(customer);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error.' });
+    }
+};
+
+module.exports = { getAllCustomers, getCustomerById, getCustomerByEmail };
