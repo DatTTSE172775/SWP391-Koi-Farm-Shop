@@ -33,8 +33,24 @@ const Checkout = () => {
 
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
-    // Handle payment logic here (backend integration can be added later)
-    navigate("/order-success", { state: { cartItems, customerInfo: values } });
+
+    // Ensure that we only pass clean data to navigate
+    const serializedCartItems = cartItems.map((item) => ({
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      quantity: item.quantity,
+    }));
+
+    const serializedCustomerInfo = { ...values };
+
+    // Navigate to the success page with serializable state
+    navigate("/order-success", {
+      state: {
+        cartItems: serializedCartItems,
+        customerInfo: serializedCustomerInfo,
+      },
+    });
   };
 
   return (
@@ -130,12 +146,7 @@ const Checkout = () => {
 
               {/* Submit Button */}
               <Form.Item>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  block
-                  onClick={onFinish}
-                >
+                <Button type="primary" htmlType="submit" block>
                   Xác Nhận Thanh Toán
                 </Button>
               </Form.Item>
