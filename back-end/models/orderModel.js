@@ -39,3 +39,11 @@ exports.updateOrderStatus = async (orderID, status) => {
   }
 };
 
+exports.getAllOrders = async () => {
+  try {
+    const result = await sql.query`SELECT * FROM Orders ORDER BY OrderDate DESC`;
+    return result.recordset;
+  } catch (error) {
+    throw new Error('Error fetching all orders');
+  }
+};

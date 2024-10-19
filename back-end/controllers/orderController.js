@@ -5,7 +5,7 @@ const Order = require("../models/orderModel");
 // Get all orders
 const getAllOrders = async (req, res) => {
   try {
-    const orders = await Order.findAll();
+    const orders = await Order.getAllOrders();
     res.json(orders);
   } catch (err) {
     console.error(err);
