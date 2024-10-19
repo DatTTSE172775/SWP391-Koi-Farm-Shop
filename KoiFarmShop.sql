@@ -331,6 +331,7 @@ INSERT INTO KoiFish (Name, VarietyID, Origin, BreederID, Gender, Born, Size, Wei
 
 delete from KoiFish
 select * from KoiFish
+select * from Orders
 
 INSERT INTO KoiPackage (KoiID, PackageName, ImageLink, Price, PackageSize, Availability) VALUES
 (12, 'Sakura Starter Pack', 'https://onkoi.vn/wp-content/uploads/2021/01/lo-kohaku-38-cm-066-768x768.jpg', 6000000, 1, 'Available'),
