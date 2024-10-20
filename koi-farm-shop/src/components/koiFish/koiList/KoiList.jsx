@@ -37,6 +37,7 @@ const KoiList = ({ koiFish, isAuthenticated }) => {
 
   return (
     <div className="koi-list">
+      <h1>-------------</h1>
       <KoiListHeader />
       <KoiSearch onSearch={handleSearch} onFilter={handleFilter} />
       {filteredKoiList.length === 0 ? (

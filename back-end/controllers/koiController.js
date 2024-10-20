@@ -41,20 +41,13 @@ exports.createKoiFish = async (req, res) => {
 };
 
 // Controller function to get all KoiFish entries
-exports.getAllKoiFish = async (req, res) => {
+ exports.getAllKoiFish = async (req, res) => {
   try {
-    // Call the getAllKoiFish function from the model
-    const result = await koiModel.getAllKoiFish();
-
-    res.status(200).json({
-      message: "Koi Fish retrieved successfully!",
-      data: result,
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: "Error fetching Koi Fish",
-      error: error.message,
-    });
+      const koiFish = await koiModel.getAllKoiFish();
+      res.json(koiFish);
+  } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Server error.' });
   }
 };
 

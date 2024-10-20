@@ -177,7 +177,7 @@ router.post("/forgot-password", forgotPassword);
  *       200:
  *         description: List of all Koi Fish
  */
-router.get("/koifish", getAllKoiFish);
+router.get('/koifish', getAllKoiFish);
 
 /**
  * @swagger
@@ -266,7 +266,7 @@ router.get("/orders", getAllOrders);
  *       200:
  *         description: Order details
  */
-router.get("/orders/:orderId", authMiddleware, getOrderById);
+router.get("/orders/:orderId", getOrderById);
 
 /**
  * @swagger
@@ -293,7 +293,7 @@ router.get("/orders/:orderId", authMiddleware, getOrderById);
  *       201:
  *         description: Order created successfully
  */
-router.post("/orders", authMiddleware, createOrder);
+router.post("/orders", createOrder);
 
 /**
  * @swagger
@@ -322,7 +322,7 @@ router.post("/orders", authMiddleware, createOrder);
  *       200:
  *         description: Order status updated successfully
  */
-router.patch("/orders/:orderId", authMiddleware, updateOrderStatus);
+router.patch("/orders/:orderId", updateOrderStatus);
 
 /**
  * @swagger
@@ -341,7 +341,7 @@ router.patch("/orders/:orderId", authMiddleware, updateOrderStatus);
  *       200:
  *         description: Order deleted successfully
  */
-router.delete("/orders/:orderId", authMiddleware, deleteOrder);
+router.delete("/orders/:orderId", deleteOrder);
 
 // Customer routes
 /**
