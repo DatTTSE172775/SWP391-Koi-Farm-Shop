@@ -1,0 +1,18 @@
+<script src="index.js"></script>
+<script>
+    var a = new window._Order();
+    a.next(function () {
+        console.info('start');
+    });
+    a.next(function () {
+        console.info('after 1000 milsecond');
+    }, 1000);
+
+    a.next(function () {
+        console.info('after 10 milsecond');
+    }, 10);
+    a.next(function () {
+        console.info('end');
+    });
+
+</script>

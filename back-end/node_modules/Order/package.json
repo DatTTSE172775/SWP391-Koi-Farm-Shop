@@ -1,0 +1,14 @@
+{
+  "name": "Order",
+  "version": "0.0.1",
+  "author": {
+    "name": "raccoons.lv"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "mocha": "2.4",
+    "sinon": "1.17",
+    "expect.js": "0.3"
+  }
+}
