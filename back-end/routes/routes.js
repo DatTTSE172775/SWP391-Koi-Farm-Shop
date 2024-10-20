@@ -26,6 +26,7 @@ const {
 const {
   getAllCustomers,
   getCustomerById,
+  getCustomerByUserName,
 } = require("../controllers/customerController");
 const {
   createReportController,
@@ -354,7 +355,7 @@ router.delete("/orders/:orderId", deleteOrder);
  *       200:
  *         description: A list of customers
  */
-router.get("/customers", authMiddleware, getAllCustomers);
+router.get("/customers", getAllCustomers);
 
 /**
  * @swagger
@@ -373,7 +374,28 @@ router.get("/customers", authMiddleware, getAllCustomers);
  *       200:
  *         description: Customer details
  */
-router.get("/customers/:customerId", authMiddleware, getCustomerById);
+router.get("/customers/:customerId", getCustomerById);
+
+
+// Get customer by username
+/**
+ * @swagger
+ * /api/customers/username/{userName}:
+ *   get:
+ *     summary: Get customer details by username
+ *     tags: [Customers]
+ *     parameters:
+ *       - in: path
+ *         name: userName
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Customer username
+ *     responses:
+ *       200:
+ *         description: Customer details
+ */
+router.get("/customers/username/:userName", getCustomerByUserName);
 
 // Report routes
 /**
@@ -521,7 +543,7 @@ router.get("/koipackages", getAllKoiPackages);
  *       201:
  *         description: Koi Consignment created successfully
  */
-router.post('/createConsignment', koiConsignmentController.createKoiConsignment);
+router.post('/createConsignment', authMiddleware, koiConsignmentController.createKoiConsignment);
 /**
  * @swagger
  * /api/koiconsignments:
