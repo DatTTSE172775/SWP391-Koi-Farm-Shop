@@ -5,7 +5,7 @@ const Order = require("../models/orderModel");
 // Get all orders
 const getAllOrders = async (req, res) => {
   try {
-    const orders = await Order.findAll();
+    const orders = await Order.getAllOrders();
     res.json(orders);
   } catch (err) {
     console.error(err);
@@ -15,10 +15,10 @@ const getAllOrders = async (req, res) => {
 
 // Get order by ID
 const getOrderById = async (req, res) => {
-  const { id } = req.params;
+  const { orderId } = req.params;
 
   try {
-    const order = await Order.findByPk(id);
+    const order = await Order.getOrderById(orderId);
     if (!order) {
       return res.status(404).json({ message: "Order not found." });
     }
@@ -34,14 +34,12 @@ const createOrder = async (req, res) => {
   const { customerID, totalAmount, shippingAddress, paymentMethod } = req.body;
 
   try {
-    const newOrder = await Order.create({
+    const newOrder = await Order.createOrder(
       customerID,
       totalAmount,
       shippingAddress,
-      paymentMethod,
-      orderDate: new Date(),
-      orderStatus: "Pending",
-    });
+      paymentMethod
+    );
     res.status(201).json(newOrder);
   } catch (err) {
     console.error(err);
@@ -51,19 +49,16 @@ const createOrder = async (req, res) => {
 
 // Update order status
 const updateOrderStatus = async (req, res) => {
-  const { id } = req.params;
+  const { orderId } = req.params;
   const { status } = req.body;
 
   try {
-    const order = await Order.findByPk(id);
-    if (!order) {
+    const updatedOrder = await Order.updateOrderStatus(orderId, status);
+    if (!updatedOrder) {
       return res.status(404).json({ message: "Order not found." });
     }
 
-    order.orderStatus = status;
-    await order.save();
-
-    res.json({ message: "Order status updated.", order });
+    res.json({ message: "Order status updated.", order: updatedOrder });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Failed to update order status." });
@@ -72,16 +67,14 @@ const updateOrderStatus = async (req, res) => {
 
 // Delete an order
 const deleteOrder = async (req, res) => {
-  const { id } = req.params;
+  const { orderId } = req.params;
 
   try {
-    const order = await Order.findByPk(id);
-    if (!order) {
+    const deletedOrder = await Order.deleteOrder(orderId);
+    if (!deletedOrder) {
       return res.status(404).json({ message: "Order not found." });
     }
-
-    await order.destroy();
-    res.json({ message: "Order deleted." });
+    res.json({ message: "Order deleted successfully.", deletedOrder });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Failed to delete order." });
