@@ -1,10 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const consignmentController = require('../controllers/consignmentController');
 const orderController = require('../controllers/orderController'); // Import orderController
 const orderModel = require('../models/orderModel'); // Import orderModel
+const authMiddleware = require("../middleware/authMiddleware");
 
 console.log(orderController); // Kiểm tra xem các hàm có tồn tại hay không
+
+//router.get("/orders", authMiddleware, getAllOrders);
+
 
 // Lấy tất cả đơn hàng
 router.get('/all', orderController.getAllOrders);

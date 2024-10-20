@@ -9,6 +9,8 @@ const logoutUser = require("../controllers/userLogout");
 const changePassword = require("../controllers/changePassword");
 const forgotPassword = require("../controllers/forgotPassword");
 
+const koiConsignmentController = require("../controllers/koiConsignmentController");
+
 const {
   createKoiFish,
   getAllKoiFish,
@@ -175,7 +177,7 @@ router.post("/forgot-password", forgotPassword);
  *       200:
  *         description: List of all Koi Fish
  */
-router.get("/koifish", getAllKoiFish);
+router.get('/koifish', getAllKoiFish);
 
 /**
  * @swagger
@@ -245,7 +247,7 @@ router.post("/koifish", authMiddleware, createKoiFish);
  *       200:
  *         description: List of all orders
  */
-router.get("/orders", authMiddleware, getAllOrders);
+router.get("/orders", getAllOrders);
 
 /**
  * @swagger
@@ -264,7 +266,7 @@ router.get("/orders", authMiddleware, getAllOrders);
  *       200:
  *         description: Order details
  */
-router.get("/orders/:orderId", authMiddleware, getOrderById);
+router.get("/orders/:orderId", getOrderById);
 
 /**
  * @swagger
@@ -291,7 +293,7 @@ router.get("/orders/:orderId", authMiddleware, getOrderById);
  *       201:
  *         description: Order created successfully
  */
-router.post("/orders", authMiddleware, createOrder);
+router.post("/orders", createOrder);
 
 /**
  * @swagger
@@ -320,7 +322,7 @@ router.post("/orders", authMiddleware, createOrder);
  *       200:
  *         description: Order status updated successfully
  */
-router.patch("/orders/:orderId", authMiddleware, updateOrderStatus);
+router.patch("/orders/:orderId", updateOrderStatus);
 
 /**
  * @swagger
@@ -339,7 +341,7 @@ router.patch("/orders/:orderId", authMiddleware, updateOrderStatus);
  *       200:
  *         description: Order deleted successfully
  */
-router.delete("/orders/:orderId", authMiddleware, deleteOrder);
+router.delete("/orders/:orderId", deleteOrder);
 
 // Customer routes
 /**
@@ -500,7 +502,7 @@ router.post("/koipackage", authMiddleware, createKoiPackage);
  *       200:
  *         description: List of all Koi Packages
  */
-router.get("/koipackages", authMiddleware, getAllKoiPackages);
+router.get("/koipackages", getAllKoiPackages);
 
 // Koi Consignment routes
 /**
@@ -509,8 +511,6 @@ router.get("/koipackages", authMiddleware, getAllKoiPackages);
  *   post:
  *     summary: Create a new Koi Consignment
  *     tags: [Koi Consignment]
- *     security:
- *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -521,21 +521,18 @@ router.get("/koipackages", authMiddleware, getAllKoiPackages);
  *       201:
  *         description: Koi Consignment created successfully
  */
-router.post("/koiconsignment", authMiddleware, createKoiConsignment);
-
+router.post('/createConsignment', koiConsignmentController.createKoiConsignment);
 /**
  * @swagger
  * /api/koiconsignments:
  *   get:
  *     summary: Get all Koi Consignments
  *     tags: [Koi Consignment]
- *     security:
- *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: List of all Koi Consignments
  */
-router.get("/koiconsignments", authMiddleware, getAllKoiConsignments);
+router.get("/koiconsignments", getAllKoiConsignments);
 
 // Breeders routes
 /**

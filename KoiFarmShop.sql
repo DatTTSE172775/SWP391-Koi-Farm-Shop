@@ -23,6 +23,8 @@ CREATE TABLE Customers (
     FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
 
+select * from Customers
+
 CREATE TABLE Varieties (
     VarietyID INT IDENTITY(1,1) PRIMARY KEY,
     VarietyName VARCHAR(255) NOT NULL,

@@ -106,59 +106,41 @@
   }
 }
 
-.consign-form {
+.consignment-form {
   max-width: 1450px;
-  margin: 40px auto;
-  padding: 30px;
-  background-color: #ffffff;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
-  h2 {
+  h1 {
     text-align: center;
     color: #333;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
   }
 
   form {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .customer-info,
-  .koi-info {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    gap: 15px;
 
-    @media (max-width: 768px) {
-      grid-template-columns: 1fr;
+    div {
+      display: flex;
+      flex-direction: column;
     }
-
-    .desc{
-      width: 100%;
-    }
-  }
-
-  .form-group {
-    margin-bottom: 20px;
 
     label {
-      display: block;
       margin-bottom: 5px;
       font-weight: bold;
       color: #555;
     }
 
-    input[type="text"],
-    input[type="number"],
-    select,
+    input,
     textarea {
-      width: 100%;
-      padding: 10px;
+      padding: 8px;
       border: 1px solid #ddd;
       border-radius: 4px;
-      font-size: 16px;
+      font-size: 14px;
 
       &:focus {
         outline: none;
@@ -167,37 +149,34 @@
     }
 
     textarea {
-      height: 100px;
       resize: vertical;
+      min-height: 100px;
     }
 
-    input[type="file"] {
+    button {
+      padding: 10px 15px;
+      background-color: #4a90e2;
+      color: white;
       border: none;
-      padding: 10px 0;
-    }
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
 
-    &.desc {
-      grid-column: 1 / -1;
+      &:hover {
+        background-color: #357abd;
+      }
     }
   }
+}
 
-  button[type="submit"] {
-    background-color: #4a90e2;
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    font-size: 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+// Add responsive design for smaller screens
+@media (max-width: 768px) {
+  .consignment-form {
+    padding: 15px;
 
-    &:hover {
-      background-color: #357abd;
-    }
-
-    &:disabled {
-      background-color: #cccccc;
-      cursor: not-allowed;
+    form {
+      gap: 10px;
     }
   }
 }
