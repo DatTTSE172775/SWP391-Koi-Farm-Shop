@@ -16,6 +16,7 @@ const {
   getAllKoiFish,
   getKoiFishById,
   updateKoiFishAvailability,
+  deleteKoiFish,
 } = require("../controllers/koiController");
 const {
   getAllOrders,
@@ -273,6 +274,29 @@ router.post("/koifish", authMiddleware, createKoiFish);
  *         description: Server error
  */
 router.patch("/koifish/:koiId/availability", authMiddleware, updateKoiFishAvailability);
+
+/**
+ * @swagger
+ * /api/koifish/{koiId}:
+ *   delete:
+ *     summary: Delete a Koi Fish
+ *     tags: [Koi Fish]
+ *     parameters:
+ *       - in: path
+ *         name: koiId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The Koi Fish ID
+ *     responses:
+ *       200:
+ *         description: Koi Fish deleted successfully
+ *       404:
+ *         description: Koi Fish not found
+ *       500:
+ *         description: Server error
+ */
+router.delete("/koifish/:koiId", authMiddleware, deleteKoiFish)
 
 // Order routes
 /**
