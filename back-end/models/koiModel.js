@@ -51,4 +51,23 @@ const getKoiFishById = async (koiId) => {
     }
 };
 
-module.exports = { createKoiFish, getAllKoiFish, getKoiFishById };
+// Cập nhật trạng thái sẵn có của KoiFish
+const updateKoiFishAvailability = async (koiId, availability) => {
+    try {
+        const pool = await sql.connect();
+        const result = await pool.request()
+            .input('KoiID', sql.Int, koiId)
+            .input('Availability', sql.VarChar(50), availability)
+            .query(`
+                UPDATE KoiFish
+                SET Availability = @Availability
+                WHERE KoiID = @KoiID
+            `);
+        return result.rowsAffected[0] > 0; // Trả về true nếu cập nhật thành công
+    } catch (err) {
+        console.error('Lỗi cập nhật trạng thái sẵn có của KoiFish:', err);
+        throw err;
+    }
+};
+
+module.exports = { createKoiFish, getAllKoiFish, getKoiFishById, updateKoiFishAvailability };

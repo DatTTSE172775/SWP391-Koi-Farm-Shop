@@ -15,6 +15,7 @@ const {
   createKoiFish,
   getAllKoiFish,
   getKoiFishById,
+  updateKoiFishAvailability,
 } = require("../controllers/koiController");
 const {
   getAllOrders,
@@ -168,6 +169,7 @@ router.post("/change-password", authMiddleware, changePassword);
 router.post("/forgot-password", forgotPassword);
 
 // Koi Fish routes
+
 /**
  * @swagger
  * /api/koifish:
@@ -236,6 +238,41 @@ router.get("/koifish/:koiId", getKoiFishById);
  *         description: Koi Fish created successfully
  */
 router.post("/koifish", authMiddleware, createKoiFish);
+
+/**
+ * @swagger
+ * /api/koifish/{koiId}/availability:
+ *   patch:
+ *     summary: Update Koi Fish availability
+ *     tags: [Koi Fish]
+ *     parameters:
+ *       - in: path
+ *         name: koiId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The Koi Fish ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               availability:
+ *                 type: string
+ *                 enum: [Available, Sold Out]
+ *     responses:
+ *       200:
+ *         description: Koi Fish availability updated successfully
+ *       400:
+ *         description: Invalid availability status
+ *       404:
+ *         description: Koi Fish not found
+ *       500:
+ *         description: Server error
+ */
+router.patch("/koifish/:koiId/availability", authMiddleware, updateKoiFishAvailability);
 
 // Order routes
 /**
