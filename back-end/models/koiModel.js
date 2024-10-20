@@ -98,6 +98,38 @@ const deleteKoiFish = async (koiId) => {
                 DELETE FROM OrderDetails
                 WHERE ProductID = @KoiID AND ProductType = 'Single Fish'
             `);
+            
+        // Xóa các bản ghi liên quan trong bảng Reviews
+        await pool.request()
+            .input('KoiID', sql.Int, koiId)
+            .query(`
+                DELETE FROM Reviews
+                WHERE ProductID = @KoiID
+            `);
+
+        // Xóa các bản ghi liên quan trong bảng KoiPackageVarieties
+        await pool.request()
+        .input('KoiID', sql.Int, koiId)
+        .query(`
+            DELETE FROM KoiPackageVarieties
+            WHERE PackageID IN (SELECT PackageID FROM KoiPackage WHERE KoiID = @KoiID)
+        `);
+
+        // Xóa các bản ghi liên quan trong bảng KoiPackageBreeders
+        await pool.request()
+            .input('KoiID', sql.Int, koiId)
+            .query(`
+                DELETE FROM KoiPackageBreeders
+                WHERE PackageID IN (SELECT PackageID FROM KoiPackage WHERE KoiID = @KoiID)
+            `);
+            
+        // Xóa các bản ghi liên quan trong bảng KoiPackage
+        await pool.request()
+            .input('KoiID', sql.Int, koiId)
+            .query(`
+                DELETE FROM KoiPackage
+                WHERE KoiID = @KoiID
+            `);
 
         // Xóa KoiFish
         const result = await pool.request()
@@ -106,7 +138,7 @@ const deleteKoiFish = async (koiId) => {
                 DELETE FROM KoiFish
                 WHERE KoiID = @KoiID
             `);
-            
+
         return result.rowsAffected[0] > 0; // Trả về true nếu xóa thành công
     } catch (err) {
         console.error('Lỗi xóa KoiFish:', err);
