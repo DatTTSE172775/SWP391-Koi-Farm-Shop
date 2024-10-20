@@ -1,89 +1,110 @@
-import { HeartOutlined, SwapOutlined } from "@ant-design/icons";
-import { Button, Card } from "antd";
-import { motion } from "framer-motion";
-import { memo, useContext } from "react";
-import LazyLoad from "react-lazyload";
-import { Link } from "react-router-dom";
+import { Button, Card, Typography, notification } from "antd";
+import { memo, useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { CartContext } from "../../order/cart-context/CartContext";
 import "./KoiCard.scss";
 
-const { Meta } = Card;
+const { Text } = Typography;
 
-const KoiCard = ({ koi, isAuthenticated, onAddToCart }) => {
-  const { handleAddToCart } = useContext(CartContext);
+const KoiCard = ({ koifish, isAuthenticated }) => {
+  const [imageError, setImageError] = useState(false);
+  const navigate = useNavigate();
+  const { cartItems, handleAddToCart } = useContext(CartContext);
+
+  const handleImageError = () => {
+    console.error(`Failed to load image for ${koifish.Name}`);
+    setImageError(true);
+  };
+
+  const imageUrl = koifish.ImagesLink || "";
+
+  const handleViewDetail = () => {
+    if (koifish.KoiID) {
+      navigate(`/koiDetail/${koifish.KoiID}`);
+    } else {
+      console.error("Koi fish ID is undefined", koifish);
+    }
+  };
+
+  const onAddToCart = () => {
+    // Check if the user is authenticated
+    if (!isAuthenticated) {
+      notification.warning({
+        message: "Vui Lòng Đăng Nhập",
+        description: "Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.",
+        placement: "bottomRight",
+      });
+      navigate("/login"); // Redirect to login page
+      return;
+    }
+
+    // Check if the koi fish is already in the cart
+    const isAlreadyInCart = cartItems.some((item) => item.id === koifish.KoiID);
+
+    if (isAlreadyInCart) {
+      // Show a warning notification if the koi fish is already added
+      notification.warning({
+        message: "Cá Koi Đã Có Trong Giỏ Hàng",
+        description: `${koifish.Name} đã được thêm vào giỏ hàng trước đó.`,
+        placement: "bottomRight",
+      });
+    } else {
+      // Add the koi fish to the cart if not already added
+      const koi = {
+        id: koifish.KoiID,
+        name: koifish.Name,
+        price: koifish.Price,
+        image: koifish.ImagesLink,
+        origin: koifish.Origin,
+        size: koifish.Size,
+        weight: koifish.Weight,
+      };
+      handleAddToCart(koi); // Call handleAddToCart properly
+    }
+  };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-    >
-      <Card
-        hoverable
-        className="koi-card"
-        cover={
-          <div className="koi-image-container">
-            <LazyLoad height={200} offset={100} once>
-              <img alt={koi.name} src={koi.image} className="koi-image" />
-            </LazyLoad>
-            <div className="hover-info">
-              <p>{koi.description}</p>
-              <Link to={`/koi-details/${koi.id}`}>
-                <Button type="primary" size="small">
-                  Xem chi tiết
-                </Button>
-              </Link>
-            </div>
-          </div>
-        }
-        actions={[
-          <Link to={`/wishlist/${koi.id}`}>
-            <HeartOutlined key="wishlist" /> Yêu thích
-          </Link>,
-          <Link to={`/compare/${koi.id}`}>
-            <SwapOutlined key="compare" /> So sánh
-          </Link>,
-        ]}
-      >
-        <Meta
-          title={koi.name}
-          description={
-            <div className="koi-meta-description">
-              <p className="koi-price">{koi.price}</p>
-              <p className="koi-details">
-                <span>Màu sắc:</span> {koi.color}
-                <br />
-                <span>Kích thước:</span> {koi.size}
-              </p>
-            </div>
-          }
-        />
-        <div className="koi-card-footer">
-          {isAuthenticated ? (
-            <Button type="primary" block onClick={() => handleAddToCart(koi)}>
-              Thêm vào giỏ hàng
+    <Card
+      hoverable
+      cover={
+        !imageUrl || imageError ? (
+          <div className="image-placeholder">Image not available</div>
+        ) : (
+          <div className="image-container">
+            <img alt={koifish.Name} src={imageUrl} onError={handleImageError} />
+            <Button className="view-detail-btn" onClick={handleViewDetail}>
+              View Detail
             </Button>
-          ) : (
-            <Link to="/login">
-              <Button type="default" block>
-                Đăng nhập để mua
-              </Button>
-            </Link>
-          )}
-        </div>
-      </Card>
-    </motion.div>
+          </div>
+        )
+      }
+      className="koi-card"
+    >
+      <Card.Meta
+        title={koifish.Name}
+        description={<Text type="secondary">Origin: {koifish.Origin}</Text>}
+      />
+      <div className="koi-details">
+        <Text>Variety: {koifish.VarietyID}</Text>
+        <Text>Size: {koifish.Size} cm</Text>
+        <Text>Weight: {koifish.Weight} kg</Text>
+        <Text strong>Price: {koifish.Price.toLocaleString()} VND</Text>
+        <Text>Health Status: {koifish.HealthStatus}</Text>
+      </div>
+      <Button type="primary" onClick={onAddToCart} block>
+        Thêm vào giỏ hàng
+      </Button>
+    </Card>
   );
 };
 
 const areEqual = (prevProps, nextProps) => {
   return (
-    prevProps.koi.id === nextProps.koi.id &&
-    prevProps.koi.name === nextProps.koi.name &&
-    prevProps.koi.image === nextProps.koi.image &&
-    prevProps.koi.color === nextProps.koi.color &&
-    prevProps.koi.size === nextProps.koi.size &&
-    prevProps.koi.price === nextProps.koi.price &&
+    prevProps.koifish.KoiID === nextProps.koifish.KoiID &&
+    prevProps.koifish.Name === nextProps.koifish.Name &&
+    prevProps.koifish.ImagesLink === nextProps.koifish.ImagesLink &&
+    prevProps.koifish.Size === nextProps.koifish.Size &&
+    prevProps.koifish.Price === nextProps.koifish.Price &&
     prevProps.isAuthenticated === nextProps.isAuthenticated
   );
 };

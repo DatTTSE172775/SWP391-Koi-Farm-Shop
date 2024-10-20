@@ -1,22 +1,56 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const authMiddleware = require('../middleware/authMiddleware'); // Import middleware auth
+const authMiddleware = require("../middleware/authMiddleware"); // Import middleware auth
 
 // Import Controllers
-const userSignUp = require('../controllers/userSignUp');
-const userSignIn = require('../controllers/userSignIn');
-const logoutUser = require('../controllers/userLogout');
-const changePassword = require('../controllers/changePassword');
-const forgotPassword = require('../controllers/forgotPassword');
+const userSignUp = require("../controllers/userSignUp");
+const userSignIn = require("../controllers/userSignIn");
+const logoutUser = require("../controllers/userLogout");
+const changePassword = require("../controllers/changePassword");
+const forgotPassword = require("../controllers/forgotPassword");
 
-const { createKoiFish, getAllKoiFish, getKoiFishById } = require('../controllers/koiController');
-const { getAllOrders, getOrderById, createOrder, updateOrderStatus, deleteOrder } = require('../controllers/orderController');
-const { getAllCustomers, getCustomerById } = require('../controllers/customerController');
-const { createReportController, getAllReportsController, getReportByIdController, updateReportController, deleteReportController } = require('../controllers/reportController');
-const { createKoiPackage, getAllKoiPackages } = require('../controllers/koiPackageController');
-const { createKoiConsignment, getAllKoiConsignments } = require('../controllers/koiConsignmentController');
-const { createBreeder, getAllBreeders } = require('../controllers/breedersController');
-const { createVariety, getAllVarieties } = require('../controllers/varietyController');
+const koiConsignmentController = require("../controllers/koiConsignmentController");
+
+const {
+  createKoiFish,
+  getAllKoiFish,
+  getKoiFishById,
+} = require("../controllers/koiController");
+const {
+  getAllOrders,
+  getOrderById,
+  createOrder,
+  updateOrderStatus,
+  deleteOrder,
+} = require("../controllers/orderController");
+const {
+  getAllCustomers,
+  getCustomerById,
+  getCustomerByUserName,
+} = require("../controllers/customerController");
+const {
+  createReportController,
+  getAllReportsController,
+  getReportByIdController,
+  updateReportController,
+  deleteReportController,
+} = require("../controllers/reportController");
+const {
+  createKoiPackage,
+  getAllKoiPackages,
+} = require("../controllers/koiPackageController");
+const {
+  createKoiConsignment,
+  getAllKoiConsignments,
+} = require("../controllers/koiConsignmentController");
+const {
+  createBreeder,
+  getAllBreeders,
+} = require("../controllers/breedersController");
+const {
+  createVariety,
+  getAllVarieties,
+} = require("../controllers/varietyController");
 
 // User routes
 /**
@@ -46,7 +80,7 @@ const { createVariety, getAllVarieties } = require('../controllers/varietyContro
  *       201:
  *         description: User successfully registered
  */
-router.post('/signup', userSignUp);
+router.post("/signup", userSignUp);
 
 /**
  * @swagger
@@ -69,7 +103,7 @@ router.post('/signup', userSignUp);
  *       200:
  *         description: Successful login
  */
-router.post('/signin', userSignIn);
+router.post("/signin", userSignIn);
 
 /**
  * @swagger
@@ -83,7 +117,7 @@ router.post('/signin', userSignIn);
  *       200:
  *         description: Successful logout
  */
-router.post('/logout', authMiddleware, logoutUser);
+router.post("/logout", authMiddleware, logoutUser);
 
 /**
  * @swagger
@@ -108,7 +142,7 @@ router.post('/logout', authMiddleware, logoutUser);
  *       200:
  *         description: Password changed successfully
  */
-router.post('/change-password', authMiddleware, changePassword);
+router.post("/change-password", authMiddleware, changePassword);
 
 /**
  * @swagger
@@ -131,7 +165,7 @@ router.post('/change-password', authMiddleware, changePassword);
  *       200:
  *         description: New password sent to email
  */
-router.post('/forgot-password', forgotPassword);
+router.post("/forgot-password", forgotPassword);
 
 // Koi Fish routes
 /**
@@ -163,7 +197,7 @@ router.get('/koifish', getAllKoiFish);
  *       200:
  *         description: Koi Fish details
  */
-router.get('/koifish/:koiId', getKoiFishById);
+router.get("/koifish/:koiId", getKoiFishById);
 
 /**
  * @swagger
@@ -201,7 +235,7 @@ router.get('/koifish/:koiId', getKoiFishById);
  *       201:
  *         description: Koi Fish created successfully
  */
-router.post('/koifish', authMiddleware, createKoiFish);
+router.post("/koifish", authMiddleware, createKoiFish);
 
 // Order routes
 /**
@@ -214,7 +248,7 @@ router.post('/koifish', authMiddleware, createKoiFish);
  *       200:
  *         description: List of all orders
  */
-router.get('/orders', authMiddleware, getAllOrders);
+router.get("/orders", getAllOrders);
 
 /**
  * @swagger
@@ -233,7 +267,7 @@ router.get('/orders', authMiddleware, getAllOrders);
  *       200:
  *         description: Order details
  */
-router.get('/orders/:orderId', authMiddleware, getOrderById);
+router.get("/orders/:orderId", getOrderById);
 
 /**
  * @swagger
@@ -260,7 +294,7 @@ router.get('/orders/:orderId', authMiddleware, getOrderById);
  *       201:
  *         description: Order created successfully
  */
-router.post('/orders', authMiddleware, createOrder);
+router.post("/orders", createOrder);
 
 /**
  * @swagger
@@ -289,7 +323,7 @@ router.post('/orders', authMiddleware, createOrder);
  *       200:
  *         description: Order status updated successfully
  */
-router.patch('/orders/:orderId', authMiddleware, updateOrderStatus);
+router.patch("/orders/:orderId", updateOrderStatus);
 
 /**
  * @swagger
@@ -308,7 +342,7 @@ router.patch('/orders/:orderId', authMiddleware, updateOrderStatus);
  *       200:
  *         description: Order deleted successfully
  */
-router.delete('/orders/:orderId', authMiddleware, deleteOrder);
+router.delete("/orders/:orderId", deleteOrder);
 
 // Customer routes
 /**
@@ -321,7 +355,7 @@ router.delete('/orders/:orderId', authMiddleware, deleteOrder);
  *       200:
  *         description: A list of customers
  */
-router.get('/customers', authMiddleware, getAllCustomers);
+router.get("/customers", getAllCustomers);
 
 /**
  * @swagger
@@ -340,7 +374,28 @@ router.get('/customers', authMiddleware, getAllCustomers);
  *       200:
  *         description: Customer details
  */
-router.get('/customers/:customerId', authMiddleware, getCustomerById);
+router.get("/customers/:customerId", getCustomerById);
+
+
+// Get customer by username
+/**
+ * @swagger
+ * /api/customers/username/{userName}:
+ *   get:
+ *     summary: Get customer details by username
+ *     tags: [Customers]
+ *     parameters:
+ *       - in: path
+ *         name: userName
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Customer username
+ *     responses:
+ *       200:
+ *         description: Customer details
+ */
+router.get("/customers/username/:userName", getCustomerByUserName);
 
 // Report routes
 /**
@@ -359,7 +414,7 @@ router.get('/customers/:customerId', authMiddleware, getCustomerById);
  *       201:
  *         description: Report created successfully
  */
-router.post('/reports', authMiddleware, createReportController);
+router.post("/reports", authMiddleware, createReportController);
 
 /**
  * @swagger
@@ -371,7 +426,7 @@ router.post('/reports', authMiddleware, createReportController);
  *       200:
  *         description: A list of reports
  */
-router.get('/reports', authMiddleware, getAllReportsController);
+router.get("/reports", authMiddleware, getAllReportsController);
 
 /**
  * @swagger
@@ -390,7 +445,7 @@ router.get('/reports', authMiddleware, getAllReportsController);
  *       200:
  *         description: Report details
  */
-router.get('/reports/:reportId', authMiddleware, getReportByIdController);
+router.get("/reports/:reportId", authMiddleware, getReportByIdController);
 
 /**
  * @swagger
@@ -415,7 +470,7 @@ router.get('/reports/:reportId', authMiddleware, getReportByIdController);
  *       200:
  *         description: Report updated successfully
  */
-router.patch('/reports/:reportId', authMiddleware, updateReportController);
+router.patch("/reports/:reportId", authMiddleware, updateReportController);
 
 /**
  * @swagger
@@ -434,7 +489,7 @@ router.patch('/reports/:reportId', authMiddleware, updateReportController);
  *       200:
  *         description: Report deleted successfully
  */
-router.delete('/reports/:reportId', authMiddleware, deleteReportController);
+router.delete("/reports/:reportId", authMiddleware, deleteReportController);
 
 // Koi Package routes
 /**
@@ -455,7 +510,7 @@ router.delete('/reports/:reportId', authMiddleware, deleteReportController);
  *       201:
  *         description: Koi Package created successfully
  */
-router.post('/koipackage', authMiddleware, createKoiPackage);
+router.post("/koipackage", authMiddleware, createKoiPackage);
 
 /**
  * @swagger
@@ -469,7 +524,7 @@ router.post('/koipackage', authMiddleware, createKoiPackage);
  *       200:
  *         description: List of all Koi Packages
  */
-router.get('/koipackages', authMiddleware, getAllKoiPackages);
+router.get("/koipackages", getAllKoiPackages);
 
 // Koi Consignment routes
 /**
@@ -478,8 +533,6 @@ router.get('/koipackages', authMiddleware, getAllKoiPackages);
  *   post:
  *     summary: Create a new Koi Consignment
  *     tags: [Koi Consignment]
- *     security:
- *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -490,21 +543,18 @@ router.get('/koipackages', authMiddleware, getAllKoiPackages);
  *       201:
  *         description: Koi Consignment created successfully
  */
-router.post('/koiconsignment', authMiddleware, createKoiConsignment);
-
+router.post('/createConsignment', koiConsignmentController.createKoiConsignment);
 /**
  * @swagger
  * /api/koiconsignments:
  *   get:
  *     summary: Get all Koi Consignments
  *     tags: [Koi Consignment]
- *     security:
- *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: List of all Koi Consignments
  */
-router.get('/koiconsignments', authMiddleware, getAllKoiConsignments);
+router.get("/koiconsignments", getAllKoiConsignments);
 
 // Breeders routes
 /**
@@ -525,7 +575,7 @@ router.get('/koiconsignments', authMiddleware, getAllKoiConsignments);
  *       201:
  *         description: Breeder created successfully
  */
-router.post('/breeders', authMiddleware, createBreeder);
+router.post("/breeders", authMiddleware, createBreeder);
 
 /**
  * @swagger
@@ -539,7 +589,7 @@ router.post('/breeders', authMiddleware, createBreeder);
  *       200:
  *         description: List of all Breeders
  */
-router.get('/breeders', authMiddleware, getAllBreeders);
+router.get("/breeders", authMiddleware, getAllBreeders);
 
 // Varieties routes
 /**
@@ -560,7 +610,7 @@ router.get('/breeders', authMiddleware, getAllBreeders);
  *       201:
  *         description: Variety created successfully
  */
-router.post('/varieties', authMiddleware, createVariety);
+router.post("/varieties", authMiddleware, createVariety);
 
 /**
  * @swagger
@@ -574,6 +624,6 @@ router.post('/varieties', authMiddleware, createVariety);
  *       200:
  *         description: List of all Varieties
  */
-router.get('/varieties', authMiddleware, getAllVarieties);
+router.get("/varieties", authMiddleware, getAllVarieties);
 
 module.exports = router;
