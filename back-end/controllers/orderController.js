@@ -34,7 +34,12 @@ const createOrder = async (req, res) => {
   const { customerID, totalAmount, shippingAddress, paymentMethod } = req.body;
 
   try {
-    const newOrder = await Order.createOrder(customerID, totalAmount, shippingAddress, paymentMethod);
+    const newOrder = await Order.createOrder(
+      customerID,
+      totalAmount,
+      shippingAddress,
+      paymentMethod
+    );
     res.status(201).json(newOrder);
   } catch (err) {
     console.error(err);

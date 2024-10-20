@@ -1,17 +1,17 @@
 // src/pages/KoiDetail.jsx
 
-import React, { useState, useEffect, useContext } from "react";
-import { useParams, Link } from "react-router-dom";
-import { Breadcrumb, Button, Carousel, Col, Image, Row, Typography, Spin } from "antd";
 import { DollarOutlined, ShoppingCartOutlined } from "@ant-design/icons";
-import { CartContext } from "../../order/cart-context/CartContext";
+import { Breadcrumb, Button, Col, Image, Row, Spin, Typography } from "antd";
+import React, { useContext, useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import axiosPublic from "../../../api/axiosPublic";
+import { CartContext } from "../../order/cart-context/CartContext";
 import "./KoiDetail.scss";
 
 const { Title, Paragraph } = Typography;
 
 const KoiDetail = () => {
-  console.log('KoiDetail component initialized');
+  console.log("KoiDetail component initialized");
   const { id } = useParams();
   const [koi, setKoi] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -22,13 +22,13 @@ const KoiDetail = () => {
     const fetchKoiData = async () => {
       try {
         setLoading(true);
-        console.log('Fetching koi data for ID:', id);
+        console.log("Fetching koi data for ID:", id);
         const response = await axiosPublic.get(`koifish/${id}`);
-        console.log('Koi data received:', response.data);
+        console.log("Koi data received:", response.data);
         setKoi(response.data);
       } catch (error) {
-        console.error('Error fetching koi data:', error);
-        setError('Failed to fetch koi data. Please try again later.');
+        console.error("Error fetching koi data:", error);
+        setError("Failed to fetch koi data. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -38,12 +38,12 @@ const KoiDetail = () => {
       fetchKoiData();
     } else {
       console.error("No ID provided in URL");
-      setError('No koi ID provided');
+      setError("No koi ID provided");
       setLoading(false);
     }
   }, [id]);
 
-  console.log('Component rendering. Loading:', loading, 'Koi:', koi);
+  console.log("Component rendering. Loading:", loading, "Koi:", koi);
 
   if (loading) {
     return <Spin size="large" />;
@@ -53,32 +53,36 @@ const KoiDetail = () => {
     return <div>{error}</div>;
   }
 
-  if (!koi) {
-    console.log('No koi data found');
+  if (!koi || !koi.data) {
+    console.log("No koi data found");
     return <div>No koi data found</div>;
   }
 
-  console.log('Rendering koi details:', koi);
+  const koiData = koi.data;
+
+  console.log("Koi data:", koiData);
 
   return (
     <div className="koi-detail">
       <div className="breadcrumb-background">
         <Breadcrumb separator=">">
-          <Breadcrumb.Item>
-            <Link to="/home">Trang chủ</Link>
-          </Breadcrumb.Item>
-          <Breadcrumb.Item>
-            <Link to="/koi-list">Tìm kiếm cá Koi</Link>
-          </Breadcrumb.Item>
-          <Breadcrumb.Item>{koi.Name}</Breadcrumb.Item>
+          <Breadcrumb separator=">">
+            <Breadcrumb>
+              <Link to="/home">Trang chủ</Link>
+            </Breadcrumb>
+            <Breadcrumb>
+              <Link to="/koi-list">Tìm kiếm cá Koi</Link>
+            </Breadcrumb>
+            <Breadcrumb>{koiData.Name}</Breadcrumb>
+          </Breadcrumb>
         </Breadcrumb>
       </div>
       <Row gutter={[32, 32]} className="koi-detail-container">
         {/* Hình Ảnh */}
         <Col xs={24} md={12}>
           <Image
-            src={koi.ImagesLink}
-            alt={koi.Name}
+            src={koiData.ImagesLink}
+            alt={koiData.Name}
             className="koi-detail-image"
           />
         </Col>
@@ -86,39 +90,46 @@ const KoiDetail = () => {
         {/* Thông Tin Chi Tiết */}
         <Col xs={24} md={12}>
           <Typography>
-            <Title level={2}>{koi.Name}</Title>
+            <Title level={2}>{koiData.Name}</Title>
             <Paragraph>
-              <strong>Loại:</strong> {koi.VarietyID}
+              <strong>Loại:</strong> {koiData.VarietyID}
             </Paragraph>
             <Paragraph>
-              <strong>Xuất xứ:</strong> {koi.Origin}
+              <strong>Xuất xứ:</strong> {koiData.Origin}
             </Paragraph>
             <Paragraph>
-              <strong>Giới tính:</strong> {koi.Gender}
+              <strong>Giới tính:</strong> {koiData.Gender}
             </Paragraph>
             <Paragraph>
-              <strong>Năm sinh:</strong> {koi.Born}
+              <strong>Năm sinh:</strong> {koiData.Born}
             </Paragraph>
             <Paragraph>
-              <strong>Kích thước:</strong> {koi.Size} cm
+              <strong>Kích thước:</strong> {koiData.Size} cm
             </Paragraph>
             <Paragraph>
-              <strong>Cân nặng:</strong> {koi.Weight} kg
+              <strong>Cân nặng:</strong> {koiData.Weight} kg
             </Paragraph>
             <Paragraph>
-              <strong>Tính cách:</strong> {koi.Personality}
+              <strong>Tính cách:</strong> {koiData.Personality}
             </Paragraph>
             <Paragraph>
-              <strong>Lượng thức ăn mỗi ngày:</strong> {koi.FeedingAmountPerDay} g
+              <strong>Lượng thức ăn mỗi ngày:</strong>{" "}
+              {koiData.FeedingAmountPerDay} g
             </Paragraph>
             <Paragraph>
-              <strong>Tình trạng sức khỏe:</strong> {koi.HealthStatus}
+              <strong>Tình trạng sức khỏe:</strong> {koiData.HealthStatus}
             </Paragraph>
             <Paragraph>
-              <strong>Giá:</strong> {koi.Price.toLocaleString()} VND
+              <strong>Giá:</strong>{" "}
+              {koiData.Price !== undefined && koiData.Price !== null
+                ? typeof koiData.Price === "number"
+                  ? koiData.Price.toLocaleString()
+                  : koiData.Price.toString()
+                : "N/A"}{" "}
+              VND
             </Paragraph>
             <Paragraph>
-              <strong>Tình trạng:</strong> {koi.Availability}
+              <strong>Tình trạng:</strong> {koiData.Availability}
             </Paragraph>
           </Typography>
           <div className="koi-detail-buttons">
@@ -127,16 +138,16 @@ const KoiDetail = () => {
               icon={<ShoppingCartOutlined />}
               size="large"
               style={{ marginRight: "16px" }}
-              onClick={() => handleAddToCart(koi)}
-              disabled={koi.Availability !== "Available"}
+              onClick={() => handleAddToCart(koiData)}
+              disabled={koiData.Availability !== "Available"}
             >
               Thêm vào giỏ hàng
             </Button>
-            <Button 
-              type="primary" 
-              icon={<DollarOutlined />} 
+            <Button
+              type="primary"
+              icon={<DollarOutlined />}
               size="large"
-              disabled={koi.Availability !== "Available"}
+              disabled={koiData.Availability !== "Available"}
             >
               Mua ngay
             </Button>

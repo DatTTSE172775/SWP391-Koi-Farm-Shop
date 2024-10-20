@@ -1,5 +1,5 @@
-﻿CREATE DATABASE KoiFarmShop
-USE KoiFarmShop
+﻿CREATE DATABASE KoiFarmShop2
+USE KoiFarmShop2
 
 
 CREATE TABLE Users (
@@ -10,7 +10,7 @@ CREATE TABLE Users (
     SubscriptionStatus VARCHAR(50) CHECK (SubscriptionStatus IN ('Active', 'Inactive')) NOT NULL
 );
 
-select * from Users
+--select * from Users
 
 CREATE TABLE Customers (
     CustomerID INT IDENTITY(1,1) PRIMARY KEY,
@@ -22,6 +22,8 @@ CREATE TABLE Customers (
     LoyaltyPoints INT DEFAULT 0,
     FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
+
+select * from Customers
 
 CREATE TABLE Varieties (
     VarietyID INT IDENTITY(1,1) PRIMARY KEY,
@@ -62,7 +64,7 @@ CREATE TABLE KoiFish (
     FOREIGN KEY (BreederID) REFERENCES Breeders(BreederID)
 );
 
-select * from KoiFish where KoiID = 1
+--select * from KoiFish where KoiID = 1
 
 
 CREATE TABLE KoiPackage (
@@ -77,7 +79,7 @@ CREATE TABLE KoiPackage (
     FOREIGN KEY (KoiID) REFERENCES KoiFish(KoiID)
 );
 
-SELECT * FROM KoiPackage
+--SELECT * FROM KoiPackage
 
 CREATE TABLE KoiConsignment (
     ConsignmentID INT IDENTITY(1,1) PRIMARY KEY,
@@ -105,10 +107,10 @@ ADD KoiType NVARCHAR(100),
     ImagePath NVARCHAR(255);
 
 
-use KoiFarmShop
-select * from KoiConsignment;
+--use KoiFarmShop
+--select * from KoiConsignment;
 
-select * from Users;
+--select * from Users;
 
 CREATE TABLE Promotions (
     PromotionID INT IDENTITY(1,1) PRIMARY KEY,
@@ -297,7 +299,7 @@ INSERT INTO Users (Username, PasswordHash, Role, SubscriptionStatus) VALUES
 ('MinhKiet', '20', 'Customer', 'Active');
 --delete from Users
 --DBCC CHECKIDENT ('Users', RESEED, 0);
-select * from Users
+--select * from Users
 
 INSERT INTO Customers (UserID, FullName, Email, PhoneNumber, Address, LoyaltyPoints) VALUES
 (7, 'Nguyễn Thị Tuyết Hương', 'nguyenthituyethuong10.1@gmail.com', '0799670750', '123 Lê Lợi, Quận 1, TP.HCM', 100),
@@ -316,7 +318,7 @@ INSERT INTO Customers (UserID, FullName, Email, PhoneNumber, Address, LoyaltyPoi
 (20, 'Nguyễn Lê Minh Kiệt', 'kietnlmse171427@fpt.edu.vn', '0782131516', '250 Nguyễn Văn Tăng, Quận 9, TP.HCM', 55);
 --delete from Customers
 --DBCC CHECKIDENT ('Customers', RESEED, 0);
-select * from Customers
+--select * from Customers
 
 INSERT INTO Varieties (VarietyName, Description, Origin) VALUES
 ('Kohaku', 'Cá Koi trắng với các mảng đỏ', 'Japan'),
@@ -329,7 +331,7 @@ INSERT INTO Varieties (VarietyName, Description, Origin) VALUES
 ('Yamabuki', 'Cá Koi màu vàng', 'Japan'),
 ('Asagi', 'Cá Koi xanh trên lưng, đỏ ở bụng', 'Japan'),
 ('Beni Kumonryu', 'Cá Koi đen với mảng trắng và đỏ', 'Japan');
-select * from Varieties
+--select * from Varieties
 
 INSERT INTO Breeders (Name, Address, ContactInfo, CertificationLink, Notes) VALUES
 ('Dainichi Koi Farm', 'Niigata, Japan', 'contact@dainichi.com', 'https://dainichi-certification.jp', 'Nổi tiếng với dòng Koi Chagoi'),
@@ -342,9 +344,9 @@ INSERT INTO Breeders (Name, Address, ContactInfo, CertificationLink, Notes) VALU
 ('Marusaka Koi Farm', 'Niigata, Japan', 'marusaka@koi.com', 'https://marusaka-cert.jp', 'Nổi tiếng với dòng Koi Goshiki'),
 ('Yagenji Koi Farm', 'Niigata, Japan', 'contact@yagenji.jp', 'https://yagenji-certification.jp', 'Chuyên về Koi Asagi và Shusui'),
 ('Otsuka Koi Farm', 'Saitama, Japan', 'otsuka@koifarm.jp', 'https://otsuka-cert.jp', 'Nổi tiếng với dòng Koi Kujaku');
-select * from Breeders
+--select * from Breeders
 
--- SET IDENTITY_INSERT KoiFish OFF;
+SET IDENTITY_INSERT KoiFish ON;
 INSERT INTO KoiFish (KoiID, Name, VarietyID, Origin, BreederID, Gender, Born, Size, Weight, Personality, FeedingAmountPerDay, HealthStatus, ScreeningRate, Price, CertificateLink, ImagesLink, Availability) VALUES
 (1, 'Sakura Beauty', 1, 'Imported', 1, 'Female', 2022, 45, 2.5, 'Friendly and active', 30, 'Excellent', 9.5, 5000000, 'https://cert.onkoi.vn/sakura-beauty', 'https://onkoi.vn/wp-content/uploads/2021/03/onkoi-kujaku-80-cm-3-tuoi-010-300x300.jpg', 'Available'),
 (2, 'Golden Dragon', 8, 'Imported', 2, 'Male', 2021, 60, 4.2, 'Majestic and calm', 50, 'Good', 9.0, 8000000, 'https://cert.onkoi.vn/golden-dragon', 'https://onkoi.vn/wp-content/uploads/2021/03/onkoi-showa-97-cm-5-tuoi-049-300x300.jpg', 'Available'),
@@ -356,8 +358,7 @@ INSERT INTO KoiFish (KoiID, Name, VarietyID, Origin, BreederID, Gender, Born, Si
 (8, 'Thunder Storm', 6, 'Imported', 5, 'Male', 2020, 65, 4.8, 'Powerful and dominant', 55, 'Excellent', 9.6, 9500000, 'https://cert.onkoi.vn/thunder-storm', 'https://onkoi.vn/wp-content/uploads/2021/03/onkoi-goshiki-72-cm-3-tuoi-013-300x300.jpg', 'Available'),
 (9, 'Autumn Whisper', 4, 'Pure Vietnamese', 7, 'Female', 2022, 48, 2.8, 'Peaceful and adaptable', 35, 'Good', 8.9, 5500000, 'https://cert.onkoi.vn/autumn-whisper', 'https://onkoi.vn/wp-content/uploads/2021/03/onkoi-kujaku-75-cm-3-tuoi-009-300x300.jpg', 'Available'),
 (10, 'Midnight Samurai', 10, 'Imported', 10, 'Male', 2021, 58, 4.0, 'Mysterious and strong', 50, 'Excellent', 9.4, 8500000, 'https://cert.onkoi.vn/midnight-samurai', 'https://onkoi.vn/wp-content/uploads/2021/03/onkoi-kujaku-85-cm-4-tuoi-006-300x300.jpg', 'Available');
---delete from KoiFish
-select * from KoiFish
+--select * from KoiFish
 
 --SET IDENTITY_INSERT KoiPackage ON;
 INSERT INTO KoiPackage (KoiID, PackageName, ImageLink, Price, PackageSize, Availability) VALUES
@@ -367,7 +368,7 @@ INSERT INTO KoiPackage (KoiID, PackageName, ImageLink, Price, PackageSize, Avail
 (4, 'Crimson Elite Collection', 'https://onkoi.vn/wp-content/uploads/2021/01/lo-koi-kohaku-dainichi-30-cm-063-768x768.jpg', 15000000, 3, 'Available'),
 (5, 'Moonlight Duo', 'https://onkoi.vn/wp-content/uploads/2020/07/lo-koi-Yagenji-Beni-Kikokuryu-35-cm-004-768x768.jpg', 8000000, 2, 'Available'),
 (6, 'Sunset Family Pack', 'https://onkoi.vn/wp-content/uploads/2021/03/onkoi-karashi-70-75-cm-3-tuoi-005-768x768.jpg', 12000000, 4, 'Available');
-select * from KoiPackage
+--select * from KoiPackage
 --delete from KoiPackage
 --DBCC CHECKIDENT ('KoiPackage', RESEED, 0);
 
@@ -382,7 +383,7 @@ INSERT INTO Promotions (PromotionCode, Description, DiscountType, DiscountValue,
 ('NEWYEAR2025', 'Chào đón năm mới 2025', 'Percentage', 18.00, '2024-12-31', '2025-01-07', 'Active', 5000000),
 ('TETHOLIDAY', 'Ưu đãi Tết Nguyên Đán', 'Percentage', 15.00, '2025-01-25', '2025-02-05', 'Active', 8000000),
 ('SPRINGJOY', 'Hân hoan mùa xuân', 'Fixed Amount', 750000, '2025-03-01', '2025-03-31', 'Active', 4000000);
-select * from Promotions
+--select * from Promotions
 
 INSERT INTO Orders (CustomerID, OrderDate, TotalAmount, ShippingAddress, OrderStatus, PaymentMethod, PaymentStatus, TrackingNumber, Discount, ShippingCost, PromotionID) VALUES
 (1, '2024-06-15 10:30:00', 5500000, '123 Lê Lợi, Quận 1, TP.HCM', 'Delivered', 'Credit Card', 'Completed', 'VN123456789', 500000, 200000, 1),
@@ -397,7 +398,7 @@ INSERT INTO Orders (CustomerID, OrderDate, TotalAmount, ShippingAddress, OrderSt
 (14, '2025-03-15 14:15:00', 4800000, '789 Trần Hưng Đạo, Quận 5, TP.HCM', 'Delivered', 'Bank Transfer', 'Completed', 'VN741852963', 450000, 150000, 10);
 --DELETE from Orders
 --DBCC CHECKIDENT ('Orders', RESEED, 0);
-select * from Orders
+--select * from Orders
 
 INSERT INTO OrderDetails (OrderID, ProductID, Quantity, UnitPrice, TotalPrice, ProductType, CertificateStatus) VALUES
 (1, 1, 1, 5000000, 5000000, 'Single Fish', 'Issued'),
@@ -410,7 +411,7 @@ INSERT INTO OrderDetails (OrderID, ProductID, Quantity, UnitPrice, TotalPrice, P
 (8, 8, 1, 9500000, 9500000, 'Single Fish', 'Issued'),
 (9, 9, 1, 5500000, 5500000, 'Single Fish', 'Issued'),
 (10, 10, 1, 8500000, 8500000, 'Single Fish', 'Issued');
-select * from OrderDetails
+--select * from OrderDetails
 
 INSERT INTO Payments (OrderID, PaymentDate, PaymentMethod, PaymentStatus) VALUES
 (1, '2024-06-15 10:35:00', 'Credit Card', 'Completed'),
@@ -423,7 +424,7 @@ INSERT INTO Payments (OrderID, PaymentDate, PaymentMethod, PaymentStatus) VALUES
 (8, '2025-01-05 08:35:00', 'Cash on Delivery', 'Pending'),
 (9, '2025-02-10 10:05:00', 'Credit Card', 'Completed'),
 (10, '2025-03-15 14:20:00', 'Bank Transfer', 'Completed');
-select * from Payments
+--select * from Payments
 
 INSERT INTO KoiImages (KoiID, ImageLink, Description, UploadedDate) VALUES
 (1, 'https://img.onkoi.vn/sakura-beauty-1.jpg', 'Sakura Beauty - Mặt bên', '2024-05-01 09:00:00'),
@@ -436,7 +437,7 @@ INSERT INTO KoiImages (KoiID, ImageLink, Description, UploadedDate) VALUES
 (6, 'https://img.onkoi.vn/sunset-blaze-1.jpg', 'Sunset Blaze - Toàn thân', '2024-05-06 09:45:00'),
 (7, 'https://img.onkoi.vn/pearl-princess-1.jpg', 'Pearl Princess - Mặt trên', '2024-05-07 11:20:00'),
 (8, 'https://img.onkoi.vn/thunder-storm-1.jpg', 'Thunder Storm - Cận cảnh vảy', '2024-05-08 13:00:00');
-select * from KoiImages
+--select * from KoiImages
 
 INSERT INTO KoiCertificates (KoiID, CertificateLink, IssuedDate, SoldDate) VALUES
 (1, 'https://cert.onkoi.vn/sakura-beauty-cert.pdf', '2024-05-15', '2024-06-15'),
@@ -447,7 +448,7 @@ INSERT INTO KoiCertificates (KoiID, CertificateLink, IssuedDate, SoldDate) VALUE
 (8, 'https://cert.onkoi.vn/thunder-storm-cert.pdf', '2024-10-15', '2025-01-05'),
 (9, 'https://cert.onkoi.vn/autumn-whisper-cert.pdf', '2024-11-01', '2025-02-10'),
 (10, 'https://cert.onkoi.vn/midnight-samurai-cert.pdf', '2024-12-05', '2025-03-15');
-select * from KoiCertificates
+--select * from KoiCertificates
 
 INSERT INTO LoyaltyPoints (CustomerID, PointsEarned, PointsUsed, TotalPoints, LastUpdated) VALUES
 (1, 500, 200, 300, '2024-06-15 10:40:00'),
@@ -457,7 +458,7 @@ INSERT INTO LoyaltyPoints (CustomerID, PointsEarned, PointsUsed, TotalPoints, La
 (7, 750, 250, 500, '2024-10-01 11:10:00'),
 (9, 900, 100, 800, '2024-11-15 13:40:00'),
 (10, 1500, 500, 1000, '2024-12-20 15:55:00');
-select * from LoyaltyPoints
+--select * from LoyaltyPoints
 
 INSERT INTO Reviews (ProductID, CustomerID, Rating, Comment, ReviewDate, Status) VALUES
 (1, 1, 5, 'Cá Koi Sakura Beauty thật sự đẹp và khỏe mạnh. Rất hài lòng với sản phẩm!', '2024-06-30 09:00:00', 'Visible'),
@@ -470,7 +471,7 @@ INSERT INTO Reviews (ProductID, CustomerID, Rating, Comment, ReviewDate, Status)
 (8, 1, 5, 'Thunder Storm quả là một con cá Koi ấn tượng. Rất hài lòng với việc mua hàng!', '2025-01-20 09:45:00', 'Visible'),
 (9, 2, 5, 'Autumn Whisper là một lựa chọn tuyệt vời. Màu sắc rất hài hòa và đẹp mắt.', '2025-02-25 11:30:00', 'Visible'),
 (10, 4, 5, 'Midnight Samurai thực sự là một tác phẩm nghệ thuật sống. Rất ấn tượng!', '2025-03-30 14:15:00', 'Visible');
-select * from Reviews
+--select * from Reviews
 
 
 INSERT INTO BlogPosts (UserID, Title, Content, CreatedDate, UpdatedDate, Status) VALUES
@@ -484,7 +485,7 @@ INSERT INTO BlogPosts (UserID, Title, Content, CreatedDate, UpdatedDate, Status)
 (3, 'Cách nhận biết cá Koi có chất lượng tốt', 'Để chọn được một con cá Koi chất lượng, bạn cần biết một số đặc điểm...', '2025-01-22 15:00:00', '2025-01-22 15:00:00', 'Published'),
 (5, 'Xu hướng nuôi cá Koi tại Việt Nam', 'Trong những năm gần đây, việc nuôi cá Koi tại Việt Nam ngày càng phổ biến...', '2025-02-28 10:45:00', '2025-02-28 10:45:00', 'Published'),
 (3, 'Cách tạo môi trường sống tốt nhất cho cá Koi', 'Môi trường sống đóng vai trò quan trọng trong sự phát triển của cá Koi...', '2025-03-15 12:30:00', '2025-03-15 12:30:00', 'Published');
-select * from BlogPosts
+--select * from BlogPosts
 
 INSERT INTO Categories (CategoryName) VALUES
 ('Chăm sóc cá Koi'),
@@ -497,7 +498,7 @@ INSERT INTO Categories (CategoryName) VALUES
 ('Xu hướng thị trường'),
 ('Môi trường sống'),
 ('Giống cá Koi');
-select * from Categories
+--select * from Categories
 
 INSERT INTO BlogCategories (PostID, CategoryID) VALUES
 (1, 7), (1, 1),
@@ -510,7 +511,7 @@ INSERT INTO BlogCategories (PostID, CategoryID) VALUES
 (8, 7), (8, 1),
 (9, 8), (9, 10),
 (10, 9), (10, 1);
-select * from BlogCategories
+--select * from BlogCategories
 
 INSERT INTO Comments (PostID, UserID, CommentText, CommentDate, Status) VALUES
 (1, 1, 'Bài viết rất hữu ích cho người mới chơi Koi như tôi!', '2024-06-02 10:15:00', 'Visible'),
@@ -523,42 +524,34 @@ INSERT INTO Comments (PostID, UserID, CommentText, CommentDate, Status) VALUES
 (7, 1, 'Tôi đã học được nhiều điều mới về cách cho cá Koi ăn.', '2024-12-19 15:15:00', 'Visible'),
 (8, 2, 'Bài viết này giúp tôi tự tin hơn khi chọn mua cá Koi.', '2025-01-23 09:00:00', 'Visible'),
 (9, 4, 'Thật tuyệt vời khi thấy ngày càng nhiều người yêu thích cá Koi ở Việt Nam!', '2025-03-01 11:45:00', 'Visible');
-select * from Comments
+--select * from Comments
 
 INSERT INTO KoiPackageVarieties (PackageID, VarietyID) VALUES
-(1, 1), (1, 2),
-(2, 8), (2, 3),
-(3, 9), (3, 5),
-(4, 3), (4, 6), (4, 7),
-(5, 5), (5, 9);
+(3, 1), (4, 2),
+(5, 8), (6, 3),
+(7, 9), (8, 5);
+--(6, 3), (4, 6), (4, 7),
+--(7, 5), (5, 9);
 --(6, 6), (6, 7), (6, 8), (6, 10),
 --(7, 2), (7, 4),
 --(8, 6), (8, 10),
 --(9, 4), (9, 5), (9, 7),
 --(10, 10), (10, 3);
-select * from KoiPackageVarieties
+
+--select * from KoiPackageVarieties
+--select * from KoiPackage
 
 INSERT INTO KoiPackageBreeders (PackageID, BreederID) VALUES
-(1, 1), (1, 2),
-(2, 2), (2, 3),
-(3, 4), (3, 9),
-(4, 6), (4, 5), (4, 8),
-(5, 9), (5, 4),
---(6, 8), (6, 7), (6, 5),
---(7, 3), (7, 7),
---(8, 5), (8, 10),
---(9, 7), (9, 9), (9, 4),
---(10, 10), (10, 6),
-(2, 2), (2, 1),
-(3, 10), (3, 8),
-(4, 3), (4, 9),
-(5, 4), (5, 10);
---(6, 5), (6, 1),
---(7, 2), (7, 6),
---(8, 7), (8, 1),
---(9, 8), (9, 10),
---(10, 9), (10, 1);
-select * from KoiPackageBreeders
+(3, 1), (4, 2),
+(5, 2), (6, 3),
+(7, 4), (8, 9);
+--(4, 6), (4, 5), (4, 8),
+--(5, 9), (5, 4),
+--(2, 2), (2, 1),
+--(3, 10), (3, 8),
+--(4, 3), (4, 9),
+--(5, 4), (5, 10);
+--select * from KoiPackageBreeders
 
 -- Thêm dữ liệu vào bảng Comments
 INSERT INTO Comments (PostID, UserID, CommentText, CommentDate, Status) VALUES
@@ -572,35 +565,7 @@ INSERT INTO Comments (PostID, UserID, CommentText, CommentDate, Status) VALUES
 (7, 1, 'Tôi đã học được nhiều điều mới về cách cho cá Koi ăn.', '2024-12-19 15:15:00', 'Visible'),
 (8, 2, 'Bài viết này giúp tôi tự tin hơn khi chọn mua cá Koi.', '2025-01-23 09:00:00', 'Visible'),
 (9, 4, 'Thật tuyệt vời khi thấy ngày càng nhiều người yêu thích cá Koi ở Việt Nam!', '2025-03-01 11:45:00', 'Visible');
-select * from Comments
-
--- Thêm dữ liệu vào bảng KoiPackageVarieties
-INSERT INTO KoiPackageVarieties (PackageID, VarietyID) VALUES
-(1, 1), (1, 2),
-(2, 8), (2, 3),
-(3, 9), (3, 5),
-(4, 3), (4, 6), (4, 7),
-(5, 5), (5, 9);
---(6, 6), (6, 7), (6, 8), (6, 10),
---(7, 2), (7, 4),
---(8, 6), (8, 10),
---(9, 4), (9, 5), (9, 7),
---(10, 10), (10, 3);
-select * from KoiPackageVarieties
-
--- Thêm dữ liệu vào bảng KoiPackageBreeders
-INSERT INTO KoiPackageBreeders (PackageID, BreederID) VALUES
-(1, 1), (1, 2),
-(2, 2), (2, 3),
-(3, 4), (3, 9),
-(4, 6), (4, 5), (4, 8),
-(5, 9), (5, 4);
---(6, 8), (6, 7), (6, 5),
---(7, 3), (7, 7),
---(8, 5), (8, 10),
---(9, 7), (9, 9), (9, 4),
---(10, 10), (10, 6);
-select * from KoiPackageBreeders
+--select * from Comments
 
 INSERT INTO OrderHistory (OrderID, TrackingNumber, ShipmentDate, DeliveryDate, ShipmentStatus) VALUES
 (1, 'VN123456789', '2024-06-16 09:00:00', '2024-06-18 14:30:00', 'Delivered'),
@@ -613,6 +578,4 @@ INSERT INTO OrderHistory (OrderID, TrackingNumber, ShipmentDate, DeliveryDate, S
 (8, NULL, NULL, NULL, 'In Transit'),
 (9, 'VN369258147', '2025-02-11 09:45:00', '2025-02-13 14:15:00', 'Delivered'),
 (10, 'VN741852963', '2025-03-16 10:30:00', '2025-03-18 16:00:00', 'Delivered');
-select * from OrderHistory
-
---select * from Users
+--select * from OrderHistory
