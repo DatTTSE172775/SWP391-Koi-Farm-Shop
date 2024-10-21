@@ -42,6 +42,7 @@ const {
 const {
   createKoiPackage,
   getAllKoiPackages,
+  getKoiPackageById,
 } = require("../controllers/koiPackageController");
 const {
   createKoiConsignment,
@@ -695,6 +696,30 @@ router.post("/koipackage", authMiddleware, createKoiPackage);
  *         description: List of all Koi Packages
  */
 router.get("/koipackages", getAllKoiPackages);
+
+/**
+ * @swagger
+ * /api/koipackage/{packageId}:
+ *   get:
+ *     summary: Get Koi Package details by ID
+ *     tags: [Koi Package]
+ *     parameters:
+ *       - in: path
+ *         name: packageId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: Koi Package ID
+ *     responses:
+ *       200:
+ *         description: Koi Package details
+ *       404:
+ *         description: Koi Package not found
+ *       500:
+ *         description: Server error
+ */
+router.get("/koipackage/:packageId", getKoiPackageById);
+
 
 // Koi Consignment routes
 /**
