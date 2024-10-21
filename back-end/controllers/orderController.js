@@ -13,22 +13,6 @@ const getAllOrders = async (req, res) => {
   }
 };
 
-// Get order by ID
-const getOrderById = async (req, res) => {
-  const { orderId } = req.params;
-
-  try {
-    const order = await Order.getOrderById(orderId);
-    if (!order) {
-      return res.status(404).json({ message: "Order not found." });
-    }
-    res.json(order);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error." });
-  }
-};
-
 // Create a new order
 const createOrder = async (req, res) => {
   const { customerID, totalAmount, shippingAddress, paymentMethod } = req.body;
@@ -67,23 +51,54 @@ const updateOrderStatus = async (req, res) => {
 
 // Assign order to staff
 const assignOrderToStaff = async (req, res) => {
-  const { orderId } = req.params;
-  const { userId } = req.body;
+  // Ép kiểu OrderID từ route parameter thành số nguyên
+  const orderId = parseInt(req.params.id, 10); 
+  const { userId } = req.body; // Lấy staffId từ request body
+
+  console.log('Order ID:', orderId); // Kiểm tra xem ID có được truyền đúng không
+
+  if (!orderId) {
+    return res.status(400).json({ message: 'Order ID is required.' });
+  }
 
   try {
+    // Kiểm tra xem người dùng có phải là nhân viên không
+    const isStaff = await Order.isUserStaff(userId);
+    if (!isStaff) {
+      return res.status(400).json({ message: "User is not a Staff member." });
+    }
+
+    // Check if the order exists
+    const order = await Order.getOrderById(orderId);
+    if (!order) {
+      return res.status(404).json({ message: "Order not found." });
+    }
+    // Gán đơn hàng cho nhân viên
     const assignedOrder = await Order.assignOrderToStaff(orderId, userId);
     if (assignedOrder && assignedOrder.error) {
       return res.status(400).json({ message: assignedOrder.error });
-    }
-    
-    if (!assignedOrder) {
-      return res.status(404).json({ message: "Order not found." });
     }
 
     res.json({ message: "Order assigned to staff.", order: assignedOrder });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Failed to assign order to staff." });
+  }
+};
+
+// Get order by ID
+const getOrderById = async (req, res) => {
+  const { orderId } = req.params;
+
+  try {
+    const order = await Order.getOrderById(orderId);
+    if (!order) {
+      return res.status(404).json({ message: "Order not found." });
+    }
+    res.json(order);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error." });
   }
 };
 

@@ -397,7 +397,7 @@ router.patch("/orders/:orderId", updateOrderStatus);
  *       - in: path
  *         name: orderId
  *         schema:
- *           type: string
+ *           type: integer
  *         required: true
  *         description: Order ID
  *     requestBody:
@@ -417,7 +417,7 @@ router.patch("/orders/:orderId", updateOrderStatus);
  *       500:
  *         description: Failed to assign order to staff
  */
-router.patch('/:id/assign', assignOrderToStaff);
+router.patch('/:orderId/assign', assignOrderToStaff);
 
 /**
  * @swagger

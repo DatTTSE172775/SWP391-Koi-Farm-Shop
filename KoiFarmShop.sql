@@ -6,7 +6,7 @@ CREATE TABLE Users (
     UserID INT IDENTITY(1,1) PRIMARY KEY,
     Username VARCHAR(255) NOT NULL,
     PasswordHash VARCHAR(255) NOT NULL,
-    Role VARCHAR(50) CHECK (Role IN ('Guest', 'Customer', 'Staff', 'Manager')) DEFAULT 'Guest',
+    Role VARCHAR(50) CHECK (Role IN ('Customer', 'Staff', 'Manager')) DEFAULT 'Customer',
     SubscriptionStatus VARCHAR(50) CHECK (SubscriptionStatus IN ('Active', 'Inactive')) NOT NULL
 );
 
@@ -92,7 +92,7 @@ CREATE TABLE KoiConsignment (
     Status VARCHAR(50) CHECK (Status IN ('Pending', 'Approved', 'In Care', 'Listed for Sale', 'Sold', 'Withdrawn')) DEFAULT 'Pending',
     PriceAgreed DECIMAL(10, 2),
     PickupDate DATETIME,
-    ApprovedStatus VARCHAR(50) CHECK (ApprovedStatus IN ('Approved', 'Rejected')) DEFAULT 'Pending',
+    ApprovedStatus VARCHAR(50) CHECK (ApprovedStatus IN ('Pending', 'Approved', 'Rejected')) DEFAULT 'Pending',
     InspectionResult VARCHAR(MAX),
     Notes VARCHAR(MAX),
     FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID),
@@ -348,18 +348,18 @@ INSERT INTO Breeders (Name, Address, ContactInfo, CertificationLink, Notes) VALU
 ('Otsuka Koi Farm', 'Saitama, Japan', 'otsuka@koifarm.jp', 'https://otsuka-cert.jp', 'Nổi tiếng với dòng Koi Kujaku');
 --select * from Breeders
 
-SET IDENTITY_INSERT KoiFish ON;
-INSERT INTO KoiFish (KoiID, Name, VarietyID, Origin, BreederID, Gender, Born, Size, Weight, Personality, FeedingAmountPerDay, HealthStatus, ScreeningRate, Price, CertificateLink, ImagesLink, Availability) VALUES
-(1, 'Sakura Beauty', 1, 'Imported', 1, 'Female', 2022, 45, 2.5, 'Friendly and active', 30, 'Excellent', 9.5, 5000000, 'https://cert.onkoi.vn/sakura-beauty', 'https://onkoi.vn/wp-content/uploads/2021/03/onkoi-kujaku-80-cm-3-tuoi-010-300x300.jpg', 'Available'),
-(2, 'Golden Dragon', 8, 'Imported', 2, 'Male', 2021, 60, 4.2, 'Majestic and calm', 50, 'Good', 9.0, 8000000, 'https://cert.onkoi.vn/golden-dragon', 'https://onkoi.vn/wp-content/uploads/2021/03/onkoi-showa-97-cm-5-tuoi-049-300x300.jpg', 'Available'),
-(3, 'Azure Dream', 9, 'F1 Hybrid', 4, 'Female', 2023, 35, 1.8, 'Shy but curious', 25, 'Excellent', 8.5, 3500000, 'https://cert.onkoi.vn/azure-dream', 'https://onkoi.vn/wp-content/uploads/2021/03/onkoi-showa-78-cm-3-tuoi-050-300x300.jpg', 'Available'),
-(4, 'Crimson Warrior', 3, 'Imported', 6, 'Male', 2020, 70, 5.5, 'Bold and energetic', 60, 'Excellent', 9.8, 12000000, 'https://cert.onkoi.vn/crimson-warrior', 'https://onkoi.vn/wp-content/uploads/2021/03/tancho-kohaku-84-cm-4-tuoi-052-300x300.jpg', 'Available'),
-(5, 'Moonlight Serenade', 5, 'Pure Vietnamese', 9, 'Female', 2022, 50, 3.0, 'Graceful and gentle', 35, 'Good', 8.7, 4500000, 'https://cert.onkoi.vn/moonlight-serenade', 'https://onkoi.vn/wp-content/uploads/2021/03/onkoi-kohaku-91-cm-7-tuoi-056-300x300.jpg', 'Available'),
-(6, 'Sunset Blaze', 7, 'Imported', 8, 'Male', 2021, 55, 3.8, 'Playful and sociable', 45, 'Excellent', 9.2, 7000000, 'https://cert.onkoi.vn/sunset-blaze', 'https://onkoi.vn/wp-content/uploads/2021/03/onkoi-chagoi-80-cm-4-tuoi-016-300x300.jpg', 'Available'),
-(7, 'Pearl Princess', 2, 'F1 Hybrid', 3, 'Female', 2023, 40, 2.2, 'Elegant and calm', 30, 'Good', 8.8, 4000000, 'https://cert.onkoi.vn/pearl-princess', 'https://onkoi.vn/wp-content/uploads/2021/03/onkoi-kujaku-80-cm-3-tuoi-010-300x300.jpg', 'Available'),
-(8, 'Thunder Storm', 6, 'Imported', 5, 'Male', 2020, 65, 4.8, 'Powerful and dominant', 55, 'Excellent', 9.6, 9500000, 'https://cert.onkoi.vn/thunder-storm', 'https://onkoi.vn/wp-content/uploads/2021/03/onkoi-goshiki-72-cm-3-tuoi-013-300x300.jpg', 'Available'),
-(9, 'Autumn Whisper', 4, 'Pure Vietnamese', 7, 'Female', 2022, 48, 2.8, 'Peaceful and adaptable', 35, 'Good', 8.9, 5500000, 'https://cert.onkoi.vn/autumn-whisper', 'https://onkoi.vn/wp-content/uploads/2021/03/onkoi-kujaku-75-cm-3-tuoi-009-300x300.jpg', 'Available'),
-(10, 'Midnight Samurai', 10, 'Imported', 10, 'Male', 2021, 58, 4.0, 'Mysterious and strong', 50, 'Excellent', 9.4, 8500000, 'https://cert.onkoi.vn/midnight-samurai', 'https://onkoi.vn/wp-content/uploads/2021/03/onkoi-kujaku-85-cm-4-tuoi-006-300x300.jpg', 'Available');
+--SET IDENTITY_INSERT KoiFish OFF;
+INSERT INTO KoiFish (Name, VarietyID, Origin, BreederID, Gender, Born, Size, Weight, Personality, FeedingAmountPerDay, HealthStatus, ScreeningRate, Price, CertificateLink, ImagesLink, Availability) VALUES
+('Sakura Beauty', 1, 'Imported', 1, 'Female', 2022, 45, 2.5, 'Friendly and active', 30, 'Excellent', 9.5, 5000000, 'https://cert.onkoi.vn/sakura-beauty', 'https://onkoi.vn/wp-content/uploads/2021/03/onkoi-kujaku-80-cm-3-tuoi-010-300x300.jpg', 'Available'),
+('Golden Dragon', 8, 'Imported', 2, 'Male', 2021, 60, 4.2, 'Majestic and calm', 50, 'Good', 9.0, 8000000, 'https://cert.onkoi.vn/golden-dragon', 'https://onkoi.vn/wp-content/uploads/2021/03/onkoi-showa-97-cm-5-tuoi-049-300x300.jpg', 'Available'),
+('Azure Dream', 9, 'F1 Hybrid', 4, 'Female', 2023, 35, 1.8, 'Shy but curious', 25, 'Excellent', 8.5, 3500000, 'https://cert.onkoi.vn/azure-dream', 'https://onkoi.vn/wp-content/uploads/2021/03/onkoi-showa-78-cm-3-tuoi-050-300x300.jpg', 'Available'),
+('Crimson Warrior', 3, 'Imported', 6, 'Male', 2020, 70, 5.5, 'Bold and energetic', 60, 'Excellent', 9.8, 12000000, 'https://cert.onkoi.vn/crimson-warrior', 'https://onkoi.vn/wp-content/uploads/2021/03/tancho-kohaku-84-cm-4-tuoi-052-300x300.jpg', 'Available'),
+('Moonlight Serenade', 5, 'Pure Vietnamese', 9, 'Female', 2022, 50, 3.0, 'Graceful and gentle', 35, 'Good', 8.7, 4500000, 'https://cert.onkoi.vn/moonlight-serenade', 'https://onkoi.vn/wp-content/uploads/2021/03/onkoi-kohaku-91-cm-7-tuoi-056-300x300.jpg', 'Available'),
+('Sunset Blaze', 7, 'Imported', 8, 'Male', 2021, 55, 3.8, 'Playful and sociable', 45, 'Excellent', 9.2, 7000000, 'https://cert.onkoi.vn/sunset-blaze', 'https://onkoi.vn/wp-content/uploads/2021/03/onkoi-chagoi-80-cm-4-tuoi-016-300x300.jpg', 'Available'),
+('Pearl Princess', 2, 'F1 Hybrid', 3, 'Female', 2023, 40, 2.2, 'Elegant and calm', 30, 'Good', 8.8, 4000000, 'https://cert.onkoi.vn/pearl-princess', 'https://onkoi.vn/wp-content/uploads/2021/03/onkoi-kujaku-80-cm-3-tuoi-010-300x300.jpg', 'Available'),
+('Thunder Storm', 6, 'Imported', 5, 'Male', 2020, 65, 4.8, 'Powerful and dominant', 55, 'Excellent', 9.6, 9500000, 'https://cert.onkoi.vn/thunder-storm', 'https://onkoi.vn/wp-content/uploads/2021/03/onkoi-goshiki-72-cm-3-tuoi-013-300x300.jpg', 'Available'),
+('Autumn Whisper', 4, 'Pure Vietnamese', 7, 'Female', 2022, 48, 2.8, 'Peaceful and adaptable', 35, 'Good', 8.9, 5500000, 'https://cert.onkoi.vn/autumn-whisper', 'https://onkoi.vn/wp-content/uploads/2021/03/onkoi-kujaku-75-cm-3-tuoi-009-300x300.jpg', 'Available'),
+('Midnight Samurai', 10, 'Imported', 10, 'Male', 2021, 58, 4.0, 'Mysterious and strong', 50, 'Excellent', 9.4, 8500000, 'https://cert.onkoi.vn/midnight-samurai', 'https://onkoi.vn/wp-content/uploads/2021/03/onkoi-kujaku-85-cm-4-tuoi-006-300x300.jpg', 'Available');
 --select * from KoiFish
 
 --SET IDENTITY_INSERT KoiPackage ON;
