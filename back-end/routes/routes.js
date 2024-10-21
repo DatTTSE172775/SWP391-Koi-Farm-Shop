@@ -23,6 +23,7 @@ const {
   getOrderById,
   createOrder,
   updateOrderStatus,
+  getAllStaffOrdersByUserId,
   assignOrderToStaff,
   deleteOrder,
 } = require("../controllers/orderController");
@@ -55,7 +56,7 @@ const {
   getAllVarieties,
 } = require("../controllers/varietyController");
 const {
-  getAllStaff
+  getAllStaff,
 } = require("../controllers/userController");
 
 // User routes
@@ -173,6 +174,7 @@ router.post("/change-password", authMiddleware, changePassword);
  */
 router.post("/forgot-password", forgotPassword);
 
+// Staff routes
 /**
  * @swagger
  * /api/staff:
@@ -199,6 +201,50 @@ router.post("/forgot-password", forgotPassword);
  *         description: Internal server error.
  */
 router.get('/staff', getAllStaff);
+
+/**
+ * @swagger
+ * /api/orders/user/{userId}:
+ *   get:
+ *     summary: Get all orders assigned to Staff
+ *     tags: [Orders]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: User ID of the staff member
+ *     responses:
+ *       200:
+ *         description: List of orders assigned to the staff member
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   orderId:
+ *                     type: integer
+ *                   customerID:
+ *                     type: integer
+ *                   totalAmount:
+ *                     type: number
+ *                   shippingAddress:
+ *                     type: string
+ *                   paymentMethod:
+ *                     type: string
+ *                   status:
+ *                     type: string
+ *                   userId:
+ *                     type: integer
+ *       404:
+ *         description: No orders found for the given user ID
+ *       500:
+ *         description: Internal server error
+ */
+router.get('/orders/user/:userId', getAllStaffOrdersByUserId);
 
 // Koi Fish routes
 

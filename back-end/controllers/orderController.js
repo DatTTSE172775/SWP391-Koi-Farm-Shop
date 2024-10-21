@@ -49,6 +49,34 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
+//Lấy tất cả đơn hàng của Staff
+const getAllStaffOrdersByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params; // Lấy userId từ route params
+
+    // Kết nối đến database và thực hiện truy vấn để lấy đơn hàng của nhân viên
+    const pool = await sql.connect(); // Kết nối đến SQL Server
+
+    const result = await pool.request()
+      .input('userId', sql.Int, userId) // Đặt giá trị userId vào truy vấn
+      .query(`
+        SELECT o.* 
+        FROM Orders o
+        JOIN Users u ON o.userId = u.userId
+        WHERE u.userId = @userId AND u.Role = 'Staff'
+      `); // Truy vấn để lấy tất cả đơn hàng cho nhân viên dựa trên UserId và Role
+
+    if (result.recordset.length === 0) {
+      return res.status(404).json({ message: 'No orders found for the given user ID' });
+    }
+
+    res.status(200).json(result.recordset); // Trả về danh sách đơn hàng tìm thấy
+  } catch (error) {
+    console.error('Error fetching orders by user ID:', error);
+    res.status(500).json({ message: 'Error fetching orders by user ID' });
+  }
+};
+
 // Assign order to staff
 const assignOrderToStaff = async (req, res) => {
   // Ép kiểu OrderID từ route parameter thành số nguyên
@@ -124,5 +152,6 @@ module.exports = {
   createOrder,
   updateOrderStatus,
   deleteOrder,
+  getAllStaffOrdersByUserId,
   assignOrderToStaff,
 };

@@ -24,4 +24,7 @@ router.post('/create', orderController.createOrder);
 // Gán đơn hàng cho nhân viên
 router.patch('/:id/assign', orderController.assignOrderToStaff);
 
+//Lấy tất cả đơn hàng của nhân viên
+router.get('/user/:userId/orders', orderController.getAllStaffOrdersByUserId);
+
 module.exports = router;
