@@ -1,18 +1,13 @@
-const koiConsignmentModel = require('../models/koiConsignmentModel');
+const { createKoiConsignment: createKoiConsignmentModel } = require('../models/koiConsignmentModel');
 
 exports.createKoiConsignment = async (req, res) => {
     try {
-        const consignmentData = req.body;
-        const result = await koiConsignmentModel.createKoiConsignment(consignmentData);
-        res.status(201).json({
-            message: 'Koi Consignment created successfully!',
-            data: result
-        });
+        // The req object now has the user information thanks to authMiddleware
+        const result = await createKoiConsignmentModel(req);
+        res.status(201).json({ message: 'Koi Consignment created successfully', result });
     } catch (error) {
-        res.status(500).json({
-            message: 'Error creating Koi Consignment',
-            error: error.message
-        });
+        console.error('Error in createKoiConsignment controller:', error);
+        res.status(500).json({ message: 'Error creating Koi Consignment', error: error.message });
     }
 };
 

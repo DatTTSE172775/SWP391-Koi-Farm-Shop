@@ -31,7 +31,14 @@ export const login = (username, password) => async (dispatch) => {
     console.log('Login response:', response.data);
 
     if (response.data && response.data.token) {
+      // Save token to localStorage
+      localStorage.setItem('token', response.data.token);
+      
+      // Dispatch success action
       dispatch({ type: LOGIN_SUCCESS, payload: response.data });
+      
+      // Set token for future requests
+      axiosPublic.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
     } else {
       dispatch({
         type: LOGIN_FAILURE,
@@ -49,6 +56,8 @@ export const login = (username, password) => async (dispatch) => {
 
 // Logout action
 export const logout = () => (dispatch) => {
+  localStorage.removeItem('token');
+  delete axiosPublic.defaults.headers.common['Authorization'];
   dispatch({ type: LOGOUT });
 };
 
@@ -86,5 +95,14 @@ export const register = (username, email, password, fullname, phone) => async (d
       type: REGISTER_FAILURE,
       payload: error.response?.data?.message || "Đăng ký thất bại",
     });
+  }
+};
+
+// Add a new action to initialize auth state from localStorage
+export const initializeAuth = () => (dispatch) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    dispatch({ type: LOGIN_SUCCESS, payload: { token } });
+    axiosPublic.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   }
 };
