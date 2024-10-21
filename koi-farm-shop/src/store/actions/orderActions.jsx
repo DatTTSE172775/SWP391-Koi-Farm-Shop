@@ -4,6 +4,9 @@ import axiosInstance from "../../api/axiosInstance";
 export const CREATE_ORDER_REQUEST = "CREATE_ORDER_REQUEST";
 export const CREATE_ORDER_SUCCESS = "CREATE_ORDER_SUCCESS";
 export const CREATE_ORDER_FAILURE = "CREATE_ORDER_FAILURE";
+export const FETCH_ORDERS_REQUEST = "FETCH_ORDERS_REQUEST";
+export const FETCH_ORDERS_SUCCESS = "FETCH_ORDERS_SUCCESS";
+export const FETCH_ORDERS_FAILURE = "FETCH_ORDERS_FAILURE";
 
 // Action Creators
 const createOrderRequest = () => ({ type: CREATE_ORDER_REQUEST });
@@ -15,6 +18,18 @@ const createOrderSuccess = (order) => ({
 
 const createOrderFailure = (error) => ({
   type: CREATE_ORDER_FAILURE,
+  payload: error,
+});
+
+const fetchOrdersRequest = () => ({ type: FETCH_ORDERS_REQUEST });
+
+const fetchOrdersSuccess = (orders) => ({
+  type: FETCH_ORDERS_SUCCESS,
+  payload: orders,
+});
+
+const fetchOrdersFailure = (error) => ({
+  type: FETCH_ORDERS_FAILURE,
   payload: error,
 });
 
@@ -52,5 +67,20 @@ export const createOrder = (orderData) => async (dispatch) => {
   } catch (error) {
     console.error("Order creation failed:", error);
     dispatch(createOrderFailure(error.message || "Failed to create order"));
+  }
+};
+
+// Thunk Action to Fetch All Orders
+export const fetchOrders = () => async (dispatch) => {
+  dispatch(fetchOrdersRequest());
+
+  try {
+    const response = await axiosInstance.get("/orders");
+    console.log("Orders fetched successfully:", response.data);
+
+    dispatch(fetchOrdersSuccess(response.data));
+  } catch (error) {
+    console.error("Failed to fetch orders:", error);
+    dispatch(fetchOrdersFailure(error.message || "Failed to fetch orders"));
   }
 };
