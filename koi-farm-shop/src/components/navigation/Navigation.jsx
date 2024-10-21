@@ -57,7 +57,7 @@ const Navigation = () => {
   };
 
   // Get auth state from redux store
-  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const { isAuthenticated, username } = useSelector((state) => state.auth);
 
   // Handle logout
   const handleLogout = () => {
@@ -209,7 +209,7 @@ const Navigation = () => {
                   src="/images/users/avatar.jpg"
                   icon={<UserOutlined />}
                 />
-                <span className="username">{user}</span>
+                <span className="username">{username}</span>
               </div>
             </Dropdown>
             <Link to="/cart" className="cart-link">

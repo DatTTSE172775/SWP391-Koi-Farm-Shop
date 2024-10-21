@@ -32,7 +32,7 @@ const Login = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    dispatch(login(username, password));
+    dispatch(login(username, password)); // Dispatch login action with username & password
   };
 
   return (
@@ -93,7 +93,7 @@ const Login = () => {
           </Button>
 
           <Typography variant="body2" align="center" className="register-text">
-            Bạn chưa có tài khoản ?{" "}
+            Bạn chưa có tài khoản?{" "}
             <Link component={RouterLink} to="/register" variant="body2">
               Đăng ký ngay
             </Link>
