@@ -1,80 +1,122 @@
 import { EyeOutlined } from "@ant-design/icons";
-import { Button, Card, Col, Row, Select, Tag, Typography } from "antd";
+import {
+  Card,
+  Col,
+  Dropdown,
+  Menu,
+  Row,
+  Space,
+  Tag,
+  Tooltip,
+  Typography,
+} from "antd";
+import PropTypes from "prop-types"; // Import PropTypes for props validation
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./OrderItem.scss";
 
-const { Text } = Typography;
-const { Option } = Select;
+const { Text, Title } = Typography;
+
+const statusColors = {
+  Pending: "orange",
+  Processing: "blue",
+  Shipped: "purple",
+  Delivered: "green",
+  Cancelled: "red",
+};
+
+const staffList = ["Chưa giao", "Staff A", "Staff B", "Staff C"]; // Mock staff list
 
 const OrderItem = ({ order }) => {
   const [assignee, setAssignee] = useState(order.assignedTo || "Chưa giao");
   const navigate = useNavigate();
 
-  const handleAssigneeChange = (value) => {
-    setAssignee(value);
-    // Logic để cập nhật người phụ trách đơn hàng vào hệ thống hoặc backend
-    console.log(`Order ${order.id} assigned to: ${value}`);
+  const handleAssigneeChange = ({ key }) => {
+    setAssignee(key);
+    console.log(`Order ${order.OrderID} assigned to: ${key}`);
   };
+
+  const assigneeMenu = (
+    <Menu onClick={handleAssigneeChange}>
+      {staffList.map((staff) => (
+        <Menu.Item key={staff}>
+          <Text>{staff}</Text>
+        </Menu.Item>
+      ))}
+    </Menu>
+  );
 
   return (
     <Card className="order-item-card">
-      <Row gutter={[16, 16]} align="middle">
-        {/* Order Info */}
-        <Col xs={24} md={4}>
-          <Text strong>Mã Đơn Hàng:</Text>
-          <Text>{order.id}</Text>
-        </Col>
+      <Row align="middle" gutter={[16, 24]}>
+        {/* Order Tracking Number */}
         <Col xs={24} md={5}>
-          <Text strong>Tên Sản Phẩm:</Text>
-          <Text>{order.productName}</Text>
-        </Col>
-        <Col xs={24} md={3}>
-          <Text strong>Ngày Đặt Hàng:</Text>
-          <Text>{order.date}</Text>
-        </Col>
-        <Col xs={24} md={3}>
-          <Text strong>Giá:</Text>
-          <Text>{order.price.toLocaleString()} VND</Text>
+          <Space direction="vertical">
+            <Title level={5}>Mã Số Đơn Hàng</Title>
+            <Text>{order.TrackingNumber}</Text>
+          </Space>
         </Col>
 
-        {/* Assignee Selection */}
-        <Col xs={24} md={4}>
-          <Text strong>Người Phụ Trách:</Text>
-          <Select
-            value={assignee}
-            onChange={handleAssigneeChange}
-            className="assignee-select"
+        {/* Order Date */}
+        <Col xs={12} md={4}>
+          <Title level={5}>Ngày Đặt Hàng</Title>
+          <Text>{new Date(order.OrderDate).toLocaleDateString()}</Text>
+        </Col>
+
+        {/* Order Price */}
+        <Col xs={12} md={4}>
+          <Title level={5}>Giá</Title>
+          <Text strong>{order.TotalAmount.toLocaleString()} VND</Text>
+        </Col>
+
+        {/* Assignee Selection with Dropdown */}
+        <Col xs={12} md={5}>
+          <Title level={5}>Nhân Viên Phụ Trách</Title>
+          <Dropdown overlay={assigneeMenu} trigger={["click"]}>
+            <a
+              onClick={(e) => e.preventDefault()}
+              className="editable-assignee"
+            >
+              {assignee}
+            </a>
+          </Dropdown>
+        </Col>
+
+        {/* Order Status Display */}
+        <Col xs={12} md={4}>
+          <Title level={5}>Trạng Thái Đơn Hàng</Title>
+          <Tag
+            color={statusColors[order.OrderStatus]}
+            className="order-status-tag"
           >
-            <Option value="Chưa giao">Chưa giao</Option>
-            <Option value="Staff A">Staff A</Option>
-            <Option value="Staff B">Staff B</Option>
-            <Option value="Staff C">Staff C</Option>
-          </Select>
-        </Col>
-
-        {/* Order Status */}
-        <Col xs={24} md={3}>
-          <Text strong>Trạng Thái:</Text>
-          <Tag color={order.status === "Đã hoàn thành" ? "green" : "orange"}>
-            {order.status}
+            {order.OrderStatus}
           </Tag>
         </Col>
 
-        {/* View Details Button */}
+        {/* View Details Icon */}
         <Col xs={24} md={2}>
-          <Button
-            type="primary"
-            icon={<EyeOutlined />}
-            onClick={() => navigate(`/admin/manage-orders/${order.id}`)}
-            className="view-details-button"
-          >
-            Xem Chi Tiết
-          </Button>
+          <Tooltip title="Xem Chi Tiết">
+            <EyeOutlined
+              className="view-icon"
+              onClick={() => navigate(`/admin/manage-orders/${order.OrderID}`)}
+            />
+          </Tooltip>
         </Col>
       </Row>
     </Card>
   );
+};
+
+// PropTypes for Validation
+OrderItem.propTypes = {
+  order: PropTypes.shape({
+    OrderID: PropTypes.number.isRequired,
+    TrackingNumber: PropTypes.string.isRequired,
+    OrderDate: PropTypes.string.isRequired,
+    TotalAmount: PropTypes.number.isRequired,
+    OrderStatus: PropTypes.string.isRequired,
+    assignedTo: PropTypes.string,
+  }).isRequired,
 };
 
 export default OrderItem;

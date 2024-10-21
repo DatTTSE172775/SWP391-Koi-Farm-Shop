@@ -1,15 +1,46 @@
+// src/pages/admin/OrderDetails.scss
+
 .admin-layout {
   height: 100vh;
 
   .admin-content {
-    padding: 20px;
-    background-color: #f0f2f5;
+    padding: 30px;
+    background-color: #f5f7fa;
     overflow-y: auto;
   }
 
   .order-details-card {
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    border-radius: 12px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s;
+
+    &:hover {
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .title {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .back-button {
+      background-color: #1890ff;
+      border-color: #1890ff;
+      transition: background-color 0.3s, border-color 0.3s;
+
+      &:hover {
+        background-color: #40a9ff;
+        border-color: #40a9ff;
+      }
+    }
+  }
+
+  .loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
   }
 }

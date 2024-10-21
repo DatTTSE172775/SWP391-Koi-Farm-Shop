@@ -1,40 +1,31 @@
-import { Layout, Typography } from "antd";
+import { Alert, Layout, Spin, Typography } from "antd";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import AdminHeader from "../../../components/admin/header/AdminHeader";
 import OrderItem from "../../../components/admin/order-item/OrderItem";
 import AdminSidebar from "../../../components/admin/sidebar/AdminSidebar";
-import "./OrdersManagement.scss";
+import { fetchOrders } from "../../../store/actions/orderActions";
 
 const { Content } = Layout;
 const { Title } = Typography;
 
-const sampleOrders = [
-  {
-    id: "ORD001",
-    productName: "Kohaku Koi",
-    date: "2024-10-01",
-    price: 2000000,
-    assignedTo: "Staff A",
-    status: "Đang xử lý",
-  },
-  {
-    id: "ORD002",
-    productName: "Showa Koi",
-    date: "2024-10-03",
-    price: 1800000,
-    assignedTo: "Chưa giao",
-    status: "Chưa xử lý",
-  },
-  {
-    id: "ORD003",
-    productName: "Shiro Utsuri Koi",
-    date: "2024-10-04",
-    price: 1500000,
-    assignedTo: "Staff B",
-    status: "Đã hoàn thành",
-  },
-];
-
 const OrdersManagement = () => {
+  const dispatch = useDispatch();
+  const { orders, loading, error } = useSelector((state) => state.order);
+
+  useEffect(() => {
+    dispatch(fetchOrders());
+  }, [dispatch]);
+
+  if (loading) {
+    return <Spin size="large" className="loading-spinner" />;
+  }
+
+  if (error) {
+    return <Alert message="Error" description={error} type="error" showIcon />;
+  }
+
+  // Ensure orders is always an array before mapping
   return (
     <Layout className="admin-layout">
       <AdminSidebar />
@@ -43,9 +34,13 @@ const OrdersManagement = () => {
         <Content className="admin-content">
           <Title level={2}>Quản Lý Đơn Hàng</Title>
           <div className="orders-list">
-            {sampleOrders.map((order) => (
-              <OrderItem key={order.id} order={order} />
-            ))}
+            {Array.isArray(orders) && orders.length > 0 ? (
+              orders.map((order) => (
+                <OrderItem key={order.OrderID} order={order} />
+              ))
+            ) : (
+              <p>No orders available.</p>
+            )}
           </div>
         </Content>
       </Layout>
