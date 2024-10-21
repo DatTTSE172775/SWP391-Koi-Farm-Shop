@@ -21,4 +21,7 @@ router.put('/:id/status', orderController.updateOrderStatus);
 // Thêm route để tạo đơn hàng
 router.post('/create', orderController.createOrder);
 
+// Gán đơn hàng cho nhân viên
+router.patch('/:id/assign', orderController.assignOrderToStaff);
+
 module.exports = router;

@@ -139,6 +139,8 @@ CREATE TABLE Orders (
     ShippingCost DECIMAL(10, 2) DEFAULT 0.00,
     ConsignmentID INT,
     PromotionID INT DEFAULT NULL,
+    UserID INT DEFAULT NULL,
+    FOREIGN KEY (UserID) REFERENCES Users(UserID),
     FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID),
     FOREIGN KEY (ConsignmentID) REFERENCES KoiConsignment(ConsignmentID),
     FOREIGN KEY (PromotionID) REFERENCES Promotions(PromotionID)

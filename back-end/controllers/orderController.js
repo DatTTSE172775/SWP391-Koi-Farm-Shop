@@ -65,6 +65,28 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
+// Assign order to staff
+const assignOrderToStaff = async (req, res) => {
+  const { orderId } = req.params;
+  const { userId } = req.body;
+
+  try {
+    const assignedOrder = await Order.assignOrderToStaff(orderId, userId);
+    if (assignedOrder && assignedOrder.error) {
+      return res.status(400).json({ message: assignedOrder.error });
+    }
+    
+    if (!assignedOrder) {
+      return res.status(404).json({ message: "Order not found." });
+    }
+
+    res.json({ message: "Order assigned to staff.", order: assignedOrder });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to assign order to staff." });
+  }
+};
+
 // Delete an order
 const deleteOrder = async (req, res) => {
   const { orderId } = req.params;
@@ -87,4 +109,5 @@ module.exports = {
   createOrder,
   updateOrderStatus,
   deleteOrder,
+  assignOrderToStaff,
 };

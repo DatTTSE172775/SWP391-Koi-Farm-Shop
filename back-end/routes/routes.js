@@ -23,6 +23,7 @@ const {
   getOrderById,
   createOrder,
   updateOrderStatus,
+  assignOrderToStaff,
   deleteOrder,
 } = require("../controllers/orderController");
 const {
@@ -385,6 +386,38 @@ router.post("/orders", createOrder);
  *         description: Order status updated successfully
  */
 router.patch("/orders/:orderId", updateOrderStatus);
+
+/**
+ * @swagger
+ * /api/orders/{orderId}/assign:
+ *   patch:
+ *     summary: Assign order to staff
+ *     tags: [Orders]
+ *     parameters:
+ *       - in: path
+ *         name: orderId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Order ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userId:
+ *                 type: integer
+ *     responses:
+ *       200:
+ *         description: Order assigned to staff successfully
+ *       404:
+ *         description: Order not found
+ *       500:
+ *         description: Failed to assign order to staff
+ */
+router.patch('/:id/assign', assignOrderToStaff);
 
 /**
  * @swagger
