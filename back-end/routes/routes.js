@@ -54,6 +54,9 @@ const {
   createVariety,
   getAllVarieties,
 } = require("../controllers/varietyController");
+const {
+  getAllStaff
+} = require("../controllers/userController");
 
 // User routes
 /**
@@ -169,6 +172,33 @@ router.post("/change-password", authMiddleware, changePassword);
  *         description: New password sent to email
  */
 router.post("/forgot-password", forgotPassword);
+
+/**
+ * @swagger
+ * /api/staff:
+ *   get:
+ *     summary: Get all staff members
+ *     tags: [Staff]
+ *     responses:
+ *       200:
+ *         description: A list of all staff members.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   userId:
+ *                     type: integer
+ *                   username:
+ *                     type: string
+ *                   role:
+ *                     type: string
+ *       500:
+ *         description: Internal server error.
+ */
+router.get('/staff', getAllStaff);
 
 // Koi Fish routes
 
