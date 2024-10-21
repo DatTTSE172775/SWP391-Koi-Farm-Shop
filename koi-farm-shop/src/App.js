@@ -38,6 +38,7 @@ const HomePage = lazy(() => import("./pages/home/HomePage"));
 const Guide = lazy(() => import("./pages/guide/guide"));
 
 // koi page
+const KoiPackage = lazy(() => import("./pages/koi-fish/KoiPackage/KoiPackage"));
 const KoiDetail = lazy(() =>
   import("./components/koiFish/koiDetail/KoiDetail")
 );
@@ -82,6 +83,7 @@ function App() {
               <Route path="koi-list" element={<KoiListPage />} />
               <Route path="koiDetail/:id" element={<KoiDetail />} />
               <Route path="koi-breeders" element={<KoiBreeders />} />
+              <Route path="koi-package" element={<KoiPackage />} />
 
               {/* Product Routes */}
               <Route path="product" element={<ProductPage />}>

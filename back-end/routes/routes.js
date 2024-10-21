@@ -637,7 +637,7 @@ router.get("/koipackages", getAllKoiPackages);
  *       201:
  *         description: Koi Consignment created successfully
  */
-router.post('/createConsignment', koiConsignmentController.createKoiConsignment);
+router.post('/createConsignment', authMiddleware, koiConsignmentController.createKoiConsignment);
 /**
  * @swagger
  * /api/koiconsignments:

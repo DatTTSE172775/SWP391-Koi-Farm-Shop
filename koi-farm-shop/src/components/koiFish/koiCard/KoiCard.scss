@@ -24,6 +24,31 @@
       transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
     }
 
+    .view-detail-btn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      background-color: #4caf50; /* Màu xanh lá */
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-size: 14px;
+      font-family: 'Poppins', sans-serif; /* Font chữ */
+      z-index: 10; /* Đảm bảo nút nằm trên ảnh */
+    }
+
+    &:hover .view-detail-btn {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1.05); /* Hiệu ứng phóng to nhẹ khi hover */
+    }
+
+    &:hover .koi-image {
+      transform: scale(1.1); /* Hiệu ứng phóng to ảnh khi hover */
+    }
+
     .hover-info {
       position: absolute;
       top: 0;
@@ -92,6 +117,23 @@
 
     .ant-btn {
       border-radius: 4px;
+    }
+  }
+
+  .ant-btn {
+    background-color: #4caf50; /* Màu xanh lá */
+    color: white;
+    font-family: 'Poppins', sans-serif; /* Font chữ */
+    border: none;
+    font-size: 1rem;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+
+    &:hover {
+      background-color: #45a049; /* Màu xanh lá đậm hơn khi hover */
+      transform: scale(1.05); /* Hiệu ứng phóng to nhẹ khi hover */
     }
   }
 

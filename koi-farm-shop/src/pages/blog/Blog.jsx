@@ -7,6 +7,7 @@ import koiBreedingImage from "../../assets/images/koi-breeding.jpg";
 import koiPondMaintenanceImage from "../../assets/images/koi-pond-maintenance.jpg";
 import koiBehaviorImage from "../../assets/images/koi-behavior.avif";
 
+
 const blogPosts = [
     {
         id: 1,
@@ -37,12 +38,9 @@ const Blog = () => {
             <Navigation />
             <div className="blog-container">
                 <section className="blog-intro">
-                    <h1>Our Blog</h1>
+                    <h1>Blog của chúng tôi!</h1>
                     <p>
-                        Welcome to the Koi Farm Shop blog, where we dive deep into the
-                        fascinating world of Koi fish, pond care, breeding techniques, and
-                        much more. Stay tuned for insights, tips, and stories from our team of
-                        experts who are passionate about all things Koi.
+                    Chào mừng bạn đến với blog của Koi Farm Shop, nơi chúng tôi khám phá sâu vào thế giới đầy thú vị của cá Koi, cách chăm sóc hồ, kỹ thuật lai tạo, và nhiều hơn thế nữa. Hãy theo dõi để nhận những thông tin hữu ích, mẹo vặt, và những câu chuyện từ đội ngũ chuyên gia đam mê mọi điều về cá Koi.
                     </p>
                     <img
                         src={blogOverviewImage}
