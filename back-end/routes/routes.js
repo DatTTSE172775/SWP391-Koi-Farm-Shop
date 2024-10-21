@@ -43,6 +43,8 @@ const {
   createKoiPackage,
   getAllKoiPackages,
   getKoiPackageById,
+  updateKoiPackageAvailability,
+  deleteKoiPackage,
 } = require("../controllers/koiPackageController");
 const {
   createKoiConsignment,
@@ -720,6 +722,63 @@ router.get("/koipackages", getAllKoiPackages);
  */
 router.get("/koipackage/:packageId", getKoiPackageById);
 
+/**
+ * @swagger
+ * /api/koipackage/{packageId}/availability:
+ *   patch:
+ *     summary: Update Koi Package availability
+ *     tags: [Koi Package]
+ *     parameters:
+ *       - in: path
+ *         name: packageId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The Koi Package ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               availability:
+ *                 type: string
+ *                 enum: [Available, Sold Out]
+ *     responses:
+ *       200:
+ *         description: Koi Package availability updated successfully
+ *       400:
+ *         description: Invalid availability status
+ *       404:
+ *         description: Koi Package not found
+ *       500:
+ *         description: Server error
+ */
+router.patch("/koipackage/:packageId/availability", authMiddleware, updateKoiPackageAvailability);
+
+/**
+ * @swagger
+ * /api/koipackage/{packageId}:
+ *   delete:
+ *     summary: Delete a Koi Package
+ *     tags: [Koi Package]
+ *     parameters:
+ *       - in: path
+ *         name: packageId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The Koi Package ID
+ *     responses:
+ *       200:
+ *         description: Koi Package deleted successfully
+ *       404:
+ *         description: Koi Package not found
+ *       500:
+ *         description: Server error
+ */
+router.delete("/koipackage/:packageId", authMiddleware, deleteKoiPackage);
 
 // Koi Consignment routes
 /**
