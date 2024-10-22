@@ -18,14 +18,28 @@ exports.createBreeder = async (req, res) => {
 
 exports.getAllBreeders = async (req, res) => {
     try {
-        const result = await breedersModel.getAllBreeders();
+        const breeders = await breedersModel.getAllBreeders();
+        res.status(200).json(breeders);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ 
+            message: 'Error fetching Breeders',
+            error: error.message
+        });
+    }
+};
+
+exports.getBreederById = async (req, res) => {
+    try {
+        const breederId = req.params.breederId;
+        const result = await breedersModel.getBreederById(breederId);
         res.status(200).json({
-            message: 'Breeders retrieved successfully!',
+            message: 'Breeder retrieved successfully!',
             data: result
         });
     } catch (error) {
         res.status(500).json({
-            message: 'Error fetching Breeders',
+            message: 'Error fetching Breeder by ID',
             error: error.message
         });
     }

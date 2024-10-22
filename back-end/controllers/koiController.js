@@ -12,6 +12,13 @@ exports.createKoiFish = async (req, res) => {
       born,
       size,
       price,
+      weight,
+      personality,
+      feedingAmountPerDay,
+      healthStatus,
+      screeningRate,
+      certificateLink,
+      imagesLink,
       availability,
     } = req.body;
 
@@ -25,6 +32,13 @@ exports.createKoiFish = async (req, res) => {
       born,
       size,
       price,
+      weight,
+      personality,
+      feedingAmountPerDay,
+      healthStatus,
+      screeningRate,
+      certificateLink,
+      imagesLink,
       availability
     );
 

@@ -17,7 +17,11 @@ import MainLayout from "./pages/MainLayout";
 import NotFound from "./pages/notfound/NotFound";
 import WelcomeStaff from "./pages/staff/layout/WelcomeStaff";
 import StaffOrderManage from "./pages/staff/order-manage/StaffOrderManage";
-
+import AddKoi from "./pages/admin/addProduct/AddKoi";
+import AddPackage from "./pages/admin/addProduct/AddPackage";
+import UpdateKoi from "./pages/admin/updateProduct/updateKoi";
+import DeleteKoi from "./pages/admin/deleteProduct/deleteKoi";
+import DeleteKoiPackage from "./pages/admin/deleteProduct/deleteKoiPackage";
 // auth page
 const ForgetPassword = lazy(() =>
   import("./components/auth/forget-password/ForgetPassWord")
@@ -118,6 +122,11 @@ function App() {
               path="/admin/manage-orders/:orderId"
               element={<OrderDetails />}
             />
+            <Route path="/admin/AddKoi" element={<AddKoi />} />
+            <Route path="/admin/AddPackage" element={<AddPackage />} />
+            <Route path="/admin/updateKoi" element={<UpdateKoi />} />
+            <Route path="/admin/deleteKoi" element={<DeleteKoi />} />
+            <Route path="/admin/deletePackage" element={<DeleteKoiPackage />} />
             {/* <Route
               path="/admin/manage-consign"
               element={<ManagerConsignmentPage />}

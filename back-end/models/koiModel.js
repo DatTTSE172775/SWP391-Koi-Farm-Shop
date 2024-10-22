@@ -1,7 +1,7 @@
 const sql = require('mssql');
 
 // Function to create a new KoiFish entry
-const createKoiFish = async (name, varietyId, origin, breederId, gender, born, size, price, availability = 'Available') => {
+const createKoiFish = async (name, varietyId, origin, breederId, gender, born, size, price, weight, personality, feedingAmountPerDay, healthStatus, screeningRate, certificateLink, imagesLink, availability = 'Available') => {
     try {
         const pool = await sql.connect();
         const result = await pool.request()
@@ -13,10 +13,17 @@ const createKoiFish = async (name, varietyId, origin, breederId, gender, born, s
             .input('Born', sql.Int, born)
             .input('Size', sql.Float, size)
             .input('Price', sql.Decimal(10, 2), price)
+            .input('Weight', sql.Float, weight)
+            .input('Personality', sql.VarChar(sql.MAX), personality)
+            .input('FeedingAmountPerDay', sql.Float, feedingAmountPerDay)
+            .input('HealthStatus', sql.VarChar(255), healthStatus)
+            .input('ScreeningRate', sql.Float, screeningRate)
+            .input('CertificateLink', sql.VarChar(255), certificateLink)
+            .input('ImagesLink', sql.VarChar(255), imagesLink)
             .input('Availability', sql.VarChar(50), availability)
             .query(`
-                INSERT INTO KoiFish (Name, VarietyID, Origin, BreederID, Gender, Born, Size, Price, Availability)
-                VALUES (@Name, @VarietyID, @Origin, @BreederID, @Gender, @Born, @Size, @Price, @Availability);
+                INSERT INTO KoiFish (Name, VarietyID, Origin, BreederID, Gender, Born, Size, Price, Weight, Personality, FeedingAmountPerDay, HealthStatus, ScreeningRate, CertificateLink, ImagesLink, Availability)
+                VALUES (@Name, @VarietyID, @Origin, @BreederID, @Gender, @Born, @Size, @Price, @Weight, @Personality, @FeedingAmountPerDay, @HealthStatus, @ScreeningRate, @CertificateLink, @ImagesLink, @Availability);
             `);
         return result;
     } catch (err) {
