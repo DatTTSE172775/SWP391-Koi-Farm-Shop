@@ -4,6 +4,7 @@ const initialState = {
   error: null,
   user: null,
   token: null,
+  forgetPasswordSuccess: false,
 };
 
 const authReducer = (state = initialState, action) => {
@@ -37,6 +38,25 @@ const authReducer = (state = initialState, action) => {
         isAuthenticated: false,
         user: null,
         token: null,
+      };
+    case "FORGET_PASSWORD_REQUEST":
+      return {
+        ...state,
+        loading: true,
+        error: null,
+        forgetPasswordSuccess: false,
+      };
+    case "FORGET_PASSWORD_SUCCESS":
+      return {
+        ...state,
+        loading: false,
+        forgetPasswordSuccess: true,
+      };
+    case "FORGET_PASSWORD_FAILURE":
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
       };
     default:
       return state;
