@@ -10,8 +10,9 @@ const app = express();
 // Cấu hình CORS
 app.use(cors({
     origin: 'http://localhost:3000',  // Cho phép frontend từ localhost:3000
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],  // Cho phép các phương thức này
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],  // Cho phép các phương thức này
     credentials: true,  // Cho phép gửi thông tin xác thực (cookie) nếu cần
+    allowedHeaders: ['Content-Type', 'Authorization'],  // Cho phép các tiêu đề cần thiết
 }));
 
 // Middleware để phân tích dữ liệu JSON từ body request

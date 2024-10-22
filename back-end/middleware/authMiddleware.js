@@ -6,7 +6,10 @@ const authMiddleware = (req, res, next) => {
     const token = req.header('Authorization')?.split(' ')[1]; // Assuming Bearer Token
 
     if (!token) {
-        return res.status(401).json({ message: 'No token provided. Access denied.' });
+        return res.status(401).json({
+            message: 'No token provided. Access denied.', 
+            error: 'MISSING_TOKEN'
+         });
     }
 
     try {
@@ -14,7 +17,24 @@ const authMiddleware = (req, res, next) => {
         req.user = decoded; // Add the user data to the request object
         next();
     } catch (err) {
-        return res.status(401).json({ message: 'Invalid token. Access denied.' });
+        // Phân loại lỗi token và trả về thông báo chi tiết hơn
+        if (err.name === 'TokenExpiredError') {
+            return res.status(401).json({ 
+                message: 'Token expired. Please login again.', 
+                error: 'TOKEN_EXPIRED', 
+                expiredAt: err.expiredAt 
+            });
+        } else if (err.name === 'JsonWebTokenError') {
+            return res.status(401).json({ 
+                message: 'Invalid token. Access denied.', 
+                error: 'INVALID_TOKEN' 
+            });
+        } else {
+            return res.status(500).json({ 
+                message: 'Failed to authenticate token.', 
+                error: err.message 
+            });
+        }
     }
 };
 
