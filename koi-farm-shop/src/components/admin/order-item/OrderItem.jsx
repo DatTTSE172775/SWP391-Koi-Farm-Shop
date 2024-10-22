@@ -10,9 +10,12 @@ import {
   Tooltip,
   Typography,
 } from "antd";
-import PropTypes from "prop-types"; // Import PropTypes for props validation
-import React, { useState } from "react";
+import PropTypes from "prop-types";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { assignOrder } from "../../../store/actions/orderActions"; // Import assign action
+import { fetchStaff } from "../../../store/actions/staffActions";
 import "./OrderItem.scss";
 
 const { Text, Title } = Typography;
@@ -25,22 +28,46 @@ const statusColors = {
   Cancelled: "red",
 };
 
-const staffList = ["Chưa giao", "Staff A", "Staff B", "Staff C"]; // Mock staff list
-
 const OrderItem = ({ order }) => {
-  const [assignee, setAssignee] = useState(order.assignedTo || "Chưa giao");
+  const [assignee, setAssignee] = useState("Chưa giao");
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleAssigneeChange = ({ key }) => {
-    setAssignee(key);
-    console.log(`Order ${order.OrderID} assigned to: ${key}`);
+  // Fetch staff members from Redux store
+  const { staff } = useSelector((state) => state.staff || { staff: [] });
+
+  // Fetch staff list when component mounts
+  useEffect(() => {
+    dispatch(fetchStaff());
+  }, [dispatch]);
+
+  // Update assignee when order or staff data changes
+  useEffect(() => {
+    if (order.UserID) {
+      const assignedStaff = staff.find(
+        (member) => member.UserID === order.UserID
+      );
+      if (assignedStaff) {
+        setAssignee(assignedStaff.Username);
+      }
+    }
+  }, [order.UserID, staff]);
+
+  // Handle assigning order to a staff member
+  const handleAssign = (userId, username) => {
+    dispatch(assignOrder(order.OrderID, userId, username));
   };
 
+  // Menu for selecting staff
   const assigneeMenu = (
-    <Menu onClick={handleAssigneeChange}>
-      {staffList.map((staff) => (
-        <Menu.Item key={staff}>
-          <Text>{staff}</Text>
+    <Menu
+      onClick={({ key }) =>
+        handleAssign(key, staff.find((s) => s.UserID == key).Username)
+      }
+    >
+      {staff.map((member) => (
+        <Menu.Item key={member.UserID}>
+          <Text>{member.Username}</Text>
         </Menu.Item>
       ))}
     </Menu>
@@ -49,40 +76,39 @@ const OrderItem = ({ order }) => {
   return (
     <Card className="order-item-card">
       <Row align="middle" gutter={[16, 24]}>
-        {/* Order Tracking Number */}
         <Col xs={24} md={5}>
           <Space direction="vertical">
             <Title level={5}>Mã Số Đơn Hàng</Title>
-            <Text>{order.TrackingNumber}</Text>
+            <Text>{order.TrackingNumber || "N/A"}</Text>
           </Space>
         </Col>
 
-        {/* Order Date */}
         <Col xs={12} md={4}>
           <Title level={5}>Ngày Đặt Hàng</Title>
           <Text>{new Date(order.OrderDate).toLocaleDateString()}</Text>
         </Col>
 
-        {/* Order Price */}
         <Col xs={12} md={4}>
           <Title level={5}>Giá</Title>
           <Text strong>{order.TotalAmount.toLocaleString()} VND</Text>
         </Col>
 
-        {/* Assignee Selection with Dropdown */}
         <Col xs={12} md={5}>
           <Title level={5}>Nhân Viên Phụ Trách</Title>
-          <Dropdown overlay={assigneeMenu} trigger={["click"]}>
-            <a
-              onClick={(e) => e.preventDefault()}
-              className="editable-assignee"
-            >
-              {assignee}
-            </a>
-          </Dropdown>
+          {order.OrderStatus === "Pending" ? (
+            <Dropdown overlay={assigneeMenu} trigger={["click"]}>
+              <a
+                onClick={(e) => e.preventDefault()}
+                className="editable-assignee"
+              >
+                {assignee}
+              </a>
+            </Dropdown>
+          ) : (
+            <Text>{assignee}</Text>
+          )}
         </Col>
 
-        {/* Order Status Display */}
         <Col xs={12} md={4}>
           <Title level={5}>Trạng Thái Đơn Hàng</Title>
           <Tag
@@ -93,7 +119,6 @@ const OrderItem = ({ order }) => {
           </Tag>
         </Col>
 
-        {/* View Details Icon */}
         <Col xs={24} md={2}>
           <Tooltip title="Xem Chi Tiết">
             <EyeOutlined
@@ -107,15 +132,14 @@ const OrderItem = ({ order }) => {
   );
 };
 
-// PropTypes for Validation
 OrderItem.propTypes = {
   order: PropTypes.shape({
     OrderID: PropTypes.number.isRequired,
-    TrackingNumber: PropTypes.string.isRequired,
+    TrackingNumber: PropTypes.string,
     OrderDate: PropTypes.string.isRequired,
     TotalAmount: PropTypes.number.isRequired,
     OrderStatus: PropTypes.string.isRequired,
-    assignedTo: PropTypes.string,
+    UserID: PropTypes.number,
   }).isRequired,
 };
 

@@ -1,3 +1,4 @@
+import { notification } from "antd";
 import axiosInstance from "../../api/axiosInstance";
 
 // Action Types
@@ -7,6 +8,9 @@ export const CREATE_ORDER_FAILURE = "CREATE_ORDER_FAILURE";
 export const FETCH_ORDERS_REQUEST = "FETCH_ORDERS_REQUEST";
 export const FETCH_ORDERS_SUCCESS = "FETCH_ORDERS_SUCCESS";
 export const FETCH_ORDERS_FAILURE = "FETCH_ORDERS_FAILURE";
+export const ASSIGN_ORDER_REQUEST = "ASSIGN_ORDER_REQUEST";
+export const ASSIGN_ORDER_SUCCESS = "ASSIGN_ORDER_SUCCESS";
+export const ASSIGN_ORDER_FAILURE = "ASSIGN_ORDER_FAILURE";
 
 // Action Creators
 const createOrderRequest = () => ({ type: CREATE_ORDER_REQUEST });
@@ -30,6 +34,18 @@ const fetchOrdersSuccess = (orders) => ({
 
 const fetchOrdersFailure = (error) => ({
   type: FETCH_ORDERS_FAILURE,
+  payload: error,
+});
+
+const assignOrderRequest = () => ({ type: ASSIGN_ORDER_REQUEST });
+
+const assignOrderSuccess = (order) => ({
+  type: ASSIGN_ORDER_SUCCESS,
+  payload: order,
+});
+
+const assignOrderFailure = (error) => ({
+  type: ASSIGN_ORDER_FAILURE,
   payload: error,
 });
 
@@ -76,11 +92,38 @@ export const fetchOrders = () => async (dispatch) => {
 
   try {
     const response = await axiosInstance.get("/orders");
-    console.log("Orders fetched successfully:", response.data);
-
     dispatch(fetchOrdersSuccess(response.data));
   } catch (error) {
     console.error("Failed to fetch orders:", error);
     dispatch(fetchOrdersFailure(error.message || "Failed to fetch orders"));
+  }
+};
+
+// Thunk to assign order to staff
+export const assignOrder = (orderId, userId, username) => async (dispatch) => {
+  dispatch(assignOrderRequest());
+  try {
+    const response = await axiosInstance.patch(`/orders/${orderId}/assign`, {
+      userId,
+    });
+
+    dispatch(
+      assignOrderSuccess({
+        ...response.data.order,
+        assignedTo: username,
+      })
+    );
+
+    notification.success({
+      message: "Thành Công",
+      description: `Đơn hàng ${orderId} đã được giao cho ${username}`,
+    });
+  } catch (error) {
+    dispatch(assignOrderFailure(error.message || "Giao đơn hàng thất bại"));
+
+    notification.error({
+      message: "Lỗi",
+      description: "Không thể giao đơn hàng. Vui lòng thử lại.",
+    });
   }
 };
