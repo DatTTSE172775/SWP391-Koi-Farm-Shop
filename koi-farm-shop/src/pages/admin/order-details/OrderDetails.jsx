@@ -33,17 +33,15 @@ const statusColors = {
   Cancelled: "red",
 };
 
-// Mock list of staff
-const staffList = ["Chưa giao", "Staff A", "Staff B", "Staff C"];
-
 const OrderDetails = () => {
-  const { orderId } = useParams(); // Get orderId from URL params
+  const { orderId } = useParams();
   const navigate = useNavigate();
 
-  const [order, setOrder] = useState(null); // Store order details
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
-  const [assignee, setAssignee] = useState(""); // Assigned staff
+  const [order, setOrder] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [assignee, setAssignee] = useState("");
+  const [staffList, setStaffList] = useState([]);
 
   // Fetch order details from the API
   useEffect(() => {
@@ -51,7 +49,7 @@ const OrderDetails = () => {
       try {
         const response = await axiosInstance.get(`/orders/${orderId}`);
         setOrder(response.data);
-        setAssignee(response.data.assignedTo || "Chưa giao"); // Set current assignee
+        setAssignee(response.data.assignedTo || "Chưa giao");
         setLoading(false);
       } catch (err) {
         console.error("Failed to fetch order:", err);
@@ -63,8 +61,23 @@ const OrderDetails = () => {
     fetchOrderDetails();
   }, [orderId]);
 
+  // Fetch staff list from the API
+  useEffect(() => {
+    const fetchStaff = async () => {
+      try {
+        const response = await axiosInstance.get("/staff");
+        setStaffList(response.data);
+      } catch (err) {
+        console.error("Failed to fetch staff:", err);
+        message.error("Không thể lấy danh sách nhân viên.");
+      }
+    };
+
+    fetchStaff();
+  }, []);
+
   const handleAssigneeChange = (value) => {
-    setAssignee(value); // Update the state
+    setAssignee(value);
     message.success(`Đã giao đơn hàng cho ${value}`);
   };
 
@@ -115,17 +128,21 @@ const OrderDetails = () => {
                 {order.PaymentMethod}
               </Descriptions.Item>
               <Descriptions.Item label="Nhân Viên Phụ Trách">
-                <Select
-                  value={assignee}
-                  onChange={handleAssigneeChange}
-                  style={{ width: "100%" }}
-                >
-                  {staffList.map((staff) => (
-                    <Option key={staff} value={staff}>
-                      {staff}
-                    </Option>
-                  ))}
-                </Select>
+                {order.OrderStatus === "Pending" ? (
+                  <Select
+                    value={assignee}
+                    onChange={handleAssigneeChange}
+                    style={{ width: "100%" }}
+                  >
+                    {staffList.map((staff) => (
+                      <Option key={staff.UserID} value={staff.Username}>
+                        {staff.Username}
+                      </Option>
+                    ))}
+                  </Select>
+                ) : (
+                  <Typography.Text>{assignee}</Typography.Text>
+                )}
               </Descriptions.Item>
             </Descriptions>
             <Divider />
