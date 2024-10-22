@@ -9,10 +9,11 @@ import {
   Row,
   Typography,
 } from "antd";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import momoLogo from "../../../assets/checkout/momo-logo.png";
-import vnpayLogo from "../../../assets/checkout/vnpay-logo.png";
+import { fetchUserByUsername } from "../../../store/actions/accountActions";
+import { createOrder } from "../../../store/actions/orderActions";
 import { CartContext } from "../cart-context/CartContext";
 import "./Checkout.scss";
 
@@ -20,10 +21,47 @@ const { Title, Text } = Typography;
 
 const Checkout = () => {
   const [form] = Form.useForm();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { cartItems } = useContext(CartContext);
 
-  // Function to calculate total amount dynamically
+  const user = useSelector((state) => state.account.user);
+  const { order, loading, error } = useSelector((state) => state.order);
+
+  // Fetch the username and trigger the API call to get user data
+  useEffect(() => {
+    const username = localStorage.getItem("username");
+
+    if (!username) {
+      console.error("No username found in localStorage");
+      return;
+    }
+
+    console.log("Username from localStorage:", username);
+    dispatch(fetchUserByUsername(username));
+  }, [dispatch]);
+
+  // Populate the form when user data is available
+  useEffect(() => {
+    if (user) {
+      form.setFieldsValue({
+        fullName: user.FullName,
+        phone: user.PhoneNumber,
+        email: user.Email,
+        address: user.Address || "",
+      });
+    }
+  }, [user, form]);
+
+  // Navigate to order success page when order is created
+  useEffect(() => {
+    if (order) {
+      console.log("Order created successfully:", order);
+      navigate("/order-success", { state: { order } });
+    }
+  }, [order, navigate]);
+
+  // Calculate total amount from the cart items
   const calculateTotal = () => {
     return cartItems.reduce(
       (total, item) => total + item.price * item.quantity,
@@ -31,26 +69,20 @@ const Checkout = () => {
     );
   };
 
+  // Handle form submission
   const onFinish = (values) => {
-    console.log("Received values of form: ", values);
+    console.log("Form submitted with values:", values);
 
-    // Ensure that we only pass clean data to navigate
-    const serializedCartItems = cartItems.map((item) => ({
-      id: item.id,
-      name: item.name,
-      price: item.price,
-      quantity: item.quantity,
-    }));
+    const orderData = {
+      totalAmount: calculateTotal(),
+      shippingAddress: values.address,
+      paymentMethod: values.paymentMethod,
+    };
 
-    const serializedCustomerInfo = { ...values };
+    console.log("Creating order with:", orderData);
 
-    // Navigate to the success page with serializable state
-    navigate("/order-success", {
-      state: {
-        cartItems: serializedCartItems,
-        customerInfo: serializedCustomerInfo,
-      },
-    });
+    // Dispatch createOrder action
+    dispatch(createOrder(orderData));
   };
 
   return (
@@ -59,7 +91,6 @@ const Checkout = () => {
         Thanh Toán
       </Title>
       <Row gutter={16}>
-        {/* Shipping Information Section */}
         <Col xs={24} lg={16}>
           <Card title="Thông Tin Giao Hàng" bordered={false}>
             <Form
@@ -74,10 +105,7 @@ const Checkout = () => {
                     name="fullName"
                     label="Họ và Tên"
                     rules={[
-                      {
-                        required: true,
-                        message: "Vui lòng nhập họ và tên!",
-                      },
+                      { required: true, message: "Vui lòng nhập họ và tên!" },
                     ]}
                   >
                     <Input placeholder="Nhập họ và tên" />
@@ -103,22 +131,23 @@ const Checkout = () => {
                 </Col>
               </Row>
               <Form.Item
+                name="email"
+                label="Email"
+                rules={[
+                  { type: "email", message: "Email không hợp lệ!" },
+                  { required: true, message: "Vui lòng nhập email!" },
+                ]}
+              >
+                <Input placeholder="Nhập email" />
+              </Form.Item>
+              <Form.Item
                 name="address"
                 label="Địa Chỉ"
-                rules={[
-                  {
-                    required: true,
-                    message: "Vui lòng nhập địa chỉ!",
-                  },
-                ]}
+                rules={[{ required: true, message: "Vui lòng nhập địa chỉ!" }]}
               >
                 <Input.TextArea rows={4} placeholder="Nhập địa chỉ" />
               </Form.Item>
-              <Form.Item>
-                <Divider />
-              </Form.Item>
-
-              {/* Payment Method Section */}
+              <Divider />
               <Form.Item
                 name="paymentMethod"
                 label="Hình Thức Thanh Toán"
@@ -130,36 +159,28 @@ const Checkout = () => {
                 ]}
               >
                 <Radio.Group>
-                  <Radio.Button value="momo" className="payment-option">
-                    <img src={momoLogo} alt="Momo" className="payment-logo" />
-                    Momo
+                  <Radio.Button value="Credit Card">Credit Card</Radio.Button>
+                  <Radio.Button value="Bank Transfer">
+                    Bank Transfer
                   </Radio.Button>
-                  <Radio.Button value="vnpay" className="payment-option">
-                    <img src={vnpayLogo} alt="VNPAY" className="payment-logo" />
-                    VNPAY
+                  <Radio.Button value="Cash on Delivery">
+                    Cash on Delivery
                   </Radio.Button>
                 </Radio.Group>
               </Form.Item>
-              <Form.Item>
-                <Divider />
-              </Form.Item>
-
-              {/* Submit Button */}
-              <Form.Item>
-                <Button type="primary" htmlType="submit" block>
-                  Xác Nhận Thanh Toán
-                </Button>
-              </Form.Item>
+              <Divider />
+              <Button type="primary" htmlType="submit" block loading={loading}>
+                Xác Nhận Thanh Toán
+              </Button>
+              {error && <Text type="danger">{error}</Text>}
             </Form>
           </Card>
         </Col>
-
-        {/* Order Review Section */}
         <Col xs={24} lg={8}>
           <Card title="Đơn Hàng Của Bạn" bordered={false}>
             <div className="order-summary">
               {cartItems.map((item) => (
-                <div className="order-item" key={item.id}>
+                <div key={item.id} className="order-item">
                   <Text>{`${item.quantity}x ${item.name}`}</Text>
                   <Text strong>{`${(
                     item.price * item.quantity

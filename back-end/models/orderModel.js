@@ -20,20 +20,6 @@ exports.createOrder = async (
   }
 };
 
-// Lấy đơn hàng theo ID
-exports.getOrderById = async (orderId) => {
-  try {
-    const result =
-      await sql.query`SELECT * FROM Orders WHERE OrderID = ${orderId}`;
-    if (result.recordset.length === 0) {
-      return null;
-    }
-    return result.recordset[0];
-  } catch (error) {
-    throw new Error("Error fetching order by ID");
-  }
-};
-
 // Lấy tất cả đơn hàng của khách hàng
 exports.getOrdersByCustomerId = async (customerID) => {
   try {
@@ -66,6 +52,64 @@ exports.getAllOrders = async () => {
     return result.recordset;
   } catch (error) {
     throw new Error("Error fetching all orders");
+  }
+};
+
+// Check if user is staff
+exports.isUserStaff = async (userId) => {
+  try {
+    const result = await sql.query`
+      SELECT Role FROM Users WHERE UserID = ${userId}
+    `;
+    if (result.recordset.length === 0) {
+      return false; // User not found
+    }
+    return result.recordset[0].Role === 'Staff';
+  } catch (error) {
+    console.error("Error checking user role:", error);
+    throw new Error("Error checking user role");
+  }
+};
+
+// Assign order to staff
+exports.assignOrderToStaff = async (orderId, userId) => { 
+  try {
+    const isStaff = await exports.isUserStaff(userId);
+    if (!isStaff) {
+      return { error: "User is not a staff member." };
+    }
+
+    const result = await sql.query`
+      UPDATE Orders
+      SET UserID = ${userId}
+      WHERE OrderID = ${orderId}
+    `;
+    if (result.rowsAffected[0] === 0) {
+      return null; // No order was updated, likely because the orderId doesn't exist
+    }
+    return { orderId, userId }; // Return the updated order information
+  } catch (error) {
+    console.error("Error assigning order to staff:", error);
+    throw new Error("Error assigning order to staff");
+  }
+};
+
+// Lấy đơn hàng theo ID
+exports.getOrderById = async (orderId) => {
+  try {
+    console.log("Fetching order with ID:", orderId); // Log để kiểm tra orderId
+
+    const result =
+      await sql.query`SELECT * FROM Orders WHERE OrderID = ${orderId}`;
+      console.log("Query result:", result.recordset); // Log để kiểm tra kết quả truy vấn
+
+    if (result.recordset.length === 0) {
+      return null; // Order not found
+    }
+    return result.recordset[0]; // Trả về đơn hàng
+  } catch (error) {
+    console.error("Error fetching order by ID: ", error);
+    throw new Error("Error fetching order by ID");
   }
 };
 

@@ -63,9 +63,23 @@ const updateUserPassword = async (userId, newPasswordHash) => {
     }
 };
 
+// Function to get all staff members
+const getAllStaff = async () => {
+    try {
+        const pool = await sql.connect(); // Tái sử dụng đối tượng sql đã khai báo
+        const result = await pool.request()
+            .query(`SELECT * FROM Users WHERE Role = 'Staff'`);
+        return result.recordset; // Trả về danh sách nhân viên
+    } catch (err) {
+        console.error('Error fetching staff list:', err);
+        throw err;
+    }
+};
+
 module.exports = {
     createUser,
     findUserByUsername,
     findUserById,       // Export findUserById for use in other modules
-    updateUserPassword  // Export updateUserPassword for password update functionality
+    updateUserPassword, // Export updateUserPassword for password update functionality
+    getAllStaff
 };

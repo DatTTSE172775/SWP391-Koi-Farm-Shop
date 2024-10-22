@@ -15,17 +15,22 @@ const {
   createKoiFish,
   getAllKoiFish,
   getKoiFishById,
+  updateKoiFishAvailability,
+  deleteKoiFish,
 } = require("../controllers/koiController");
 const {
   getAllOrders,
   getOrderById,
   createOrder,
   updateOrderStatus,
+  getAllStaffOrdersByUserId,
+  assignOrderToStaff,
   deleteOrder,
 } = require("../controllers/orderController");
 const {
   getAllCustomers,
   getCustomerById,
+  getCustomerByUserName,
 } = require("../controllers/customerController");
 const {
   createReportController,
@@ -37,6 +42,9 @@ const {
 const {
   createKoiPackage,
   getAllKoiPackages,
+  getKoiPackageById,
+  updateKoiPackageAvailability,
+  deleteKoiPackage,
 } = require("../controllers/koiPackageController");
 const {
   createKoiConsignment,
@@ -50,6 +58,7 @@ const {
   createVariety,
   getAllVarieties,
 } = require("../controllers/varietyController");
+const { getAllStaff } = require("../controllers/userController");
 
 // User routes
 /**
@@ -166,7 +175,80 @@ router.post("/change-password", authMiddleware, changePassword);
  */
 router.post("/forgot-password", forgotPassword);
 
+// Staff routes
+/**
+ * @swagger
+ * /api/staff:
+ *   get:
+ *     summary: Get all staff members
+ *     tags: [Staff]
+ *     responses:
+ *       200:
+ *         description: A list of all staff members.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   userId:
+ *                     type: integer
+ *                   username:
+ *                     type: string
+ *                   role:
+ *                     type: string
+ *       500:
+ *         description: Internal server error.
+ */
+router.get("/staff", getAllStaff);
+
+/**
+ * @swagger
+ * /api/orders/user/{userId}:
+ *   get:
+ *     summary: Get all orders assigned to Staff
+ *     tags: [Orders]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: User ID of the staff member
+ *     responses:
+ *       200:
+ *         description: List of orders assigned to the staff member
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   orderId:
+ *                     type: integer
+ *                   customerID:
+ *                     type: integer
+ *                   totalAmount:
+ *                     type: number
+ *                   shippingAddress:
+ *                     type: string
+ *                   paymentMethod:
+ *                     type: string
+ *                   status:
+ *                     type: string
+ *                   userId:
+ *                     type: integer
+ *       404:
+ *         description: No orders found for the given user ID
+ *       500:
+ *         description: Internal server error
+ */
+router.get("/orders/user/:userId", getAllStaffOrdersByUserId);
+
 // Koi Fish routes
+
 /**
  * @swagger
  * /api/koifish:
@@ -177,7 +259,7 @@ router.post("/forgot-password", forgotPassword);
  *       200:
  *         description: List of all Koi Fish
  */
-router.get('/koifish', getAllKoiFish);
+router.get("/koifish", getAllKoiFish);
 
 /**
  * @swagger
@@ -235,6 +317,68 @@ router.get("/koifish/:koiId", getKoiFishById);
  *         description: Koi Fish created successfully
  */
 router.post("/koifish", authMiddleware, createKoiFish);
+
+/**
+ * @swagger
+ * /api/koifish/{koiId}/availability:
+ *   patch:
+ *     summary: Update Koi Fish availability
+ *     tags: [Koi Fish]
+ *     parameters:
+ *       - in: path
+ *         name: koiId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The Koi Fish ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               availability:
+ *                 type: string
+ *                 enum: [Available, Sold Out]
+ *     responses:
+ *       200:
+ *         description: Koi Fish availability updated successfully
+ *       400:
+ *         description: Invalid availability status
+ *       404:
+ *         description: Koi Fish not found
+ *       500:
+ *         description: Server error
+ */
+router.patch(
+  "/koifish/:koiId/availability",
+  authMiddleware,
+  updateKoiFishAvailability
+);
+
+/**
+ * @swagger
+ * /api/koifish/{koiId}:
+ *   delete:
+ *     summary: Delete a Koi Fish
+ *     tags: [Koi Fish]
+ *     parameters:
+ *       - in: path
+ *         name: koiId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The Koi Fish ID
+ *     responses:
+ *       200:
+ *         description: Koi Fish deleted successfully
+ *       404:
+ *         description: Koi Fish not found
+ *       500:
+ *         description: Server error
+ */
+router.delete("/koifish/:koiId", authMiddleware, deleteKoiFish);
 
 // Order routes
 /**
@@ -326,6 +470,38 @@ router.patch("/orders/:orderId", updateOrderStatus);
 
 /**
  * @swagger
+ * /api/orders/{orderId}/assign:
+ *   patch:
+ *     summary: Assign order to staff
+ *     tags: [Orders]
+ *     parameters:
+ *       - in: path
+ *         name: orderId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: Order ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userId:
+ *                 type: integer
+ *     responses:
+ *       200:
+ *         description: Order assigned to staff successfully
+ *       404:
+ *         description: Order not found
+ *       500:
+ *         description: Failed to assign order to staff
+ */
+router.patch("/:orderId/assign", assignOrderToStaff);
+
+/**
+ * @swagger
  * /api/orders/{orderId}:
  *   delete:
  *     summary: Delete an order
@@ -354,7 +530,7 @@ router.delete("/orders/:orderId", deleteOrder);
  *       200:
  *         description: A list of customers
  */
-router.get("/customers", authMiddleware, getAllCustomers);
+router.get("/customers", getAllCustomers);
 
 /**
  * @swagger
@@ -373,7 +549,27 @@ router.get("/customers", authMiddleware, getAllCustomers);
  *       200:
  *         description: Customer details
  */
-router.get("/customers/:customerId", authMiddleware, getCustomerById);
+router.get("/customers/:customerId", getCustomerById);
+
+// Get customer by username
+/**
+ * @swagger
+ * /api/customers/username/{userName}:
+ *   get:
+ *     summary: Get customer details by username
+ *     tags: [Customers]
+ *     parameters:
+ *       - in: path
+ *         name: userName
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Customer username
+ *     responses:
+ *       200:
+ *         description: Customer details
+ */
+router.get("/customers/username/:userName", getCustomerByUserName);
 
 // Report routes
 /**
@@ -504,6 +700,91 @@ router.post("/koipackage", authMiddleware, createKoiPackage);
  */
 router.get("/koipackages", getAllKoiPackages);
 
+/**
+ * @swagger
+ * /api/koipackage/{packageId}:
+ *   get:
+ *     summary: Get Koi Package details by ID
+ *     tags: [Koi Package]
+ *     parameters:
+ *       - in: path
+ *         name: packageId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: Koi Package ID
+ *     responses:
+ *       200:
+ *         description: Koi Package details
+ *       404:
+ *         description: Koi Package not found
+ *       500:
+ *         description: Server error
+ */
+router.get("/koipackage/:packageId", getKoiPackageById);
+
+/**
+ * @swagger
+ * /api/koipackage/{packageId}/availability:
+ *   patch:
+ *     summary: Update Koi Package availability
+ *     tags: [Koi Package]
+ *     parameters:
+ *       - in: path
+ *         name: packageId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The Koi Package ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               availability:
+ *                 type: string
+ *                 enum: [Available, Sold Out]
+ *     responses:
+ *       200:
+ *         description: Koi Package availability updated successfully
+ *       400:
+ *         description: Invalid availability status
+ *       404:
+ *         description: Koi Package not found
+ *       500:
+ *         description: Server error
+ */
+router.patch(
+  "/koipackage/:packageId/availability",
+  authMiddleware,
+  updateKoiPackageAvailability
+);
+
+/**
+ * @swagger
+ * /api/koipackage/{packageId}:
+ *   delete:
+ *     summary: Delete a Koi Package
+ *     tags: [Koi Package]
+ *     parameters:
+ *       - in: path
+ *         name: packageId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The Koi Package ID
+ *     responses:
+ *       200:
+ *         description: Koi Package deleted successfully
+ *       404:
+ *         description: Koi Package not found
+ *       500:
+ *         description: Server error
+ */
+router.delete("/koipackage/:packageId", authMiddleware, deleteKoiPackage);
+
 // Koi Consignment routes
 /**
  * @swagger
@@ -521,7 +802,11 @@ router.get("/koipackages", getAllKoiPackages);
  *       201:
  *         description: Koi Consignment created successfully
  */
-router.post('/createConsignment', koiConsignmentController.createKoiConsignment);
+router.post(
+  "/createConsignment",
+  authMiddleware,
+  koiConsignmentController.createKoiConsignment
+);
 /**
  * @swagger
  * /api/koiconsignments:
@@ -553,7 +838,7 @@ router.get("/koiconsignments", getAllKoiConsignments);
  *       201:
  *         description: Breeder created successfully
  */
-router.post("/breeders", authMiddleware, createBreeder);
+router.post("/breeders", createBreeder);
 
 /**
  * @swagger
@@ -567,7 +852,7 @@ router.post("/breeders", authMiddleware, createBreeder);
  *       200:
  *         description: List of all Breeders
  */
-router.get("/breeders", authMiddleware, getAllBreeders);
+router.get("/breeders", getAllBreeders);
 
 // Varieties routes
 /**

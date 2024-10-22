@@ -78,7 +78,7 @@ const Navigation = () => {
   };
 
   // Get auth state from redux store
-  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const { isAuthenticated, username } = useSelector((state) => state.auth);
 
   // Handle logout
   const handleLogout = () => {
@@ -219,51 +219,48 @@ const accountMenu = (
         </Menu.Item>
       </Menu>
 
-  <div className="nav-icons">
-  {/* Chuông thông báo chỉ hiển thị khi đã đăng nhập */}
+      {/* Icons bên phải */}
+      <div className="nav-icons">
+        {/* Chuông thông báo chỉ hiển thị khi đã đăng nhập */}
   {isAuthenticated && (
     <Badge count={5} offset={[10, 0]} showZero>
       <BellOutlined className="notification-bell" />
     </Badge>
   )}
-
-  {isAuthenticated ? (
-    <>
-      <Dropdown
-        overlay={accountMenu}
-        placement="bottomRight"
-        trigger={["click"]}
-      >
-        <div className="account-dropdown">
-          <Avatar
-            className="user-avatar"
-            src="/images/users/avatar.jpg"
-            icon={<UserOutlined />}
-          />
-          {/* Hiển thị tên người dùng */}
-          <span className="username">{user?.username}</span> {/* Sử dụng `?.` để tránh lỗi undefined */}
-        </div>
-      </Dropdown>
-      <Link to="/cart" className="cart-link">
-        <Badge count={cartItems.length} showZero>
-          <ShoppingCartOutlined className="cart-icon" />
-        </Badge>
-        <span className="cart-text">Giỏ hàng</span>
-      </Link>
-    </>
-  ) : (
-    <div className="auth-buttons">
-      <Button type="default" className="register-button">
-        <Link to="/register">Đăng ký</Link>
-      </Button>
-      <Button type="primary" className="login-button">
-        <Link to="/login">Đăng nhập</Link>
-      </Button>
-    </div>
-  )}
-</div>
-
-
+        {isAuthenticated ? (
+          <>
+            <Dropdown
+              overlay={accountMenu}
+              placement="bottomRight"
+              trigger={["click"]}
+            >
+              <div className="account-dropdown">
+                <Avatar
+                  className="user-avatar"
+                  src="/images/users/avatar.jpg"
+                  icon={<UserOutlined />}
+                />
+                <span className="username">{username}</span>
+              </div>
+            </Dropdown>
+            <Link to="/cart" className="cart-link">
+              <Badge count={cartItems.length} showZero>
+                <ShoppingCartOutlined className="cart-icon" />
+              </Badge>
+              <span className="cart-text">Giỏ hàng</span>
+            </Link>
+          </>
+        ) : (
+          <div className="auth-buttons">
+            <Button type="default" className="register-button">
+              <Link to="/register">Đăng ký</Link>
+            </Button>
+            <Button type="primary" className="login-button">
+              <Link to="/login">Đăng nhập</Link>
+            </Button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

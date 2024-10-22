@@ -76,3 +76,47 @@ exports.getKoiFishById = async (req, res) => {
     });
   }
 };
+
+// controller để cập nhật trạng thái sẵn có của KoiFish
+exports.updateKoiFishAvailability = async (req, res) => {
+  try {
+    const { koiId } = req.params;
+    const { availability } = req.body;
+
+    const validAvailabilities = ['Available', 'Sold Out'];
+    if (!validAvailabilities.includes(availability)) {
+      return res.status(400).json({ message: "Trạng thái sẵn có không hợp lệ." });
+    }
+
+    const success = await koiModel.updateKoiFishAvailability(koiId, availability);
+    if (!success) {
+      return res.status(404).json({ message: "Không tìm thấy Koi Fish." });
+    }
+
+    res.json({ message: "Cập nhật trạng thái sẵn có của Koi Fish thành công." });
+  } catch (error) {
+    res.status(500).json({
+      message: "Lỗi cập nhật trạng thái sẵn có của Koi Fish",
+      error: error.message,
+    });
+  }
+};
+
+// controller để xóa KoiFish
+exports.deleteKoiFish = async (req, res) => {
+  try {
+    const { koiId } = req.params;
+
+    const success = await koiModel.deleteKoiFish(koiId);
+    if (!success) {
+      return res.status(404).json({ message: "Không tìm thấy Koi Fish." });
+    }
+
+    res.json({ message: "Xóa Koi Fish thành công." });
+  } catch (error) {
+    res.status(500).json({
+      message: "Lỗi xóa Koi Fish",
+      error: error.message,
+    });
+  }
+};

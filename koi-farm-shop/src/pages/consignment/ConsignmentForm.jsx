@@ -4,7 +4,6 @@ import "./Consignment.scss";
 
 const ConsignmentForm = () => {
   const [formData, setFormData] = useState({
-    customerId: "",
     koiId: "",
     consignmentType: "",
     consignmentMode: "",
@@ -32,7 +31,6 @@ const ConsignmentForm = () => {
       console.log("Consignment created:", response.data);
       // Reset form or show success message
       setFormData({
-        customerId: "",
         koiId: "",
         consignmentType: "",
         consignmentMode: "",
@@ -56,18 +54,7 @@ const ConsignmentForm = () => {
       <h1>--------------------------------</h1>
       <h1>Consignment Form</h1>
       <form onSubmit={handleSubmit}>
-        <div>
-          {/* TODO: tran web nên tự lấy customerID */}
-          <label htmlFor="customerId">Customer ID:</label>
-          <input
-            type="number"
-            id="customerId"
-            name="customerId"
-            value={formData.customerId}
-            onChange={handleChange}
-            required
-          />
-        </div>
+
         <div>
           {/* TODO: Xóa nhập KoiID ? */}
           <label htmlFor="koiId">Koi ID:</label>

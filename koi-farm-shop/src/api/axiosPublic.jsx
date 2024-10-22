@@ -5,9 +5,23 @@ const axiosPublic = axios.create({
 });
 
 axiosPublic.interceptors.request.use(
-  (response) => response,
-  (error) => {
-    return Promise.reject(error);
-  }
+  (config) => {
+    // Get the token from localStorage
+    const token = localStorage.getItem('token');
+    
+    // If token exists, add it to the headers
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    
+    return config;
+  },
+  (error) => Promise.reject(error)
 );
+
+axiosPublic.interceptors.response.use(
+  (response) => response,
+  (error) => Promise.reject(error)
+);
+
 export default axiosPublic;

@@ -51,4 +51,99 @@ const getKoiFishById = async (koiId) => {
     }
 };
 
-module.exports = { createKoiFish, getAllKoiFish, getKoiFishById };
+// Cập nhật trạng thái sẵn có của KoiFish
+const updateKoiFishAvailability = async (koiId, availability) => {
+    try {
+        const pool = await sql.connect();
+        const result = await pool.request()
+            .input('KoiID', sql.Int, koiId)
+            .input('Availability', sql.VarChar(50), availability)
+            .query(`
+                UPDATE KoiFish
+                SET Availability = @Availability
+                WHERE KoiID = @KoiID
+            `);
+        return result.rowsAffected[0] > 0; // Trả về true nếu cập nhật thành công
+    } catch (err) {
+        console.error('Lỗi cập nhật trạng thái sẵn có của KoiFish:', err);
+        throw err;
+    }
+};
+
+// xóa KoiFish
+const deleteKoiFish = async (koiId) => {
+    try {
+        const pool = await sql.connect();
+        
+        // Xóa các bản ghi liên quan trong bảng KoiCertificates
+        await pool.request()
+            .input('KoiID', sql.Int, koiId)
+            .query(`
+                DELETE FROM KoiCertificates
+                WHERE KoiID = @KoiID
+            `);
+
+        // Xóa các bản ghi liên quan trong bảng KoiImages
+        await pool.request()
+            .input('KoiID', sql.Int, koiId)
+            .query(`
+                DELETE FROM KoiImages
+                WHERE KoiID = @KoiID
+            `);
+
+        // Xóa các bản ghi liên quan trong bảng OrderDetails
+        await pool.request()
+            .input('KoiID', sql.Int, koiId)
+            .query(`
+                DELETE FROM OrderDetails
+                WHERE ProductID = @KoiID AND ProductType = 'Single Fish'
+            `);
+            
+        // Xóa các bản ghi liên quan trong bảng Reviews
+        await pool.request()
+            .input('KoiID', sql.Int, koiId)
+            .query(`
+                DELETE FROM Reviews
+                WHERE ProductID = @KoiID
+            `);
+
+        // Xóa các bản ghi liên quan trong bảng KoiPackageVarieties
+        await pool.request()
+        .input('KoiID', sql.Int, koiId)
+        .query(`
+            DELETE FROM KoiPackageVarieties
+            WHERE PackageID IN (SELECT PackageID FROM KoiPackage WHERE KoiID = @KoiID)
+        `);
+
+        // Xóa các bản ghi liên quan trong bảng KoiPackageBreeders
+        await pool.request()
+            .input('KoiID', sql.Int, koiId)
+            .query(`
+                DELETE FROM KoiPackageBreeders
+                WHERE PackageID IN (SELECT PackageID FROM KoiPackage WHERE KoiID = @KoiID)
+            `);
+            
+        // Xóa các bản ghi liên quan trong bảng KoiPackage
+        await pool.request()
+            .input('KoiID', sql.Int, koiId)
+            .query(`
+                DELETE FROM KoiPackage
+                WHERE KoiID = @KoiID
+            `);
+
+        // Xóa KoiFish
+        const result = await pool.request()
+            .input('KoiID', sql.Int, koiId)
+            .query(`
+                DELETE FROM KoiFish
+                WHERE KoiID = @KoiID
+            `);
+
+        return result.rowsAffected[0] > 0; // Trả về true nếu xóa thành công
+    } catch (err) {
+        console.error('Lỗi xóa KoiFish:', err);
+        throw err;
+    }
+};
+
+module.exports = { createKoiFish, getAllKoiFish, getKoiFishById, updateKoiFishAvailability, deleteKoiFish };

@@ -25,10 +25,10 @@ const createCustomer = async (userId, fullName, email, phoneNumber = null, addre
 // Get customer by ID
 const getCustomerById = async (customerId) => {
     try {
-        const pool = await sql.connect();
-        const result = await pool.request()
-            .input('CustomerID', sql.Int, customerId)
-            .query('SELECT * FROM Customers WHERE CustomerID = @CustomerID');
+        const result = await sql.query`SELECT * FROM Customers WHERE CustomerID = ${customerId}`;
+        if (result.recordset.length === 0) {
+            return null;
+        }
         return result.recordset[0];
     } catch (err) {
         console.error('SQL error', err);
@@ -36,4 +36,50 @@ const getCustomerById = async (customerId) => {
     }
 };
 
-module.exports = { createCustomer, getCustomerById };
+const getCustomerByName = async (fullName) => {
+    try {
+        const pool = await sql.connect();
+        const result = await pool.request()
+            .input('FullName', sql.VarChar(255), fullName)
+            .query`SELECT * FROM Customers WHERE FullName LIKE '%' + @FullName + '%'`;
+        return result.recordset;
+    } catch (err) {
+        console.error('SQL error', err);
+        throw err;
+    }
+};
+
+const getAllCustomers = async () => {
+    try {
+        const pool = await sql.connect();
+        const result = await pool.request().query('SELECT * FROM Customers');
+        return result.recordset;
+    } catch (err) {
+        console.error('SQL error', err);
+        throw err;
+    }
+};
+
+const getCustomerByUserName = async (userName) => {
+    try {
+        const pool = await sql.connect();
+        const result = await pool.request()
+            .input('Username', sql.VarChar(255), userName)
+            .query(`
+                SELECT c.*, u.Username
+                FROM Customers c
+                JOIN Users u ON c.UserID = u.UserID
+                WHERE u.Username = @Username
+            `);
+        
+        if (result.recordset.length === 0) {
+            return null;
+        }
+        return result.recordset[0];
+    } catch (err) {
+        console.error('SQL error', err);
+        throw err;
+    }
+};
+
+module.exports = { createCustomer, getCustomerById, getAllCustomers, getCustomerByName, getCustomerByUserName };

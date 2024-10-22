@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
 import "./KoiBreeders.scss";
 import axiosPublic from "../../../api/axiosPublic";
-import koibreeder from "../../../assets/koibreeder/koibreeeder.jpg"; // default image if not available
-
+import koibreeder from "../../../assets/koibreeder/koibreeeder.jpg";
 
 const KoiBreeders = () => {
-  const [breeders, setBreeders] = useState([]); // Initialize state for breeders
+  const [breeders, setBreeders] = useState([]);
 
   // Fetch breeders from the backend API
   useEffect(() => {
     const fetchBreeders = async () => {
       try {
-        const breedersData = await axiosPublic.post("getAllKoiBreeders"); // Call to API to fetch breeders
-        setBreeders(breedersData); // Update state with fetched data
+        const response = await axiosPublic.get("breeders"); // Use GET request if applicable
+        console.log(response); // Log the response to check the structure
+        setBreeders(response.data); // Update state with fetched data (ensure it's an array)
       } catch (error) {
         console.error("Error fetching breeders data:", error);
       }
