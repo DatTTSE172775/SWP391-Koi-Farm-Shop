@@ -22,11 +22,15 @@ const Login = () => {
   const navigate = useNavigate();
 
   const auth = useSelector((state) => state.auth);
-  const { isAuthenticated, error } = auth;
+  const { isAuthenticated, error, user } = auth;
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/home");
+      if (user.role === "Staff") {
+        navigate("/staff");
+      } else {
+        navigate("/home");
+      }
     }
   }, [isAuthenticated, navigate]);
 
