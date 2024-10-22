@@ -111,7 +111,6 @@ export const fetchOrders = () => async (dispatch) => {
     const response = await axiosInstance.get("/orders");
     dispatch(fetchOrdersSuccess(response.data));
   } catch (error) {
-    console.error("Failed to fetch orders:", error);
     dispatch(fetchOrdersFailure(error.message || "Failed to fetch orders"));
   }
 };
@@ -135,6 +134,7 @@ export const assignOrder = (orderId, userId, username) => async (dispatch) => {
       message: "Thành Công",
       description: `Đơn hàng ${orderId} đã được giao cho ${username}`,
     });
+    dispatch(fetchOrders());
   } catch (error) {
     dispatch(assignOrderFailure(error.message || "Giao đơn hàng thất bại"));
 
@@ -150,9 +150,7 @@ export const fetchOrdersByUser = (userId) => async (dispatch) => {
   try {
     const response = await axiosInstance.get(`/orders/user/${userId}`);
     dispatch(fetchOrdersByUserSuccess(response.data));
-    console.log("Orders fetched for user:", response.data);
   } catch (error) {
-    console.error("Failed to fetch orders by user ID:", error);
     dispatch(
       fetchOrdersByUserFailure(error.message || "Error fetching orders")
     );

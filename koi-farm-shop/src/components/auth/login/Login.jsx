@@ -26,11 +26,7 @@ const Login = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      if (user.role === "Staff") {
-        navigate("/staff");
-      } else {
-        navigate("/home");
-      }
+      navigate("/home");
     }
   }, [isAuthenticated, navigate]);
 
