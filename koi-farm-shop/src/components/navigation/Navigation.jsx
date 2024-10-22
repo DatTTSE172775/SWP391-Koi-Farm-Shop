@@ -6,6 +6,8 @@ import { Link, useLocation } from "react-router-dom";
 import { logout } from "../../store/actions/authActions";
 import { CartContext } from "../order/cart-context/CartContext";
 import "./Navigation.scss";
+import {BellOutlined } from "@ant-design/icons"; // Thêm BellOutlined cho chuông
+
 
 const { SubMenu } = Menu;
 
@@ -14,6 +16,10 @@ const Navigation = () => {
   const dispatch = useDispatch();
 
   const [current, setCurrent] = useState("home");
+  
+  // New state for scroll direction
+  const [scrollDirection, setScrollDirection] = useState("up");
+  const [prevScrollPos, setPrevScrollPos] = useState(window.pageYOffset);
 
   const { cartItems } = useContext(CartContext);
 
@@ -52,6 +58,21 @@ const Navigation = () => {
     }
   }, [location.pathname]);
 
+  // Track scroll direction to show/hide navigation
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollPos = window.pageYOffset;
+      const direction = prevScrollPos > currentScrollPos ? "up" : "down";
+      setScrollDirection(direction);
+      setPrevScrollPos(currentScrollPos);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [prevScrollPos]);
+
   const handleClick = (e) => {
     setCurrent(e.key);
   };
@@ -65,20 +86,24 @@ const Navigation = () => {
   };
 
   // Menu cho Dropdown khi click vào avatar
-  const accountMenu = (
-    <Menu>
-      <Menu.Item key="view-info">
-        <Link to="/account">Xem Thông Tin</Link>
-      </Menu.Item>
-      <Menu.Divider />
-      <Menu.Item key="logout" onClick={handleLogout}>
-        Đăng xuất
-      </Menu.Item>
-    </Menu>
-  );
+const accountMenu = (
+  <Menu>
+    <Menu.Item key="view-info">
+      <Link to="/account">Xem Thông Tin</Link>
+    </Menu.Item>
+    <Menu.Item key="order-history">
+      <Link to="/order-history">Lịch sử đơn hàng</Link>
+    </Menu.Item>
+    <Menu.Divider />
+    <Menu.Item key="logout" onClick={handleLogout}>
+      Đăng xuất
+    </Menu.Item>
+  </Menu>
+);
+
 
   return (
-    <div className="navigation">
+    <div className={`navigation ${scrollDirection === "down" ? "hide" : ""}`}>
       {/* Logo */}
       <div className="logo">
         <Link to="/home">
@@ -194,42 +219,51 @@ const Navigation = () => {
         </Menu.Item>
       </Menu>
 
-      {/* Icons bên phải */}
-      <div className="nav-icons">
-        {isAuthenticated ? (
-          <>
-            <Dropdown
-              overlay={accountMenu}
-              placement="bottomRight"
-              trigger={["click"]}
-            >
-              <div className="account-dropdown">
-                <Avatar
-                  className="user-avatar"
-                  src="/images/users/avatar.jpg"
-                  icon={<UserOutlined />}
-                />
-                <span className="username">{user}</span>
-              </div>
-            </Dropdown>
-            <Link to="/cart" className="cart-link">
-              <Badge count={cartItems.length} showZero>
-                <ShoppingCartOutlined className="cart-icon" />
-              </Badge>
-              <span className="cart-text">Giỏ hàng</span>
-            </Link>
-          </>
-        ) : (
-          <div className="auth-buttons">
-            <Button type="default" className="register-button">
-              <Link to="/register">Đăng ký</Link>
-            </Button>
-            <Button type="primary" className="login-button">
-              <Link to="/login">Đăng nhập</Link>
-            </Button>
-          </div>
-        )}
-      </div>
+  <div className="nav-icons">
+  {/* Chuông thông báo chỉ hiển thị khi đã đăng nhập */}
+  {isAuthenticated && (
+    <Badge count={5} offset={[10, 0]} showZero>
+      <BellOutlined className="notification-bell" />
+    </Badge>
+  )}
+
+  {isAuthenticated ? (
+    <>
+      <Dropdown
+        overlay={accountMenu}
+        placement="bottomRight"
+        trigger={["click"]}
+      >
+        <div className="account-dropdown">
+          <Avatar
+            className="user-avatar"
+            src="/images/users/avatar.jpg"
+            icon={<UserOutlined />}
+          />
+          {/* Hiển thị tên người dùng */}
+          <span className="username">{user?.username}</span> {/* Sử dụng `?.` để tránh lỗi undefined */}
+        </div>
+      </Dropdown>
+      <Link to="/cart" className="cart-link">
+        <Badge count={cartItems.length} showZero>
+          <ShoppingCartOutlined className="cart-icon" />
+        </Badge>
+        <span className="cart-text">Giỏ hàng</span>
+      </Link>
+    </>
+  ) : (
+    <div className="auth-buttons">
+      <Button type="default" className="register-button">
+        <Link to="/register">Đăng ký</Link>
+      </Button>
+      <Button type="primary" className="login-button">
+        <Link to="/login">Đăng nhập</Link>
+      </Button>
+    </div>
+  )}
+</div>
+
+
     </div>
   );
 };
