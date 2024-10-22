@@ -1,20 +1,43 @@
 import { EyeOutlined } from "@ant-design/icons";
-import { Button, Card, Col, Row, Select, Typography } from "antd";
-import { Option } from "antd/es/mentions";
+import { Button, Card, Col, Row, Select, Typography, notification } from "antd";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "../../../api/axiosInstance"; // Sử dụng axios để gửi API
 import "./OrderItem.scss";
 
 const { Text } = Typography;
+const { Option } = Select;
 
 const OrderItem = ({ order }) => {
   const navigate = useNavigate();
   const [status, setStatus] = useState(order.status);
 
-  const handleStatusChange = (value) => {
-    setStatus(value);
-    // Logic để cập nhật trạng thái đơn hàng vào hệ thống hoặc backend
-    console.log(`Order ${order.id} status updated to: ${value}`);
+  const handleStatusChange = async (value) => {
+    try {
+      setStatus(value); // Cập nhật trạng thái tạm thời
+
+      // Gửi API call để cập nhật trạng thái đơn hàng trong backend
+      const response = await axiosInstance.patch(`/orders/${order.id}`, {
+        status: value,
+      });
+
+      // Hiển thị thông báo thành công nếu cập nhật thành công
+      notification.success({
+        message: "Cập Nhật Thành Công",
+        description: `Trạng thái của đơn hàng ${order.id} đã được cập nhật thành ${value}.`,
+      });
+
+      console.log(`Order ${order.id} status updated to: ${value}`, response);
+    } catch (error) {
+      console.error("Failed to update order status:", error);
+
+      // Hiển thị thông báo lỗi nếu cập nhật thất bại
+      notification.error({
+        message: "Cập Nhật Thất Bại",
+        description:
+          "Không thể cập nhật trạng thái đơn hàng. Vui lòng thử lại.",
+      });
+    }
   };
 
   return (
@@ -23,19 +46,19 @@ const OrderItem = ({ order }) => {
         {/* Order Info */}
         <Col xs={24} md={4}>
           <Text strong>Mã Đơn Hàng:</Text>
-          <Text>{order.id}</Text>
+          <Text> {order.id}</Text>
         </Col>
         <Col xs={24} md={5}>
           <Text strong>Tên Sản Phẩm:</Text>
-          <Text>{order.productName}</Text>
+          <Text> {order.productName}</Text>
         </Col>
         <Col xs={24} md={4}>
           <Text strong>Ngày Đặt Hàng:</Text>
-          <Text>{order.date}</Text>
+          <Text> {new Date(order.date).toLocaleDateString()}</Text>
         </Col>
         <Col xs={24} md={3}>
           <Text strong>Giá:</Text>
-          <Text>{order.price.toLocaleString()}</Text>
+          <Text> {order.price.toLocaleString()} VND</Text>
         </Col>
 
         {/* Order Status Selection */}
@@ -71,4 +94,5 @@ const OrderItem = ({ order }) => {
     </Card>
   );
 };
+
 export default OrderItem;
