@@ -37,7 +37,7 @@ const createKoiConsignment = async (req) => {
             .input('ConsignmentMode', sql.VarChar(50), req.body.consignmentMode)
             .input('Status', sql.VarChar(50), req.body.status || 'Pending')
             .input('PriceAgreed', sql.Decimal(10, 2), req.body.priceAgreed)
-            .input('ApprovedStatus', sql.VarChar(50), req.body.approvedStatus || 'Rejected')
+            .input('ApprovedStatus', sql.VarChar(50), req.body.approvedStatus || 'Pending')
             .input('Notes', sql.VarChar(sql.MAX), req.body.notes)
             .input('KoiType', sql.NVarChar(100), req.body.koiType)
             .input('KoiColor', sql.NVarChar(100), req.body.koiColor)
