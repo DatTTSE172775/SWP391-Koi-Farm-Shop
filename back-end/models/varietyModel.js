@@ -9,9 +9,10 @@ const createVariety = async (varietyData) => {
             .input('Origin', sql.VarChar(50), varietyData.origin)
             .query(`
                 INSERT INTO Varieties (VarietyName, Description, Origin)
+                OUTPUT INSERTED.VarietyID
                 VALUES (@VarietyName, @Description, @Origin);
             `);
-        return result;
+        return result.recordset[0];
     } catch (err) {
         console.error('Error creating Variety:', err);
         throw err;
@@ -29,7 +30,26 @@ const getAllVarieties = async () => {
     }
 };
 
+const addKoiPackageVariety = async (PackageID, VarietyID) => {
+    try {
+        const pool = await sql.connect();
+        const result = await pool.request()
+            .input('PackageID', sql.Int, PackageID)
+            .input('VarietyID', sql.Int, VarietyID)
+            .query(`
+                INSERT INTO KoiPackageVarieties (PackageID, VarietyID)
+                OUTPUT INSERTED.PackageID, INSERTED.VarietyID
+                VALUES (@PackageID, @VarietyID);
+            `);
+        return result.recordset[0];
+    } catch (err) {
+        console.error('Error adding Koi Package Variety:', err);
+        throw err;
+    }
+};
+
 module.exports = {
     createVariety,
     getAllVarieties,
+    addKoiPackageVariety,
 };

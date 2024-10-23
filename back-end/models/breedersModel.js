@@ -29,7 +29,19 @@ const getAllBreeders = async () => {
     }
 };
 
+const getBreederById = async (breederId) => {
+    try {
+        const pool = await sql.connect();
+        const result = await pool.request().input('BreederID', sql.Int, breederId).query('SELECT * FROM Breeders WHERE BreederID = @BreederID');
+        return result.recordset[0];
+    } catch (err) {
+        console.error('Error fetching Breeder by ID:', err);
+        throw err;
+    }
+};
+
 module.exports = {
     createBreeder,
     getAllBreeders,
+    getBreederById,
 };
