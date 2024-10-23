@@ -5,10 +5,8 @@ import KoiCard from "../koiCard/KoiCard";
 import "./KoiList.scss";
 
 const KoiList = ({ koiFish, isAuthenticated }) => {
-
   return (
     <div className="koi-list">
-      <h1>-------------</h1>
       <KoiListHeader />
       {/* Tạm thời bỏ KoiSearch */}
       {/* <KoiSearch onSearch={handleSearch} /> */}

@@ -59,6 +59,7 @@ const {
   addKoiPackageVariety,
 } = require("../controllers/varietyController");
 const { getAllStaff } = require("../controllers/userController");
+const { getAllStaff } = require("../controllers/userController");
 
 // User routes
 /**
@@ -202,6 +203,7 @@ router.post("/forgot-password", forgotPassword);
  *         description: Internal server error.
  */
 router.get("/staff", getAllStaff);
+router.get("/staff", getAllStaff);
 
 /**
  * @swagger
@@ -246,6 +248,7 @@ router.get("/staff", getAllStaff);
  *         description: Internal server error
  */
 router.get("/orders/user/:userId", getAllStaffOrdersByUserId);
+router.get("/orders/user/:userId", getAllStaffOrdersByUserId);
 
 // Koi Fish routes
 
@@ -259,6 +262,7 @@ router.get("/orders/user/:userId", getAllStaffOrdersByUserId);
  *       200:
  *         description: List of all Koi Fish
  */
+router.get("/koifish", getAllKoiFish);
 router.get("/koifish", getAllKoiFish);
 
 /**
@@ -494,6 +498,7 @@ router.patch("/orders/:orderId", updateOrderStatus);
  *       500:
  *         description: Failed to assign order to staff
  */
+router.patch("/:orderId/assign", assignOrderToStaff);
 router.patch("/:orderId/assign", assignOrderToStaff);
 
 /**
@@ -737,6 +742,11 @@ router.post(
   authMiddleware,
   koiConsignmentController.createKoiConsignment
 );
+router.post(
+  "/createConsignment",
+  authMiddleware,
+  koiConsignmentController.createKoiConsignment
+);
 /**
  * @swagger
  * /api/koiconsignments:
@@ -768,7 +778,7 @@ router.get("/koiconsignments", getAllKoiConsignments);
  *       201:
  *         description: Breeder created successfully
  */
-router.post("/breeders", authMiddleware, createBreeder);
+router.post("/breeders", createBreeder);
 
 /**
  * @swagger
