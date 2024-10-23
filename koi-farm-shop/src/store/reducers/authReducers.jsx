@@ -58,6 +58,23 @@ const authReducer = (state = initialState, action) => {
         loading: false,
         error: action.payload,
       };
+    case "CHANGE_PASSWORD_REQUEST":
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+    case "CHANGE_PASSWORD_SUCCESS":
+      return {
+        ...state,
+        loading: false,
+      };
+    case "CHANGE_PASSWORD_FAILURE":
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
     default:
       return state;
   }

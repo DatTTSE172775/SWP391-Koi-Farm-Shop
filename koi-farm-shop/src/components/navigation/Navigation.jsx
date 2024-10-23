@@ -70,6 +70,9 @@ const Navigation = () => {
       <Menu.Item key="view-info">
         <Link to="/account">Xem Thông Tin</Link>
       </Menu.Item>
+      <Menu.Item key="change-password">
+        <Link to="/change-password">Thay đổi mật khẩu</Link>
+      </Menu.Item>
       <Menu.Divider />
       <Menu.Item key="logout" onClick={handleLogout}>
         Đăng xuất

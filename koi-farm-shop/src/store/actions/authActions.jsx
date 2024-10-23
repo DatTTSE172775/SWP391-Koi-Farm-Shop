@@ -1,3 +1,4 @@
+import axiosPrivate from "../../api/axiosPrivate";
 import axiosPublic from "../../api/axiosPublic";
 
 // ACTION TYPES
@@ -16,6 +17,11 @@ export const REGISTER_FAILURE = "REGISTER_FAILURE";
 export const FORGET_PASSWORD_REQUEST = "FORGET_PASSWORD_REQUEST";
 export const FORGET_PASSWORD_SUCCESS = "FORGET_PASSWORD_SUCCESS";
 export const FORGET_PASSWORD_FAILURE = "FORGET_PASSWORD_FAILURE";
+
+//change-password
+export const CHANGE_PASSWORD_REQUEST = "CHANGE_PASSWORD_REQUEST";
+export const CHANGE_PASSWORD_SUCCESS = "CHANGE_PASSWORD_SUCCESS";
+export const CHANGE_PASSWORD_FAILURE = "CHANGE_PASSWORD_FAILURE";
 
 // ACTIONS CREATOR
 // Login action
@@ -153,3 +159,27 @@ export const forgetPassword = (email, username) => async (dispatch) => {
     });
   }
 };
+
+//change-password
+export const changePassword =
+  (oldPassword, newPassword) => async (dispatch) => {
+    dispatch({ type: CHANGE_PASSWORD_REQUEST });
+
+    try {
+      const response = await axiosPrivate.post("change-password", {
+        oldPassword,
+        newPassword,
+      });
+
+      console.log("Change Password Response:", response.data);
+
+      dispatch({ type: CHANGE_PASSWORD_SUCCESS });
+      alert("Mật khẩu của bạn đã được thay đổi thành công.");
+    } catch (error) {
+      console.error("Change Password Error:", error.response?.data || error);
+      dispatch({
+        type: CHANGE_PASSWORD_FAILURE,
+        payload: error.response?.data?.message || "Lỗi khi thay đổi mật khẩu.",
+      });
+    }
+  };

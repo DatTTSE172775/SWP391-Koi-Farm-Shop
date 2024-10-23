@@ -10,6 +10,7 @@ import {
 import Loading from "./components/loading/Loading";
 import CartProvider from "./components/order/cart-context/CartContext";
 // main layout
+import ChangePassword from "./pages/account/change-password/ChangePassword";
 import OrderDetails from "./pages/admin/order-details/OrderDetails";
 import OrdersManagement from "./pages/admin/orderManagement/OrdersManagement";
 import WelcomeAdmin from "./pages/admin/welcome/WelcomeAdmin";
@@ -78,6 +79,7 @@ function App() {
               <Route path="home" element={<HomePage />} />
               <Route path="about" element={<About />} />
               <Route path="guide" element={<Guide />} />
+              <Route path="change-password" element={<ChangePassword />} />
 
               {/* Koi Routes */}
               <Route path="koi-list" element={<KoiListPage />} />
