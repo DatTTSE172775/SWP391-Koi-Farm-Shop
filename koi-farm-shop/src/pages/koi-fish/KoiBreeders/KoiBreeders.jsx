@@ -14,19 +14,30 @@ const KoiBreeders = () => {
   useEffect(() => {
     const fetchBreeders = async () => {
       try {
+        // Gọi API để lấy dữ liệu
         const response = await axiosPublic.get("/breeders");
-        setBreeders(response.data.data);
+        console.log("API Response:", response.data);
+
+        const breederData = response.data || [];
+        console.log("Processed breeder data:", breederData);
+        setBreeders(breederData);
         setLoading(false);
       } catch (error) {
+        
         setError(error.message);
         setLoading(false);
       }
     };
+
     fetchBreeders();
   }, []);
 
   if (loading) {
-    return <Spin size="large" />;
+    return (
+      <div style={{ textAlign: "center", marginTop: "50px" }}>
+        <Spin size="large" tip="Đang tải dữ liệu..." />
+      </div>
+    );
   }
 
   if (error) {
@@ -56,7 +67,7 @@ const KoiBreeders = () => {
               />
               <div className="koi-breeder-card__details">
                 <div>
-                  <Text type="secondary">Địa chỉ: {breeder.Address}</Text>
+                  <Text type="secondary">Địa chỉ: {breeder.Address || "Không có thông tin"}</Text>
                 </div>
                 <div>
                   <Text type="secondary">Năm thành lập: {breeder.FoundedYear || "Không rõ"}</Text>

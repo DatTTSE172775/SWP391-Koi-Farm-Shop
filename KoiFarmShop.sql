@@ -347,7 +347,8 @@ INSERT INTO Breeders (Name, Address, ContactInfo, CertificationLink, Notes) VALU
 ('Marusaka Koi Farm', 'Niigata, Japan', 'marusaka@koi.com', 'https://marusaka-cert.jp', 'Nổi tiếng với dòng Koi Goshiki'),
 ('Yagenji Koi Farm', 'Niigata, Japan', 'contact@yagenji.jp', 'https://yagenji-certification.jp', 'Chuyên về Koi Asagi và Shusui'),
 ('Otsuka Koi Farm', 'Saitama, Japan', 'otsuka@koifarm.jp', 'https://otsuka-cert.jp', 'Nổi tiếng với dòng Koi Kujaku');
---select * from Breeders
+
+select * from Breeders
 
 --SET IDENTITY_INSERT KoiFish OFF;
 INSERT INTO KoiFish (Name, VarietyID, Origin, BreederID, Gender, Born, Size, Weight, Personality, FeedingAmountPerDay, HealthStatus, ScreeningRate, Price, CertificateLink, ImagesLink, Availability) VALUES

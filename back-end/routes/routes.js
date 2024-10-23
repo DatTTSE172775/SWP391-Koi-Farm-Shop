@@ -42,8 +42,6 @@ const {
 const {
   createKoiPackage,
   getAllKoiPackages,
-  getKoiPackageById,
-  updateKoiPackageAvailability,
   deleteKoiPackage,
 } = require("../controllers/koiPackageController");
 const {
@@ -53,10 +51,12 @@ const {
 const {
   createBreeder,
   getAllBreeders,
+  getBreederById,
 } = require("../controllers/breedersController");
 const {
   createVariety,
   getAllVarieties,
+  addKoiPackageVariety,
 } = require("../controllers/varietyController");
 const { getAllStaff } = require("../controllers/userController");
 
@@ -316,7 +316,7 @@ router.get("/koifish/:koiId", getKoiFishById);
  *       201:
  *         description: Koi Fish created successfully
  */
-router.post("/koifish", authMiddleware, createKoiFish);
+router.post("/addKoiFish", createKoiFish);
 
 /**
  * @swagger
@@ -351,15 +351,11 @@ router.post("/koifish", authMiddleware, createKoiFish);
  *       500:
  *         description: Server error
  */
-router.patch(
-  "/koifish/:koiId/availability",
-  authMiddleware,
-  updateKoiFishAvailability
-);
+router.patch("/koifish/:koiId/availability", updateKoiFishAvailability);
 
 /**
  * @swagger
- * /api/koifish/{koiId}:
+ * /api/deleteKoi/{koiId}:
  *   delete:
  *     summary: Delete a Koi Fish
  *     tags: [Koi Fish]
@@ -378,7 +374,7 @@ router.patch(
  *       500:
  *         description: Server error
  */
-router.delete("/koifish/:koiId", authMiddleware, deleteKoiFish);
+router.delete("/deleteKoi/:koiId", deleteKoiFish);
 
 // Order routes
 /**
@@ -684,7 +680,7 @@ router.delete("/reports/:reportId", authMiddleware, deleteReportController);
  *       201:
  *         description: Koi Package created successfully
  */
-router.post("/koipackage", authMiddleware, createKoiPackage);
+router.post("/koipackage", createKoiPackage);
 
 /**
  * @swagger
@@ -702,9 +698,9 @@ router.get("/koipackages", getAllKoiPackages);
 
 /**
  * @swagger
- * /api/koipackage/{packageId}:
- *   get:
- *     summary: Get Koi Package details by ID
+ * /api/deleteKoiPackage/{packageId}:
+ *   delete:
+ *     summary: Delete a Koi Package
  *     tags: [Koi Package]
  *     parameters:
  *       - in: path
@@ -715,75 +711,9 @@ router.get("/koipackages", getAllKoiPackages);
  *         description: Koi Package ID
  *     responses:
  *       200:
- *         description: Koi Package details
- *       404:
- *         description: Koi Package not found
- *       500:
- *         description: Server error
- */
-router.get("/koipackage/:packageId", getKoiPackageById);
-
-/**
- * @swagger
- * /api/koipackage/{packageId}/availability:
- *   patch:
- *     summary: Update Koi Package availability
- *     tags: [Koi Package]
- *     parameters:
- *       - in: path
- *         name: packageId
- *         schema:
- *           type: integer
- *         required: true
- *         description: The Koi Package ID
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               availability:
- *                 type: string
- *                 enum: [Available, Sold Out]
- *     responses:
- *       200:
- *         description: Koi Package availability updated successfully
- *       400:
- *         description: Invalid availability status
- *       404:
- *         description: Koi Package not found
- *       500:
- *         description: Server error
- */
-router.patch(
-  "/koipackage/:packageId/availability",
-  authMiddleware,
-  updateKoiPackageAvailability
-);
-
-/**
- * @swagger
- * /api/koipackage/{packageId}:
- *   delete:
- *     summary: Delete a Koi Package
- *     tags: [Koi Package]
- *     parameters:
- *       - in: path
- *         name: packageId
- *         schema:
- *           type: integer
- *         required: true
- *         description: The Koi Package ID
- *     responses:
- *       200:
  *         description: Koi Package deleted successfully
- *       404:
- *         description: Koi Package not found
- *       500:
- *         description: Server error
  */
-router.delete("/koipackage/:packageId", authMiddleware, deleteKoiPackage);
+router.delete("/deleteKoiPackage/:packageId", deleteKoiPackage);
 
 // Koi Consignment routes
 /**
@@ -838,7 +768,7 @@ router.get("/koiconsignments", getAllKoiConsignments);
  *       201:
  *         description: Breeder created successfully
  */
-router.post("/breeders", createBreeder);
+router.post("/breeders", authMiddleware, createBreeder);
 
 /**
  * @swagger
@@ -853,6 +783,25 @@ router.post("/breeders", createBreeder);
  *         description: List of all Breeders
  */
 router.get("/breeders", getAllBreeders);
+
+/**
+ * @swagger
+ * /api/breeders/{breederId}:
+ *   get:
+ *     summary: Get Breeder by ID
+ *     tags: [Breeders]
+ *     parameters:
+ *       - in: path
+ *         name: breederId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: Breeder ID
+ *     responses:
+ *       200:
+ *         description: Breeder details
+ */
+router.get("/breeders/:breederId", getBreederById);
 
 // Varieties routes
 /**
@@ -873,7 +822,7 @@ router.get("/breeders", getAllBreeders);
  *       201:
  *         description: Variety created successfully
  */
-router.post("/varieties", authMiddleware, createVariety);
+router.post("/varieties", createVariety);
 
 /**
  * @swagger
@@ -887,6 +836,8 @@ router.post("/varieties", authMiddleware, createVariety);
  *       200:
  *         description: List of all Varieties
  */
-router.get("/varieties", authMiddleware, getAllVarieties);
+router.get("/varieties", getAllVarieties);
+
+router.post("/addKoiPackageVariety", addKoiPackageVariety);
 
 module.exports = router;

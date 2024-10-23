@@ -1,4 +1,4 @@
-import { ShoppingCartOutlined, UserOutlined } from "@ant-design/icons";
+import { BellOutlined, ShoppingCartOutlined, UserOutlined } from "@ant-design/icons";
 import { Avatar, Badge, Button, Dropdown, Menu } from "antd";
 import React, { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,7 +6,6 @@ import { Link, useLocation } from "react-router-dom";
 import { logout } from "../../store/actions/authActions";
 import { CartContext } from "../order/cart-context/CartContext";
 import "./Navigation.scss";
-import {BellOutlined } from "@ant-design/icons"; // Thêm BellOutlined cho chuông
 
 
 const { SubMenu } = Menu;

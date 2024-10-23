@@ -1,0 +1,47 @@
+.delete-koi-container,
+.delete-koi-package-container {
+  padding: 24px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  .ant-typography {
+    margin-bottom: 24px;
+  }
+
+  .button-group {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .ant-table-wrapper {
+    margin-top: 24px;
+  }
+
+  .ant-table {
+    background-color: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+
+    .ant-table-thead > tr > th {
+      background-color: #f0f2f5;
+      color: #1a1a1a;
+      font-weight: 600;
+    }
+
+    .ant-table-tbody > tr > td {
+      padding: 16px;
+    }
+  }
+
+  .ant-btn-danger {
+    background-color: #ff4d4f;
+    border-color: #ff4d4f;
+
+    &:hover, &:focus {
+      background-color: #ff7875;
+      border-color: #ff7875;
+    }
+  }
+}

@@ -22,12 +22,12 @@ const createBreeder = async (breederData) => {
 // Hàm lấy tất cả các Breeders
 const getAllBreeders = async () => {
   try {
-    const pool = await sql.connect(); // Kết nối tới SQL Server
+    const pool = await sql.connect();
     const result = await pool.request().query("SELECT * FROM Breeders");
-    return result.recordset; // Trả về danh sách breeders
+    return result.recordset;
   } catch (err) {
     console.error("Error fetching Breeders:", err);
-    throw err; // Ném lỗi để controller xử lý
+    throw err;
   }
 };
 
