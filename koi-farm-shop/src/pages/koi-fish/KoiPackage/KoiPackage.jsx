@@ -37,7 +37,6 @@ const KoiPackage = () => {
   return (
     <div className="koi-package">
       <KoiPackageHeader /> {/* Chèn header ở đây */}
-
       <div className="koi-package__list">
         {packages.length > 0 ? (
           packages.map((pkg) => (

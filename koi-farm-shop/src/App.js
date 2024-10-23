@@ -46,7 +46,7 @@ const KoiListPage = lazy(() =>
   import("./pages/koi-fish/koiList/Koi-List-Page")
 );
 const KoiBreeders = lazy(() =>
-  import("./pages/koi-fish/koi-breeders/KoiBreeders")
+  import("./pages/koi-fish/KoiBreeders/KoiBreeders")
 );
 const HighQualityKoi = lazy(() =>
   import("./components/koiFish/high-quality-koi/HighQualityKoi")
