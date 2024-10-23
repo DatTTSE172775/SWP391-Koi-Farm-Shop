@@ -1,4 +1,5 @@
 const { createKoiConsignment: createKoiConsignmentModel } = require('../models/koiConsignmentModel');
+const { getAllKoiConsignments: getAllKoiConsignmentsModel } = require('../models/koiConsignmentModel');
 
 exports.createKoiConsignment = async (req, res) => {
     try {
@@ -13,7 +14,7 @@ exports.createKoiConsignment = async (req, res) => {
 
 exports.getAllKoiConsignments = async (req, res) => {
     try {
-        const result = await koiConsignmentModel.getAllKoiConsignments();
+        const result = await getAllKoiConsignmentsModel();
         res.status(200).json({
             message: 'Koi Consignments retrieved successfully!',
             data: result
