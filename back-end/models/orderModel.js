@@ -5,18 +5,65 @@ exports.createOrder = async (
   customerID,
   totalAmount,
   shippingAddress,
-  paymentMethod
+  paymentMethod,
+  orderItems
 ) => {
+  const pool = await sql.connect();
+  const transaction = new sql.Transaction(pool);
+
   try {
-    const result = await sql.query`
-      INSERT INTO Orders (CustomerID, TotalAmount, ShippingAddress, PaymentMethod, OrderDate, OrderStatus)
-      OUTPUT INSERTED.*
-      VALUES (${customerID}, ${totalAmount}, ${shippingAddress}, ${paymentMethod}, GETDATE(), 'Pending')
-    `;
-    return result.recordset[0]; // Return the newly created order
+    await transaction.begin();
+
+    // Insert into Orders table
+    const orderResult = await transaction.request()
+      .input('customerID', sql.Int, customerID)
+      .input('totalAmount', sql.Decimal(10, 2), totalAmount)
+      .input('shippingAddress', sql.NVarChar(sql.MAX), shippingAddress)
+      .input('paymentMethod', sql.NVarChar(50), paymentMethod)
+      .query(`
+        INSERT INTO Orders (CustomerID, TotalAmount, ShippingAddress, PaymentMethod, OrderDate, OrderStatus)
+        OUTPUT INSERTED.OrderID
+        VALUES (@customerID, @totalAmount, @shippingAddress, @paymentMethod, GETDATE(), 'Pending')
+      `);
+
+    const orderId = orderResult.recordset[0].OrderID;
+
+    // Insert into OrderDetails table
+    for (const item of orderItems) {
+      await transaction.request()
+        .input('orderId', sql.Int, orderId)
+        .input('productId', sql.Int, item.productId)
+        .input('quantity', sql.Int, item.quantity)
+        .input('unitPrice', sql.Decimal(10, 2), item.price)
+        .input('totalPrice', sql.Decimal(10, 2), item.price * item.quantity)
+        .query(`
+          INSERT INTO OrderDetails (OrderID, ProductID, Quantity, UnitPrice, TotalPrice, ProductType)
+          VALUES (@orderId, @productId, @quantity, @unitPrice, @totalPrice, 'Single Fish')
+        `);
+    }
+
+    await transaction.commit();
+
+    return { orderId, message: "Order created successfully" };
   } catch (error) {
+    await transaction.rollback();
     console.error("Error creating order:", error);
     throw new Error("Error creating order");
+  }
+};
+
+exports.getOrderDetails = async (orderId) => {
+  try {
+    const result = await sql.query`
+      SELECT k.Name, od.Quantity
+      FROM OrderDetails od
+      JOIN KoiFish k ON od.ProductID = k.KoiID
+      WHERE od.OrderID = ${orderId}
+    `;
+    return result.recordset;
+  } catch (error) {
+    console.error("Error fetching order details:", error);
+    throw new Error("Error fetching order details");
   }
 };
 

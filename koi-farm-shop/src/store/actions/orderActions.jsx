@@ -74,29 +74,29 @@ export const createOrder = (orderData) => async (dispatch) => {
     const username = localStorage.getItem("username");
     if (!username) throw new Error("Username not found in localStorage");
 
-    // Fetch customer details using username
-    const customerResponse = await axiosInstance.get(
-      `customers/username/${username}`
-    );
+    const customerResponse = await axiosInstance.get(`customers/username/${username}`);
     const customerID = customerResponse.data.CustomerID;
 
     console.log("Customer ID:", customerID);
 
-    // Prepare order data
     const payload = {
       customerID,
       totalAmount: orderData.totalAmount,
       shippingAddress: orderData.shippingAddress,
       paymentMethod: orderData.paymentMethod,
+      orderItems: orderData.orderItems
     };
 
     console.log("Order payload:", payload);
 
-    // Send POST request to create an order
     const response = await axiosInstance.post("/orders", payload);
     console.log("Order created successfully:", response.data);
 
     dispatch(createOrderSuccess(response.data));
+
+    // Optionally, clear the cart here
+    // dispatch(clearCart());
+
   } catch (error) {
     console.error("Order creation failed:", error);
     dispatch(createOrderFailure(error.message || "Failed to create order"));

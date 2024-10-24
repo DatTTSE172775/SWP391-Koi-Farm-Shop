@@ -77,11 +77,15 @@ const Checkout = () => {
       totalAmount: calculateTotal(),
       shippingAddress: values.address,
       paymentMethod: values.paymentMethod,
+      orderItems: cartItems.map(item => ({
+        productId: item.id,
+        quantity: item.quantity,
+        price: item.price
+      }))
     };
 
     console.log("Creating order with:", orderData);
 
-    // Dispatch createOrder action
     dispatch(createOrder(orderData));
   };
 

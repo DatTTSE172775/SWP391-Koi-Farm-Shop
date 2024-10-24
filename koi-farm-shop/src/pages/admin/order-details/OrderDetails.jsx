@@ -12,6 +12,7 @@ import {
   Spin,
   Tag,
   Typography,
+  List,
 } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -45,6 +46,7 @@ const OrderDetails = () => {
   const [error, setError] = useState(null); // Error state
   const [assignee, setAssignee] = useState(""); // Selected assignee
   const { staff } = useSelector((state) => state.staff); // Get staff from Redux
+  const [orderDetails, setOrderDetails] = useState([]);
 
   // Fetch order details from the API
   useEffect(() => {
@@ -53,6 +55,11 @@ const OrderDetails = () => {
         const response = await axiosInstance.get(`/orders/${orderId}`);
         console.log("Order Details Response:", response.data);
         setOrder(response.data);
+
+        // Fetch order details
+        const detailsResponse = await axiosInstance.get(`/orders/${orderId}/details`);
+        console.log("Order Details:", detailsResponse.data);
+        setOrderDetails(detailsResponse.data);
 
         // Set assignee based on the UserID
         const assignedStaff = staff.find(
@@ -126,6 +133,19 @@ const OrderDetails = () => {
               <Descriptions.Item label="Giá">
                 {order.TotalAmount.toLocaleString()} VND
               </Descriptions.Item>
+
+              <Descriptions.Item label="Sản Phẩm Đã Mua">
+                <List
+                  size="small"
+                  dataSource={orderDetails}
+                  renderItem={item => (
+                    <List.Item>
+                      {item.Name} - Số lượng: {item.Quantity}
+                    </List.Item>
+                  )}
+                />
+              </Descriptions.Item>
+              
               <Descriptions.Item label="Trạng Thái">
                 <Tag color={statusColors[order.OrderStatus]}>
                   {order.OrderStatus}

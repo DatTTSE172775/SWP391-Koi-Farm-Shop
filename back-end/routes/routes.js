@@ -26,6 +26,7 @@ const {
   getAllStaffOrdersByUserId,
   assignOrderToStaff,
   deleteOrder,
+  getOrderDetails,
 } = require("../controllers/orderController");
 const {
   getAllCustomers,
@@ -839,5 +840,7 @@ router.post("/varieties", createVariety);
 router.get("/varieties", getAllVarieties);
 
 router.post("/addKoiPackageVariety", addKoiPackageVariety);
+
+router.get("/orders/:orderId/details", getOrderDetails);
 
 module.exports = router;

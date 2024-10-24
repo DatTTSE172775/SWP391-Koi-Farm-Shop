@@ -15,14 +15,15 @@ const getAllOrders = async (req, res) => {
 
 // Create a new order
 const createOrder = async (req, res) => {
-  const { customerID, totalAmount, shippingAddress, paymentMethod } = req.body;
+  const { customerID, totalAmount, shippingAddress, paymentMethod, orderItems } = req.body;
 
   try {
     const newOrder = await Order.createOrder(
       customerID,
       totalAmount,
       shippingAddress,
-      paymentMethod
+      paymentMethod,
+      orderItems
     );
     res.status(201).json(newOrder);
   } catch (err) {
@@ -146,6 +147,17 @@ const deleteOrder = async (req, res) => {
   }
 };
 
+const getOrderDetails = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const orderDetails = await Order.getOrderDetails(orderId);
+    res.json(orderDetails);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to fetch order details." });
+  }
+};
+
 module.exports = {
   getAllOrders,
   getOrderById,
@@ -154,4 +166,5 @@ module.exports = {
   deleteOrder,
   getAllStaffOrdersByUserId,
   assignOrderToStaff,
+  getOrderDetails,
 };
