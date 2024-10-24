@@ -22,11 +22,15 @@ const {
   getAllOrders,
   getOrderById,
   createOrder,
-  updateOrderStatus,
   getAllStaffOrdersByUserId,
   assignOrderToStaff,
   deleteOrder,
   getOrderDetails,
+  updateOrderToPending,
+  updateOrderToProcessing,
+  updateOrderToShipped,
+  updateOrderToDelivered,
+  updateOrderToCancelled,
 } = require("../controllers/orderController");
 const {
   getAllCustomers,
@@ -439,9 +443,9 @@ router.post("/orders", createOrder);
 
 /**
  * @swagger
- * /api/orders/{orderId}:
+ * /api/orders/{orderId}/pending:
  *   patch:
- *     summary: Update order status
+ *     summary: Update order status to Pending
  *     tags: [Orders]
  *     parameters:
  *       - in: path
@@ -450,21 +454,87 @@ router.post("/orders", createOrder);
  *           type: string
  *         required: true
  *         description: Order ID
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               status:
- *                 type: string
- *                 enum: [Pending, Shipped, Delivered, Cancelled]
  *     responses:
  *       200:
- *         description: Order status updated successfully
+ *         description: Order status updated to Pending
  */
-router.patch("/orders/:orderId", updateOrderStatus);
+router.patch("/orders/:orderId/pending", updateOrderToPending);
+
+/**
+ * @swagger
+ * /api/orders/{orderId}/processing:
+ *   patch:
+ *     summary: Update order status to Processing
+ *     tags: [Orders]
+ *     parameters:
+ *       - in: path
+ *         name: orderId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Order ID
+ *     responses:
+ *       200:
+ *         description: Order status updated to Processing
+ */
+router.patch("/orders/:orderId/processing", updateOrderToProcessing);
+
+/**
+ * @swagger
+ * /api/orders/{orderId}/shipped:
+ *   patch:
+ *     summary: Update order status to Shipped
+ *     tags: [Orders]
+ *     parameters:
+ *       - in: path
+ *         name: orderId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Order ID
+ *     responses:
+ *       200:
+ *         description: Order status updated to Shipped
+ */
+router.patch("/orders/:orderId/shipped", updateOrderToShipped);
+
+/**
+ * @swagger
+ * /api/orders/{orderId}/delivered:
+ *   patch:
+ *     summary: Update order status to Delivered
+ *     tags: [Orders]
+ *     parameters:
+ *       - in: path
+ *         name: orderId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Order ID
+ *     responses:
+ *       200:
+ *         description: Order status updated to Delivered
+ */
+router.patch("/orders/:orderId/delivered", updateOrderToDelivered);
+
+/**
+ * @swagger
+ * /api/orders/{orderId}/cancelled:
+ *   patch:
+ *     summary: Update order status to Cancelled
+ *     tags: [Orders]
+ *     parameters:
+ *       - in: path
+ *         name: orderId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Order ID
+ *     responses:
+ *       200:
+ *         description: Order status updated to Cancelled
+ */
+router.patch("/orders/:orderId/cancelled", updateOrderToCancelled);
 
 /**
  * @swagger
