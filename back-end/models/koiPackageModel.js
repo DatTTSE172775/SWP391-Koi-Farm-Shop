@@ -63,8 +63,22 @@ const deleteKoiPackage = async (packageId) => {
   }
 };
 
+const getKoiPackageById = async (packageId) => {
+  try {
+    const pool = await sql.connect();
+    const result = await pool.request()
+    .input("PackageID", sql.Int, packageId)
+    .query("SELECT * FROM KoiPackage WHERE PackageID = @PackageID");
+    return result.recordset[0];
+  } catch (err) {
+    console.error("Error fetching Koi Package:", err);
+    throw err;
+  }
+};
+
 module.exports = {
   createKoiPackage,
   getAllKoiPackages,
   deleteKoiPackage,
+  getKoiPackageById,
 };

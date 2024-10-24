@@ -44,6 +44,7 @@ const {
   createKoiPackage,
   getAllKoiPackages,
   deleteKoiPackage,
+  getKoiPackageById,
 } = require("../controllers/koiPackageController");
 const {
   createKoiConsignment,
@@ -842,5 +843,7 @@ router.get("/varieties", getAllVarieties);
 router.post("/addKoiPackageVariety", addKoiPackageVariety);
 
 router.get("/orders/:orderId/details", getOrderDetails);
+
+router.get("/koipackage/:packageId", getKoiPackageById);
 
 module.exports = router;

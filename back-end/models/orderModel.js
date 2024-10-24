@@ -33,12 +33,14 @@ exports.createOrder = async (
       await transaction.request()
         .input('orderId', sql.Int, orderId)
         .input('productId', sql.Int, item.productId)
+        .input('packageId', sql.Int, item.packageId)
         .input('quantity', sql.Int, item.quantity)
-        .input('unitPrice', sql.Decimal(10, 2), item.price)
-        .input('totalPrice', sql.Decimal(10, 2), item.price * item.quantity)
+        .input('unitPrice', sql.Decimal(10, 2), item.unitPrice)
+        .input('totalPrice', sql.Decimal(10, 2), item.totalPrice)
+        .input('productType', sql.VarChar(50), item.productType)
         .query(`
-          INSERT INTO OrderDetails (OrderID, ProductID, Quantity, UnitPrice, TotalPrice, ProductType)
-          VALUES (@orderId, @productId, @quantity, @unitPrice, @totalPrice, 'Single Fish')
+          INSERT INTO OrderDetails (OrderID, ProductID, PackageID, Quantity, UnitPrice, TotalPrice, ProductType)
+          VALUES (@orderId, @productId, @packageId, @quantity, @unitPrice, @totalPrice, @productType)
         `);
     }
 
@@ -55,9 +57,21 @@ exports.createOrder = async (
 exports.getOrderDetails = async (orderId) => {
   try {
     const result = await sql.query`
-      SELECT k.Name, od.Quantity
+      SELECT 
+        od.Quantity,
+        CASE 
+          WHEN od.ProductType = 'Single Fish' THEN k.Name
+          WHEN od.ProductType = 'Package' THEN kp.PackageName
+          ELSE NULL
+        END AS ProductName,
+        CASE 
+          WHEN od.ProductType = 'Single Fish' THEN k.Size
+          WHEN od.ProductType = 'Package' THEN kp.PackageSize
+          ELSE NULL
+        END AS Size
       FROM OrderDetails od
-      JOIN KoiFish k ON od.ProductID = k.KoiID
+      LEFT JOIN KoiFish k ON od.ProductID = k.KoiID
+      LEFT JOIN KoiPackage kp ON od.PackageID = kp.PackageID
       WHERE od.OrderID = ${orderId}
     `;
     return result.recordset;

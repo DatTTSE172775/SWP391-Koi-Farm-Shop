@@ -55,9 +55,9 @@ const KoiCard = ({ koifish, isAuthenticated }) => {
         name: koifish.Name,
         price: koifish.Price,
         image: koifish.ImagesLink,
-        origin: koifish.Origin,
         size: koifish.Size,
         weight: koifish.Weight,
+        type: 'koi'
       };
       handleAddToCart(koi); // Call handleAddToCart properly
     }

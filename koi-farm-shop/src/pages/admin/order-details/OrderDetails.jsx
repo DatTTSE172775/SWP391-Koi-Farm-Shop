@@ -140,7 +140,7 @@ const OrderDetails = () => {
                   dataSource={orderDetails}
                   renderItem={item => (
                     <List.Item>
-                      {item.Name} - Số lượng: {item.Quantity}
+                      {item.ProductName} - Số lượng: {item.Quantity}
                     </List.Item>
                   )}
                 />

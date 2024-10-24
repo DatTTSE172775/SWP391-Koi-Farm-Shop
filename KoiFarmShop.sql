@@ -10,8 +10,8 @@ CREATE TABLE Users (
     SubscriptionStatus VARCHAR(50) CHECK (SubscriptionStatus IN ('Active', 'Inactive')) NOT NULL
 );
 
-select * from Users
-select * from Orders
+--select * from Users
+--select * from Orders
 
 CREATE TABLE Customers (
     CustomerID INT IDENTITY(1,1) PRIMARY KEY,
@@ -24,7 +24,7 @@ CREATE TABLE Customers (
     FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
 
-select * from Customers
+--select * from Customers
 
 CREATE TABLE Varieties (
     VarietyID INT IDENTITY(1,1) PRIMARY KEY,
@@ -302,7 +302,7 @@ INSERT INTO Users (Username, PasswordHash, Role, SubscriptionStatus) VALUES
 ('MinhKiet', '20', 'Customer', 'Active');
 --delete from Users
 --DBCC CHECKIDENT ('Users', RESEED, 0);
-select * from Users
+--select * from Users
 
 INSERT INTO Customers (UserID, FullName, Email, PhoneNumber, Address, LoyaltyPoints) VALUES
 (7, 'Nguyễn Thị Tuyết Hương', 'nguyenthituyethuong10.1@gmail.com', '0799670750', '123 Lê Lợi, Quận 1, TP.HCM', 100),
