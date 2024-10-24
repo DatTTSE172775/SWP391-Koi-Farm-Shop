@@ -3,6 +3,7 @@ import {
   SettingOutlined,
   ShoppingOutlined,
   UserOutlined,
+  PlusOutlined,
 } from "@ant-design/icons";
 import { ContrastOutlined, HomeMiniOutlined } from "@mui/icons-material";
 import { Layout, Menu } from "antd";
@@ -11,6 +12,7 @@ import { Link } from "react-router-dom";
 import "./AdminSidebar.scss";
 
 const { Sider } = Layout;
+const { SubMenu } = Menu;
 
 const AdminSidebar = () => {
   return (
@@ -25,6 +27,14 @@ const AdminSidebar = () => {
         <Menu.Item key="dashboard" icon={<DashboardOutlined />}>
           <Link to="/dashboard">Dashboard</Link>
         </Menu.Item>
+        <SubMenu key="add-product" icon={<PlusOutlined />} title="Quản Lý Cá Koi">
+          <Menu.Item key="add-koi">
+            <Link to="/admin/AddKoi">Cá Koi</Link>
+          </Menu.Item>
+          <Menu.Item key="AddPackage">
+            <Link to="/admin/AddPackage">Gói cá Koi</Link>
+          </Menu.Item>
+        </SubMenu>
         <Menu.Item key="orders" icon={<ShoppingOutlined />}>
           <Link to="/admin/manage-orders">Quản lý đơn hàng</Link>
         </Menu.Item>

@@ -1,4 +1,4 @@
-import { ShoppingCartOutlined, UserOutlined } from "@ant-design/icons";
+import { BellOutlined, ShoppingCartOutlined, UserOutlined } from "@ant-design/icons";
 import { Avatar, Badge, Button, Dropdown, Menu } from "antd";
 import React, { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,6 +7,7 @@ import { logout } from "../../store/actions/authActions";
 import { CartContext } from "../order/cart-context/CartContext";
 import "./Navigation.scss";
 
+
 const { SubMenu } = Menu;
 
 const Navigation = () => {
@@ -14,6 +15,10 @@ const Navigation = () => {
   const dispatch = useDispatch();
 
   const [current, setCurrent] = useState("home");
+  
+  // New state for scroll direction
+  const [scrollDirection, setScrollDirection] = useState("up");
+  const [prevScrollPos, setPrevScrollPos] = useState(window.pageYOffset);
 
   const { cartItems } = useContext(CartContext);
 
@@ -52,6 +57,21 @@ const Navigation = () => {
     }
   }, [location.pathname]);
 
+  // Track scroll direction to show/hide navigation
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollPos = window.pageYOffset;
+      const direction = prevScrollPos > currentScrollPos ? "up" : "down";
+      setScrollDirection(direction);
+      setPrevScrollPos(currentScrollPos);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [prevScrollPos]);
+
   const handleClick = (e) => {
     setCurrent(e.key);
   };
@@ -65,20 +85,24 @@ const Navigation = () => {
   };
 
   // Menu cho Dropdown khi click vào avatar
-  const accountMenu = (
-    <Menu>
-      <Menu.Item key="view-info">
-        <Link to="/account">Xem Thông Tin</Link>
-      </Menu.Item>
-      <Menu.Divider />
-      <Menu.Item key="logout" onClick={handleLogout}>
-        Đăng xuất
-      </Menu.Item>
-    </Menu>
-  );
+const accountMenu = (
+  <Menu>
+    <Menu.Item key="view-info">
+      <Link to="/account">Xem Thông Tin</Link>
+    </Menu.Item>
+    <Menu.Item key="order-history">
+      <Link to="/order-history">Lịch sử đơn hàng</Link>
+    </Menu.Item>
+    <Menu.Divider />
+    <Menu.Item key="logout" onClick={handleLogout}>
+      Đăng xuất
+    </Menu.Item>
+  </Menu>
+);
+
 
   return (
-    <div className="navigation">
+    <div className={`navigation ${scrollDirection === "down" ? "hide" : ""}`}>
       {/* Logo */}
       <div className="logo">
         <Link to="/home">
@@ -196,6 +220,12 @@ const Navigation = () => {
 
       {/* Icons bên phải */}
       <div className="nav-icons">
+        {/* Chuông thông báo chỉ hiển thị khi đã đăng nhập */}
+  {isAuthenticated && (
+    <Badge count={5} offset={[10, 0]} showZero>
+      <BellOutlined className="notification-bell" />
+    </Badge>
+  )}
         {isAuthenticated ? (
           <>
             <Dropdown

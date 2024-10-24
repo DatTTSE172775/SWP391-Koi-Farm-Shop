@@ -10,6 +10,7 @@ import {
 import Loading from "./components/loading/Loading";
 import CartProvider from "./components/order/cart-context/CartContext";
 // main layout
+import ChangePassword from "./pages/account/change-password/ChangePassword";
 import OrderDetails from "./pages/admin/order-details/OrderDetails";
 import OrdersManagement from "./pages/admin/orderManagement/OrdersManagement";
 import WelcomeAdmin from "./pages/admin/welcome/WelcomeAdmin";
@@ -17,7 +18,11 @@ import MainLayout from "./pages/MainLayout";
 import NotFound from "./pages/notfound/NotFound";
 import WelcomeStaff from "./pages/staff/layout/WelcomeStaff";
 import StaffOrderManage from "./pages/staff/order-manage/StaffOrderManage";
-
+import AddKoi from "./pages/admin/addProduct/AddKoi";
+import AddPackage from "./pages/admin/addProduct/AddPackage";
+import UpdateKoi from "./pages/admin/updateProduct/updateKoi";
+import DeleteKoi from "./pages/admin/deleteProduct/deleteKoi";
+import DeleteKoiPackage from "./pages/admin/deleteProduct/deleteKoiPackage";
 // auth page
 const ForgetPassword = lazy(() =>
   import("./components/auth/forget-password/ForgetPassWord")
@@ -48,7 +53,12 @@ const KoiListPage = lazy(() =>
 const KoiBreeders = lazy(() =>
   import("./pages/koi-fish/koi-breeders/KoiBreeders")
 );
-
+const HighQualityKoi = lazy(() =>
+  import("./components/koiFish/high-quality-koi/HighQualityKoi")
+);
+const KoiCollection = lazy(() =>
+  import("./components/koiFish/koi-collection/KoiCollection")
+);
 // product page
 const KoiFeed = lazy(() => import("./components/product/koiFeed/KoiFeed"));
 const PondAccessories = lazy(() =>
@@ -66,6 +76,11 @@ const OrderSuccess = lazy(() =>
 );
 const Cart = lazy(() => import("./pages/order/cart/CartPage"));
 
+// customer page
+const WelcomeAccount = lazy(() =>
+  import("./pages/account/welcome/WelcomeAccount")
+);
+
 function App() {
   return (
     <CartProvider>
@@ -78,12 +93,15 @@ function App() {
               <Route path="home" element={<HomePage />} />
               <Route path="about" element={<About />} />
               <Route path="guide" element={<Guide />} />
+              <Route path="change-password" element={<ChangePassword />} />
 
               {/* Koi Routes */}
               <Route path="koi-list" element={<KoiListPage />} />
               <Route path="koiDetail/:id" element={<KoiDetail />} />
               <Route path="koi-breeders" element={<KoiBreeders />} />
               <Route path="koi-package" element={<KoiPackage />} />
+              <Route path="koi-high-quality" element={<HighQualityKoi />} />
+              <Route path="koi-collection" element={<KoiCollection />} />
 
               {/* Product Routes */}
               <Route path="product" element={<ProductPage />}>
@@ -118,6 +136,11 @@ function App() {
               path="/admin/manage-orders/:orderId"
               element={<OrderDetails />}
             />
+            <Route path="/admin/AddKoi" element={<AddKoi />} />
+            <Route path="/admin/AddPackage" element={<AddPackage />} />
+            <Route path="/admin/updateKoi" element={<UpdateKoi />} />
+            <Route path="/admin/deleteKoi" element={<DeleteKoi />} />
+            <Route path="/admin/deletePackage" element={<DeleteKoiPackage />} />
             {/* <Route
               path="/admin/manage-consign"
               element={<ManagerConsignmentPage />}
@@ -130,6 +153,9 @@ function App() {
             {/* Staff Routes */}
             <Route path="/staff" element={<WelcomeStaff />} />
             <Route path="/staff/orders" element={<StaffOrderManage />} />
+
+            {/* Customer Routes */}
+            <Route path="/account" element={<WelcomeAccount />} />
 
             {/* Fallback Route */}
             <Route path="*" element={<NotFound />} />

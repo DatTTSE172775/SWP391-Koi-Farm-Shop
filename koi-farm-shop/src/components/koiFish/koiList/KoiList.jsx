@@ -5,32 +5,8 @@ import KoiCard from "../koiCard/KoiCard";
 import "./KoiList.scss";
 
 const KoiList = ({ koiFish, isAuthenticated }) => {
-  // const [searchTerms, setSearchTerms] = useState("");
-
-  // useEffect(() => {
-  //   console.log("KoiList received koiFish:", koiFish);
-  //   koiFish.forEach((koi, index) => {
-  //     console.log(`Koi ${index}:`, koi);
-  //     console.log(`Koi ${index} ImagesLink:`, koi.ImagesLink);
-  //   });
-  // }, [koiFish]);
-
-  // const handleSearch = (searchValue) => {
-  //   setSearchTerms(searchValue);
-  // };
-
-  // const filteredKoiList = useMemo(() => {
-  //   const filtered = koiFish.filter((koi) => {
-  //     const matchesSearch = koi.Name.toLowerCase().includes(searchTerms.toLowerCase());
-  //     return matchesSearch;
-  //   });
-  //   console.log("Filtered koi list:", filtered);
-  //   return filtered;
-  // }, [koiFish, searchTerms]);
-
   return (
     <div className="koi-list">
-      <h1>-------------</h1>
       <KoiListHeader />
       {/* Tạm thời bỏ KoiSearch */}
       {/* <KoiSearch onSearch={handleSearch} /> */}

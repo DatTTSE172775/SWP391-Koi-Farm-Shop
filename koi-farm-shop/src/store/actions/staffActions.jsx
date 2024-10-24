@@ -26,10 +26,8 @@ export const fetchStaff = () => async (dispatch) => {
 
   try {
     const response = await axiosInstance.get("/staff");
-    console.log("Staff fetched successfully:", response.data); // Debug log
     dispatch(fetchStaffSuccess(response.data));
   } catch (error) {
-    console.error("Failed to fetch staff:", error);
     dispatch(fetchStaffFailure(error.message || "Failed to fetch staff"));
   }
 };

@@ -12,13 +12,15 @@ import {
   Spin,
   Tag,
   Typography,
-  message,
 } from "antd";
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../../../api/axiosInstance";
 import AdminHeader from "../../../components/admin/header/AdminHeader";
 import AdminSidebar from "../../../components/admin/sidebar/AdminSidebar";
+import { assignOrder } from "../../../store/actions/orderActions";
+import { fetchStaff } from "../../../store/actions/staffActions";
 import "./OrderDetails.scss";
 
 const { Content } = Layout;
@@ -34,22 +36,30 @@ const statusColors = {
 };
 
 const OrderDetails = () => {
-  const { orderId } = useParams();
+  const { orderId } = useParams(); // Get the order ID from route params
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const [order, setOrder] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [assignee, setAssignee] = useState("");
-  const [staffList, setStaffList] = useState([]);
+  const [order, setOrder] = useState(null); // Order details state
+  const [loading, setLoading] = useState(true); // Loading state
+  const [error, setError] = useState(null); // Error state
+  const [assignee, setAssignee] = useState(""); // Selected assignee
+  const { staff } = useSelector((state) => state.staff); // Get staff from Redux
 
   // Fetch order details from the API
   useEffect(() => {
     const fetchOrderDetails = async () => {
       try {
         const response = await axiosInstance.get(`/orders/${orderId}`);
+        console.log("Order Details Response:", response.data);
         setOrder(response.data);
-        setAssignee(response.data.assignedTo || "Chưa giao");
+
+        // Set assignee based on the UserID
+        const assignedStaff = staff.find(
+          (member) => member.UserID === response.data.UserID
+        );
+        setAssignee(assignedStaff ? assignedStaff.Username : "Chưa giao");
+
         setLoading(false);
       } catch (err) {
         console.error("Failed to fetch order:", err);
@@ -59,26 +69,26 @@ const OrderDetails = () => {
     };
 
     fetchOrderDetails();
-  }, [orderId]);
+  }, [orderId, staff]);
 
-  // Fetch staff list from the API
+  // Fetch staff list when component mounts
   useEffect(() => {
-    const fetchStaff = async () => {
-      try {
-        const response = await axiosInstance.get("/staff");
-        setStaffList(response.data);
-      } catch (err) {
-        console.error("Failed to fetch staff:", err);
-        message.error("Không thể lấy danh sách nhân viên.");
-      }
-    };
+    dispatch(fetchStaff());
+  }, [dispatch]);
 
-    fetchStaff();
-  }, []);
+  // Handle assigning order to a staff member
+  const handleAssign = async (userId) => {
+    const assignedStaff = staff.find((member) => member.UserID === userId);
+    const username = assignedStaff ? assignedStaff.Username : "Chưa giao";
 
-  const handleAssigneeChange = (value) => {
-    setAssignee(value);
-    message.success(`Đã giao đơn hàng cho ${value}`);
+    dispatch(assignOrder(orderId, userId, username));
+
+    // Update local state to reflect changes immediately
+    setAssignee(username);
+    setOrder((prevOrder) => ({
+      ...prevOrder,
+      UserID: userId,
+    }));
   };
 
   if (loading) {
@@ -131,12 +141,12 @@ const OrderDetails = () => {
                 {order.OrderStatus === "Pending" ? (
                   <Select
                     value={assignee}
-                    onChange={handleAssigneeChange}
+                    onChange={(userId) => handleAssign(userId)}
                     style={{ width: "100%" }}
                   >
-                    {staffList.map((staff) => (
-                      <Option key={staff.UserID} value={staff.Username}>
-                        {staff.Username}
+                    {staff.map((member) => (
+                      <Option key={member.UserID} value={member.UserID}>
+                        {member.Username}
                       </Option>
                     ))}
                   </Select>

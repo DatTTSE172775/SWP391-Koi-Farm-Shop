@@ -11,6 +11,9 @@ export const FETCH_ORDERS_FAILURE = "FETCH_ORDERS_FAILURE";
 export const ASSIGN_ORDER_REQUEST = "ASSIGN_ORDER_REQUEST";
 export const ASSIGN_ORDER_SUCCESS = "ASSIGN_ORDER_SUCCESS";
 export const ASSIGN_ORDER_FAILURE = "ASSIGN_ORDER_FAILURE";
+export const FETCH_ORDERS_BY_USER_REQUEST = "FETCH_ORDERS_BY_USER_REQUEST";
+export const FETCH_ORDERS_BY_USER_SUCCESS = "FETCH_ORDERS_BY_USER_SUCCESS";
+export const FETCH_ORDERS_BY_USER_FAILURE = "FETCH_ORDERS_BY_USER_FAILURE";
 
 // Action Creators
 const createOrderRequest = () => ({ type: CREATE_ORDER_REQUEST });
@@ -46,6 +49,20 @@ const assignOrderSuccess = (order) => ({
 
 const assignOrderFailure = (error) => ({
   type: ASSIGN_ORDER_FAILURE,
+  payload: error,
+});
+
+const fetchOrdersByUserRequest = () => ({
+  type: FETCH_ORDERS_BY_USER_REQUEST,
+});
+
+const fetchOrdersByUserSuccess = (orders) => ({
+  type: FETCH_ORDERS_BY_USER_SUCCESS,
+  payload: orders,
+});
+
+const fetchOrdersByUserFailure = (error) => ({
+  type: FETCH_ORDERS_BY_USER_FAILURE,
   payload: error,
 });
 
@@ -94,7 +111,6 @@ export const fetchOrders = () => async (dispatch) => {
     const response = await axiosInstance.get("/orders");
     dispatch(fetchOrdersSuccess(response.data));
   } catch (error) {
-    console.error("Failed to fetch orders:", error);
     dispatch(fetchOrdersFailure(error.message || "Failed to fetch orders"));
   }
 };
@@ -118,12 +134,30 @@ export const assignOrder = (orderId, userId, username) => async (dispatch) => {
       message: "Thành Công",
       description: `Đơn hàng ${orderId} đã được giao cho ${username}`,
     });
+    dispatch(fetchOrders());
   } catch (error) {
     dispatch(assignOrderFailure(error.message || "Giao đơn hàng thất bại"));
 
     notification.error({
       message: "Lỗi",
       description: "Không thể giao đơn hàng. Vui lòng thử lại.",
+    });
+  }
+};
+
+export const fetchOrdersByUser = (userId) => async (dispatch) => {
+  dispatch(fetchOrdersByUserRequest());
+  try {
+    const response = await axiosInstance.get(`/orders/user/${userId}`);
+    dispatch(fetchOrdersByUserSuccess(response.data));
+  } catch (error) {
+    dispatch(
+      fetchOrdersByUserFailure(error.message || "Error fetching orders")
+    );
+
+    notification.error({
+      message: "Lỗi",
+      description: "Không thể lấy danh sách đơn hàng cho nhân viên này.",
     });
   }
 };

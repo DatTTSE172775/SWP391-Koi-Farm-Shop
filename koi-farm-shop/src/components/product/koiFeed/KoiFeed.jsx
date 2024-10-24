@@ -8,8 +8,7 @@ import food4 from "../../../assets/koiFood/food-aquamasterStaple.jpg";
 import food5 from "../../../assets/koiFood/food-hikariColorEnhancer.jpg";
 import food6 from "../../../assets/koiFood/food-JPDShogun.jpg";
 import food7 from "../../../assets/koiFood/food-sakuraHighGrowth.jpg";
-import food8 from "../../../assets/koiFood/food-sakuraHighGrowth&Color.jpg"; 
-
+import food8 from "../../../assets/koiFood/food-sakuraHighGrowth&Color.jpg";
 
 const koiFoodSampleList = [
   {
@@ -94,23 +93,22 @@ const koiFoodSampleList = [
   },
 ];
 
+const KoiFeedHeader = () => (
+  <div className="koi-feed-header">
+    <h1>Koi Feed Products</h1>
+    <p>Give your koi the nutrition they need to thrive with our specially formulated koi food. Designed to promote optimal health, vibrant colors, and strong growth.</p>
+  </div>
+);
 
 const KoiFeed = () => {
   return (
     <div className="koi-feed-container">
-      <h1 className="koi-feed-title">Koi Feed Products</h1>
-      
-      <div className="guide">
-        <h2>Guide to Koi Feeding</h2>
-        <p>Give your koi the nutrition they need to thrive with our specially formulated koi food. Designed to promote optimal health, vibrant colors, and strong growth, our koi food blends high-quality ingredients to meet the dietary needs of koi at every stage of life.</p>
-      </div>
-
+      <KoiFeedHeader/>
       <div className="koi-feed-grid">
         {koiFoodSampleList.map((koi) => (
           <div key={koi.id} className="koi-card">
             <div className="koi-image-container">
               <img src={koi.image} alt={koi.name} className="koi-image" />
-              <button className="view-detail-button">View detail</button>
             </div>
             <div className="koi-info">
               <h3>{koi.name}</h3>

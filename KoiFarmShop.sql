@@ -111,7 +111,7 @@ ADD KoiType NVARCHAR(100),
 --use KoiFarmShop
 --select * from KoiConsignment;
 
---select * from Users;
+select * from Users;
 
 CREATE TABLE Promotions (
     PromotionID INT IDENTITY(1,1) PRIMARY KEY,

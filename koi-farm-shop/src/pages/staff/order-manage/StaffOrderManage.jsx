@@ -1,6 +1,7 @@
-import { Layout, Typography } from "antd";
+import { Layout, Spin, Typography, notification } from "antd";
 import { Content } from "antd/es/layout/layout";
 import { useEffect, useState } from "react";
+import axiosInstance from "../../../api/axiosInstance";
 import StaffHeader from "../../../components/staff/header/StaffHeader";
 import OrderItem from "../../../components/staff/order-item/OrderItem";
 import Sidebar from "../../../components/staff/sidebar/StaffSidebar";
@@ -10,96 +11,38 @@ const { Title } = Typography;
 
 const StaffOrderManage = () => {
   const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true); // Thêm trạng thái loading
+
+  const user = JSON.parse(localStorage.getItem("user")); // Lấy user từ localStorage
 
   useEffect(() => {
-    const assignedOrders = [
-      {
-        id: "ORD001",
-        productName: "Kohaku Koi",
-        date: "2024-10-01",
-        price: 2000000,
-        status: "Đang xử lý",
-      },
-      {
-        id: "ORD002",
-        productName: "Showa Koi",
-        date: "2024-10-03",
-        price: 1800000,
-        status: "Đang giao",
-      },
-      {
-        id: "ORD003",
-        productName: "Shiro Utsuri Koi",
-        date: "2024-10-04",
-        price: 1500000,
-        status: "Chưa xử lý",
-      },
-      {
-        id: "ORD004",
-        productName: "Hi Utsuri Koi",
-        date: "2024-10-05",
-        price: 2500000,
-        status: "Đang xử lý",
-      },
-      {
-        id: "ORD005",
-        productName: "Goshiki Koi",
-        date: "2024-10-06",
-        price: 3000000,
-        status: "Đã hoàn thành",
-      },
-      {
-        id: "ORD006",
-        productName: "Kujyaku Koi",
-        date: "2024-10-07",
-        price: 2200000,
-        status: "Đang giao",
-      },
-      {
-        id: "ORD007",
-        productName: "Butterfly Koi",
-        date: "2024-10-08",
-        price: 2800000,
-        status: "Đã hủy",
-      },
-      {
-        id: "ORD008",
-        productName: "Asagi Koi",
-        date: "2024-10-09",
-        price: 2100000,
-        status: "Đã hoàn thành",
-      },
-      {
-        id: "ORD009",
-        productName: "Tancho Koi",
-        date: "2024-10-10",
-        price: 2500000,
-        status: "Đang chờ",
-      },
-      {
-        id: "ORD010",
-        productName: "Doitsu Koi",
-        date: "2024-10-11",
-        price: 2300000,
-        status: "Đang xử lý",
-      },
-      {
-        id: "ORD011",
-        productName: "Ginrin Koi",
-        date: "2024-10-12",
-        price: 2900000,
-        status: "Đang giao",
-      },
-      {
-        id: "ORD012",
-        productName: "Kohaku Koi Premium",
-        date: "2024-10-13",
-        price: 3500000,
-        status: "Đã hoàn thành",
-      },
-    ];
-    setOrders(assignedOrders);
-  }, []);
+    const fetchOrdersByUser = async () => {
+      try {
+        if (user && user.UserID) {
+          const response = await axiosInstance.get(
+            `/orders/user/${user.UserID}`
+          );
+          setOrders(response.data); // Lưu danh sách đơn hàng vào state
+        } else {
+          throw new Error("Không tìm thấy thông tin nhân viên.");
+        }
+      } catch (error) {
+        console.error("Failed to fetch orders:", error);
+        notification.error({
+          message: "Lỗi",
+          description: "Không thể tải danh sách đơn hàng. Vui lòng thử lại.",
+        });
+      } finally {
+        setLoading(false); // Dừng trạng thái loading
+      }
+    };
+
+    fetchOrdersByUser();
+  }, [user]);
+
+  if (loading) {
+    return <Spin size="large" className="loading-spinner" />;
+  }
 
   return (
     <Layout className="staff-order-list">
@@ -109,13 +52,18 @@ const StaffOrderManage = () => {
         <Content className="staff-content">
           <Title level={2}>Quản lý đơn hàng</Title>
           <div className="orders-list">
-            {orders.map((order) => (
-              <OrderItem key={order.id} order={order} />
-            ))}
+            {orders.length > 0 ? (
+              orders.map((order) => (
+                <OrderItem key={order.orderId} order={order} />
+              ))
+            ) : (
+              <p>Không có đơn hàng nào được giao.</p>
+            )}
           </div>
         </Content>
       </Layout>
     </Layout>
   );
 };
+
 export default StaffOrderManage;

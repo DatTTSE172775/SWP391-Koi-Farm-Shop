@@ -8,16 +8,18 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
-  height: 80px; // Giảm chiều cao để tạo cảm giác hiện đại
+  height: 80px;
   background-color: #004d40; // Màu xanh ngọc ngà đậm
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+
+  &.hide {
+    transform: translateY(-100%);
+  }
 
   .logo {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    color: inherit;
 
     .logo-image {
       width: 60px;
@@ -74,6 +76,51 @@
   .nav-icons {
     display: flex;
     align-items: center;
+    gap: 20px; /* Khoảng cách giữa các biểu tượng */
+  
+    .notification-badge,
+    .cart-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  
+    .notification-bell {
+      font-size: 1.5rem;
+      color: #ffffff;
+      margin-right: 15px; /* Căn đều với giỏ hàng */
+      cursor: pointer;
+      transition: color 0.3s ease;
+  
+      &:hover {
+        color: #ff9800;
+      }
+    }
+  
+    .cart-link {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: #ffffff;
+      padding: 8px 12px;
+      border-radius: 4px;
+      transition: background-color 0.3s ease;
+  
+      .cart-icon {
+        font-size: 1.5rem;
+        margin-right: 8px;
+        color: #ffffff;
+      }
+  
+      &:hover {
+        background-color: #ff9800;
+  
+        .cart-icon {
+          color: #ffffff;
+        }
+      }
+    }
+  
 
     .account-dropdown {
       display: flex;
@@ -125,7 +172,7 @@
       }
 
       &:hover {
-        background-color: #ff9800; // Màu nền cam khi hover
+        background-color: #ff9800;
         color: #ffffff;
 
         .cart-icon,
@@ -133,7 +180,16 @@
           color: #ffffff;
         }
       }
+      .ant-badge {
+        display: flex;
+        align-items: center;
+    
+        .ant-badge-count {
+          background-color: #ff4d4f;
+          color: white;
+        }
     }
+  }
 
     .auth-buttons {
       display: flex;
@@ -146,8 +202,7 @@
         font-size: 1rem;
         border-radius: 20px;
         padding: 8px 20px;
-        transition: background-color 0.3s ease, border-color 0.3s ease,
-          color 0.3s ease;
+        transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
         border: 2px solid #ff9800;
       }
 
