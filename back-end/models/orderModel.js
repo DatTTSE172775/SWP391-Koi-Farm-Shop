@@ -15,12 +15,12 @@ exports.createOrder = async (
     await transaction.begin();
 
     // Insert into Orders table
-    const orderResult = await transaction.request()
-      .input('customerID', sql.Int, customerID)
-      .input('totalAmount', sql.Decimal(10, 2), totalAmount)
-      .input('shippingAddress', sql.NVarChar(sql.MAX), shippingAddress)
-      .input('paymentMethod', sql.NVarChar(50), paymentMethod)
-      .query(`
+    const orderResult = await transaction
+      .request()
+      .input("customerID", sql.Int, customerID)
+      .input("totalAmount", sql.Decimal(10, 2), totalAmount)
+      .input("shippingAddress", sql.NVarChar(sql.MAX), shippingAddress)
+      .input("paymentMethod", sql.NVarChar(50), paymentMethod).query(`
         INSERT INTO Orders (CustomerID, TotalAmount, ShippingAddress, PaymentMethod, OrderDate, OrderStatus)
         OUTPUT INSERTED.OrderID
         VALUES (@customerID, @totalAmount, @shippingAddress, @paymentMethod, GETDATE(), 'Pending')
@@ -30,12 +30,13 @@ exports.createOrder = async (
 
     // Insert into OrderDetails table
     for (const item of orderItems) {
-      await transaction.request()
-        .input('orderId', sql.Int, orderId)
-        .input('productId', sql.Int, item.productId)
-        .input('quantity', sql.Int, item.quantity)
-        .input('unitPrice', sql.Decimal(10, 2), item.price)
-        .input('totalPrice', sql.Decimal(10, 2), item.price * item.quantity)
+      await transaction
+        .request()
+        .input("orderId", sql.Int, orderId)
+        .input("productId", sql.Int, item.productId)
+        .input("quantity", sql.Int, item.quantity)
+        .input("unitPrice", sql.Decimal(10, 2), item.price)
+        .input("totalPrice", sql.Decimal(10, 2), item.price * item.quantity)
         .query(`
           INSERT INTO OrderDetails (OrderID, ProductID, Quantity, UnitPrice, TotalPrice, ProductType)
           VALUES (@orderId, @productId, @quantity, @unitPrice, @totalPrice, 'Single Fish')
@@ -81,13 +82,27 @@ exports.getOrdersByCustomerId = async (customerID) => {
 // Cập nhật trạng thái của đơn hàng
 exports.updateOrderStatus = async (orderId, status) => {
   try {
-    const result =
-      await sql.query`UPDATE Orders SET OrderStatus = ${status} WHERE OrderID = ${orderId}`;
+    const pool = await sql.connect(); // Kết nối với SQL Server
+
+    // Chạy câu lệnh cập nhật trạng thái đơn hàng
+    const result = await pool
+      .request()
+      .input("orderId", sql.Int, orderId)
+      .input("status", sql.VarChar(50), status).query(`
+        UPDATE Orders
+        SET OrderStatus = @status
+        WHERE OrderID = @orderId
+      `);
+
+    // Kiểm tra nếu không tìm thấy đơn hàng để cập nhật
     if (result.rowsAffected[0] === 0) {
-      return null; // No order was updated, likely because the orderId doesn't exist
+      return null; // Không tìm thấy đơn hàng
     }
-    return { orderId, status }; // Return the updated order information
+
+    // Trả về thông tin đơn hàng đã được cập nhật
+    return { orderId, status };
   } catch (error) {
+    console.error("Error updating order status:", error);
     throw new Error("Error updating order status");
   }
 };
@@ -111,7 +126,7 @@ exports.isUserStaff = async (userId) => {
     if (result.recordset.length === 0) {
       return false; // User not found
     }
-    return result.recordset[0].Role === 'Staff';
+    return result.recordset[0].Role === "Staff";
   } catch (error) {
     console.error("Error checking user role:", error);
     throw new Error("Error checking user role");
@@ -119,7 +134,7 @@ exports.isUserStaff = async (userId) => {
 };
 
 // Assign order to staff
-exports.assignOrderToStaff = async (orderId, userId) => { 
+exports.assignOrderToStaff = async (orderId, userId) => {
   try {
     const isStaff = await exports.isUserStaff(userId);
     if (!isStaff) {
@@ -148,7 +163,7 @@ exports.getOrderById = async (orderId) => {
 
     const result =
       await sql.query`SELECT * FROM Orders WHERE OrderID = ${orderId}`;
-      console.log("Query result:", result.recordset); // Log để kiểm tra kết quả truy vấn
+    console.log("Query result:", result.recordset); // Log để kiểm tra kết quả truy vấn
 
     if (result.recordset.length === 0) {
       return null; // Order not found
