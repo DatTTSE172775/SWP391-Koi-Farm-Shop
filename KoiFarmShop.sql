@@ -10,8 +10,8 @@ CREATE TABLE Users (
     SubscriptionStatus VARCHAR(50) CHECK (SubscriptionStatus IN ('Active', 'Inactive')) NOT NULL
 );
 
---select * from Users
---select * from Orders
+select * from Users
+select * from Orders
 
 CREATE TABLE Customers (
     CustomerID INT IDENTITY(1,1) PRIMARY KEY,
@@ -24,7 +24,7 @@ CREATE TABLE Customers (
     FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
 
---select * from Customers
+select * from Customers
 
 CREATE TABLE Varieties (
     VarietyID INT IDENTITY(1,1) PRIMARY KEY,
@@ -32,6 +32,8 @@ CREATE TABLE Varieties (
     Description VARCHAR(MAX),
     Origin VARCHAR(50) CHECK (Origin IN ('Japan', 'Vietnam', 'Other'))
 );
+
+select * from Varieties where VarietyID =1
 
 CREATE TABLE Breeders (
     BreederID INT IDENTITY(1,1) PRIMARY KEY,
@@ -65,7 +67,9 @@ CREATE TABLE KoiFish (
     FOREIGN KEY (BreederID) REFERENCES Breeders(BreederID)
 );
 
---select * from KoiFish where KoiID = 1
+select * from KoiFish
+select * from Breeders
+select * from Varieties
 
 
 CREATE TABLE KoiPackage (
@@ -80,7 +84,14 @@ CREATE TABLE KoiPackage (
     FOREIGN KEY (KoiID) REFERENCES KoiFish(KoiID)
 );
 
---SELECT * FROM KoiPackage
+SELECT * FROM KoiPackage WHERE PackageID = 7
+
+
+select * from KoiFish
+SELECT * FROM KoiPackage
+select * from KoiPackageVarieties
+select * from KoiPackageBreeders
+select * from Reviews
 
 CREATE TABLE KoiConsignment (
     ConsignmentID INT IDENTITY(1,1) PRIMARY KEY,
@@ -109,9 +120,9 @@ ADD KoiType NVARCHAR(100),
 
 
 --use KoiFarmShop
---select * from KoiConsignment;
+SELECT * FROM KoiConsignment
 
-select * from Users;
+--select * from Users;
 
 CREATE TABLE Promotions (
     PromotionID INT IDENTITY(1,1) PRIMARY KEY,
@@ -146,19 +157,36 @@ CREATE TABLE Orders (
     FOREIGN KEY (ConsignmentID) REFERENCES KoiConsignment(ConsignmentID),
     FOREIGN KEY (PromotionID) REFERENCES Promotions(PromotionID)
 );
+select * from KoiFish
+select * from Orders
+select * from Customers
+
+SELECT * FROM OrderDetails WHERE OrderID = 14
+
 
 CREATE TABLE OrderDetails (
     OrderDetailID INT IDENTITY(1,1) PRIMARY KEY,
     OrderID INT,
-    ProductID INT,
+    ProductID INT NULL,       -- For single koi fish
+    PackageID INT NULL,       -- For koi package
     Quantity INT,
     UnitPrice DECIMAL(10, 2),
     TotalPrice DECIMAL(10, 2),
     ProductType VARCHAR(50) CHECK (ProductType IN ('Single Fish', 'Package')),
     CertificateStatus VARCHAR(50) CHECK (CertificateStatus IN ('Issued', 'Not Issued')) DEFAULT 'Not Issued',
     FOREIGN KEY (OrderID) REFERENCES Orders(OrderID),
-    FOREIGN KEY (ProductID) REFERENCES KoiFish(KoiID)
+    FOREIGN KEY (ProductID) REFERENCES KoiFish(KoiID),
+    FOREIGN KEY (PackageID) REFERENCES KoiPackage(PackageID)
 );
+
+SELECT od.OrderDetailID, kp.PackageName, kp.PackageID
+FROM OrderDetails od
+JOIN KoiPackage kp ON od.PackageID = kp.PackageID
+WHERE od.OrderID = 14;
+
+select * from Orders
+
+select * from OrderDetails
 
 CREATE TABLE Payments (
     PaymentID INT IDENTITY(1,1) PRIMARY KEY,
@@ -259,6 +287,7 @@ CREATE TABLE KoiPackageVarieties (
     FOREIGN KEY (VarietyID) REFERENCES Varieties(VarietyID)
 );
 
+
 CREATE TABLE KoiPackageBreeders (
     PackageID INT,
     BreederID INT,
@@ -302,7 +331,7 @@ INSERT INTO Users (Username, PasswordHash, Role, SubscriptionStatus) VALUES
 ('MinhKiet', '20', 'Customer', 'Active');
 --delete from Users
 --DBCC CHECKIDENT ('Users', RESEED, 0);
---select * from Users
+select * from Users
 
 INSERT INTO Customers (UserID, FullName, Email, PhoneNumber, Address, LoyaltyPoints) VALUES
 (7, 'Nguyễn Thị Tuyết Hương', 'nguyenthituyethuong10.1@gmail.com', '0799670750', '123 Lê Lợi, Quận 1, TP.HCM', 100),
@@ -403,7 +432,8 @@ INSERT INTO Orders (CustomerID, OrderDate, TotalAmount, ShippingAddress, OrderSt
 --DBCC CHECKIDENT ('Orders', RESEED, 0);
 --select * from Orders
 
-INSERT INTO OrderDetails (OrderID, ProductID, Quantity, UnitPrice, TotalPrice, ProductType, CertificateStatus) VALUES
+INSERT INTO OrderDetails (OrderID, ProductID, Quantity, UnitPrice, TotalPrice, ProductType, CertificateStatus) 
+VALUES
 (1, 1, 1, 5000000, 5000000, 'Single Fish', 'Issued'),
 (2, 2, 1, 8000000, 8000000, 'Single Fish', 'Issued'),
 (3, 3, 1, 3500000, 3500000, 'Single Fish', 'Not Issued'),
@@ -414,7 +444,9 @@ INSERT INTO OrderDetails (OrderID, ProductID, Quantity, UnitPrice, TotalPrice, P
 (8, 8, 1, 9500000, 9500000, 'Single Fish', 'Issued'),
 (9, 9, 1, 5500000, 5500000, 'Single Fish', 'Issued'),
 (10, 10, 1, 8500000, 8500000, 'Single Fish', 'Issued');
---select * from OrderDetails
+
+select * from Orders
+select * from OrderDetails
 
 INSERT INTO Payments (OrderID, PaymentDate, PaymentMethod, PaymentStatus) VALUES
 (1, '2024-06-15 10:35:00', 'Credit Card', 'Completed'),
@@ -532,7 +564,7 @@ INSERT INTO Comments (PostID, UserID, CommentText, CommentDate, Status) VALUES
 INSERT INTO KoiPackageVarieties (PackageID, VarietyID) VALUES
 (3, 1), (4, 2),
 (5, 8), (6, 3),
-(7, 9), (8, 5);
+(1, 9), (2, 5);
 --(6, 3), (4, 6), (4, 7),
 --(7, 5), (5, 9);
 --(6, 6), (6, 7), (6, 8), (6, 10),
@@ -541,13 +573,13 @@ INSERT INTO KoiPackageVarieties (PackageID, VarietyID) VALUES
 --(9, 4), (9, 5), (9, 7),
 --(10, 10), (10, 3);
 
---select * from KoiPackageVarieties
---select * from KoiPackage
+select * from KoiPackageVarieties
+select * from KoiPackage
 
 INSERT INTO KoiPackageBreeders (PackageID, BreederID) VALUES
 (3, 1), (4, 2),
 (5, 2), (6, 3),
-(7, 4), (8, 9);
+(1, 4), (2, 9);
 --(4, 6), (4, 5), (4, 8),
 --(5, 9), (5, 4),
 --(2, 2), (2, 1),
@@ -581,4 +613,4 @@ INSERT INTO OrderHistory (OrderID, TrackingNumber, ShipmentDate, DeliveryDate, S
 (8, NULL, NULL, NULL, 'In Transit'),
 (9, 'VN369258147', '2025-02-11 09:45:00', '2025-02-13 14:15:00', 'Delivered'),
 (10, 'VN741852963', '2025-03-16 10:30:00', '2025-03-18 16:00:00', 'Delivered');
---select * from OrderHistory
+select * from OrderHistory
