@@ -1,38 +1,35 @@
-import React from "react";
+// DeliveredOrders.jsx
+import { Spin, notification } from "antd";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import OrderList from "../../../../components/staff/order/list/OrderList";
-
-const initialOrders = [
-  {
-    id: "ORD003",
-    status: "Delivered",
-    createdAt: "2023-10-15",
-    total: 1200000,
-    customerName: "Phạm Văn C",
-    phoneNumber: "0934567890",
-    address: "789 Đường DEF, Quận 3, TP.HCM",
-  },
-  {
-    id: "ORD003",
-    status: "Delivered",
-    createdAt: "2023-10-15",
-    total: 1200000,
-    customerName: "Phạm Văn C",
-    phoneNumber: "0934567890",
-    address: "789 Đường DEF, Quận 3, TP.HCM",
-  },
-  {
-    id: "ORD003",
-    status: "Delivered",
-    createdAt: "2023-10-15",
-    total: 1200000,
-    customerName: "Phạm Văn C",
-    phoneNumber: "0934567890",
-    address: "789 Đường DEF, Quận 3, TP.HCM",
-  },
-];
+import { fetchOrdersByUser } from "../../../../store/actions/orderActions";
 
 const DeliveredOrders = () => {
-  return <OrderList initialOrders={initialOrders} filterStatus="Delivered" />;
+  const dispatch = useDispatch();
+
+  const { orders, loading, error } = useSelector((state) => state.order);
+
+  useEffect(() => {
+    const userId = 3; // ID của nhân viên, giả sử thanhdat
+    dispatch(fetchOrdersByUser(userId));
+  }, [dispatch]);
+
+  if (loading) return <Spin tip="Đang tải đơn hàng..." />;
+  if (error) {
+    notification.error({
+      message: "Lỗi",
+      description: "Không thể tải đơn hàng.",
+    });
+    return <div>Error: {error}</div>;
+  }
+
+  // Lọc các đơn hàng có trạng thái "Delivered"
+  const deliveredOrders = orders.filter(
+    (order) => order.OrderStatus === "Delivered"
+  );
+
+  return <OrderList initialOrders={deliveredOrders} filterStatus="Delivered" />;
 };
 
 export default DeliveredOrders;

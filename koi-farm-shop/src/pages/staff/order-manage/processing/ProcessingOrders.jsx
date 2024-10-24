@@ -1,29 +1,38 @@
-// OrderPending.jsx
-import React from "react";
+import { Spin } from "antd";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import OrderList from "../../../../components/staff/order/list/OrderList";
+import { fetchOrdersByUser } from "../../../../store/actions/orderActions";
 
-const ordersData = [
-  {
-    id: "ORD001",
-    status: "Processing",
-    createdAt: "2023-10-10",
-    total: 500000,
-    customerName: "Nguyễn Văn A",
-    phoneNumber: "0123456789",
-    address: "123 Đường ABC, Quận 1, TP.HCM",
-  },
-  {
-    id: "ORD002",
-    status: "Processing",
-    createdAt: "2023-10-12",
-    total: 1500000,
-    customerName: "Trần Thị B",
-    phoneNumber: "0987654321",
-    address: "456 Đường XYZ, Quận 2, TP.HCM",
-  },
-];
 const OrderProcessing = () => {
-  return <OrderList initialOrders={ordersData} filterStatus="Processing" />;
+  const dispatch = useDispatch();
+
+  // Đảm bảo state orders được lấy đúng từ store
+  const {
+    orders = [],
+    loading,
+    error,
+  } = useSelector((state) => state.order || {});
+
+  useEffect(() => {
+    const userId = 3; // ID của nhân viên
+    dispatch(fetchOrdersByUser(userId));
+  }, [dispatch]);
+
+  console.log("Fetched Orders:", orders); // Kiểm tra dữ liệu lấy từ store
+
+  if (loading) return <Spin tip="Loading orders..." />;
+  if (error) return <div>Error: {error}</div>;
+
+  // Lọc các đơn hàng có trạng thái Processing
+  const processingOrders = orders.filter(
+    (order) => order.OrderStatus && order.OrderStatus === "Processing"
+  );
+  console.log("Filtered Processing Orders:", processingOrders); // Kiểm tra danh sách đơn hàng
+
+  return (
+    <OrderList initialOrders={processingOrders} filterStatus="Processing" />
+  );
 };
 
 export default OrderProcessing;

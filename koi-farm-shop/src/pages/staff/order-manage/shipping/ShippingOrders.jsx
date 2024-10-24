@@ -1,30 +1,36 @@
 // ShippedOrders.jsx
-import React from "react";
+import { Spin, notification } from "antd";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import OrderList from "../../../../components/staff/order/list/OrderList";
-
-const initialOrders = [
-  {
-    id: "ORD001",
-    status: "Shipped",
-    createdAt: "2023-10-10",
-    total: 500000,
-    customerName: "Nguyễn Văn A",
-    phoneNumber: "0123456789",
-    address: "123 Đường ABC, Quận 1, TP.HCM",
-  },
-  {
-    id: "ORD002",
-    status: "Shipped",
-    createdAt: "2023-10-12",
-    total: 1500000,
-    customerName: "Trần Thị B",
-    phoneNumber: "0987654321",
-    address: "456 Đường XYZ, Quận 2, TP.HCM",
-  },
-];
+import { fetchOrdersByUser } from "../../../../store/actions/orderActions";
 
 const ShippedOrders = () => {
-  return <OrderList initialOrders={initialOrders} filterStatus="Shipped" />;
+  const dispatch = useDispatch();
+
+  // Lấy dữ liệu từ store Redux
+  const { orders, loading, error } = useSelector((state) => state.order);
+
+  useEffect(() => {
+    const userId = 3; // ID của nhân viên, giả sử là thanhdat
+    dispatch(fetchOrdersByUser(userId));
+  }, [dispatch]);
+
+  if (loading) return <Spin tip="Đang tải đơn hàng..." />;
+  if (error) {
+    notification.error({
+      message: "Lỗi",
+      description: "Không thể tải đơn hàng.",
+    });
+    return <div>Error: {error}</div>;
+  }
+
+  // Lọc các đơn hàng với trạng thái "Shipped"
+  const shippedOrders = orders.filter(
+    (order) => order.OrderStatus === "Shipped"
+  );
+
+  return <OrderList initialOrders={shippedOrders} filterStatus="Shipped" />;
 };
 
 export default ShippedOrders;
