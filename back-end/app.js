@@ -5,6 +5,8 @@ const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const cors = require('cors');
 const orderRoutes = require('./routes/orderRoutes'); // Import orderRoutes
+const consignmentRoutes = require('./routes/consignmentRoutes'); // Import consignmentRoutes
+
 const app = express();
 
 // Cấu hình CORS
@@ -19,7 +21,7 @@ app.use(cors({
 app.use(express.json());
 
 // Kết nối cơ sở dữ liệu
-connectDB();
+connectDB().catch(err => console.error('Database connection failed:', err));
 
 // Cấu hình Swagger
 const swaggerOptions = {
@@ -58,11 +60,20 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use('/api', routes);
 
 // Sử dụng route cho order
-app.use('/api/orders', orderRoutes); // Thêm route cho order
+app.use('/api/orders', orderRoutes);
+
+// Thêm route cho consignment
+app.use('/api/consignments', consignmentRoutes);
 
 // Ví dụ về route login
 app.post('/api/auth/login', (req, res) => {
     res.json({ message: 'Login successful' });
+});
+
+// Middleware bắt lỗi chung
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send({ message: 'Internal Server Error' });
 });
 
 // Lắng nghe server

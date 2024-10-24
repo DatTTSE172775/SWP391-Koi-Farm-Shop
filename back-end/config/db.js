@@ -19,7 +19,9 @@ const connectDB = async () => {
     await sql.connect(dbConfig);        // Thực hiện kết nối
     console.log('Connected to SQL Server');
   } catch (err) {
-    console.error('SQL connection error:', err);  // In lỗi ra console nếu xảy ra lỗi
+    console.error('SQL connection error:', err.message);  // In lỗi ra console nếu xảy ra lỗi
+
+    process.exit(1); // Dừng ứng dụng nếu không kết nối được
   }
 };
 

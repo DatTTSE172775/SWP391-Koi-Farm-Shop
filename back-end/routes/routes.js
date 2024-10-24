@@ -9,7 +9,7 @@ const logoutUser = require("../controllers/userLogout");
 const changePassword = require("../controllers/changePassword");
 const forgotPassword = require("../controllers/forgotPassword");
 
-const koiConsignmentController = require("../controllers/koiConsignmentController");
+const consignmentController = require("../controllers/consignmentController");
 
 const {
   createKoiFish,
@@ -47,9 +47,11 @@ const {
   deleteKoiPackage,
 } = require("../controllers/koiPackageController");
 const {
-  createKoiConsignment,
-  getAllKoiConsignments,
-} = require("../controllers/koiConsignmentController");
+  createConsignment,
+  getAllConsignments,
+  getConsignmentById,
+  updateConsignmentStatus,
+} = require("../controllers/consignmentController");
 const {
   createBreeder,
   getAllBreeders,
@@ -783,7 +785,7 @@ router.delete("/koipackage/:packageId", authMiddleware, deleteKoiPackage);
 // Koi Consignment routes
 /**
  * @swagger
- * /api/koiconsignment:
+ * /api/Consignment:
  *   post:
  *     summary: Create a new Koi Consignment
  *     tags: [Koi Consignment]
@@ -793,14 +795,36 @@ router.delete("/koipackage/:packageId", authMiddleware, deleteKoiPackage);
  *         application/json:
  *           schema:
  *             type: object
+ *             properties:
+ *               customerID:
+ *                 type: integer
+ *               koiID:
+ *                 type: integer
+ *               consignmentType:
+ *                 type: string
+ *               consignmentMode:
+ *                 type: string
+ *               priceAgreed:
+ *                 type: number
+ *               notes:
+ *                 type: string
+ *               koiType:
+ *                 type: string
+ *               koiColor:
+ *                 type: string
+ *               koiAge:
+ *                 type: integer
+ *               koiSize:
+ *                 type: number
  *     responses:
  *       201:
  *         description: Koi Consignment created successfully
  */
-router.post('/createConsignment', authMiddleware, koiConsignmentController.createKoiConsignment);
+router.post('/createConsignment', authMiddleware, createConsignment);
+
 /**
  * @swagger
- * /api/koiconsignments:
+ * /api/Consignments:
  *   get:
  *     summary: Get all Koi Consignments
  *     tags: [Koi Consignment]
@@ -808,7 +832,65 @@ router.post('/createConsignment', authMiddleware, koiConsignmentController.creat
  *       200:
  *         description: List of all Koi Consignments
  */
-router.get("/koiconsignments", getAllKoiConsignments);
+router.get("/koiconsignments", getAllConsignments);
+
+/**
+ * @swagger
+ * /api/Consignment/{id}:
+ *   get:
+ *     summary: Get Koi Consignment details by ID
+ *     tags: [Koi Consignment]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: Koi Consignment ID
+ *     responses:
+ *       200:
+ *         description: Koi Consignment details
+ *       404:
+ *         description: Koi Consignment not found
+ *       500:
+ *         description: Server error
+ */
+router.get("/koiconsignment/:id", authMiddleware, getConsignmentById);
+
+/**
+ * @swagger
+ * /api/Consignment/{id}/status:
+ *   patch:
+ *     summary: Update Koi Consignment status
+ *     tags: [Koi Consignment]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The Koi Consignment ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 enum: [Pending, Approved, Rejected, Completed]
+ *     responses:
+ *       200:
+ *         description: Koi Consignment status updated successfully
+ *       400:
+ *         description: Invalid status
+ *       404:
+ *         description: Koi Consignment not found
+ *       500:
+ *         description: Server error
+ */
+router.patch("/koiconsignment/:id/status", authMiddleware, updateConsignmentStatus);
 
 // Breeders routes
 /**

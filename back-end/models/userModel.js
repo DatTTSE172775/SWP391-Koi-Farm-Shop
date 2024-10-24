@@ -27,9 +27,15 @@ const findUserByUsername = async (username) => {
         const result = await pool.request()
             .input('Username', sql.VarChar(255), username)
             .query('SELECT * FROM Users WHERE Username = @Username');
+
+            console.log('Query Result:', result.recordset); // Log kết quả truy vấn
+
+            if (result.recordset.length === 0) {
+                return null; // User not found
+            }
         return result.recordset[0];
     } catch (err) {
-        console.error('Error finding user by username:', err);
+        console.error('Error finding user by username:', err); // Log lỗi truy vấn
         throw err;
     }
 };

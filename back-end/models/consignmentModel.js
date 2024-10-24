@@ -27,24 +27,20 @@ exports.createConsignment = async (customerID, koiID, consignmentType, consignme
 // Cập nhật trạng thái ký gửi
 exports.updateConsignmentStatus = async (consignmentID, status) => {
   try {
-    await sql.query`UPDATE KoiConsignment SET Status = ${status} WHERE ConsignmentID = ${consignmentID}`;
+    const pool = await sql.connect();
+    await pool.request()
+      .input('ID', sql.Int, id)
+      .input('Status', sql.VarChar(50), status)
+      .query('UPDATE Consignments SET Status = @Status WHERE ID = @ID');
   } catch (error) {
-    throw new Error('Error updating consignment status');
+    console.error('Error updating consignment status:', err);
+    throw err;
   }
 };
 
-// Lấy thông tin ký gửi theo ID
-exports.getConsignmentById = async (consignmentID) => {
-  try {
-    const result = await sql.query`SELECT * FROM KoiConsignment WHERE ConsignmentID = ${consignmentID}`;
-    return result.recordset[0];
-  } catch (error) {
-    throw new Error('Error fetching consignment by ID');
-  }
-};
 
 // Get all consignments
-exports.findAll = async () => {
+exports.getAllConsignments = async () => {
   try {
     const result = await sql.query`SELECT * FROM KoiConsignment`;
     return result.recordset;
@@ -54,11 +50,19 @@ exports.findAll = async () => {
 };
 
 // Get consignment by ID
-exports.findByPk = async (consignmentID) => {
+exports.getConsignmentsById = async (id) => {
   try {
-    const result = await sql.query`SELECT * FROM KoiConsignment WHERE ConsignmentID = ${consignmentID}`;
+    const pool = await sql.connect(); // Kết nối SQL Server
+    const result = await pool.request()
+      .input('ID', sql.Int, id)
+      .query('SELECT * FROM KoiConsignment WHERE ConsignmentID = @ID'); // Query SQL
+
+    if (result.recordset.length === 0) {
+      return null; // Không tìm thấy consignment
+    }
     return result.recordset[0];
   } catch (error) {
-    throw new Error('Error fetching consignment by ID');
+    console.error("Error fetching consignment by ID:", error);
+    throw error;
   }
 };
