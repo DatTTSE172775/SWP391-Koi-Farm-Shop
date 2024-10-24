@@ -7,24 +7,26 @@ export const CartContext = createContext();
 const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
 
-  const handleAddToCart = (koi) => {
+  const handleAddToCart = (item) => {
     const updatedCartItems = [...cartItems];
-    const existingItem = updatedCartItems.find((item) => item.id === koi.id);
+    const existingItem = updatedCartItems.find((cartItem) => 
+      cartItem.id === item.id && cartItem.type === item.type
+    );
     if (existingItem) {
       existingItem.quantity += 1;
       existingItem.total = existingItem.quantity * existingItem.price;
     } else {
       updatedCartItems.push({
-        ...koi,
-        key: koi.id,
+        ...item,
+        key: `${item.type}-${item.id}`,
         quantity: 1,
-        total: koi.price,
+        total: item.price,
       });
     }
     setCartItems(updatedCartItems);
     notification.success({
       message: "Thêm giỏ hàng thành công",
-      description: `${koi.name} đã được thêm vào giỏ hàng.`,
+      description: `${item.name} đã được thêm vào giỏ hàng.`,
       placement: "bottomRight",
     });
   };

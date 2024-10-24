@@ -11,18 +11,18 @@ import Loading from "./components/loading/Loading";
 import CartProvider from "./components/order/cart-context/CartContext";
 // main layout
 import ChangePassword from "./pages/account/change-password/ChangePassword";
+import AddKoi from "./pages/admin/addProduct/AddKoi";
+import AddPackage from "./pages/admin/addProduct/AddPackage";
+import DeleteKoi from "./pages/admin/deleteProduct/deleteKoi";
+import DeleteKoiPackage from "./pages/admin/deleteProduct/deleteKoiPackage";
 import OrderDetails from "./pages/admin/order-details/OrderDetails";
 import OrdersManagement from "./pages/admin/orderManagement/OrdersManagement";
+import UpdateKoi from "./pages/admin/updateProduct/updateKoi";
 import WelcomeAdmin from "./pages/admin/welcome/WelcomeAdmin";
 import MainLayout from "./pages/MainLayout";
 import NotFound from "./pages/notfound/NotFound";
-import WelcomeStaff from "./pages/staff/layout/WelcomeStaff";
-import StaffOrderManage from "./pages/staff/order-manage/StaffOrderManage";
-import AddKoi from "./pages/admin/addProduct/AddKoi";
-import AddPackage from "./pages/admin/addProduct/AddPackage";
-import UpdateKoi from "./pages/admin/updateProduct/updateKoi";
-import DeleteKoi from "./pages/admin/deleteProduct/deleteKoi";
-import DeleteKoiPackage from "./pages/admin/deleteProduct/deleteKoiPackage";
+import staffRoutes from "./routes/StaffRoutes";
+
 // auth page
 const ForgetPassword = lazy(() =>
   import("./components/auth/forget-password/ForgetPassWord")
@@ -144,15 +144,10 @@ function App() {
             {/* <Route
               path="/admin/manage-consign"
               element={<ManagerConsignmentPage />}
-            />
-            <Route
-              path="/admin/approval"
-              element={<ManagerConsignmentApprovalPage />}
             /> */}
 
             {/* Staff Routes */}
-            <Route path="/staff" element={<WelcomeStaff />} />
-            <Route path="/staff/orders" element={<StaffOrderManage />} />
+            {staffRoutes}
 
             {/* Customer Routes */}
             <Route path="/account" element={<WelcomeAccount />} />

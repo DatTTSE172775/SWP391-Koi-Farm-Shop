@@ -72,3 +72,13 @@ exports.deleteKoiPackage = async (req, res) => {
     });
   }
 };
+
+exports.getKoiPackageById = async (req, res) => {
+  try {
+    const { packageId } = req.params;
+    const result = await koiPackageModel.getKoiPackageById(packageId);
+    res.status(200).json({ message: "Koi Package retrieved successfully!", data: result });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching Koi Package", error: error.message });
+  }
+};

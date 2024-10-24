@@ -16,7 +16,7 @@ const getCustomerById = async (req, res) => {
     const { customerId } = req.params;
 
     try {
-        const customer = await Customer.getCustomerById(customerId);
+        const customer = await Customer.getCustomerById(customerId); //Gọi ở bên model nè
         if (!customer) {
             return res.status(404).json({ message: 'Customer not found.' });
         }

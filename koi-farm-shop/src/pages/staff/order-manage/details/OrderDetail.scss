@@ -1,0 +1,26 @@
+// OrderDetail.scss
+.order-detail-container {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.order-detail-card {
+  width: 100%;
+  max-width: 800px;
+  padding: 24px;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.detail-info,
+.detail-order-info,
+.order-products {
+  margin-bottom: 16px;
+}
+
+.detail-actions {
+  display: flex;
+  justify-content: flex-end;
+}

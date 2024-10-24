@@ -10,7 +10,7 @@ const KoiBreeders = () => {
   useEffect(() => {
     const fetchBreeders = async () => {
       try {
-        const response = await axiosPublic.get("breeders"); // Use GET request if applicable
+        const response = await axiosPublic.get("breeders"); // Use GET request 
         console.log(response); // Log the response to check the structure
         setBreeders(response.data); // Update state with fetched data (ensure it's an array)
       } catch (error) {

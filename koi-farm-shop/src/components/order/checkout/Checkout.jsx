@@ -77,11 +77,18 @@ const Checkout = () => {
       totalAmount: calculateTotal(),
       shippingAddress: values.address,
       paymentMethod: values.paymentMethod,
+      orderItems: cartItems.map(item => ({
+        productId: item.type === 'koi' ? item.id : null,
+        packageId: item.type === 'package' ? item.id : null,
+        quantity: item.quantity,
+        unitPrice: item.price,
+        totalPrice: item.total,
+        productType: item.type === 'koi' ? 'Single Fish' : 'Package'
+      }))
     };
 
     console.log("Creating order with:", orderData);
 
-    // Dispatch createOrder action
     dispatch(createOrder(orderData));
   };
 
@@ -180,11 +187,9 @@ const Checkout = () => {
           <Card title="Đơn Hàng Của Bạn" bordered={false}>
             <div className="order-summary">
               {cartItems.map((item) => (
-                <div key={item.id} className="order-item">
-                  <Text>{`${item.quantity}x ${item.name}`}</Text>
-                  <Text strong>{`${(
-                    item.price * item.quantity
-                  ).toLocaleString()} VND`}</Text>
+                <div key={item.key} className="order-item">
+                  <Text>{`${item.quantity}x ${item.name} (${item.type === 'koi' ? 'Single Fish' : 'Package'})`}</Text>
+                  <Text strong>{`${item.total.toLocaleString()} VND`}</Text>
                 </div>
               ))}
               <Divider />

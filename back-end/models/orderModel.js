@@ -5,18 +5,79 @@ exports.createOrder = async (
   customerID,
   totalAmount,
   shippingAddress,
-  paymentMethod
+  paymentMethod,
+  orderItems
 ) => {
+  const pool = await sql.connect();
+  const transaction = new sql.Transaction(pool);
+
   try {
-    const result = await sql.query`
-      INSERT INTO Orders (CustomerID, TotalAmount, ShippingAddress, PaymentMethod, OrderDate, OrderStatus)
-      OUTPUT INSERTED.*
-      VALUES (${customerID}, ${totalAmount}, ${shippingAddress}, ${paymentMethod}, GETDATE(), 'Pending')
-    `;
-    return result.recordset[0]; // Return the newly created order
+    await transaction.begin();
+
+    // Insert into Orders table
+    const orderResult = await transaction
+      .request()
+      .input("customerID", sql.Int, customerID)
+      .input("totalAmount", sql.Decimal(10, 2), totalAmount)
+      .input("shippingAddress", sql.NVarChar(sql.MAX), shippingAddress)
+      .input("paymentMethod", sql.NVarChar(50), paymentMethod).query(`
+        INSERT INTO Orders (CustomerID, TotalAmount, ShippingAddress, PaymentMethod, OrderDate, OrderStatus)
+        OUTPUT INSERTED.OrderID
+        VALUES (@customerID, @totalAmount, @shippingAddress, @paymentMethod, GETDATE(), 'Pending')
+      `);
+
+    const orderId = orderResult.recordset[0].OrderID;
+
+    // Insert into OrderDetails table
+    for (const item of orderItems) {
+      await transaction.request()
+        .input('orderId', sql.Int, orderId)
+        .input('productId', sql.Int, item.productId)
+        .input('packageId', sql.Int, item.packageId)
+        .input('quantity', sql.Int, item.quantity)
+        .input('unitPrice', sql.Decimal(10, 2), item.unitPrice)
+        .input('totalPrice', sql.Decimal(10, 2), item.totalPrice)
+        .input('productType', sql.VarChar(50), item.productType)
+        .query(`
+          INSERT INTO OrderDetails (OrderID, ProductID, PackageID, Quantity, UnitPrice, TotalPrice, ProductType)
+          VALUES (@orderId, @productId, @packageId, @quantity, @unitPrice, @totalPrice, @productType)
+        `);
+    }
+
+    await transaction.commit();
+
+    return { orderId, message: "Order created successfully" };
   } catch (error) {
+    await transaction.rollback();
     console.error("Error creating order:", error);
     throw new Error("Error creating order");
+  }
+};
+
+exports.getOrderDetails = async (orderId) => {
+  try {
+    const result = await sql.query`
+      SELECT 
+        od.Quantity,
+        CASE 
+          WHEN od.ProductType = 'Single Fish' THEN k.Name
+          WHEN od.ProductType = 'Package' THEN kp.PackageName
+          ELSE NULL
+        END AS ProductName,
+        CASE 
+          WHEN od.ProductType = 'Single Fish' THEN k.Size
+          WHEN od.ProductType = 'Package' THEN kp.PackageSize
+          ELSE NULL
+        END AS Size
+      FROM OrderDetails od
+      LEFT JOIN KoiFish k ON od.ProductID = k.KoiID
+      LEFT JOIN KoiPackage kp ON od.PackageID = kp.PackageID
+      WHERE od.OrderID = ${orderId}
+    `;
+    return result.recordset;
+  } catch (error) {
+    console.error("Error fetching order details:", error);
+    throw new Error("Error fetching order details");
   }
 };
 
@@ -34,13 +95,27 @@ exports.getOrdersByCustomerId = async (customerID) => {
 // Cập nhật trạng thái của đơn hàng
 exports.updateOrderStatus = async (orderId, status) => {
   try {
-    const result =
-      await sql.query`UPDATE Orders SET OrderStatus = ${status} WHERE OrderID = ${orderId}`;
+    const pool = await sql.connect(); // Kết nối với SQL Server
+
+    // Chạy câu lệnh cập nhật trạng thái đơn hàng
+    const result = await pool
+      .request()
+      .input("orderId", sql.Int, orderId)
+      .input("status", sql.VarChar(50), status).query(`
+        UPDATE Orders
+        SET OrderStatus = @status
+        WHERE OrderID = @orderId
+      `);
+
+    // Kiểm tra nếu không tìm thấy đơn hàng để cập nhật
     if (result.rowsAffected[0] === 0) {
-      return null; // No order was updated, likely because the orderId doesn't exist
+      return null; // Không tìm thấy đơn hàng
     }
-    return { orderId, status }; // Return the updated order information
+
+    // Trả về thông tin đơn hàng đã được cập nhật
+    return { orderId, status };
   } catch (error) {
+    console.error("Error updating order status:", error);
     throw new Error("Error updating order status");
   }
 };
@@ -64,7 +139,7 @@ exports.isUserStaff = async (userId) => {
     if (result.recordset.length === 0) {
       return false; // User not found
     }
-    return result.recordset[0].Role === 'Staff';
+    return result.recordset[0].Role === "Staff";
   } catch (error) {
     console.error("Error checking user role:", error);
     throw new Error("Error checking user role");
@@ -72,7 +147,7 @@ exports.isUserStaff = async (userId) => {
 };
 
 // Assign order to staff
-exports.assignOrderToStaff = async (orderId, userId) => { 
+exports.assignOrderToStaff = async (orderId, userId) => {
   try {
     const isStaff = await exports.isUserStaff(userId);
     if (!isStaff) {
@@ -101,7 +176,7 @@ exports.getOrderById = async (orderId) => {
 
     const result =
       await sql.query`SELECT * FROM Orders WHERE OrderID = ${orderId}`;
-      console.log("Query result:", result.recordset); // Log để kiểm tra kết quả truy vấn
+    console.log("Query result:", result.recordset); // Log để kiểm tra kết quả truy vấn
 
     if (result.recordset.length === 0) {
       return null; // Order not found

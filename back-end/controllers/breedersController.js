@@ -20,13 +20,29 @@ exports.createBreeder = async (req, res) => {
 // Hàm lấy tất cả breeders
 exports.getAllBreeders = async (req, res) => {
   try {
-    const breeders = await breedersModel.getAllBreeders(); // Gọi model để lấy tất cả breeders
-    res.status(200).json({
-      message: "Breeders retrieved successfully!",
-      data: breeders, // Trả về danh sách breeders
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error." }); // Trả về lỗi server nếu có vấn đề
+      const breeders = await breedersModel.getAllBreeders();
+      res.status(200).json(breeders);
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ 
+          message: 'Error fetching Breeders',
+          error: error.message
+      });
+  }
+};
+
+exports.getBreederById = async (req, res) => {
+  try {
+      const breederId = req.params.breederId;
+      const result = await breedersModel.getBreederById(breederId);
+      res.status(200).json({
+          message: 'Breeder retrieved successfully!',
+          data: result
+      });
+  } catch (error) {
+      res.status(500).json({
+          message: 'Error fetching Breeder by ID',
+          error: error.message
+      });
   }
 };

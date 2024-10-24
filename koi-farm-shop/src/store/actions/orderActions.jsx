@@ -74,7 +74,6 @@ export const createOrder = (orderData) => async (dispatch) => {
     const username = localStorage.getItem("username");
     if (!username) throw new Error("Username not found in localStorage");
 
-    // Fetch customer details using username
     const customerResponse = await axiosInstance.get(
       `customers/username/${username}`
     );
@@ -82,21 +81,23 @@ export const createOrder = (orderData) => async (dispatch) => {
 
     console.log("Customer ID:", customerID);
 
-    // Prepare order data
     const payload = {
       customerID,
       totalAmount: orderData.totalAmount,
       shippingAddress: orderData.shippingAddress,
       paymentMethod: orderData.paymentMethod,
+      orderItems: orderData.orderItems,
     };
 
     console.log("Order payload:", payload);
 
-    // Send POST request to create an order
     const response = await axiosInstance.post("/orders", payload);
     console.log("Order created successfully:", response.data);
 
     dispatch(createOrderSuccess(response.data));
+
+    // Optionally, clear the cart here
+    // dispatch(clearCart());
   } catch (error) {
     console.error("Order creation failed:", error);
     dispatch(createOrderFailure(error.message || "Failed to create order"));
@@ -123,6 +124,8 @@ export const assignOrder = (orderId, userId, username) => async (dispatch) => {
       userId,
     });
 
+    await axiosInstance.patch(`/orders/${orderId}/processing`);
+
     dispatch(
       assignOrderSuccess({
         ...response.data.order,
@@ -146,18 +149,19 @@ export const assignOrder = (orderId, userId, username) => async (dispatch) => {
 };
 
 export const fetchOrdersByUser = (userId) => async (dispatch) => {
-  dispatch(fetchOrdersByUserRequest());
+  dispatch(fetchOrdersByUserRequest()); // Sử dụng biến đã khai báo
+
   try {
     const response = await axiosInstance.get(`/orders/user/${userId}`);
-    dispatch(fetchOrdersByUserSuccess(response.data));
-  } catch (error) {
-    dispatch(
-      fetchOrdersByUserFailure(error.message || "Error fetching orders")
-    );
+    console.log("API Response:", response.data); // Log để kiểm tra dữ liệu
 
+    dispatch(fetchOrdersByUserSuccess(response.data)); // Sử dụng biến đã khai báo
+  } catch (error) {
+    dispatch(fetchOrdersByUserFailure(error.message)); // Sử dụng biến đã khai báo
     notification.error({
       message: "Lỗi",
       description: "Không thể lấy danh sách đơn hàng cho nhân viên này.",
     });
   }
 };
+

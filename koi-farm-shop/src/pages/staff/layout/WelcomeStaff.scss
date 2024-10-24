@@ -1,17 +1,38 @@
-.staff-layout {
-  height: 100vh;
+/* WelcomeStaff.scss */
+.welcome-container {
+  padding: 24px;
+  background-color: #f0f2f5;
+  min-height: calc(100vh - 64px); /* Trừ chiều cao của header */
 
-  .staff-content {
-    padding: 20px;
-    background-color: #f0f2f5;
-    overflow-y: auto;
+  .welcome-message {
+    margin-bottom: 24px;
+    display: block;
+    font-size: 16px;
+    color: #595959;
   }
 
-  .welcome-container {
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  .stats-row {
+    margin-top: 24px;
+  }
+
+  .stat-card {
     text-align: center;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+
+    .stat-icon {
+      font-size: 48px;
+      color: #1890ff;
+      margin-bottom: 8px;
+    }
+  }
+
+  .action-buttons {
+    margin-top: 32px;
+    display: flex;
+    gap: 16px;
+    justify-content: center;
   }
 }

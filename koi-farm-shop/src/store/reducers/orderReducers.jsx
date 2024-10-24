@@ -5,6 +5,9 @@ import {
   CREATE_ORDER_FAILURE,
   CREATE_ORDER_REQUEST,
   CREATE_ORDER_SUCCESS,
+  FETCH_ORDERS_BY_USER_FAILURE,
+  FETCH_ORDERS_BY_USER_REQUEST,
+  FETCH_ORDERS_BY_USER_SUCCESS,
   FETCH_ORDERS_FAILURE,
   FETCH_ORDERS_REQUEST,
   FETCH_ORDERS_SUCCESS,
@@ -46,7 +49,11 @@ const orderReducer = (state = initialState, action) => {
         loading: false,
         orders: state.orders.map((order) =>
           order.OrderID === action.payload.OrderID
-            ? { ...order, assignedTo: action.payload.UserID }
+            ? {
+                ...order,
+                assignedTo: action.payload.UserID,
+                OrderStatus: "Processing",
+              }
             : order
         ),
       };
@@ -54,11 +61,13 @@ const orderReducer = (state = initialState, action) => {
     case ASSIGN_ORDER_FAILURE:
       return { ...state, loading: false, error: action.payload };
 
-    case "FETCH_ORDERS_BY_USER_REQUEST":
+    case FETCH_ORDERS_BY_USER_REQUEST:
       return { ...state, loading: true, error: null };
-    case "FETCH_ORDERS_BY_USER_SUCCESS":
+
+    case FETCH_ORDERS_BY_USER_SUCCESS:
       return { ...state, loading: false, orders: action.payload };
-    case "FETCH_ORDERS_BY_USER_FAILURE":
+
+    case FETCH_ORDERS_BY_USER_FAILURE:
       return { ...state, loading: false, error: action.payload };
 
     default:
