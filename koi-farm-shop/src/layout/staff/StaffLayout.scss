@@ -1,0 +1,52 @@
+/* StaffLayout.scss */
+
+/* Đảm bảo bố cục toàn màn hình */
+.staff-layout {
+  min-height: 100vh;
+  background-color: #f0f2f5;
+}
+
+.staff-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%; /* Header full width */
+  height: 64px;
+  background-color: #001529;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  z-index: 1000; /* Đảm bảo header luôn nằm trên các thành phần khác */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Container cho sidebar và content */
+.layout-container {
+  display: flex;
+  margin-top: 64px; /* Đẩy xuống dưới header */
+}
+
+/* Sidebar cố định bên trái */
+.staff-sidebar {
+  width: 220px;
+  min-height: calc(100vh - 64px); /* Trừ chiều cao của header */
+  background-color: #001529;
+  position: fixed;
+  top: 64px; /* Đẩy xuống bên dưới header */
+  left: 0;
+  overflow-y: auto;
+  z-index: 999;
+}
+
+/* Nội dung chính */
+.content-layout {
+  margin-left: 250px; /* Đẩy nội dung qua phải để chừa khoảng sidebar */
+  padding: 24px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  min-height: calc(100vh - 64px); /* Trừ chiều cao header */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: auto; /* Cuộn nếu nội dung quá lớn */
+}

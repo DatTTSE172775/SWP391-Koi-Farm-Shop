@@ -1,0 +1,13 @@
+/* OrderPending.scss */
+.order-pending-page {
+  padding: 24px;
+  background-color: #f0f2f5;
+  min-height: calc(100vh - 64px); /* Đảm bảo không che header */
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.order-pending-page h2 {
+  margin-bottom: 16px;
+  font-weight: bold;
+}

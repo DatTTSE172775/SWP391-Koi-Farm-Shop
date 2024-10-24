@@ -1,0 +1,25 @@
+/* OrderList.scss */
+.order-list-container {
+  padding: 24px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  min-height: calc(100vh - 128px);
+
+  .list-title {
+    text-align: center;
+    margin-bottom: 24px;
+    color: #1890ff;
+  }
+
+  .order-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 24px;
+  }
+
+  .empty-state {
+    margin-top: 50px;
+    text-align: center;
+  }
+}
