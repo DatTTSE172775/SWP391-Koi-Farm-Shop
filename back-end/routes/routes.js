@@ -47,8 +47,9 @@ const {
 const {
   createKoiPackage,
   getAllKoiPackages,
-  deleteKoiPackage,
   getKoiPackageById,
+  updateKoiPackageAvailability,
+  deleteKoiPackage,
 } = require("../controllers/koiPackageController");
 const {
   createConsignment,

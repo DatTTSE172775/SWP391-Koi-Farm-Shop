@@ -11,7 +11,7 @@ const getAllOrders = async (req, res) => {
     console.error(err);
     res.status(500).send({ message: "Server error." });
   }
-};
+};7
 
 // Create a new order
 const createOrder = async (req, res) => {

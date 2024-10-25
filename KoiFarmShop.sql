@@ -11,15 +11,14 @@ CREATE TABLE Users (
 );
 
 --select * from Users
---select * from Orders
 
 CREATE TABLE Customers (
     CustomerID INT IDENTITY(1,1) PRIMARY KEY,
     UserID INT,
-    FullName VARCHAR(255) NOT NULL,
+    FullName NVARCHAR(255) NOT NULL,
     Email VARCHAR(255) UNIQUE NOT NULL,
     PhoneNumber VARCHAR(20),
-    Address VARCHAR(MAX),
+    Address NVARCHAR(MAX),
     LoyaltyPoints INT DEFAULT 0,
     FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
@@ -28,23 +27,23 @@ CREATE TABLE Customers (
 
 CREATE TABLE Varieties (
     VarietyID INT IDENTITY(1,1) PRIMARY KEY,
-    VarietyName VARCHAR(255) NOT NULL,
-    Description VARCHAR(MAX),
-    Origin VARCHAR(50) CHECK (Origin IN ('Japan', 'Vietnam', 'Other'))
+    VarietyName NVARCHAR(255) NOT NULL,
+    Description NVARCHAR(MAX),
+    Origin NVARCHAR(50) CHECK (Origin IN ('Japan', 'Vietnam', 'Other'))
 );
 
 CREATE TABLE Breeders (
     BreederID INT IDENTITY(1,1) PRIMARY KEY,
-    Name VARCHAR(255) NOT NULL,
-    Address VARCHAR(MAX),
-    ContactInfo VARCHAR(255),
+    Name NVARCHAR(255) NOT NULL,
+    Address NVARCHAR(MAX),
+    ContactInfo NVARCHAR(255),
     CertificationLink VARCHAR(255),
-    Notes VARCHAR(MAX)
+    Notes NVARCHAR(MAX)
 );
 
 CREATE TABLE KoiFish (
     KoiID INT IDENTITY(1,1) PRIMARY KEY,
-    Name VARCHAR(255) NOT NULL,
+    Name NVARCHAR(255) NOT NULL,
     VarietyID INT,
     Origin VARCHAR(50) CHECK (Origin IN ('Imported', 'F1 Hybrid', 'Pure Vietnamese')),
     BreederID INT,
@@ -52,9 +51,9 @@ CREATE TABLE KoiFish (
     Born INT,
     Size FLOAT,
     Weight FLOAT,
-    Personality VARCHAR(MAX),
+    Personality NVARCHAR(MAX),
     FeedingAmountPerDay FLOAT,
-    HealthStatus VARCHAR(255),
+    HealthStatus NVARCHAR(255),
     ScreeningRate FLOAT,
     Price DECIMAL(10, 2),
     CertificateLink VARCHAR(255),
@@ -68,10 +67,10 @@ CREATE TABLE KoiFish (
 --select * from KoiFish where KoiID = 1
 
 
-CREATE TABLE KoiPackage (
+CREATE TABLE KoiPackage(
     PackageID INT IDENTITY(1,1) PRIMARY KEY,
     KoiID INT,
-    PackageName VARCHAR(255),
+    PackageName NVARCHAR(255),
     ImageLink VARCHAR(255),
     Price DECIMAL(10, 2),
     PackageSize INT,
@@ -80,13 +79,16 @@ CREATE TABLE KoiPackage (
     FOREIGN KEY (KoiID) REFERENCES KoiFish(KoiID)
 );
 
---SELECT * FROM KoiPackage
+ALTER TABLE KoiPackage
+ADD  Quantity INT
+
+SELECT * FROM KoiPackage
 
 CREATE TABLE KoiConsignment (
     ConsignmentID INT IDENTITY(1,1) PRIMARY KEY,
     CustomerID INT,
     KoiID INT,
-    ConsignmentType VARCHAR(50),
+    ConsignmentType NVARCHAR(50),
     ConsignmentMode VARCHAR(50) CHECK (ConsignmentMode IN ('Offline', 'Online')),
     StartDate DATETIME DEFAULT CURRENT_TIMESTAMP,
     EndDate DATETIME,
@@ -94,8 +96,8 @@ CREATE TABLE KoiConsignment (
     PriceAgreed DECIMAL(10, 2),
     PickupDate DATETIME,
     ApprovedStatus VARCHAR(50) CHECK (ApprovedStatus IN ('Pending', 'Approved', 'Rejected')) DEFAULT 'Pending',
-    InspectionResult VARCHAR(MAX),
-    Notes VARCHAR(MAX),
+    InspectionResult NVARCHAR(MAX),
+    Notes NVARCHAR(MAX),
     FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID),
     FOREIGN KEY (KoiID) REFERENCES KoiFish(KoiID)
 );
@@ -111,12 +113,12 @@ ADD KoiType NVARCHAR(100),
 --use KoiFarmShop
 --select * from KoiConsignment;
 
-select * from Users;
+--select * from Users;
 
 CREATE TABLE Promotions (
     PromotionID INT IDENTITY(1,1) PRIMARY KEY,
     PromotionCode VARCHAR(255) UNIQUE,
-    Description VARCHAR(255),
+    Description NVARCHAR(255),
     DiscountType VARCHAR(50) CHECK (DiscountType IN ('Percentage', 'Fixed Amount')),
     DiscountValue DECIMAL(10, 2),
     StartDate DATETIME,
@@ -130,9 +132,9 @@ CREATE TABLE Orders (
     OrderID INT IDENTITY(1,1) PRIMARY KEY,
     CustomerID INT,
     OrderDate DATETIME DEFAULT CURRENT_TIMESTAMP,
-    TotalAmount DECIMAL(10, 2),
-    ShippingAddress VARCHAR(MAX),
-    OrderStatus VARCHAR(50) CHECK (OrderStatus IN ('Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled')) DEFAULT 'Pending',
+    TotalAmount DECIMAL(10, 2) DEFAULT 0.00,
+    ShippingAddress NVARCHAR(MAX),
+    OrderStatus VARCHAR(50) CHECK (OrderStatus IN ('Pending', 'Processing', 'Delivering', 'Delivered', 'Cancelled')) DEFAULT 'Pending',
     PaymentMethod VARCHAR(50) CHECK (PaymentMethod IN ('Credit Card', 'Bank Transfer', 'Cash on Delivery')),
     PaymentStatus VARCHAR(50) CHECK (PaymentStatus IN ('Pending', 'Completed', 'Refunded', 'Failed')) DEFAULT 'Pending',
     TrackingNumber VARCHAR(255),
@@ -141,11 +143,33 @@ CREATE TABLE Orders (
     ConsignmentID INT,
     PromotionID INT DEFAULT NULL,
     UserID INT DEFAULT NULL,
-    FOREIGN KEY (UserID) REFERENCES Users(UserID),
-    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID),
-    FOREIGN KEY (ConsignmentID) REFERENCES KoiConsignment(ConsignmentID),
-    FOREIGN KEY (PromotionID) REFERENCES Promotions(PromotionID)
+	KoiID INT NULL,
+    PackageID INT NULL
+    CONSTRAINT FK_Orders_Users FOREIGN KEY (UserID) REFERENCES Users(UserID),
+    CONSTRAINT FK_Orders_Customers FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID),
+    CONSTRAINT FK_Orders_Consignment FOREIGN KEY (ConsignmentID) REFERENCES KoiConsignment(ConsignmentID),
+    CONSTRAINT FK_Orders_Promotions FOREIGN KEY (PromotionID) REFERENCES Promotions(PromotionID),
+    CONSTRAINT FK_Orders_KoiFish FOREIGN KEY (KoiID) REFERENCES KoiFish(KoiID),
+    CONSTRAINT FK_Orders_KoiPackage FOREIGN KEY (PackageID) REFERENCES KoiPackage(PackageID)
 );
+
+Select * From Orders o
+
+--SELECT o.OrderID, o.KoiID, k.VarietyID, k.Price AS KoiPrice, 
+--       o.PackageID, p.PackageName, p.Price AS PackagePrice,
+--       od.Quantity, od.UnitPrice
+--FROM Orders o
+--LEFT JOIN KoiFish k ON o.KoiID = k.KoiID
+--LEFT JOIN KoiPackage p ON o.PackageID = p.PackageID
+--JOIN OrderDetails od ON o.OrderID = od.OrderID;
+
+--SELECT o.OrderID, 
+--       COALESCE(k.Price, 0) + COALESCE(p.Price, 0) AS TotalPrice
+--FROM [Orders] o
+--LEFT JOIN KoiFish k ON o.KoiID = k.KoiID
+--LEFT JOIN KoiPackage p ON o.PackageID = p.PackageID;
+
+--SELECT * FROM Orders
 
 CREATE TABLE OrderDetails (
     OrderDetailID INT IDENTITY(1,1) PRIMARY KEY,
@@ -153,12 +177,30 @@ CREATE TABLE OrderDetails (
     ProductID INT,
     Quantity INT,
     UnitPrice DECIMAL(10, 2),
-    TotalPrice DECIMAL(10, 2),
-    ProductType VARCHAR(50) CHECK (ProductType IN ('Single Fish', 'Package')),
-    CertificateStatus VARCHAR(50) CHECK (CertificateStatus IN ('Issued', 'Not Issued')) DEFAULT 'Not Issued',
+    TotalPrice AS (Quantity * UnitPrice) PERSISTED, -- Công thức tự động
+    ProductType VARCHAR(50) CHECK (ProductType IN ('Single Fish', 'Package', 'All')),
+    CertificateStatus VARCHAR(50) CHECK (CertificateStatus IN ('Issued', 'Not Issued', 'Pending')) DEFAULT 'Not Issued',
+	KoiID INT NULL,
+    PackageID INT NULL,
     FOREIGN KEY (OrderID) REFERENCES Orders(OrderID),
-    FOREIGN KEY (ProductID) REFERENCES KoiFish(KoiID)
+    FOREIGN KEY (ProductID) REFERENCES KoiFish(KoiID),
+	FOREIGN KEY (KoiID) REFERENCES KoiFish(KoiID),
+	FOREIGN KEY (PackageID) REFERENCES KoiPackage(PackageID),
 );
+
+
+ALTER TABLE OrderDetails
+ADD CONSTRAINT CK__OrderDeta__Certi__2739D489 
+CHECK (CertificateStatus IN ('Issued', 'Not Issued', 'Pending'));
+
+--SELECT * FROM OrderDetails
+
+--SELECT od.OrderDetailID, od.KoiID, k.VarietyID, k.Price AS KoiPrice, 
+--       od.PackageID, p.PackageName, p.Price AS PackagePrice
+--FROM OrderDetails od
+--LEFT JOIN KoiFish k ON od.KoiID = k.KoiID
+--LEFT JOIN KoiPackage p ON od.PackageID = p.PackageID;
+
 
 CREATE TABLE Payments (
     PaymentID INT IDENTITY(1,1) PRIMARY KEY,
@@ -192,7 +234,7 @@ CREATE TABLE KoiReport (
     ConsignmentID INT,
     CareStartDate DATETIME DEFAULT CURRENT_TIMESTAMP,
     CareEndDate DATETIME,
-    CareDetails VARCHAR(MAX),
+    CareDetails NVARCHAR(MAX),
     FOREIGN KEY (ConsignmentID) REFERENCES KoiConsignment(ConsignmentID)
 );
 
@@ -211,7 +253,7 @@ CREATE TABLE Reviews (
     ProductID INT,
     CustomerID INT,
     Rating INT CHECK (Rating BETWEEN 1 AND 5),
-    Comment VARCHAR(MAX),
+    Comment NVARCHAR(MAX),
     ReviewDate DATETIME DEFAULT CURRENT_TIMESTAMP,
     Status VARCHAR(50) CHECK (Status IN ('Visible', 'Hidden')) DEFAULT 'Visible',
     FOREIGN KEY (ProductID) REFERENCES KoiFish(KoiID),
@@ -221,8 +263,8 @@ CREATE TABLE Reviews (
 CREATE TABLE BlogPosts (
     PostID INT IDENTITY(1,1) PRIMARY KEY,
     UserID INT,
-    Title VARCHAR(255),
-    Content VARCHAR(MAX),
+    Title NVARCHAR(255),
+    Content NVARCHAR(MAX),
     CreatedDate DATETIME DEFAULT CURRENT_TIMESTAMP,
     UpdatedDate DATETIME,
     Status VARCHAR(50) CHECK (Status IN ('Draft', 'Published', 'Archived')) DEFAULT 'Draft',
@@ -231,7 +273,7 @@ CREATE TABLE BlogPosts (
 
 CREATE TABLE Categories (
     CategoryID INT IDENTITY(1,1) PRIMARY KEY,
-    CategoryName VARCHAR(255) NOT NULL
+    CategoryName NVARCHAR(255) NOT NULL
 );
 
 CREATE TABLE BlogCategories (
@@ -246,7 +288,7 @@ CREATE TABLE Comments (
     PostID INT,
     BlogPostID INT,
     UserID INT,
-    CommentText VARCHAR(MAX),
+    CommentText NVARCHAR(MAX),
     CommentDate DATETIME DEFAULT CURRENT_TIMESTAMP,
     Status VARCHAR(50) CHECK (Status IN ('Visible', 'Hidden')) DEFAULT 'Visible',
     FOREIGN KEY (UserID) REFERENCES Users(UserID)
@@ -278,31 +320,31 @@ CREATE TABLE OrderHistory (
 
 --SET IDENTITY_INSERT Users OFF;
 INSERT INTO Users (Username, PasswordHash, Role, SubscriptionStatus) VALUES
-('SWP391', '1', 'Manager', 'Active'),
-('tranganh', '2', 'Staff', 'Active'),
-('thanhdat', '3', 'Staff', 'Active'),
-('dangkhoa', '4', 'Staff', 'Active'),
-('huunam', '5', 'Staff', 'Active'),
-('quangthuan', '6', 'Staff', 'Active'),
-('TuyetHuong', '7', 'Customer', 'Active'),
-('PhuNinh', '8', 'Customer', 'Active'),
-('TuongHuy', '9', 'Customer', 'Inactive'),
-('VietHan', '10', 'Customer', 'Active'),
-('LeDuy', '11', 'Customer', 'Active'),
-('QuocTrieu', '12', 'Customer', 'Active'),
-('ThanhDien', '13', 'Customer', 'Active'),
-('MinhAnh', '14', 'Customer', 'Active');
+('SWP391', '$2b$10$2Awqt5Ew/5.A0R0il68nuOj6ReVssi/GKyCPp.8CfnP3FA2zhEjjO', 'Manager', 'Active'),
+('tranganh', '$2b$10$2Awqt5Ew/5.A0R0il68nuOj6ReVssi/GKyCPp.8CfnP3FA2zhEjjO', 'Staff', 'Active'),
+('thanhdat', '$2b$10$2Awqt5Ew/5.A0R0il68nuOj6ReVssi/GKyCPp.8CfnP3FA2zhEjjO', 'Staff', 'Active'),
+('dangkhoa', '$2b$10$2Awqt5Ew/5.A0R0il68nuOj6ReVssi/GKyCPp.8CfnP3FA2zhEjjO', 'Staff', 'Active'),
+('huunam', '$2b$10$2Awqt5Ew/5.A0R0il68nuOj6ReVssi/GKyCPp.8CfnP3FA2zhEjjO', 'Staff', 'Active'),
+('quangthuan', '$2b$10$2Awqt5Ew/5.A0R0il68nuOj6ReVssi/GKyCPp.8CfnP3FA2zhEjjO', 'Staff', 'Active'),
+('TuyetHuong', '$2b$10$OTPdR1qte0bX/iwWC2/Aqu8m.xnVPE1jDKmi/7KJpCDq.d2T7mc3O', 'Customer', 'Active'),
+('PhuNinh', '$2b$10$OTPdR1qte0bX/iwWC2/Aqu8m.xnVPE1jDKmi/7KJpCDq.d2T7mc3O', 'Customer', 'Active'),
+('TuongHuy', '$2b$10$OTPdR1qte0bX/iwWC2/Aqu8m.xnVPE1jDKmi/7KJpCDq.d2T7mc3O', 'Customer', 'Inactive'),
+('VietHan', '$2b$10$OTPdR1qte0bX/iwWC2/Aqu8m.xnVPE1jDKmi/7KJpCDq.d2T7mc3O', 'Customer', 'Active'),
+('LeDuy', '$2b$10$OTPdR1qte0bX/iwWC2/Aqu8m.xnVPE1jDKmi/7KJpCDq.d2T7mc3O', 'Customer', 'Active'),
+('QuocTrieu', '$2b$10$OTPdR1qte0bX/iwWC2/Aqu8m.xnVPE1jDKmi/7KJpCDq.d2T7mc3O', 'Customer', 'Active'),
+('ThanhDien', '$2b$10$OTPdR1qte0bX/iwWC2/Aqu8m.xnVPE1jDKmi/7KJpCDq.d2T7mc3O', 'Customer', 'Active'),
+('MinhAnh', '$2b$10$OTPdR1qte0bX/iwWC2/Aqu8m.xnVPE1jDKmi/7KJpCDq.d2T7mc3O', 'Customer', 'Active');
 
 INSERT INTO Users (Username, PasswordHash, Role, SubscriptionStatus) VALUES
-('ThaiBao', '15', 'Customer', 'Inactive'),
-('MinhKhoi', '16', 'Customer', 'Active'),
-('ManhHung', '17', 'Customer', 'Active'),
-('AnhTuan', '18', 'Customer', 'Active'),
-('DiemQuynh', '19', 'Customer', 'Active'),
-('MinhKiet', '20', 'Customer', 'Active');
+('ThaiBao', '$2b$10$OTPdR1qte0bX/iwWC2/Aqu8m.xnVPE1jDKmi/7KJpCDq.d2T7mc3O', 'Customer', 'Inactive'),
+('MinhKhoi', '$2b$10$OTPdR1qte0bX/iwWC2/Aqu8m.xnVPE1jDKmi/7KJpCDq.d2T7mc3O', 'Customer', 'Active'),
+('ManhHung', '$2b$10$OTPdR1qte0bX/iwWC2/Aqu8m.xnVPE1jDKmi/7KJpCDq.d2T7mc3O', 'Customer', 'Active'),
+('AnhTuan', '$2b$10$OTPdR1qte0bX/iwWC2/Aqu8m.xnVPE1jDKmi/7KJpCDq.d2T7mc3O', 'Customer', 'Active'),
+('DiemQuynh', '$2b$10$OTPdR1qte0bX/iwWC2/Aqu8m.xnVPE1jDKmi/7KJpCDq.d2T7mc3O', 'Customer', 'Active'),
+('MinhKiet', '$2b$10$OTPdR1qte0bX/iwWC2/Aqu8m.xnVPE1jDKmi/7KJpCDq.d2T7mc3O', 'Customer', 'Active');
 --delete from Users
 --DBCC CHECKIDENT ('Users', RESEED, 0);
---select * from Users
+select * from Users
 
 INSERT INTO Customers (UserID, FullName, Email, PhoneNumber, Address, LoyaltyPoints) VALUES
 (7, 'Nguyễn Thị Tuyết Hương', 'nguyenthituyethuong10.1@gmail.com', '0799670750', '123 Lê Lợi, Quận 1, TP.HCM', 100),
@@ -321,7 +363,7 @@ INSERT INTO Customers (UserID, FullName, Email, PhoneNumber, Address, LoyaltyPoi
 (20, 'Nguyễn Lê Minh Kiệt', 'kietnlmse171427@fpt.edu.vn', '0782131516', '250 Nguyễn Văn Tăng, Quận 9, TP.HCM', 55);
 --delete from Customers
 --DBCC CHECKIDENT ('Customers', RESEED, 0);
---select * from Customers
+select * from Customers
 
 INSERT INTO Varieties (VarietyName, Description, Origin) VALUES
 ('Kohaku', 'Cá Koi trắng với các mảng đỏ', 'Japan'),
@@ -334,7 +376,7 @@ INSERT INTO Varieties (VarietyName, Description, Origin) VALUES
 ('Yamabuki', 'Cá Koi màu vàng', 'Japan'),
 ('Asagi', 'Cá Koi xanh trên lưng, đỏ ở bụng', 'Japan'),
 ('Beni Kumonryu', 'Cá Koi đen với mảng trắng và đỏ', 'Japan');
---select * from Varieties
+select * from Varieties
 
 INSERT INTO Breeders (Name, Address, ContactInfo, CertificationLink, Notes) VALUES
 ('Dainichi Koi Farm', 'Niigata, Japan', 'contact@dainichi.com', 'https://dainichi-certification.jp', 'Nổi tiếng với dòng Koi Chagoi'),
@@ -361,17 +403,21 @@ INSERT INTO KoiFish (Name, VarietyID, Origin, BreederID, Gender, Born, Size, Wei
 ('Thunder Storm', 6, 'Imported', 5, 'Male', 2020, 65, 4.8, 'Powerful and dominant', 55, 'Excellent', 9.6, 9500000, 'https://cert.onkoi.vn/thunder-storm', 'https://onkoi.vn/wp-content/uploads/2021/03/onkoi-goshiki-72-cm-3-tuoi-013-300x300.jpg', 'Available'),
 ('Autumn Whisper', 4, 'Pure Vietnamese', 7, 'Female', 2022, 48, 2.8, 'Peaceful and adaptable', 35, 'Good', 8.9, 5500000, 'https://cert.onkoi.vn/autumn-whisper', 'https://onkoi.vn/wp-content/uploads/2021/03/onkoi-kujaku-75-cm-3-tuoi-009-300x300.jpg', 'Available'),
 ('Midnight Samurai', 10, 'Imported', 10, 'Male', 2021, 58, 4.0, 'Mysterious and strong', 50, 'Excellent', 9.4, 8500000, 'https://cert.onkoi.vn/midnight-samurai', 'https://onkoi.vn/wp-content/uploads/2021/03/onkoi-kujaku-85-cm-4-tuoi-006-300x300.jpg', 'Available');
---select * from KoiFish
+select * from KoiFish
 
 --SET IDENTITY_INSERT KoiPackage ON;
-INSERT INTO KoiPackage (KoiID, PackageName, ImageLink, Price, PackageSize, Availability) VALUES
-(1, 'Sakura Starter Pack', 'https://onkoi.vn/wp-content/uploads/2021/01/lo-kohaku-38-cm-066-768x768.jpg', 6000000, 1, 'Available'),
-(2, 'Golden Luxury Set', 'https://onkoi.vn/wp-content/uploads/2021/03/onkoi-karashi-70-75-cm-3-tuoi-005-768x768.jpg', 10000000, 2, 'Available'),
-(3, 'Azure Beginner Bundle', 'https://onkoi.vn/wp-content/uploads/2021/03/lo-koi-showa-kohaku-75-80-cm-3-tuoi-051-768x768.jpg', 4500000, 1, 'Available'),
-(4, 'Crimson Elite Collection', 'https://onkoi.vn/wp-content/uploads/2021/01/lo-koi-kohaku-dainichi-30-cm-063-768x768.jpg', 15000000, 3, 'Available'),
-(5, 'Moonlight Duo', 'https://onkoi.vn/wp-content/uploads/2020/07/lo-koi-Yagenji-Beni-Kikokuryu-35-cm-004-768x768.jpg', 8000000, 2, 'Available'),
-(6, 'Sunset Family Pack', 'https://onkoi.vn/wp-content/uploads/2021/03/onkoi-karashi-70-75-cm-3-tuoi-005-768x768.jpg', 12000000, 4, 'Available');
---select * from KoiPackage
+INSERT INTO KoiPackage (KoiID, PackageName, ImageLink, Price, PackageSize, Availability, Quantity) VALUES
+(1, 'Sakura Starter Pack', 'https://onkoi.vn/wp-content/uploads/2021/01/lo-kohaku-38-cm-066-768x768.jpg', 6000000, 1, 'Available', 10),
+(2, 'Golden Luxury Set', 'https://onkoi.vn/wp-content/uploads/2021/03/onkoi-karashi-70-75-cm-3-tuoi-005-768x768.jpg', 10000000, 2, 'Available', 10),
+(3, 'Azure Beginner Bundle', 'https://onkoi.vn/wp-content/uploads/2021/03/lo-koi-showa-kohaku-75-80-cm-3-tuoi-051-768x768.jpg', 4500000, 1, 'Available', 10),
+(4, 'Crimson Elite Collection', 'https://onkoi.vn/wp-content/uploads/2021/01/lo-koi-kohaku-dainichi-30-cm-063-768x768.jpg', 15000000, 3, 'Available', 10),
+(5, 'Moonlight Duo', 'https://onkoi.vn/wp-content/uploads/2020/07/lo-koi-Yagenji-Beni-Kikokuryu-35-cm-004-768x768.jpg', 8000000, 2, 'Available', 10),
+(6, 'Sunset Family Pack', 'https://onkoi.vn/wp-content/uploads/2021/03/onkoi-karashi-70-75-cm-3-tuoi-005-768x768.jpg', 12000000, 4, 'Available', 10),
+(7, 'Emerald Prestige Pack','https://onkoi.vn/wp-content/uploads/2020/07/emerald-prestige.jpg', 18000000, 3, 'Available', 10),
+(8, 'Ocean Serenity Bundle', 'https://onkoi.vn/wp-content/uploads/2021/01/ocean-serenity.jpg', 9500000, 2, 'Available', 10),
+(9, 'Scarlet Prime Set', 'https://onkoi.vn/wp-content/uploads/2021/03/scarlet-prime.jpg', 13500000, 4, 'Available', 10),
+(10, 'Royal Crown Collection', 'https://onkoi.vn/wp-content/uploads/2021/03/royal-crown.jpg', 20000000, 5, 'Available', 10);
+select * from KoiPackage
 --delete from KoiPackage
 --DBCC CHECKIDENT ('KoiPackage', RESEED, 0);
 
@@ -388,33 +434,50 @@ INSERT INTO Promotions (PromotionCode, Description, DiscountType, DiscountValue,
 ('SPRINGJOY', 'Hân hoan mùa xuân', 'Fixed Amount', 750000, '2025-03-01', '2025-03-31', 'Active', 4000000);
 --select * from Promotions
 
-INSERT INTO Orders (CustomerID, OrderDate, TotalAmount, ShippingAddress, OrderStatus, PaymentMethod, PaymentStatus, TrackingNumber, Discount, ShippingCost, PromotionID) VALUES
-(1, '2024-06-15 10:30:00', 5500000, '123 Lê Lợi, Quận 1, TP.HCM', 'Delivered', 'Credit Card', 'Completed', 'VN123456789', 500000, 200000, 1),
-(2, '2024-07-20 14:45:00', 8200000, '456 Nguyễn Huệ, Quận 1, TP.HCM', 'Shipped', 'Bank Transfer', 'Completed', 'VN987654321', 800000, 250000, 3),
-(5, '2024-08-05 09:15:00', 3700000, '789 Trần Hưng Đạo, Quận 5, TP.HCM', 'Processing', 'Cash on Delivery', 'Pending', NULL, 300000, 150000, 2),
-(6, '2024-09-10 16:20:00', 12500000, '101 Võ Văn Tần, Quận 3, TP.HCM', 'Pending', 'Credit Card', 'Pending', NULL, 1500000, 300000, 5),
-(7, '2024-10-01 11:00:00', 7800000, '202 Nguyễn Thị Minh Khai, Quận 3, TP.HCM', 'Shipped', 'Bank Transfer', 'Completed', 'VN135792468', 700000, 200000, 4),
-(9, '2024-11-15 13:30:00', 9200000, '303 Điện Biên Phủ, Quận Bình Thạnh, TP.HCM', 'Delivered', 'Credit Card', 'Completed', 'VN246813579', 1000000, 250000, 6),
-(10, '2024-12-20 15:45:00', 15800000, '404 Phan Xích Long, Quận Phú Nhuận, TP.HCM', 'Processing', 'Bank Transfer', 'Completed', NULL, 2000000, 300000, 7),
-(11, '2025-01-05 08:30:00', 6300000, '123 Lê Lợi, Quận 1, TP.HCM', 'Pending', 'Cash on Delivery', 'Pending', NULL, 600000, 200000, 8),
-(12, '2025-02-10 10:00:00', 10500000, '456 Nguyễn Huệ, Quận 1, TP.HCM', 'Shipped', 'Credit Card', 'Completed', 'VN369258147', 1200000, 250000, 9),
-(14, '2025-03-15 14:15:00', 4800000, '789 Trần Hưng Đạo, Quận 5, TP.HCM', 'Delivered', 'Bank Transfer', 'Completed', 'VN741852963', 450000, 150000, 10);
---DELETE from Orders
+INSERT INTO Orders (CustomerID, OrderDate, ShippingAddress, OrderStatus, PaymentMethod, PaymentStatus, TrackingNumber, Discount, ShippingCost, PromotionID) VALUES
+(1, '2024-06-15 10:30:00', '123 Lê Lợi, Quận 1, TP.HCM', 'Pending', 'Credit Card', 'Completed', 'VN123456789', 500000, 200000, 1),
+(2, '2024-07-20 14:45:00', '456 Nguyễn Huệ, Quận 1, TP.HCM', 'Pending', 'Bank Transfer', 'Completed', 'VN987654321', 800000, 250000, 3),
+(5, '2024-08-05 09:15:00','789 Trần Hưng Đạo, Quận 5, TP.HCM', 'Pending', 'Cash on Delivery', 'Pending', NULL, 300000, 150000, 2),
+(6, '2024-09-10 16:20:00', '101 Võ Văn Tần, Quận 3, TP.HCM', 'Pending', 'Credit Card', 'Pending', NULL, 1500000, 300000, 5),
+(7, '2024-10-01 11:00:00', '202 Nguyễn Thị Minh Khai, Quận 3, TP.HCM', 'Pending', 'Bank Transfer', 'Completed', 'VN135792468', 700000, 200000, 4),
+(9, '2024-11-15 13:30:00', '303 Điện Biên Phủ, Quận Bình Thạnh, TP.HCM', 'Pending', 'Credit Card', 'Completed', 'VN246813579', 1000000, 250000, 6),
+(10, '2024-12-20 15:45:00', '404 Phan Xích Long, Quận Phú Nhuận, TP.HCM', 'Pending', 'Bank Transfer', 'Completed', NULL, 2000000, 300000, 7),
+(11, '2025-01-05 08:30:00', '123 Lê Lợi, Quận 1, TP.HCM', 'Pending', 'Cash on Delivery', 'Pending', NULL, 600000, 200000, 8),
+(12, '2025-02-10 10:00:00', '456 Nguyễn Huệ, Quận 1, TP.HCM', 'Pending', 'Credit Card', 'Completed', 'VN369258147', 1200000, 250000, 9),
+(14, '2025-03-15 14:15:00', '789 Trần Hưng Đạo, Quận 5, TP.HCM', 'Pending', 'Bank Transfer', 'Completed', 'VN741852963', 450000, 150000, 10);
+--Select * from KoiFish
+--Delete from Orders
 --DBCC CHECKIDENT ('Orders', RESEED, 0);
---select * from Orders
+Select * from Orders
+--select * from Orders WHERE OrderID = 1
 
-INSERT INTO OrderDetails (OrderID, ProductID, Quantity, UnitPrice, TotalPrice, ProductType, CertificateStatus) VALUES
-(1, 1, 1, 5000000, 5000000, 'Single Fish', 'Issued'),
-(2, 2, 1, 8000000, 8000000, 'Single Fish', 'Issued'),
-(3, 3, 1, 3500000, 3500000, 'Single Fish', 'Not Issued'),
-(4, 4, 1, 12000000, 12000000, 'Single Fish', 'Issued'),
-(5, 5, 1, 4500000, 4500000, 'Single Fish', 'Issued'),
-(6, 6, 1, 7000000, 7000000, 'Single Fish', 'Issued'),
-(7, 7, 1, 4000000, 4000000, 'Single Fish', 'Not Issued'),
-(8, 8, 1, 9500000, 9500000, 'Single Fish', 'Issued'),
-(9, 9, 1, 5500000, 5500000, 'Single Fish', 'Issued'),
-(10, 10, 1, 8500000, 8500000, 'Single Fish', 'Issued');
---select * from OrderDetails
+
+INSERT INTO OrderDetails (OrderID, Quantity, UnitPrice, ProductType, CertificateStatus, KoiID, PackageID) VALUES
+(1, 1, (SELECT Price FROM KoiFish WHERE KoiID = 1), 'Single Fish', 'Issued', 1, NULL),
+(2, 1, (SELECT Price FROM KoiPackage WHERE PackageID = 1), 'Package', 'Issued', NULL, 1),
+(3, 1, (SELECT Price FROM KoiFish WHERE KoiID = 2), 'Single Fish', 'Not Issued', 2, NULL),
+(4, 2, (SELECT Price FROM KoiPackage WHERE PackageID = 2), 'Package', 'Issued', NULL, 2),
+(5, 3, (SELECT Price FROM KoiPackage WHERE PackageID = 3), 'Package', 'Not Issued', NULL, 3),
+(5, 1, (SELECT Price FROM KoiFish WHERE KoiID = 3), 'Package', 'Issued', 3, NULL),
+(6, 1, (SELECT Price FROM KoiFish WHERE KoiID = 4), 'Single Fish', 'Not Issued', 4, NULL),
+(6, 2, (SELECT Price FROM KoiPackage WHERE PackageID = 4), 'Package', 'Not Issued', NULL, 4),
+(7, 1, (SELECT Price FROM KoiFish WHERE KoiID = 5), 'Single Fish', 'Issued', 5, NULL),
+(7, 1, (SELECT Price FROM KoiFish WHERE KoiID = 6), 'Single Fish', 'Issued', 6, NULL),
+(8, 1, (SELECT Price FROM KoiPackage WHERE PackageID = 5), 'Package', 'Pending', NULL, 5),
+(8, 2, (SELECT Price FROM KoiPackage WHERE PackageID = 6), 'Package', 'Pending', NULL, 6),
+(9, 1, (SELECT Price FROM KoiFish WHERE KoiID = 7), 'Single Fish', 'Issued', 7, NULL),
+(9, 1, (SELECT Price FROM KoiFish WHERE KoiID = 8), 'Single Fish', 'Issued', 8, NULL),
+(9, 2, (SELECT Price FROM KoiPackage WHERE PackageID = 7), 'Package', 'Not Issued', NULL, 7),
+(9, 1, (SELECT Price FROM KoiPackage WHERE PackageID = 8), 'Package', 'Not Issued', NULL, 8);
+
+select * from OrderDetails
+
+UPDATE Orders 
+SET TotalAmount = (
+    SELECT SUM(od.TotalPrice)
+    FROM OrderDetails od
+    WHERE Orders.OrderID = od.OrderID
+);
 
 INSERT INTO Payments (OrderID, PaymentDate, PaymentMethod, PaymentStatus) VALUES
 (1, '2024-06-15 10:35:00', 'Credit Card', 'Completed'),
@@ -582,3 +645,127 @@ INSERT INTO OrderHistory (OrderID, TrackingNumber, ShipmentDate, DeliveryDate, S
 (9, 'VN369258147', '2025-02-11 09:45:00', '2025-02-13 14:15:00', 'Delivered'),
 (10, 'VN741852963', '2025-03-16 10:30:00', '2025-03-18 16:00:00', 'Delivered');
 --select * from OrderHistory
+
+INSERT INTO KoiConsignment (CustomerID, ConsignmentType, ConsignmentMode, StartDate, EndDate, Status, PriceAgreed, PickupDate, ApprovedStatus, InspectionResult, Notes) VALUES
+-- Status: 'Pending', ApprovedStatus: 'Pending'
+(1, 'Standard', 'Offline', DEFAULT, '2024-12-31', 'Pending', 50000.00, '2024-10-25', 'Pending', 'Chưa kiểm tra', 'Ghi chú mẫu cho trạng thái Pending'),
+
+-- Status: 'Approved', ApprovedStatus: 'Approved'
+(2, 'Premium', 'Online', DEFAULT, '2024-11-30', 'Approved', 80000.00, '2024-10-26', 'Approved', 'Koi đạt tiêu chuẩn', 'Ghi chú mẫu cho trạng thái Approved'),
+
+-- Status: 'In Care', ApprovedStatus: 'Approved'
+(3, 'Standard', 'Offline', DEFAULT, '2024-11-15', 'In Care', 60000.00, '2024-10-27', 'Approved', 'Koi cần chăm sóc thêm', 'Ghi chú mẫu cho trạng thái In Care'),
+
+-- Status: 'Listed for Sale', ApprovedStatus: 'Approved'
+(4, 'Premium', 'Online', DEFAULT, '2024-11-20', 'Listed for Sale', 100000.00, '2024-10-28', 'Approved', 'Koi đã sẵn sàng bán', 'Ghi chú mẫu cho trạng thái Listed for Sale'),
+
+-- Status: 'Sold', ApprovedStatus: 'Approved'
+(5, 'Standard', 'Offline', DEFAULT, '2024-12-01', 'Sold', 120000.00, '2024-10-29', 'Approved', 'Koi đã bán', 'Ghi chú mẫu cho trạng thái Sold'),
+
+-- Status: 'Withdrawn', ApprovedStatus: 'Rejected'
+(6, 'Premium', 'Online', DEFAULT, '2024-11-10', 'Withdrawn', 150000.00, '2024-10-30', 'Rejected', 'Koi không đủ tiêu chuẩn', 'Ghi chú mẫu cho trạng thái Withdrawn');
+--select * from KoiConsignment
+
+SELECT 
+    o.OrderID,
+    o.CustomerID,
+    o.OrderDate,
+    o.TotalAmount,
+    o.ShippingAddress,
+    o.OrderStatus,
+    o.PaymentMethod,
+    o.PaymentStatus,
+    o.TrackingNumber,
+    o.Discount,
+    o.ShippingCost,
+    o.PromotionID,
+    od.ProductID,
+    od.Quantity,
+    od.UnitPrice,
+    od.TotalPrice,
+    od.ProductType,
+    od.CertificateStatus,
+    STRING_AGG(CAST(od.KoiID AS VARCHAR), ', ') AS KoiIDs,
+    kf.Name AS KoiName,
+    kf.VarietyID,
+    kf.Origin,
+    kf.Gender,
+    kf.Size AS KoiSize,
+    kf.Weight AS KoiWeight,
+    kf.HealthStatus AS KoiHealthStatus,
+    kf.Price AS KoiPrice,
+    kp.PackageID,
+    kp.PackageName,
+    kp.PackageSize,
+    kp.Price AS PackagePrice,
+    kp.Quantity AS PackageQuantity,
+    kp.Availability AS PackageAvailability
+FROM 
+    Orders o
+LEFT JOIN 
+    OrderDetails od ON o.OrderID = od.OrderID
+LEFT JOIN 
+    KoiFish kf ON od.KoiID = kf.KoiID
+LEFT JOIN 
+    KoiPackage kp ON od.PackageID = kp.PackageID
+ORDER BY 
+    o.OrderID;
+
+
+SELECT 
+    o.OrderID,
+    o.CustomerID,
+    o.OrderDate,
+    o.TotalAmount,
+    o.ShippingAddress,
+    o.OrderStatus,
+    o.PaymentMethod,
+    o.PaymentStatus,
+    o.TrackingNumber,
+    o.Discount,
+    o.ShippingCost,
+    o.PromotionID,
+
+    -- Thông tin từ OrderDetails
+    STRING_AGG(CAST(od.ProductID AS VARCHAR), ', ') AS ProductIDs,
+    STRING_AGG(CAST(od.KoiID AS VARCHAR), ', ') AS KoiIDs,
+    STRING_AGG(CAST(od.PackageID AS VARCHAR), ', ') AS PackageIDs,
+    STRING_AGG(od.ProductType, ', ') AS ProductTypes,
+    STRING_AGG(od.CertificateStatus, ', ') AS CertificateStatuses,
+    SUM(od.Quantity) AS TotalQuantity,
+    SUM(od.TotalPrice) AS TotalOrderDetailPrice, -- Tổng giá từ OrderDetails
+
+    -- Thông tin từ KoiFish
+    STRING_AGG(kf.Name, ', ') AS KoiNames,
+    STRING_AGG(CAST(kf.VarietyID AS VARCHAR), ', ') AS VarietyIDs,
+    STRING_AGG(kf.Origin, ', ') AS Origins,
+    STRING_AGG(kf.Gender, ', ') AS Genders,
+    STRING_AGG(CAST(kf.Size AS VARCHAR), ', ') AS KoiSizes,
+    STRING_AGG(CAST(kf.Weight AS VARCHAR), ', ') AS KoiWeights,
+    STRING_AGG(kf.HealthStatus, ', ') AS KoiHealthStatuses,
+    STRING_AGG(CAST(kf.Price AS VARCHAR), ', ') AS KoiPrices,
+
+    -- Thông tin từ KoiPackage
+    STRING_AGG(kp.PackageName, ', ') AS PackageNames,
+    STRING_AGG(CAST(kp.PackageSize AS VARCHAR), ', ') AS PackageSizes,
+    STRING_AGG(CAST(kp.Price AS VARCHAR), ', ') AS PackagePrices,
+    STRING_AGG(CAST(kp.Quantity AS VARCHAR), ', ') AS PackageQuantities,
+    STRING_AGG(kp.Availability, ', ') AS PackageAvailabilities
+
+FROM 
+    Orders o
+LEFT JOIN 
+    OrderDetails od ON o.OrderID = od.OrderID
+LEFT JOIN 
+    KoiFish kf ON od.KoiID = kf.KoiID
+LEFT JOIN 
+    KoiPackage kp ON od.PackageID = kp.PackageID
+
+GROUP BY 
+    o.OrderID, o.CustomerID, o.OrderDate, o.TotalAmount, 
+    o.ShippingAddress, o.OrderStatus, o.PaymentMethod, 
+    o.PaymentStatus, o.TrackingNumber, o.Discount, 
+    o.ShippingCost, o.PromotionID
+
+ORDER BY 
+    o.OrderID;
