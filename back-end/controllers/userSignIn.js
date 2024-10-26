@@ -22,7 +22,7 @@ const userSignIn = async (req, res) => {
             process.env.JWT_SECRET,
             { expiresIn: '1h' }
         );
-        res.json({ token, role: user.Role });
+        res.json({ token, role: user.Role, userId: user.UserID });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Server error' });

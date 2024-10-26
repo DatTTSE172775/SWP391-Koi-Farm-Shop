@@ -7,11 +7,11 @@ import { fetchOrdersByUser } from "../../../../store/actions/orderActions";
 
 const CancelledOrders = () => {
   const dispatch = useDispatch();
-
+  const userId = localStorage.getItem('userId');
+  console.log('User ID from localStorage:', userId);
   const { orders, loading, error } = useSelector((state) => state.order);
 
   useEffect(() => {
-    const userId = 3; // ID của nhân viên, giả sử thanhdat
     dispatch(fetchOrdersByUser(userId));
   }, [dispatch]);
 

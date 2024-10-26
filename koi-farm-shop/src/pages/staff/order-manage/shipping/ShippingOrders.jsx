@@ -7,12 +7,12 @@ import { fetchOrdersByUser } from "../../../../store/actions/orderActions";
 
 const ShippedOrders = () => {
   const dispatch = useDispatch();
-
+  const userId = localStorage.getItem('userId');
+  console.log('User ID from localStorage:', userId);
   // Lấy dữ liệu từ store Redux
   const { orders, loading, error } = useSelector((state) => state.order);
 
   useEffect(() => {
-    const userId = 3; // ID của nhân viên, giả sử là thanhdat
     dispatch(fetchOrdersByUser(userId));
   }, [dispatch]);
 

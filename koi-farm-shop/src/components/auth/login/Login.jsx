@@ -34,6 +34,11 @@ const Login = () => {
     e.preventDefault();
     try {
       const role = await dispatch(login(username, password));
+      
+      // Log the userId from localStorage
+      const userId = localStorage.getItem('userId');
+      console.log('User ID from localStorage:', userId);
+
       switch(role) {
         case 'Staff':
           navigate('/staff');

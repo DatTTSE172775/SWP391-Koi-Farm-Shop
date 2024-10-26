@@ -7,12 +7,11 @@ const CompletedConsignment = () => {
   const [consignments, setConsignments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const userId = localStorage.getItem('userId');
+  console.log('User ID from localStorage:', userId);
   useEffect(() => {
     const fetchConsignments = async () => {
         try {
-          // const userId = localStorage.getItem('userId');
-          const userId = 3;
           const response = await axiosInstance.get(`/koiconsignment/approved/${userId}`);
           console.log("API Response:", response.data);
           if (response.data && Array.isArray(response.data.data)) {

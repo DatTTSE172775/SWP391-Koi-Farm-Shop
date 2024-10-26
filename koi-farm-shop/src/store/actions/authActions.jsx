@@ -46,13 +46,21 @@ export const login = (username, password) => async (dispatch) => {
     console.log("Login response:", response.data);
 
     if (response.data && response.data.token) {
-      // Save token and role to localStorage
+      // Save token, role, and userId to localStorage
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("username", username);
       localStorage.setItem("role", response.data.role);
+      localStorage.setItem("userId", response.data.userId);
 
-      // Dispatch success action with role
-      dispatch({ type: LOGIN_SUCCESS, payload: { ...response.data, username } });
+      // Dispatch success action with role and userId
+      dispatch({ 
+        type: LOGIN_SUCCESS, 
+        payload: { 
+          ...response.data, 
+          username,
+          userId: response.data.userId 
+        } 
+      });
 
       // Set token for future requests
       axiosPublic.defaults.headers.common[
@@ -136,8 +144,9 @@ export const register =
 // Add a new action to initialize auth state from localStorage
 export const initializeAuth = () => (dispatch) => {
   const token = localStorage.getItem("token");
-  if (token) {
-    dispatch({ type: LOGIN_SUCCESS, payload: { token } });
+  const userId = localStorage.getItem("userId");
+  if (token && userId) {
+    dispatch({ type: LOGIN_SUCCESS, payload: { token, userId } });
     axiosPublic.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   }
 };
@@ -188,3 +197,8 @@ export const changePassword =
       });
     }
   };
+
+  export const setUser = (userData) => ({
+    type: 'SET_USER',
+    payload: userData
+  });

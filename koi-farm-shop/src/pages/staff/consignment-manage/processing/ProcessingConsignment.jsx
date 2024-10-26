@@ -8,11 +8,13 @@ const ProcessingConsignment = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const userId = localStorage.getItem('userId');
+  console.log('User ID from localStorage:', userId);
+
   useEffect(() => {
     const fetchConsignments = async () => {
       try {
-        // const userId = localStorage.getItem('userId');
-        const userId = 3;
+        console.log('Fetching consignments for user ID:', userId);
         const response = await axiosInstance.get(`/koiconsignment/pending/${userId}`);
         console.log("API Response:", response.data);
         if (response.data && Array.isArray(response.data.data)) {
@@ -29,8 +31,13 @@ const ProcessingConsignment = () => {
       }
     };
 
-    fetchConsignments();
-  }, []);
+    if (userId) {
+      fetchConsignments();
+    } else {
+      console.warn('No user ID found in localStorage');
+      setLoading(false);
+    }
+  }, [userId]);
 
   if (loading) return <Spin tip="Loading consignments..." />;
   if (error) return <div>Error: {error}</div>;
