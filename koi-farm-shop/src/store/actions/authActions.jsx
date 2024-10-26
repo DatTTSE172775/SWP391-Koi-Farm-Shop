@@ -46,17 +46,21 @@ export const login = (username, password) => async (dispatch) => {
     console.log("Login response:", response.data);
 
     if (response.data && response.data.token) {
-      // Save token to localStorage
+      // Save token and role to localStorage
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("username", username);
+      localStorage.setItem("role", response.data.role);
 
-      // Dispatch success action
-      dispatch({ type: LOGIN_SUCCESS, payload: response.data });
+      // Dispatch success action with role
+      dispatch({ type: LOGIN_SUCCESS, payload: { ...response.data, username } });
 
       // Set token for future requests
       axiosPublic.defaults.headers.common[
         "Authorization"
       ] = `Bearer ${response.data.token}`;
+
+      // Return the role for navigation in the component
+      return response.data.role;
     } else {
       dispatch({
         type: LOGIN_FAILURE,
@@ -69,6 +73,7 @@ export const login = (username, password) => async (dispatch) => {
       type: LOGIN_FAILURE,
       payload: error.response?.data?.message || "Đăng nhập thất bại",
     });
+    throw error;
   }
 };
 
