@@ -17,13 +17,25 @@ const getAllOrders = async (req, res) => {
 const createOrder = async (req, res) => {
   const {
     customerID,
-    totalAmount,
     shippingAddress,
     paymentMethod,
     orderItems,
   } = req.body;
 
   try {
+    
+    // Kiểm tra xem orderItems có ít nhất một sản phẩm hợp lệ (KoiID hoặc PackageID)
+    for (const item of orderItems) {
+      if (!item.KoiID && !item.PackageID) {
+        return res.status(400).send({
+          message: "Yêu cầu cần có ít nhất 1 Koi Fish hoặc 1 Koi Package."
+        });
+      }
+    }
+
+    // Gọi hàm để tính toán totalAmount từ orderItems
+    const totalAmount = await Order.calculateTotalAmount(orderItems);
+
     const newOrder = await Order.createOrder(
       customerID,
       totalAmount,
@@ -76,22 +88,22 @@ const updateOrderToProcessing = async (req, res) => {
   }
 };
 
-// Cập nhật trạng thái thành "Shipped"
-const updateOrderToShipped = async (req, res) => {
+// Cập nhật trạng thái thành "Delivering"
+const updateOrderToDelivering = async (req, res) => {
   const { orderId } = req.params;
 
   try {
-    const updatedOrder = await Order.updateOrderStatus(orderId, "Shipped");
+    const updatedOrder = await Order.updateOrderStatus(orderId, "Delivering");
     if (!updatedOrder) {
       return res.status(404).send({ message: "Order not found." });
     }
     res.send({
-      message: "Order status updated to Shipped.",
+      message: "Order status updated to Delivering.",
       order: updatedOrder,
     });
   } catch (err) {
     console.error(err);
-    res.status(500).send({ message: "Failed to update order to Shipped." });
+    res.status(500).send({ message: "Failed to update order to Delivering." });
   }
 };
 
@@ -242,17 +254,49 @@ const getOrderDetails = async (req, res) => {
   }
 };
 
+// Hàm hủy đơn hàng theo orderId
+const cancelOrder = async (req, res) => {
+  // Lấy orderId từ tham số URL
+  const { orderId } = req.params;
+
+  try {
+    // Gọi hàm lấy thông tin đơn hàng theo ID từ cơ sở dữ liệu
+    const order = await Order.getOrderById(orderId);
+
+    // Nếu không tìm thấy đơn hàng, trả về lỗi 404 - Not Found
+    if (!order) {
+      return res.status(404).send({ message: "Order not found." });
+    }
+
+    // Nếu đơn hàng đã được giao (Delivered), không thể hủy
+    if (order.OrderStatus === 'Delivered') {
+      return res.status(400).send({ message: "Cannot cancel a delivered order." });
+    }
+
+    // Cập nhật trạng thái đơn hàng thành 'Cancelled'
+    const cancelledOrder = await Order.updateOrderStatus(orderId, 'Cancelled');
+
+    // Trả về thông báo thành công nếu quá trình hủy thành công
+    res.send({ message: "Order cancelled successfully.", order: cancelledOrder });
+  } catch (err) {
+    // Bắt lỗi và trả về thông báo lỗi 500 - Internal Server Error
+    console.error(err);
+    res.status(500).send({ message: "Failed to cancel order." });
+  }
+};
+
 module.exports = {
   getAllOrders,
   getOrderById,
   createOrder,
   updateOrderToPending,
   updateOrderToProcessing,
-  updateOrderToShipped,
+  updateOrderToDelivering,
   updateOrderToDelivered,
   updateOrderToCancelled,
   deleteOrder,
   getAllStaffOrdersByUserId,
   assignOrderToStaff,
   getOrderDetails,
+  cancelOrder,
 };

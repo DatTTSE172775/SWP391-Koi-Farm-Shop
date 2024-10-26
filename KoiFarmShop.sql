@@ -193,6 +193,13 @@ ALTER TABLE OrderDetails
 ADD CONSTRAINT CK__OrderDeta__Certi__2739D489 
 CHECK (CertificateStatus IN ('Issued', 'Not Issued', 'Pending'));
 
+ALTER TABLE OrderDetails 
+DROP CONSTRAINT CK__OrderDeta__Produ__73BA3083;
+
+ALTER TABLE OrderDetails 
+ADD CONSTRAINT CK__OrderDeta__Produ__73BA3083 
+CHECK (ProductType IN ('Single Fish', 'Package', 'Mixed'));
+
 --SELECT * FROM OrderDetails
 
 --SELECT od.OrderDetailID, od.KoiID, k.VarietyID, k.Price AS KoiPrice, 
@@ -471,7 +478,8 @@ INSERT INTO OrderDetails (OrderID, Quantity, UnitPrice, ProductType, Certificate
 (9, 1, (SELECT Price FROM KoiPackage WHERE PackageID = 8), 'Package', 'Not Issued', NULL, 8);
 
 select * from OrderDetails
-
+SELECT * FROM KoiFish WHERE KoiID = 2;
+SELECT * FROM KoiPackage WHERE PackageID = 1;
 UPDATE Orders 
 SET TotalAmount = (
     SELECT SUM(od.TotalPrice)
@@ -666,50 +674,6 @@ INSERT INTO KoiConsignment (CustomerID, ConsignmentType, ConsignmentMode, StartD
 (6, 'Premium', 'Online', DEFAULT, '2024-11-10', 'Withdrawn', 150000.00, '2024-10-30', 'Rejected', 'Koi không đủ tiêu chuẩn', 'Ghi chú mẫu cho trạng thái Withdrawn');
 --select * from KoiConsignment
 
-SELECT 
-    o.OrderID,
-    o.CustomerID,
-    o.OrderDate,
-    o.TotalAmount,
-    o.ShippingAddress,
-    o.OrderStatus,
-    o.PaymentMethod,
-    o.PaymentStatus,
-    o.TrackingNumber,
-    o.Discount,
-    o.ShippingCost,
-    o.PromotionID,
-    od.ProductID,
-    od.Quantity,
-    od.UnitPrice,
-    od.TotalPrice,
-    od.ProductType,
-    od.CertificateStatus,
-    STRING_AGG(CAST(od.KoiID AS VARCHAR), ', ') AS KoiIDs,
-    kf.Name AS KoiName,
-    kf.VarietyID,
-    kf.Origin,
-    kf.Gender,
-    kf.Size AS KoiSize,
-    kf.Weight AS KoiWeight,
-    kf.HealthStatus AS KoiHealthStatus,
-    kf.Price AS KoiPrice,
-    kp.PackageID,
-    kp.PackageName,
-    kp.PackageSize,
-    kp.Price AS PackagePrice,
-    kp.Quantity AS PackageQuantity,
-    kp.Availability AS PackageAvailability
-FROM 
-    Orders o
-LEFT JOIN 
-    OrderDetails od ON o.OrderID = od.OrderID
-LEFT JOIN 
-    KoiFish kf ON od.KoiID = kf.KoiID
-LEFT JOIN 
-    KoiPackage kp ON od.PackageID = kp.PackageID
-ORDER BY 
-    o.OrderID;
 
 
 SELECT 

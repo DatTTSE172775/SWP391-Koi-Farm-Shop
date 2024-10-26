@@ -28,9 +28,10 @@ const {
   getOrderDetails,
   updateOrderToPending,
   updateOrderToProcessing,
-  updateOrderToShipped,
+  updateOrderToDelivering,
   updateOrderToDelivered,
   updateOrderToCancelled,
+  cancelOrder,
 } = require("../controllers/orderController");
 const {
   getAllCustomers,
@@ -389,6 +390,52 @@ router.delete("/deleteKoi/:koiId", deleteKoiFish);
 /**
  * @swagger
  * /api/orders:
+ *   post:
+ *     summary: Create a new order
+ *     tags: [Orders]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               customerID:
+ *                 type: integer
+ *                 example: 1
+ *               shippingAddress:
+ *                 type: string
+ *                 example: "123 Main St"
+ *               paymentMethod:
+ *                 type: string
+ *                 example: "Bank Transfer"
+ *               orderItems:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     KoiID:
+ *                       type: integer
+ *                       example: null
+ *                     PackageID:
+ *                       type: integer
+ *                       example: null
+ *                     quantity:
+ *                       type: integer
+ *                       example: 1
+ *     responses:
+ *       201:
+ *         description: Order created successfully
+ *       400:
+ *         description: Invalid input data
+ *       500:
+ *         description: Internal server error
+ */
+router.post("/orders", createOrder);
+
+/**
+ * @swagger
+ * /api/orders:
  *   get:
  *     summary: Get all orders
  *     tags: [Orders]
@@ -416,33 +463,6 @@ router.get("/orders", getAllOrders);
  *         description: Order details
  */
 router.get("/orders/:orderId", getOrderById);
-
-/**
- * @swagger
- * /api/orders:
- *   post:
- *     summary: Create a new order
- *     tags: [Orders]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               customerID:
- *                 type: integer
- *               totalAmount:
- *                 type: number
- *               shippingAddress:
- *                 type: string
- *               paymentMethod:
- *                 type: string
- *     responses:
- *       201:
- *         description: Order created successfully
- */
-router.post("/orders", createOrder);
 
 /**
  * @swagger
@@ -484,9 +504,9 @@ router.patch("/orders/:orderId/processing", updateOrderToProcessing);
 
 /**
  * @swagger
- * /api/orders/{orderId}/shipped:
+ * /api/orders/{orderId}/delivering:
  *   patch:
- *     summary: Update order status to Shipped
+ *     summary: Update order status to delivering
  *     tags: [Orders]
  *     parameters:
  *       - in: path
@@ -497,9 +517,9 @@ router.patch("/orders/:orderId/processing", updateOrderToProcessing);
  *         description: Order ID
  *     responses:
  *       200:
- *         description: Order status updated to Shipped
+ *         description: Order status updated to delivering
  */
-router.patch("/orders/:orderId/shipped", updateOrderToShipped);
+router.patch("/orders/:orderId/delivering", updateOrderToDelivering);
 
 /**
  * @swagger
@@ -538,6 +558,31 @@ router.patch("/orders/:orderId/delivered", updateOrderToDelivered);
  *         description: Order status updated to Cancelled
  */
 router.patch("/orders/:orderId/cancelled", updateOrderToCancelled);
+
+/**
+ * @swagger
+ * /api/orders/{orderId}/cancel:
+ *   patch:
+ *     summary: Cancel an order by ID
+ *     tags: [Orders]
+ *     parameters:
+ *       - in: path
+ *         name: orderId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The ID of the order to be cancelled
+ *     responses:
+ *       200:
+ *         description: Order cancelled successfully
+ *       400:
+ *         description: Cannot cancel a delivered order
+ *       404:
+ *         description: Order not found
+ *       500:
+ *         description: Internal server error
+ */
+router.patch('/:orderId/cancel', cancelOrder);
 
 /**
  * @swagger

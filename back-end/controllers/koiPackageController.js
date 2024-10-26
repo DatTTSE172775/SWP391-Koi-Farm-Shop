@@ -40,6 +40,7 @@ exports.createKoiPackage = async (req, res) => {
   }
 };
 
+// Controller function to get all of a Koi Packages
 exports.getAllKoiPackages = async (req, res) => {
   try {
     const result = await koiPackageModel.getAllKoiPackages();
@@ -94,6 +95,7 @@ exports.deleteKoiPackage = async (req, res) => {
   }
 };
 
+// Controller function to get a Koi Package by an Id
 exports.getKoiPackageById = async (req, res) => {
   try {
     const { packageId } = req.params;
