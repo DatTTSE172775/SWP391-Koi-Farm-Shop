@@ -9,10 +9,13 @@ import DeliveredOrders from "../pages/staff/order-manage/completed/CompletedOrde
 import OrderDetail from "../pages/staff/order-manage/details/OrderDetail";
 import ProcessingOrders from "../pages/staff/order-manage/processing/ProcessingOrders";
 import ShippingOrders from "../pages/staff/order-manage/shipping/ShippingOrders";
+import PendingConsignments from "../pages/staff/consignment-manage/processing/ProcessingConsignment";
+import InCareConsignments from "../pages/staff/consignment-manage/completed/CompletedConsignment";
 
 const staffRoutes = (
   <Route path="/staff" element={<StaffLayout />}>
     <Route index element={<WelcomeStaff />} />
+
     <Route path="orders" element={<StaffOrderManage />}>
       <Route path="processing" element={<ProcessingOrders />} />
       <Route path="shipping" element={<ShippingOrders />} />
@@ -20,6 +23,9 @@ const staffRoutes = (
       <Route path="cancelled" element={<CancelledOrders />} />
       <Route path="orders/:id" element={<OrderDetail />} />
     </Route>
+
+    <Route path="/staff/consignments/pending" element={<PendingConsignments />} />
+    <Route path="/staff/consignments/in-care" element={<InCareConsignments />} />
   </Route>
 );
 

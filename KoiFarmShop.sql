@@ -10,8 +10,8 @@ CREATE TABLE Users (
     SubscriptionStatus VARCHAR(50) CHECK (SubscriptionStatus IN ('Active', 'Inactive')) NOT NULL
 );
 
-select * from Users
-select * from Orders
+--select * from Users
+--select * from Orders
 
 CREATE TABLE Customers (
     CustomerID INT IDENTITY(1,1) PRIMARY KEY,
@@ -24,7 +24,7 @@ CREATE TABLE Customers (
     FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
 
-select * from Customers
+--select * from Customers
 
 CREATE TABLE Varieties (
     VarietyID INT IDENTITY(1,1) PRIMARY KEY,
@@ -33,7 +33,7 @@ CREATE TABLE Varieties (
     Origin VARCHAR(50) CHECK (Origin IN ('Japan', 'Vietnam', 'Other'))
 );
 
-select * from Varieties where VarietyID =1
+--select * from Varieties where VarietyID =1
 
 CREATE TABLE Breeders (
     BreederID INT IDENTITY(1,1) PRIMARY KEY,
@@ -67,9 +67,9 @@ CREATE TABLE KoiFish (
     FOREIGN KEY (BreederID) REFERENCES Breeders(BreederID)
 );
 
-select * from KoiFish
-select * from Breeders
-select * from Varieties
+--select * from KoiFish
+--select * from Breeders
+--select * from Varieties
 
 
 CREATE TABLE KoiPackage (
@@ -84,45 +84,58 @@ CREATE TABLE KoiPackage (
     FOREIGN KEY (KoiID) REFERENCES KoiFish(KoiID)
 );
 
-SELECT * FROM KoiPackage WHERE PackageID = 7
+--SELECT * FROM KoiPackage WHERE PackageID = 7
 
 
-select * from KoiFish
-SELECT * FROM KoiPackage
-select * from KoiPackageVarieties
-select * from KoiPackageBreeders
-select * from Reviews
+--select * from KoiFish
+--SELECT * FROM KoiPackage
+--select * from KoiPackageVarieties
+--select * from KoiPackageBreeders
+--select * from Reviews
 
 CREATE TABLE KoiConsignment (
     ConsignmentID INT IDENTITY(1,1) PRIMARY KEY,
     CustomerID INT,
     KoiID INT,
-    ConsignmentType VARCHAR(50),
-    ConsignmentMode VARCHAR(50) CHECK (ConsignmentMode IN ('Offline', 'Online')),
+    ConsignmentType VARCHAR(50) CHECK (ConsignmentType IN ('Care', 'Sale')), -- Should be Care or Sale only
+    ConsignmentMode VARCHAR(50) CHECK (ConsignmentMode IN ('Offline', 'Online')), -- Should be online only
     StartDate DATETIME DEFAULT CURRENT_TIMESTAMP,
     EndDate DATETIME,
     Status VARCHAR(50) CHECK (Status IN ('Pending', 'Approved', 'In Care', 'Listed for Sale', 'Sold', 'Withdrawn')) DEFAULT 'Pending',
     PriceAgreed DECIMAL(10, 2),
     PickupDate DATETIME,
     ApprovedStatus VARCHAR(50) CHECK (ApprovedStatus IN ('Pending', 'Approved', 'Rejected')) DEFAULT 'Pending',
-    InspectionResult VARCHAR(MAX),
-    Notes VARCHAR(MAX),
+    InspectionResult NVARCHAR(MAX),
+    Notes NVARCHAR(MAX),
+    KoiType NVARCHAR(100),
+    KoiColor NVARCHAR(100),
+    KoiAge INT,
+    KoiSize INT,
+    ImagePath NVARCHAR(255),
+    UserID INT,
     FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID),
-    FOREIGN KEY (KoiID) REFERENCES KoiFish(KoiID)
+    FOREIGN KEY (KoiID) REFERENCES KoiFish(KoiID),
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
 
-ALTER TABLE KoiConsignment
-ADD KoiType NVARCHAR(100),
-    KoiColor NVARCHAR(100),
-    KoiAge NVARCHAR(50),
-    KoiSize NVARCHAR(50),
-    ImagePath NVARCHAR(255);
 
+	--select * from KoiConsignment where UserID = 3 And ApprovedStatus = 'Pending'
+
+	--UPDATE KoiConsignment
+     --           SET ApprovedStatus = 'Pending'
+     --           WHERE ConsignmentID = 1
 
 --use KoiFarmShop
-SELECT * FROM KoiConsignment
-
+--SELECT * FROM KoiConsignment
+--select * from Orders	
 --select * from Users;
+--select * from OrderDetails
+
+
+--SELECT kc.* 
+--        FROM KoiConsignment kc
+--       JOIN Users u ON kc.UserID = u.userId
+--        WHERE u.userId = 3 AND u.Role = 'Staff'
 
 CREATE TABLE Promotions (
     PromotionID INT IDENTITY(1,1) PRIMARY KEY,
@@ -157,11 +170,11 @@ CREATE TABLE Orders (
     FOREIGN KEY (ConsignmentID) REFERENCES KoiConsignment(ConsignmentID),
     FOREIGN KEY (PromotionID) REFERENCES Promotions(PromotionID)
 );
-select * from KoiFish
-select * from Orders
-select * from Customers
+--select * from KoiFish
+--select * from Orders
+--select * from Customers
 
-SELECT * FROM OrderDetails WHERE OrderID = 14
+--SELECT * FROM OrderDetails WHERE OrderID = 14
 
 
 CREATE TABLE OrderDetails (
@@ -179,14 +192,14 @@ CREATE TABLE OrderDetails (
     FOREIGN KEY (PackageID) REFERENCES KoiPackage(PackageID)
 );
 
-SELECT od.OrderDetailID, kp.PackageName, kp.PackageID
-FROM OrderDetails od
-JOIN KoiPackage kp ON od.PackageID = kp.PackageID
-WHERE od.OrderID = 14;
+--SELECT od.OrderDetailID, kp.PackageName, kp.PackageID
+--FROM OrderDetails od
+--JOIN KoiPackage kp ON od.PackageID = kp.PackageID
+--WHERE od.OrderID = 14;
 
-select * from Orders
+--select * from Orders
 
-select * from OrderDetails
+--select * from OrderDetails
 
 CREATE TABLE Payments (
     PaymentID INT IDENTITY(1,1) PRIMARY KEY,
@@ -322,16 +335,9 @@ INSERT INTO Users (Username, PasswordHash, Role, SubscriptionStatus) VALUES
 ('ThanhDien', '13', 'Customer', 'Active'),
 ('MinhAnh', '14', 'Customer', 'Active');
 
-INSERT INTO Users (Username, PasswordHash, Role, SubscriptionStatus) VALUES
-('ThaiBao', '15', 'Customer', 'Inactive'),
-('MinhKhoi', '16', 'Customer', 'Active'),
-('ManhHung', '17', 'Customer', 'Active'),
-('AnhTuan', '18', 'Customer', 'Active'),
-('DiemQuynh', '19', 'Customer', 'Active'),
-('MinhKiet', '20', 'Customer', 'Active');
 --delete from Users
 --DBCC CHECKIDENT ('Users', RESEED, 0);
-select * from Users
+--select * from Users
 
 INSERT INTO Customers (UserID, FullName, Email, PhoneNumber, Address, LoyaltyPoints) VALUES
 (7, 'Nguyễn Thị Tuyết Hương', 'nguyenthituyethuong10.1@gmail.com', '0799670750', '123 Lê Lợi, Quận 1, TP.HCM', 100),
@@ -445,8 +451,8 @@ VALUES
 (9, 9, 1, 5500000, 5500000, 'Single Fish', 'Issued'),
 (10, 10, 1, 8500000, 8500000, 'Single Fish', 'Issued');
 
-select * from Orders
-select * from OrderDetails
+--select * from Orders
+--select * from OrderDetails
 
 INSERT INTO Payments (OrderID, PaymentDate, PaymentMethod, PaymentStatus) VALUES
 (1, '2024-06-15 10:35:00', 'Credit Card', 'Completed'),
@@ -573,8 +579,8 @@ INSERT INTO KoiPackageVarieties (PackageID, VarietyID) VALUES
 --(9, 4), (9, 5), (9, 7),
 --(10, 10), (10, 3);
 
-select * from KoiPackageVarieties
-select * from KoiPackage
+--select * from KoiPackageVarieties
+--select * from KoiPackage
 
 INSERT INTO KoiPackageBreeders (PackageID, BreederID) VALUES
 (3, 1), (4, 2),
@@ -614,3 +620,24 @@ INSERT INTO OrderHistory (OrderID, TrackingNumber, ShipmentDate, DeliveryDate, S
 (9, 'VN369258147', '2025-02-11 09:45:00', '2025-02-13 14:15:00', 'Delivered'),
 (10, 'VN741852963', '2025-03-16 10:30:00', '2025-03-18 16:00:00', 'Delivered');
 select * from OrderHistory
+
+INSERT INTO KoiConsignment (CustomerID, KoiID, ConsignmentType, ConsignmentMode, StartDate, EndDate, Status, PriceAgreed, PickupDate, ApprovedStatus, InspectionResult, Notes) VALUES
+-- Status: 'Pending', ApprovedStatus: 'Pending'
+(1, 1, 'Standard', 'Offline', DEFAULT, '2024-12-31', 'Pending', 50000.00, '2024-10-25', 'Pending', 'Chưa kiểm tra', 'Ghi chú mẫu cho trạng thái Pending'),
+
+-- Status: 'Approved', ApprovedStatus: 'Approved'
+(2, 2, 'Premium', 'Online', DEFAULT, '2024-11-30', 'Approved', 80000.00, '2024-10-26', 'Approved', 'Koi đạt tiêu chuẩn', 'Ghi chú mẫu cho trạng thái Approved'),
+
+-- Status: 'In Care', ApprovedStatus: 'Approved'
+(3, 3, 'Standard', 'Offline', DEFAULT, '2024-11-15', 'In Care', 60000.00, '2024-10-27', 'Approved', 'Koi cần chăm sóc thêm', 'Ghi chú mẫu cho trạng thái In Care'),
+
+-- Status: 'Listed for Sale', ApprovedStatus: 'Approved'
+(4, 4, 'Premium', 'Online', DEFAULT, '2024-11-20', 'Listed for Sale', 100000.00, '2024-10-28', 'Approved', 'Koi đã sẵn sàng bán', 'Ghi chú mẫu cho trạng thái Listed for Sale'),
+
+-- Status: 'Sold', ApprovedStatus: 'Approved'
+(5, 5, 'Standard', 'Offline', DEFAULT, '2024-12-01', 'Sold', 120000.00, '2024-10-29', 'Approved', 'Koi đã bán', 'Ghi chú mẫu cho trạng thái Sold'),
+
+-- Status: 'Withdrawn', ApprovedStatus: 'Rejected'
+(6, 6, 'Premium', 'Online', DEFAULT, '2024-11-10', 'Withdrawn', 150000.00, '2024-10-30', 'Rejected', 'Koi không đủ tiêu chuẩn', 'Ghi chú mẫu cho trạng thái Withdrawn');
+
+--select * from KoiConsignment

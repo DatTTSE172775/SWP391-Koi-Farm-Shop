@@ -22,6 +22,9 @@ import WelcomeAdmin from "./pages/admin/welcome/WelcomeAdmin";
 import MainLayout from "./pages/MainLayout";
 import NotFound from "./pages/notfound/NotFound";
 import staffRoutes from "./routes/StaffRoutes";
+import PendingConsignments from "./pages/staff/consignment-manage/processing/ProcessingConsignment";
+import InCareConsignments from "./pages/staff/consignment-manage/completed/CompletedConsignment";
+import ManagerConsignmentPage from "./pages/admin/consign/AdminConsignment";
 
 // auth page
 const ForgetPassword = lazy(() =>
@@ -36,7 +39,10 @@ const About = lazy(() => import("./pages/about/About"));
 const Consignment = lazy(() => import("./pages/consignment/Consignment"));
 const ConsignmentForm = lazy(() =>
   import("./pages/consignment/ConsignmentForm")
+
 );
+const ConsignmentDetail = lazy(() => import("./pages/admin/consignment-details/consignmentDetails"));
+
 const Blog = lazy(() => import("./pages/blog/Blog"));
 const Contact = lazy(() => import("./pages/contact/Contact"));
 const HomePage = lazy(() => import("./pages/home/HomePage"));
@@ -141,13 +147,16 @@ function App() {
             <Route path="/admin/updateKoi" element={<UpdateKoi />} />
             <Route path="/admin/deleteKoi" element={<DeleteKoi />} />
             <Route path="/admin/deletePackage" element={<DeleteKoiPackage />} />
-            {/* <Route
+            <Route
               path="/admin/manage-consign"
               element={<ManagerConsignmentPage />}
-            /> */}
-
+            />
+            <Route path="/admin/consign-detail/:id" element={<ConsignmentDetail />} />
             {/* Staff Routes */}
             {staffRoutes}
+
+            {/* <Route path="/staff/consignments/pending" element={<PendingConsignments />} />
+            <Route path="/staff/consignments/in-care" element={<InCareConsignments />} /> */}
 
             {/* Customer Routes */}
             <Route path="/account" element={<WelcomeAccount />} />

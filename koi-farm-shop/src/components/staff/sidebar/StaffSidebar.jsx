@@ -58,9 +58,25 @@ const Sidebar = () => {
           </Menu.Item>
         </SubMenu>
 
-        <Menu.Item key="consignments" icon={<InboxOutlined />}>
+
+        {/* <Menu.Item key="consignments" icon={<InboxOutlined />}>
           <Link to="/staff/consignments">Quản Lý Ký Gửi</Link>
-        </Menu.Item>
+        </Menu.Item> */}
+
+        <SubMenu
+          key="consignments"
+          icon={<ShoppingCartOutlined />}
+          title="Quản Lý Ký Gửi"
+        >
+          <Menu.Item key="consignments-pending">
+            <Link to="/staff/consignments/pending">Đang Ký Gửi</Link>
+          </Menu.Item>
+          <Menu.Item key="consignments-in-care">
+            <Link to="/staff/consignments/in-care">Hoàn Thành</Link>
+          </Menu.Item>
+        </SubMenu>
+
+
         <Menu.Item key="notification" icon={<NotificationFilled />}>
           <Link to="/staff/notification">Thông báo</Link>
         </Menu.Item>

@@ -88,7 +88,7 @@ const OrderDetails = () => {
     const assignedStaff = staff.find((member) => member.UserID === userId);
     const username = assignedStaff ? assignedStaff.Username : "Chưa giao";
 
-    dispatch(assignOrder(orderId, userId, username));
+    dispatch(assignOrder(orderId, userId, username)); 
 
     // Update local state to reflect changes immediately
     setAssignee(username);
@@ -157,6 +157,8 @@ const OrderDetails = () => {
               <Descriptions.Item label="Phương Thức Thanh Toán">
                 {order.PaymentMethod}
               </Descriptions.Item>
+
+
               <Descriptions.Item label="Nhân Viên Phụ Trách">
                 {order.OrderStatus === "Pending" ? (
                   <Select
@@ -174,6 +176,8 @@ const OrderDetails = () => {
                   <Typography.Text>{assignee}</Typography.Text>
                 )}
               </Descriptions.Item>
+
+
             </Descriptions>
             <Divider />
             <Row justify="end">

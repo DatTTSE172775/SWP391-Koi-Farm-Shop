@@ -66,7 +66,142 @@ const getAllKoiConsignments = async () => {
     }
 };
 
+const getConsignmentsById = async (id) => {
+  try {
+    const pool = await sql.connect();
+    const result = await pool.request()
+      .input('ConsignmentID', sql.Int, id)
+      .query('SELECT * FROM KoiConsignment WHERE ConsignmentID = @ConsignmentID');
+
+    if (result.recordset.length === 0) {
+      return null;
+    }
+    return result.recordset[0];
+  } catch (error) {
+    console.error("Error fetching consignment by ID:", error);
+    throw error;
+  }
+};
+
+const updateConsignmentStatus = async (consignmentID, status) => {
+    try {
+      const pool = await sql.connect();
+      const result = await pool.request()
+        .input('ID', sql.Int, consignmentID)
+        .input('Status', sql.VarChar(50), status)
+        .query('UPDATE KoiConsignment SET ApprovedStatus = @Status WHERE ConsignmentID = @ID');
+      
+      if (result.rowsAffected[0] > 0) {
+        return { success: true, data: { consignmentID, status } };
+      } else {
+        return { success: false };
+      }
+    } catch (error) {
+      console.error('Error updating consignment status:', error);
+      throw error;
+    }
+  };
+
+  exports.isUserStaff = async (userId) => {
+    try {
+      const result = await sql.query`
+        SELECT Role FROM Users WHERE UserID = ${userId}
+      `;
+      if (result.recordset.length === 0) {
+        return false; // User not found
+      }
+      return result.recordset[0].Role === "Staff";
+    } catch (error) {
+      console.error("Error checking user role:", error);
+      throw new Error("Error checking user role");
+    }
+  };
+
+  exports.assignConsignmentToStaff = async (consignmentId, userId) => {
+    try {
+        console.log("Model: Assigning consignment", { consignmentId, userId });
+        const isStaff = await exports.isUserStaff(userId);
+        if (!isStaff) {
+            return { error: "User is not a staff member." };
+        }
+
+        const pool = await sql.connect();
+        const result = await pool.request()
+            .input('userId', sql.Int, userId)
+            .input('consignmentId', sql.Int, consignmentId)
+            .query`
+                UPDATE KoiConsignment
+                SET UserID = @userId
+                WHERE ConsignmentID = @consignmentId
+            `;
+
+        console.log("Update result:", result);
+
+        if (result.rowsAffected[0] === 0) {
+            return null; // No consignment was updated
+        }
+        return { consignmentId, userId };
+    } catch (error) {
+        console.error("Error assigning consignment to staff:", error);
+        throw new Error("Error assigning consignment to staff");
+    }
+  };
+
+  const getAllStaffConsignmentsByUserId = async (userId) => {
+    try {  
+      const pool = await sql.connect();
+  
+      const result = await pool.request().input("userId", sql.Int, userId)
+        .query(`
+          SELECT kc.* 
+          FROM KoiConsignment kc
+          JOIN Users u ON kc.UserID = u.userId
+          WHERE u.userId = @userId AND u.Role = 'Staff'
+        `);
+  
+      if (result.recordset.length === 0) {
+        return { message: "No consignments found for the given user ID" };
+      }
+  
+      return result.recordset;
+    } catch (error) {
+      console.error("Error fetching consignments by user ID:", error);
+      throw new Error("Error fetching consignments by user ID");
+    }
+  };
+
+  const getPendingConsignmentsByUserId = async (userId) => {
+    try {
+      const pool = await sql.connect();
+      const result = await pool.request().input("userId", sql.Int, userId)
+        .query(`SELECT * FROM KoiConsignment WHERE UserID = @userId AND ApprovedStatus = 'Pending'`);
+      return result.recordset;
+    } catch (error) {
+      console.error("Error fetching pending consignments by user ID:", error);
+      throw new Error("Error fetching pending consignments by user ID");
+    }
+  }
+
+  const getApprovedConsignmentsByUserId = async (userId) => {
+    try {
+      const pool = await sql.connect();
+      const result = await pool.request().input("userId", sql.Int, userId)
+        .query(`SELECT * FROM KoiConsignment WHERE UserID = @userId AND ApprovedStatus = 'Approved'`);
+      return result.recordset;
+    } catch (error) {
+      console.error("Error fetching approved consignments by user ID:", error);
+      throw new Error("Error fetching approved consignments by user ID");
+    }
+  }
+
 module.exports = {
     createKoiConsignment,
     getAllKoiConsignments,
+    getConsignmentsById,
+    updateConsignmentStatus,
+    assignConsignmentToStaff: exports.assignConsignmentToStaff,
+    isUserStaff: exports.isUserStaff,
+    getAllStaffConsignmentsByUserId,
+    getPendingConsignmentsByUserId,
+    getApprovedConsignmentsByUserId
 };

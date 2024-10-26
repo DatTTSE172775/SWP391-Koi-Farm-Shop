@@ -1,0 +1,27 @@
+.consignment-list-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+
+  .list-title {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .consignment-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .empty-state {
+    margin-top: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .consignment-list-container {
+    flex-direction: column;
+  }
+}
+

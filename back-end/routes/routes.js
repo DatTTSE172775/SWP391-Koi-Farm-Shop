@@ -53,6 +53,12 @@ const {
 const {
   createKoiConsignment,
   getAllKoiConsignments,
+  getConsignmentsById,
+  updateConsignmentStatus,
+  assignConsignmentToStaff,
+  getAllStaffConsignmentsByUserId,
+  getPendingConsignmentsByUserId,
+  getApprovedConsignmentsByUserId
 } = require("../controllers/koiConsignmentController");
 const {
   createBreeder,
@@ -252,6 +258,25 @@ router.get("/staff", getAllStaff);
  *         description: Internal server error
  */
 router.get("/orders/user/:userId", getAllStaffOrdersByUserId);
+
+/**
+ * @swagger
+ * /api/consignments/user/{userId}:
+ *   get:
+ *     summary: Get all consignments assigned to Staff
+ *     tags: [Consignments]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: User ID of the staff member
+ *     responses:
+ *       200:
+ *         description: List of consignments assigned to the staff member
+ */
+router.get("/consignments/user/:userId", getAllStaffConsignmentsByUserId);
 
 // Koi Fish routes
 
@@ -820,6 +845,65 @@ router.post(
  *         description: List of all Koi Consignments
  */
 router.get("/koiconsignments", getAllKoiConsignments);
+
+/**
+ * @swagger
+ * /api/koiconsignment/{id}:
+ *   get:
+ *     summary: Get Koi Consignment by ID
+ *     tags: [Koi Consignment]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: Koi Consignment ID
+ *     responses:
+ *       200:
+ *         description: Koi Consignment details
+ */
+router.get("/koiconsignment/:id", getConsignmentsById);
+
+router.patch("/koiconsignment/:consignmentId/:status", updateConsignmentStatus);
+
+router.patch("/koiconsignment/:consignmentId/:approved", updateConsignmentStatus);
+      
+router.get("/koiconsignment/pending/:userId", getPendingConsignmentsByUserId);
+
+router.get("/koiconsignment/approved/:userId", getApprovedConsignmentsByUserId);
+
+/**
+ * @swagger
+ * /api/koiconsignment/{consignmentId}/assign:
+ *   patch:
+ *     summary: Assign consignment to staff
+ *     tags: [Koi Consignment]
+ *     parameters:
+ *       - in: path
+ *         name: consignmentId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: Consignment ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userId:
+ *                 type: integer
+ *     responses:
+ *       200:
+ *         description: Consignment assigned to staff successfully
+ *       404:
+ *         description: Consignment not found
+ *       500:
+ *         description: Failed to assign consignment to staff
+ */
+router.patch("/koiconsignment/:id/assign", assignConsignmentToStaff);
 
 // Breeders routes
 /**
