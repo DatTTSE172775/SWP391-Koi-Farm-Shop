@@ -1,15 +1,34 @@
 const consignmentModel = require("../models/koiConsignmentModel");
+const multer = require('multer');
+const path = require('path');
 
-exports.createKoiConsignment = async (req, res) => {
-    try {
-        // The req object now has the user information thanks to authMiddleware
-        const result = await consignmentModel.createKoiConsignment(req);
-        res.status(201).json({ message: 'Koi Consignment created successfully', result });
-    } catch (error) {
-        console.error('Error in createKoiConsignment controller:', error);
-        res.status(500).json({ message: 'Error creating Koi Consignment', error: error.message });
+
+// Configure multer for file upload
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, path.join(__dirname, '../../uploads/')) // Path is now relative to the back-end directory
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname)) // Appending extension
     }
-};
+});
+
+const upload = multer({ storage: storage });
+
+exports.createKoiConsignment = [
+    upload.single('imageFile'), // 'imageFile' should match the name in the form data
+    async (req, res) => {
+        try {
+            // The req object now has the user information thanks to authMiddleware
+            // and the file information thanks to multer
+            const result = await consignmentModel.createKoiConsignment(req);
+            res.status(201).json({ message: 'Koi Consignment created successfully', result });
+        } catch (error) {
+            console.error('Error in createKoiConsignment controller:', error);
+            res.status(500).json({ message: error.message || 'Error creating Koi Consignment' });
+        }
+    }
+];
 
 exports.getAllKoiConsignments = async (req, res) => {
     try {
@@ -39,6 +58,15 @@ exports.getConsignmentsById = async (req, res) => {
 exports.updateConsignmentStatus = async (req, res) => {
     try {
         const { consignmentId, status } = req.params;
+        
+        console.log('Received consignmentId:', consignmentId);
+        console.log('Received status:', status);
+        console.log('Received request:', req.params);
+        
+        if (status === 'assign') {
+            return res.status(400).json({ success: false, message: 'Invalid status. Use the /assign endpoint for assigning consignments.' });
+        }
+        
         const result = await consignmentModel.updateConsignmentStatus(consignmentId, status);
         if (result.success) {
             res.status(200).json({ success: true, message: 'Koi Consignment status updated successfully', data: result.data });
@@ -52,26 +80,38 @@ exports.updateConsignmentStatus = async (req, res) => {
 };
 
 exports.assignConsignmentToStaff = async (req, res) => {
-    const consignmentId = parseInt(req.params.id, 10);
+    const consignmentId = parseInt(req.params.consignmentId, 10);
     const { userId } = req.body;
 
-    console.log("Assigning consignment:", { consignmentId, userId });
+    console.log("Consignment ID:", consignmentId);
+    console.log("User ID:", userId);
 
-    if (!consignmentId || !userId) {
-        return res.status(400).send({ message: "Consignment ID and User ID are required." });
+    if (!consignmentId) {
+        return res.status(400).send({ message: "Consignment ID is required." });
     }
 
     try {
-        const result = await consignmentModel.assignConsignmentToStaff(consignmentId, userId);
-        if (result && result.error) {
-            return res.status(400).send({ message: result.error });
+        // Check if the user is a staff member
+        const isStaff = await consignmentModel.isUserStaff(userId);
+        if (!isStaff) {
+            return res.status(400).send({ message: "User is not a Staff member." });
         }
-        if (!result) {
+
+        // Check if the consignment exists
+        const consignment = await consignmentModel.getConsignmentsById(consignmentId);
+        if (!consignment) {
             return res.status(404).send({ message: "Consignment not found." });
         }
-        res.status(200).json({ message: "Consignment assigned to staff.", consignment: result });
+
+        // Assign the consignment to staff
+        const assignedConsignment = await consignmentModel.assignConsignmentToStaff(consignmentId, userId);
+        if (!assignedConsignment) {
+            return res.status(400).send({ message: "Failed to assign consignment to staff." });
+        }
+
+        res.status(200).send({ message: "Consignment assigned to staff successfully.", consignment: assignedConsignment });
     } catch (err) {
-        console.error(err);
+        console.error("Error assigning consignment to staff:", err);
         res.status(500).send({ message: "Failed to assign consignment to staff." });
     }
 };
@@ -123,3 +163,4 @@ exports.updateConsignmentToApproved = async (req, res) => {
       res.status(500).send({ message: "Failed to update consignment to Approved." });
     }
   };
+

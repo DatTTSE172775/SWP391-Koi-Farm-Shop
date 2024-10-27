@@ -9,28 +9,27 @@ const ProcessingConsignment = () => {
   const [error, setError] = useState(null);
 
   const userId = localStorage.getItem('userId');
-  console.log('User ID from localStorage:', userId);
+
+  const fetchConsignments = async () => {
+    try {
+      console.log('Fetching consignments for user ID:', userId);
+      const response = await axiosInstance.get(`/koiconsignment/pending/${userId}`);
+      console.log("API Response:", response.data);
+      if (response.data && Array.isArray(response.data.data)) {
+        setConsignments(response.data.data);
+      } else {
+        console.error("API did not return an array in data property:", response.data);
+        setConsignments([]);
+      }
+      setLoading(false);
+    } catch (err) {
+      console.error("Error fetching consignments:", err);
+      setError(err.message);
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchConsignments = async () => {
-      try {
-        console.log('Fetching consignments for user ID:', userId);
-        const response = await axiosInstance.get(`/koiconsignment/pending/${userId}`);
-        console.log("API Response:", response.data);
-        if (response.data && Array.isArray(response.data.data)) {
-          setConsignments(response.data.data);
-        } else {
-          console.error("API did not return an array in data property:", response.data);
-          setConsignments([]);
-        }
-        setLoading(false);
-      } catch (err) {
-        console.error("Error fetching consignments:", err);
-        setError(err.message);
-        setLoading(false);
-      }
-    };
-
     if (userId) {
       fetchConsignments();
     } else {
@@ -39,6 +38,12 @@ const ProcessingConsignment = () => {
     }
   }, [userId]);
 
+  const handleConsignmentRemoval = (removedConsignmentId) => {
+    setConsignments((prevConsignments) =>
+      prevConsignments.filter((consignment) => consignment.ConsignmentID !== removedConsignmentId)
+    );
+  };
+
   if (loading) return <Spin tip="Loading consignments..." />;
   if (error) return <div>Error: {error}</div>;
 
@@ -46,6 +51,7 @@ const ProcessingConsignment = () => {
     <ConsignmentList 
       initialConsignments={consignments} 
       filterStatus="Pending"
+      onRemove={handleConsignmentRemoval}
     />
   );
 };

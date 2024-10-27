@@ -38,7 +38,9 @@ const StaffConsignmentItem = ({ consignment, onRemove }) => {
         `/koiconsignment/${ConsignmentID}/${nextStatus}`
       );
       
-      if (response.data.success) {
+      console.log("Status change response:", response.data);
+
+      if (response.data.success || response.data.message.includes("updated to Approved")) {
         notification.success({
           message: "Thành Công",
           description: `Đơn ký gửi đã chuyển sang trạng thái ${nextStatus}.`,
@@ -52,10 +54,22 @@ const StaffConsignmentItem = ({ consignment, onRemove }) => {
         throw new Error(response.data.message || "Failed to update status");
       }
     } catch (error) {
-      notification.error({
-        message: "Lỗi",
-        description: "Không thể cập nhật trạng thái đơn ký gửi.",
-      });
+      console.error("Error updating status:", error);
+      if (error.message.includes("updated to Approved")) {
+        // If the error message indicates successful approval, treat it as a success
+        notification.success({
+          message: "Thành Công",
+          description: "Đơn ký gửi đã được chuyển sang trạng thái Approved.",
+        });
+        if (onRemove) {
+          onRemove(ConsignmentID);
+        }
+      } else {
+        notification.error({
+          message: "Lỗi",
+          description: "Không thể cập nhật trạng thái đơn ký gửi.",
+        });
+      }
     }
   };
 

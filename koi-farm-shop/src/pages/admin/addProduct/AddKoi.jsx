@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Layout, Typography, Form, Input, InputNumber, Select, Button, message } from "antd";
 import AdminHeader from "../../../components/admin/header/AdminHeader";
 import AdminSidebar from "../../../components/admin/sidebar/AdminSidebar";
@@ -15,6 +15,9 @@ const AddKoi = () => {
   const [breeders, setBreeders] = useState([]);
   const [varieties, setVarieties] = useState([]);
   const navigate = useNavigate();
+  const [imageFile, setImageFile] = useState(null);
+  const [certificateFile, setCertificateFile] = useState(null);
+
   useEffect(() => {
     fetchBreeders();
     fetchVarieties();
@@ -142,8 +145,17 @@ const AddKoi = () => {
               <Form.Item name="certificateLink" label="Link chứng chỉ">
                 <Input placeholder="change this to Upload file"/>
               </Form.Item>
-              <Form.Item name="imagesLink" label="Link hình ảnh">
-                <Input placeholder="change this to Upload file"/>
+              <Form.Item name="ImageFile" label="Hình ảnh">
+                <Input type="file" accept="image/*" />
+                {imageFile && (
+                  <div className="image-preview">
+                    <img
+                      src={URL.createObjectURL(imageFile)}
+                      alt="Koi preview"
+                      style={{ width: "200px", height: "auto", marginTop: "10px" }}
+                    />
+                  </div>
+                )}
               </Form.Item>
               <Form.Item name="availability" label="Trạng thái">
                 <Select>

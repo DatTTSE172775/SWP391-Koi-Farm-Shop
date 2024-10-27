@@ -62,20 +62,21 @@ const ConsignmentDetails = () => {
       const assignedStaff = staff.find((member) => member.UserID === userId);
       const username = assignedStaff ? assignedStaff.Username : "Chưa giao";
 
-      console.log("Assigning consignment:", { consignmentId: consignment.ConsignmentID, userId });
-
-      const response = await axiosInstance.patch(`/koiconsignment/${consignment.ConsignmentID}/assign`, {
-        userId,
+      const payload = { userId: userId };
+      console.log("Frontend - Assigning consignment:", {
+        consignmentId: consignment.ConsignmentID,
+        payload: payload
       });
+      // await axiosInstance.patch(`/koiconsignment/${consignment.ConsignmentID}/approved`);
+      const response = await axiosInstance.patch(`/koiconsignment/${consignment.ConsignmentID}/assign`, payload);
+      console.log("Frontend - Assignment response:", response.data);
 
-      console.log("Assignment response:", response.data);
-
-      if (response.data.message === "Consignment assigned to staff.") {
+      if (response.data.message) {
         setConsignment((prevConsignment) => ({
           ...prevConsignment,
           UserID: userId,
           AssignedTo: username,
-          Status: "In Care" // Assuming the status changes to "In Care" after assignment
+          ApprovedStatus: "Approved"
         }));
 
         notification.success({
@@ -86,10 +87,11 @@ const ConsignmentDetails = () => {
         throw new Error(response.data.message || "Failed to assign consignment");
       }
     } catch (error) {
-      console.error("Error assigning consignment:", error);
+      console.error("Frontend - Error assigning consignment:", error);
+      console.log("Frontend - Error details:", error.response?.data);
       notification.error({
         message: "Lỗi",
-        description: error.message || "Không thể giao ký gửi. Vui lòng thử lại.",
+        description: error.response?.data?.message || error.message || "Không thể giao ký gửi. Vui lòng thử lại.",
       });
     }
   };
@@ -142,7 +144,7 @@ const ConsignmentDetails = () => {
 
 
                   <Descriptions.Item label="Nhân Viên Phụ Trách">
-                    {consignment.Status === "Pending" ? (
+                    {consignment.ApprovedStatus === "Pending" ? (
                       <Select
                         value={consignment.UserID || undefined}
                         onChange={(userId) => handleAssign(userId)}
@@ -167,8 +169,14 @@ const ConsignmentDetails = () => {
                     <Title level={4}>Hình ảnh</Title>
                     <Image
                       width={200}
-                      src={consignment.ImagePath}
+                      src={`${process.env.REACT_APP_BASE_URL}/${consignment.ImagePath}`}
                       alt="Koi fish"
+                      // Add a placeholder while the image is loading
+                      placeholder={
+                        <div style={{ background: '#f0f0f0', width: 200, height: 200, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                          Loading...
+                        </div>
+                      }
                     />
                   </div>
                 )}

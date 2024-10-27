@@ -65,6 +65,9 @@ app.post('/api/auth/login', (req, res) => {
     res.json({ message: 'Login successful' });
 });
 
+const path = require('path');
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
 // Lắng nghe server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

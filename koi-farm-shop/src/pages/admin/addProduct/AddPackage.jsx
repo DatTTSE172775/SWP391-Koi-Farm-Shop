@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Layout, Typography, Form, Input, InputNumber, Select, Button, message } from "antd";
 import AdminHeader from "../../../components/admin/header/AdminHeader";
 import AdminSidebar from "../../../components/admin/sidebar/AdminSidebar";
@@ -14,6 +14,8 @@ const AddPackage = () => {
   const [form] = Form.useForm();
   const [varieties, setVarieties] = useState([]);
   const navigate = useNavigate();
+  const [imageFile, setImageFile] = useState(null);
+
   useEffect(() => {
     fetchVarieties();
   }, []);
@@ -33,23 +35,28 @@ const AddPackage = () => {
     }
   };
 
-
+  const handleFileChange = useCallback((e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+    }
+  }, []);
 
   const onFinish = async (values) => {
     try {
-      // Prepare the package data
-      const packageData = {
-        KoiID: values.KoiID[0],
-        PackageName: values.PackageName,
-        ImageLink: values.ImageLink,
-        Price: parseFloat(values.Price), // Ensure Price is a number
-        PackageSize: values.PackageSize,
-        Availability: values.Availability
-      };
+      const formData = new FormData();
+      formData.append("KoiID", values.KoiID[0]);
+      formData.append("PackageName", values.PackageName);
+      formData.append("Price", values.Price);
+      formData.append("PackageSize", values.PackageSize);
+      formData.append("Availability", values.Availability);
+      if (imageFile) {
+        formData.append("ImageFile", imageFile, imageFile.name);
+      }
 
-      console.log("Sending package data:", packageData); // Log the data being sent
-
-      const response = await axiosPublic.post("koipackage", packageData);
+      const response = await axiosPublic.post("koipackage", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       
       console.log("Server response:", response.data);
 
@@ -128,8 +135,17 @@ const AddPackage = () => {
                   <Option value="Sold Out">Đã bán</Option>
                 </Select>
               </Form.Item>
-              <Form.Item name="ImageLink" label="Hình ảnh" rules={[{ required: true }]}>
-                <Input />
+              <Form.Item name="ImageFile" label="Hình ảnh" rules={[{ required: true }]}>
+                <Input type="file" accept="image/*" onChange={handleFileChange} />
+                {imageFile && (
+                  <div className="image-preview">
+                    <img
+                      src={URL.createObjectURL(imageFile)}
+                      alt="Package preview"
+                      style={{ width: "200px", height: "auto", marginTop: "10px" }}
+                    />
+                  </div>
+                )}
               </Form.Item>
               <Form.Item>
                 <Button type="primary" htmlType="submit" size="large">

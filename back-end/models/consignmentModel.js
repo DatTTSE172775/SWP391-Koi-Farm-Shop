@@ -1,18 +1,18 @@
 const { sql } = require('../config/db');
 
 // Tạo yêu cầu ký gửi mới
-exports.createConsignment = async (customerID, koiID, consignmentType, consignmentMode, priceAgreed, notes, koiType, koiColor, koiAge, koiSize, imagePath) => {
+exports.createConsignment = async (customerID, consignmentType, consignmentMode, priceAgreed, notes, koiType, koiColor, koiAge, koiSize, imagePath) => {
   try {
     const result = await sql.query`
       INSERT INTO KoiConsignment (
-        CustomerID, KoiID, ConsignmentType, ConsignmentMode, 
+        CustomerID, ConsignmentType, ConsignmentMode, 
         PriceAgreed, Notes, KoiType, KoiColor, KoiAge, KoiSize, 
         ImagePath, Status, ApprovedStatus
       )
       VALUES (
-        ${customerID}, ${koiID}, ${consignmentType}, 'Online', 
+        ${customerID}, ${consignmentType}, 'Online', 
         ${priceAgreed}, ${notes}, ${koiType}, ${koiColor}, ${koiAge}, ${koiSize}, 
-        ${imagePath}, 'Pending', 'Rejected'
+        ${imagePath}, 'Pending', 'Pending'
       );
       SELECT SCOPE_IDENTITY() AS ConsignmentID;
     `;

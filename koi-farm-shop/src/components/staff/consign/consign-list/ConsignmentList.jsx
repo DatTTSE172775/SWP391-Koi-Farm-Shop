@@ -24,6 +24,7 @@ const ConsignmentList = ({ initialConsignments = [], filterStatus }) => {
 
   // Hàm xóa đơn ký gửi khỏi danh sách sau khi cập nhật trạng thái
   const removeConsignment = (consignmentId) => {
+    console.log("Removing consignment:", consignmentId);
     setConsignments((prevConsignments) =>
       prevConsignments.filter((consignment) => consignment.ConsignmentID !== consignmentId)
     );

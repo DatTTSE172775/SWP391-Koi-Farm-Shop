@@ -1,51 +1,77 @@
 import axiosPublic from "../../api/axiosPublic";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import "./Consignment.scss";
 
 const ConsignmentForm = () => {
   const [formData, setFormData] = useState({
     koiId: "",
     consignmentType: "",
-    consignmentMode: "",
+    consignmentMode: "Online",
     priceAgreed: "",
     notes: "",
     koiType: "",
     koiColor: "",
     koiAge: "",
     koiSize: "",
-    imagePath: "",
+    imageFile: null, // Store the file itself
   });
 
-  const handleChange = (e) => {
+  const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
+  }, []);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData((prevData) => ({
+        ...prevData,
+        imageFile: file, // Store the file directly
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const formDataObj = new FormData();
+    formDataObj.append("koiId", formData.koiId);
+    formDataObj.append("consignmentType", formData.consignmentType);
+    formDataObj.append("consignmentMode", formData.consignmentMode);
+    formDataObj.append("priceAgreed", formData.priceAgreed);
+    formDataObj.append("notes", formData.notes);
+    formDataObj.append("koiType", formData.koiType);
+    formDataObj.append("koiColor", formData.koiColor);
+    formDataObj.append("koiAge", formData.koiAge);
+    formDataObj.append("koiSize", formData.koiSize);
+    if (formData.imageFile) {
+      formDataObj.append("imageFile", formData.imageFile, formData.imageFile.name); // Include the file name
+    }
+
     try {
-      const response = await axiosPublic.post("createConsignment", formData);
+      const response = await axiosPublic.post("createConsignment", formDataObj, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       console.log("Consignment created:", response.data);
-      // Reset form or show success message
       setFormData({
         koiId: "",
         consignmentType: "",
-        consignmentMode: "",
+        consignmentMode: "Online",
         priceAgreed: "",
         notes: "",
         koiType: "",
         koiColor: "",
         koiAge: "",
         koiSize: "",
-        imagePath: "",
+        imageFile: null,
       });
       alert("Consignment submitted successfully!");
     } catch (error) {
       console.error("Error submitting consignment:", error);
-      alert("Error submitting consignment. Please try again.");
+      alert(`Error submitting consignment: ${error.message}`);
     }
   };
 
@@ -54,41 +80,21 @@ const ConsignmentForm = () => {
       <h1>--------------------------------</h1>
       <h1>Consignment Form</h1>
       <form onSubmit={handleSubmit}>
-
-        <div>
-          {/* TODO: Xóa nhập KoiID ? */}
-          <label htmlFor="koiId">Koi ID:</label>
-          <input
-            type="number"
-            id="koiId"
-            name="koiId"
-            value={formData.koiId}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
+        <div className="form-group">
           <label htmlFor="consignmentType">Consignment Type:</label>
-          <input
-            type="text"
+          <select
             id="consignmentType"
             name="consignmentType"
             value={formData.consignmentType}
             onChange={handleChange}
             required
-          />
+          >
+            <option value="">Select type</option>
+            <option value="Care">Care</option>
+            <option value="Sell">Sell</option>
+          </select>
         </div>
-        <div>
-          <label htmlFor="consignmentMode">Consignment Mode:</label>
-          <input
-            type="text"
-            id="consignmentMode"
-            name="consignmentMode"
-            value={formData.consignmentMode}
-            onChange={handleChange}
-            required
-          />
-        </div>
+
         <div>
           <label htmlFor="priceAgreed">Price Agreed:</label>
           <input
@@ -98,6 +104,7 @@ const ConsignmentForm = () => {
             value={formData.priceAgreed}
             onChange={handleChange}
             step="0.01"
+            min="0"
             required
           />
         </div>
@@ -110,7 +117,6 @@ const ConsignmentForm = () => {
             onChange={handleChange}
           ></textarea>
         </div>
-        {/* New fields */}
         <div>
           <label htmlFor="koiType">Koi Type:</label>
           <input
@@ -156,15 +162,23 @@ const ConsignmentForm = () => {
           />
         </div>
         <div>
-          {/* TODO: Add image upload */}
-          <label htmlFor="imagePath">Image Path:</label> 
+          <label htmlFor="imageFile">Image File:</label>
           <input
             type="file"
-            id="imagePath"
-            name="imagePath"
-            value={formData.imagePath}
-            // onChange={}
+            id="imageFile"
+            name="imageFile"
+            accept="image/*"
+            onChange={handleFileChange}
           />
+          {formData.imageFile && (
+            <div className="image-preview">
+              <img
+                src={URL.createObjectURL(formData.imageFile)}
+                alt="Koi preview"
+                style={{ width: "200px", height: "auto" }}
+              />
+            </div>
+          )}
         </div>
         <button type="submit">Submit Consignment</button>
       </form>
