@@ -16,7 +16,12 @@ const KoiCard = ({ koifish, isAuthenticated }) => {
     setImageError(true);
   };
 
-  const imageUrl = koifish.ImagesLink || "";
+  // Prioritize external links, fall back to local uploads
+  const imageUrl = koifish.ImagesLink && koifish.ImagesLink.startsWith('http') 
+    ? koifish.ImagesLink 
+    : `${process.env.REACT_APP_BASE_URL}${koifish.ImagesLink}`;
+
+  console.log('Image URL:', imageUrl);
 
   const handleViewDetail = () => {
     if (koifish.KoiID) {
@@ -71,7 +76,11 @@ const KoiCard = ({ koifish, isAuthenticated }) => {
           <div className="image-placeholder">Image not available</div>
         ) : (
           <div className="image-container">
-            <img alt={koifish.Name} src={imageUrl} onError={handleImageError} />
+            <img
+              alt={koifish.Name}
+              src={imageUrl}
+              onError={handleImageError}
+            />
             <Button className="view-detail-btn" onClick={handleViewDetail}>
               View Detail
             </Button>

@@ -45,13 +45,13 @@ const AddPackage = () => {
   const onFinish = async (values) => {
     try {
       const formData = new FormData();
-      formData.append("KoiID", values.KoiID[0]);
+      formData.append("KoiID", values.KoiID[0]); // Change this to send only the first selected KoiID
       formData.append("PackageName", values.PackageName);
       formData.append("Price", values.Price);
       formData.append("PackageSize", values.PackageSize);
       formData.append("Availability", values.Availability);
       if (imageFile) {
-        formData.append("ImageFile", imageFile, imageFile.name);
+        formData.append("ImageFile", imageFile);
       }
 
       const response = await axiosPublic.post("koipackage", formData, {
@@ -75,6 +75,7 @@ const AddPackage = () => {
 
         message.success("Koi package and varieties added successfully!");
         form.resetFields();
+        setImageFile(null); // Reset the image file state
       } else {
         throw new Error("PackageID not found in response");
       }

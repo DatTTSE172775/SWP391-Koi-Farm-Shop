@@ -169,9 +169,8 @@ const ConsignmentDetails = () => {
                     <Title level={4}>Hình ảnh</Title>
                     <Image
                       width={200}
-                      src={`${process.env.REACT_APP_BASE_URL}/${consignment.ImagePath}`}
+                      src={`${process.env.REACT_APP_BASE_URL}${consignment.ImagePath}`}
                       alt="Koi fish"
-                      // Add a placeholder while the image is loading
                       placeholder={
                         <div style={{ background: '#f0f0f0', width: 200, height: 200, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                           Loading...
