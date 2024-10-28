@@ -66,23 +66,43 @@ const AddKoi = () => {
     try {
       const formData = new FormData();
       
+      // Validate required fields
+      const requiredFields = ['name', 'varietyId', 'origin', 'breederId', 'gender', 'born', 'size', 'price'];
+      for (const field of requiredFields) {
+        if (!formValues[field]) {
+          alert(`${field} is required!`);
+          return;
+        }
+      }
+      
       // Append all form values to formData
       Object.keys(formValues).forEach(key => {
         if (key === 'imageFile') {
-          formData.append('imageFile', formValues.imageFile);
-        } else {
-          formData.append(key, formValues[key]);
+          if (formValues.imageFile) {
+            formData.append('imageFile', formValues.imageFile);
+          }
+        } else if (formValues[key] !== null && formValues[key] !== '') {
+          // Convert numeric strings to numbers where appropriate
+          if (['varietyId', 'breederId', 'born'].includes(key)) {
+            formData.append(key, parseInt(formValues[key]));
+          } else if (['size', 'price', 'weight', 'feedingAmountPerDay', 'screeningRate'].includes(key)) {
+            formData.append(key, parseFloat(formValues[key]));
+          } else {
+            formData.append(key, formValues[key]);
+          }
         }
       });
 
-      await axiosPublic.post("addKoiFish", formData, {
+      const response = await axiosPublic.post("addKoiFish", formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
       
+      console.log("API Response:", response);
+      
       alert("Koi fish added successfully!");
-      // Reset form values
+      // Reset form
       setFormValues({
         name: "",
         varietyId: "",
@@ -99,11 +119,12 @@ const AddKoi = () => {
         screeningRate: "",
         certificateLink: "",
         imageFile: null,
-        availability: "",
+        availability: "Available",
       });
     } catch (error) {
       console.error("Error adding Koi fish:", error);
-      alert("Failed to add Koi fish. Please try again.");
+      console.error("Error response:", error.response);
+      alert(`Failed to add Koi fish: ${error.response?.data?.message || error.message}`);
     }
   };
 

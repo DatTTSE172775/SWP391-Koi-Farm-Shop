@@ -1,27 +1,40 @@
 .koi-card {
   width: 100%;
   max-width: 300px;
+  height: 500px; // Set fixed height for consistency
   margin: auto;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
 
   &:hover {
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   }
 
-  .koi-image-container {
+  .koi-image-container,
+  .image-container {
     position: relative;
     width: 100%;
-    height: 420px;
+    height: 300px; // Fixed height for images
     overflow: hidden;
 
+    img,
     .koi-image {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
+      object-position: center;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    &:hover {
+      img,
+      .koi-image {
+        transform: scale(1.1);
+      }
     }
 
     .view-detail-btn {
@@ -43,10 +56,6 @@
     &:hover .view-detail-btn {
       opacity: 1;
       transform: translate(-50%, -50%) scale(1.05); /* Hiệu ứng phóng to nhẹ khi hover */
-    }
-
-    &:hover .koi-image {
-      transform: scale(1.1); /* Hiệu ứng phóng to ảnh khi hover */
     }
 
     .hover-info {
@@ -88,10 +97,23 @@
   }
 
   .ant-card-body {
-    padding: 16px;
-    flex-grow: 1;
+    flex: 1;
     display: flex;
     flex-direction: column;
+    padding: 16px;
+  }
+
+  .ant-card-meta {
+    margin-bottom: 12px;
+
+    .ant-card-meta-title {
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+      // Prevent long titles from breaking layout
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 
   .koi-meta-description {
@@ -157,8 +179,9 @@
   }
 
   @media (max-width: 768px) {
-    .koi-image-container {
-      height: 150px;
+    .koi-image-container,
+    .image-container {
+      height: 200px;
     }
 
     .koi-meta-description {
@@ -179,53 +202,23 @@
     }
   }
 
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-
-  .ant-card-body {
-    flex-grow: 1;
+  .ant-card-actions a {
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    color: #333;
+
+    &:hover {
+      color: #ff9800;
+    }
+
+    svg {
+      margin-right: 4px;
+    }
   }
 
-  .ant-card-meta {
-    margin-bottom: 1rem;
-  }
-
-  .koi-details {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-  }
-
+  // Button always at bottom
   .ant-btn {
     margin-top: auto;
-  }
-
-  .image-container {
-    position: relative;
-    overflow: hidden;
-
-    img {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    .view-detail-btn {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    &:hover .view-detail-btn {
-      opacity: 1;
-    }
+    height: 40px;
   }
 }

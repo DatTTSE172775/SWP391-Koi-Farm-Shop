@@ -87,9 +87,16 @@ export const login = (username, password) => async (dispatch) => {
 
 // Logout action
 export const logout = () => (dispatch) => {
+  // Remove all auth-related items from localStorage
   localStorage.removeItem("token");
   localStorage.removeItem("username");
+  localStorage.removeItem("role"); //clear this item
+  localStorage.removeItem("userId"); //clear this item
+  
+  // Clear authorization header
   delete axiosPublic.defaults.headers.common["Authorization"];
+  
+  // Dispatch logout action
   dispatch({ type: LOGOUT });
 };
 

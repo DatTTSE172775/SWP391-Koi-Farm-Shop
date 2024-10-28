@@ -37,26 +37,32 @@ const deleteKoiPackage = async (packageId) => {
   try {
     const pool = await sql.connect();
 
-    // Xóa các bản ghi liên quan trong bảng KoiPackageVarieties
+    // Delete related OrderDetails records first
     await pool.request().input("PackageID", sql.Int, packageId).query(`
-            DELETE FROM KoiPackageVarieties
-            WHERE PackageID IN (SELECT PackageID FROM KoiPackage WHERE PackageID = @PackageID)
+            DELETE FROM OrderDetails
+            WHERE PackageID = @PackageID
         `);
 
-    // Xóa các bản ghi liên quan trong bảng KoiPackageBreeders
+    // Delete related KoiPackageVarieties records
     await pool.request().input("PackageID", sql.Int, packageId).query(`
-                DELETE FROM KoiPackageBreeders
-                WHERE PackageID IN (SELECT PackageID FROM KoiPackage WHERE PackageID = @PackageID)
-            `);
+            DELETE FROM KoiPackageVarieties
+            WHERE PackageID = @PackageID
+        `);
 
-    // Xóa KoiFish
+    // Delete related KoiPackageBreeders records
+    await pool.request().input("PackageID", sql.Int, packageId).query(`
+            DELETE FROM KoiPackageBreeders
+            WHERE PackageID = @PackageID
+        `);
+
+    // Finally delete the KoiPackage
     const result = await pool.request().input("PackageID", sql.Int, packageId)
       .query(`
-                DELETE FROM KoiPackage
-                WHERE PackageID = @PackageID
-            `);
+            DELETE FROM KoiPackage
+            WHERE PackageID = @PackageID
+        `);
 
-    return result.rowsAffected[0] > 0; // Trả về true nếu xóa thành công
+    return result.rowsAffected[0] > 0;
   } catch (err) {
     console.error("Lỗi xóa KoiPackage:", err);
     throw err;
