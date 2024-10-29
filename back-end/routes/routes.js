@@ -10,6 +10,10 @@ const changePassword = require("../controllers/changePassword");
 const forgotPassword = require("../controllers/forgotPassword");
 
 const koiConsignmentController = require("../controllers/koiConsignmentController");
+const {
+  createPayment,
+  verifyPayment
+} = require('../controllers/paymentController');
 
 const {
   createKoiFish,
@@ -879,5 +883,44 @@ router.post("/varieties", authMiddleware, createVariety);
  *         description: List of all Varieties
  */
 router.get("/varieties", authMiddleware, getAllVarieties);
+
+/**
+ * @swagger
+ * /api/payment/create-payment:
+ *   post:
+ *     summary: Tạo URL thanh toán VNPay
+ *     tags: [Payment]
+ *     description: API tạo URL thanh toán cho khách hàng qua VNPay
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               orderId:
+ *                 type: number
+ *               amount:
+ *                 type: number
+ *               bankCode:
+ *                 type: string
+ *               language:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Trả về URL để người dùng thanh toán
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 paymentUrl:
+ *                   type: string
+ *                   description: URL thanh toán VNPay
+ *       400:
+ *         description: Lỗi khi tạo thanh toán
+ */
+router.post('/payment/create-payment', createPayment);
+router.get('/payment/vnpay-return', verifyPayment);
 
 module.exports = router;

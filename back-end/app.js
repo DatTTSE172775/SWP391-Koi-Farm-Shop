@@ -85,7 +85,7 @@ app.use('/api', routes);
 app.use('/api/orders', orderRoutes); // Thêm route cho order
 
 // Sử dụng route cho thanh toán VNPay
-app.use('/api/paymentRoutes', paymentRoutes); // Thêm route cho thanh toán VNPay
+// app.use('/api/paymentRoutes', paymentRoutes); // Thêm route cho thanh toán VNPay
 
 // Ví dụ về route login
 app.post('/api/auth/login', (req, res) => {

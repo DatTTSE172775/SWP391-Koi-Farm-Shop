@@ -1,66 +1,80 @@
-const crypto = require('crypto');
-const querystring = require('querystring');
+const moment = require('moment');
 
 // Thông tin cấu hình VNPay từ biến môi trường
-const vnp_TmnCode = process.env.VNP_TMNCODE;
-const vnp_HashSecret = process.env.VNP_HASHSECRET;
-const vnp_Url = process.env.VNP_URL;
-const vnp_ReturnUrl = process.env.VNP_RETURNURL;
 
-exports.createPayment = (req, res) => {
-    const ipAddr = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-    const { amount, orderId, bankCode } = req.body;
-
-    // Lấy ngày giờ hiện tại
-    const date = new Date();
-    const createDate = date.toISOString().replace(/[-:T]/g, '').slice(0, 14);
-
-    // Tạo các tham số cho VNPay
+const createPayment = async (req, res) => {
+    process.env.TZ = 'Asia/Ho_Chi_Minh';
+    
+    let date = new Date();
+    let createDate = moment(date).format('YYYYMMDDHHmmss');
+    
+    let ipAddr = req.headers['x-forwarded-for'] ||
+        req.connection.remoteAddress ||
+        req.socket.remoteAddress ||
+        req.connection.socket.remoteAddress;
+    
+    let tmnCode = process.env.VNP_TMNCODE;
+    let secretKey = process.env.VNP_HASHSECRET;
+    let vnpUrl = process.env.VNP_URL;
+    let returnUrl = process.env.VNP_RETURNURL;
+    let orderId = req.body.orderId;
+    let amount = req.body.amount;
+    let bankCode = req.body.bankCode;
+    
+    let locale = req.body.language;
+    if(locale === null || locale === '' || locale === undefined){
+        locale = 'vn';
+    }
+    let currCode = 'VND';
     let vnp_Params = {};
     vnp_Params['vnp_Version'] = '2.1.0';
     vnp_Params['vnp_Command'] = 'pay';
-    vnp_Params['vnp_TmnCode'] = vnp_TmnCode;
-    vnp_Params['vnp_Amount'] = amount * 100; // Số tiền tính bằng VND (x100 để chuyển thành đơn vị VNPay)
-    vnp_Params['vnp_CurrCode'] = 'VND';
+    vnp_Params['vnp_TmnCode'] = tmnCode;
+    vnp_Params['vnp_Locale'] = locale;
+    vnp_Params['vnp_CurrCode'] = currCode;
     vnp_Params['vnp_TxnRef'] = orderId;
-    vnp_Params['vnp_OrderInfo'] = `Thanh toan don hang ${orderId}`;
-    vnp_Params['vnp_OrderType'] = 'billpayment';
-    vnp_Params['vnp_Locale'] = 'vn';
-    vnp_Params['vnp_ReturnUrl'] = vnp_ReturnUrl;
+    vnp_Params['vnp_OrderInfo'] = 'Thanh toan cho ma GD:' + orderId;
+    vnp_Params['vnp_OrderType'] = 'other';
+    vnp_Params['vnp_Amount'] = amount * 100;
+    vnp_Params['vnp_ReturnUrl'] = returnUrl;
     vnp_Params['vnp_IpAddr'] = ipAddr;
     vnp_Params['vnp_CreateDate'] = createDate;
-
-    if (bankCode !== null && bankCode !== '') {
+    if(bankCode !== null && bankCode !== '' && bankCode !== undefined){
         vnp_Params['vnp_BankCode'] = bankCode;
     }
 
-    // Sắp xếp các tham số theo thứ tự chữ cái để tạo chữ ký
     vnp_Params = sortObject(vnp_Params);
 
-    // Tạo chữ ký bảo mật
-    const signData = querystring.stringify(vnp_Params);
-    const hmac = crypto.createHmac('sha512', vnp_HashSecret);
-    const signed = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
+    let querystring = require('qs');
+    let signData = querystring.stringify(vnp_Params, { encode: false }); 
+    const crypto = require('crypto');
+    let hmac = crypto.createHmac("sha512", secretKey);
+    let signed = hmac.update(Buffer.from(signData, 'utf-8')).digest("hex"); 
     vnp_Params['vnp_SecureHash'] = signed;
-
-    // Tạo URL thanh toán
-    const paymentUrl = `${vnp_Url}?${querystring.stringify(vnp_Params)}`;
+    vnpUrl += '?' + querystring.stringify(vnp_Params, { encode: false });
 
     // Trả về URL thanh toán cho phía frontend
-    res.json({ paymentUrl });
+    res.json({ vnpUrl });
 };
 
 // Hàm sắp xếp object theo thứ tự chữ cái
 function sortObject(obj) {
     let sorted = {};
-    let keys = Object.keys(obj).sort();
-    keys.forEach((key) => {
-        sorted[key] = obj[key];
-    });
+	let str = [];
+	let key;
+	for (key in obj){
+		if (obj.hasOwnProperty(key)) {
+		str.push(encodeURIComponent(key));
+		}
+	}
+	str.sort();
+    for (key = 0; key < str.length; key++) {
+        sorted[str[key]] = encodeURIComponent(obj[str[key]]).replace(/%20/g, "+");
+    }
     return sorted;
 }
 
-exports.verifyPayment = (req, res) => {
+const verifyPayment = async (req, res) => {
     const vnp_Params = req.query;
     const secureHash = vnp_Params['vnp_SecureHash'];
     delete vnp_Params['vnp_SecureHash'];
@@ -78,4 +92,9 @@ exports.verifyPayment = (req, res) => {
     } else {
         res.json({ status: 'Thanh toán thất bại', details: vnp_Params });
     }
+
+    // cap nhat database
+
 };
+
+module.exports = {createPayment, verifyPayment};
