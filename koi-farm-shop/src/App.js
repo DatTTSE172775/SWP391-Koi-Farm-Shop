@@ -15,6 +15,7 @@ import AddKoi from "./pages/admin/addProduct/AddKoi";
 import AddPackage from "./pages/admin/addProduct/AddPackage";
 import DeleteKoi from "./pages/admin/deleteProduct/deleteKoi";
 import DeleteKoiPackage from "./pages/admin/deleteProduct/deleteKoiPackage";
+import UpdatePackage from "./pages/admin/updateProduct/updateKoiPackage";
 import OrderDetails from "./pages/admin/order-details/OrderDetails";
 import OrdersManagement from "./pages/admin/orderManagement/OrdersManagement";
 import UpdateKoi from "./pages/admin/updateProduct/updateKoi";
@@ -147,6 +148,7 @@ function App() {
             <Route path="/admin/updateKoi" element={<UpdateKoi />} />
             <Route path="/admin/deleteKoi" element={<DeleteKoi />} />
             <Route path="/admin/deletePackage" element={<DeleteKoiPackage />} />
+            <Route path="/admin/updatePackage" element={<UpdatePackage />} />
             <Route
               path="/admin/manage-consign"
               element={<ManagerConsignmentPage />}

@@ -1,0 +1,208 @@
+.admin-layout {
+  min-height: 100vh;
+}
+
+.admin-content {
+  padding: 24px;
+  background: #fff;
+}
+
+.update-koi-container,
+.update-koi-package-container {
+  padding: 24px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+
+  .ant-typography {
+    margin-bottom: 24px;
+    color: #1a3353;
+    font-weight: 600;
+  }
+
+  .button-group {
+    margin-bottom: 24px;
+    display: flex;
+    gap: 12px;
+
+    .ant-btn {
+      min-width: 150px;
+      height: 40px;
+      font-weight: 500;
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      }
+    }
+  }
+
+  .update-form {
+    padding: 32px;
+    background: linear-gradient(to right bottom, #ffffff, #f8fafc);
+    border-radius: 12px;
+    margin: 16px 0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
+    .ant-form-item {
+      margin-bottom: 24px;
+
+      // Label styling
+      .ant-form-item-label > label {
+        font-weight: 600;
+        color: #334155;
+        font-size: 14px;
+      }
+
+      // Input styling
+      .ant-input,
+      .ant-input-number,
+      .ant-select-selector {
+        padding: 8px 12px;
+        border-radius: 8px;
+        border: 2px solid #e2e8f0;
+        transition: all 0.3s ease;
+        
+        &:hover, &:focus {
+          border-color: #60a5fa;
+          box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.1);
+        }
+      }
+
+      // Input number specific styling
+      .ant-input-number {
+        width: 100%;
+        
+        .ant-input-number-handler-wrap {
+          border-radius: 0 8px 8px 0;
+        }
+      }
+
+      // Select specific styling
+      .ant-select {
+        width: 100%;
+        
+        .ant-select-selector {
+          height: 40px;
+          display: flex;
+          align-items: center;
+        }
+      }
+    }
+
+    // Button group styling
+    .ant-form-item:last-child {
+      margin-bottom: 0;
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+
+      .ant-btn {
+        min-width: 120px;
+        height: 40px;
+        border-radius: 8px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+
+        // Primary button
+        &-primary {
+          background: linear-gradient(to right, #3b82f6, #60a5fa);
+          border: none;
+          
+          &:hover {
+            background: linear-gradient(to right, #2563eb, #3b82f6);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+          }
+        }
+
+        // Default button (Cancel)
+        &:not(.ant-btn-primary) {
+          border: 2px solid #e2e8f0;
+          color: #64748b;
+          
+          &:hover {
+            color: #334155;
+            border-color: #94a3b8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(148, 163, 184, 0.1);
+          }
+        }
+      }
+    }
+
+    // Add a subtle grid background pattern
+    background-image: 
+      linear-gradient(rgba(255, 255, 255, 0.8) 2px, transparent 2px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.8) 2px, transparent 2px);
+    background-size: 50px 50px;
+    background-position: -2px -2px;
+  }
+
+  .ant-table-wrapper {
+    .ant-table {
+      background: #ffffff;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .ant-table-thead > tr > th {
+      background: #f0f2f5;
+      font-weight: 600;
+      color: #1a3353;
+      padding: 16px;
+    }
+
+    .ant-table-tbody > tr > td {
+      padding: 16px;
+    }
+
+    .ant-table-tbody > tr:hover > td {
+      background: #f8f9fa;
+    }
+
+    .ant-btn {
+      border-radius: 6px;
+      
+      &:hover {
+        transform: translateY(-2px);
+        transition: all 0.3s ease;
+      }
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .update-koi-container {
+    padding: 16px;
+
+    .update-form {
+      padding: 16px;
+    }
+
+    .button-group {
+      flex-direction: column;
+      
+      .ant-btn {
+        width: 100%;
+      }
+    }
+  }
+
+  .update-form {
+    padding: 20px;
+
+    .ant-form-item:last-child {
+      flex-direction: column;
+      
+      .ant-btn {
+        width: 100%;
+      }
+    }
+  }
+}

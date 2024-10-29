@@ -17,6 +17,7 @@ const {
   getKoiFishById,
   updateKoiFishAvailability,
   deleteKoiFish,
+  updateKoiFish,
 } = require("../controllers/koiController");
 const {
   getAllOrders,
@@ -49,6 +50,7 @@ const {
   getAllKoiPackages,
   deleteKoiPackage,
   getKoiPackageById,
+  updateKoiPackage,
 } = require("../controllers/koiPackageController");
 const {
   createKoiConsignment,
@@ -407,6 +409,8 @@ router.patch("/koifish/:koiId/availability", updateKoiFishAvailability);
  *         description: Server error
  */
 router.delete("/deleteKoi/:koiId", deleteKoiFish);
+
+router.put("/updateKoi/:koiId", updateKoiFish);
 
 // Order routes
 /**
@@ -812,6 +816,8 @@ router.get("/koipackages", getAllKoiPackages);
  *         description: Koi Package deleted successfully
  */
 router.delete("/deleteKoiPackage/:packageId", deleteKoiPackage);
+
+router.put("/updateKoiPackage/:packageId", updateKoiPackage);
 
 // Koi Consignment routes
 /**

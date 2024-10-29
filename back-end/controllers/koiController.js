@@ -155,3 +155,29 @@ exports.deleteKoiFish = async (req, res) => {
     });
   }
 };
+
+// Controller function to update a KoiFish entry
+exports.updateKoiFish = async (req, res) => {
+    try {
+        const { koiId } = req.params;
+        const updateData = req.body;
+
+        const success = await koiModel.updateKoiFish(koiId, updateData);
+        
+        if (!success) {
+            return res.status(404).json({ 
+                message: "Koi Fish not found or no changes made." 
+            });
+        }
+
+        res.json({ 
+            message: "Koi Fish updated successfully.",
+            data: updateData
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Error updating Koi Fish",
+            error: error.message
+        });
+    }
+};

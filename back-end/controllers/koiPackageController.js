@@ -101,3 +101,28 @@ exports.getKoiPackageById = async (req, res) => {
     res.status(500).json({ message: "Error fetching Koi Package", error: error.message });
   }
 };
+
+exports.updateKoiPackage = async (req, res) => {
+    try {
+        const { packageId } = req.params;
+        const updateData = req.body;
+
+        const success = await koiPackageModel.updateKoiPackage(packageId, updateData);
+        
+        if (!success) {
+            return res.status(404).json({ 
+                message: "Koi Package not found or no changes made." 
+            });
+        }
+
+        res.json({ 
+            message: "Koi Package updated successfully.",
+            data: updateData
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Error updating Koi Package",
+            error: error.message
+        });
+    }
+};
