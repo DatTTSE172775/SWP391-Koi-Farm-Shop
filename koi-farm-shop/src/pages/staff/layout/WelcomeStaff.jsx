@@ -5,12 +5,27 @@ import {
   SmileOutlined,
 } from "@ant-design/icons";
 import { Button, Card, Col, Row, Typography } from "antd";
-import React from "react";
+import React, { useEffect } from "react";
 import "./WelcomeStaff.scss";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "../../../store/actions/authActions";
+import { checkRoleAccess } from "../../../utils/roleUtils";
 
 const { Title, Text } = Typography;
 
 const WelcomeStaff = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const role = localStorage.getItem("role");
+    if (!checkRoleAccess(role, ["Staff"])) {
+      dispatch(logout());
+      navigate("/login");
+    }
+  }, [dispatch, navigate]);
+
   return (
     <div className="welcome-container">
       <Title level={2}>
