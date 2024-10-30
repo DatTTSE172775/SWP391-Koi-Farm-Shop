@@ -56,30 +56,34 @@ const updateKoiPackageAvailability = async (packageId, availability) => {
 // Function to delete a Koi Package
 const deleteKoiPackage = async (packageId) => {
   try {
-      const pool = await sql.connect();
-      
-      // Delete related records in KoiPackageVarieties
-      await pool.request()
-          .input('PackageID', sql.Int, packageId)
-          .query(`
-              DELETE FROM KoiPackageVarieties
-              WHERE PackageID = @PackageID
-          `);
-      // Delete related records in KoiPackageBreeders
-      await pool.request()
-          .input('PackageID', sql.Int, packageId)
-          .query(`
-              DELETE FROM KoiPackageBreeders
-              WHERE PackageID = @PackageID
-          `);
-      // Delete Koi Package
-      const result = await pool.request()
-          .input('PackageID', sql.Int, packageId)
-          .query(`
-              DELETE FROM KoiPackage
-              WHERE PackageID = @PackageID
-          `);
-      return result.rowsAffected[0] > 0; // Return true if the delete was successful
+    const pool = await sql.connect();
+
+    // Delete related OrderDetails records first
+    await pool.request().input("PackageID", sql.Int, packageId).query(`
+            DELETE FROM OrderDetails
+            WHERE PackageID = @PackageID
+        `);
+
+    // Delete related KoiPackageVarieties records
+    await pool.request().input("PackageID", sql.Int, packageId).query(`
+            DELETE FROM KoiPackageVarieties
+            WHERE PackageID = @PackageID
+        `);
+
+    // Delete related KoiPackageBreeders records
+    await pool.request().input("PackageID", sql.Int, packageId).query(`
+            DELETE FROM KoiPackageBreeders
+            WHERE PackageID = @PackageID
+        `);
+
+    // Finally delete the KoiPackage
+    const result = await pool.request().input("PackageID", sql.Int, packageId)
+      .query(`
+            DELETE FROM KoiPackage
+            WHERE PackageID = @PackageID
+        `);
+
+    return result.rowsAffected[0] > 0;
   } catch (err) {
       console.error('Error deleting Koi Package:', err);
       throw err;
@@ -100,10 +104,48 @@ const getKoiPackageById = async (packageId) => {
   }
 };
 
+const updateKoiPackage = async (packageId, updateData) => {
+    try {
+        const pool = await sql.connect();
+        
+        // First check if the package exists
+        const checkPackage = await pool.request()
+            .input('PackageID', sql.Int, packageId)
+            .query('SELECT PackageID FROM KoiPackage WHERE PackageID = @PackageID');
+            
+        if (checkPackage.recordset.length === 0) {
+            return false;
+        }
+
+        // Remove PackageID from updateData if it exists
+        const { PackageID, ...dataToUpdate } = updateData;
+
+        const result = await pool.request()
+            .input('PackageID', sql.Int, packageId)
+            .input('PackageName', sql.VarChar(255), dataToUpdate.PackageName)
+            .input('PackageSize', sql.Int, dataToUpdate.PackageSize)
+            .input('Price', sql.Decimal(10, 2), dataToUpdate.Price)
+            .input('Availability', sql.VarChar(50), dataToUpdate.Availability)
+            .query(`
+                UPDATE KoiPackage
+                SET PackageName = @PackageName,
+                    PackageSize = @PackageSize,
+                    Price = @Price,
+                    Availability = @Availability
+                WHERE PackageID = @PackageID
+            `);
+        return result.rowsAffected[0] > 0;
+    } catch (err) {
+        console.error('Error updating KoiPackage:', err);
+        throw err;
+    }
+};
+
 module.exports = {
   createKoiPackage,
   getAllKoiPackages,
   deleteKoiPackage,
   getKoiPackageById,
+  updateKoiPackage,
   updateKoiPackageAvailability,
 };

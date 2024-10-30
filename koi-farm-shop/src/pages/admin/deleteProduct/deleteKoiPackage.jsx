@@ -90,7 +90,7 @@ const DeleteKoiPackage = () => {
               <Button type="primary" onClick={() => navigate("/admin/AddPackage")}>
                 Thêm Gói cá Koi
               </Button>
-              <Button type="primary" onClick={() => navigate("/admin/updateKoiPackage")}>
+              <Button type="primary" onClick={() => navigate("/admin/updatePackage")}>
                 Cập nhật Gói cá Koi
               </Button>
             </div>

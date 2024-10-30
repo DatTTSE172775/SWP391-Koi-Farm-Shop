@@ -9,7 +9,7 @@ const logoutUser = require("../controllers/userLogout");
 const changePassword = require("../controllers/changePassword");
 const forgotPassword = require("../controllers/forgotPassword");
 
-const consignmentController = require("../controllers/consignmentController");
+const koiConsignmentController = require("../controllers/koiConsignmentController");
 
 const {
   createKoiFish,
@@ -17,6 +17,7 @@ const {
   getKoiFishById,
   updateKoiFishAvailability,
   deleteKoiFish,
+  updateKoiFish,
 } = require("../controllers/koiController");
 const {
   getAllOrders,
@@ -31,7 +32,6 @@ const {
   updateOrderToDelivering,
   updateOrderToDelivered,
   updateOrderToCancelled,
-  cancelOrder,
 } = require("../controllers/orderController");
 const {
   getAllCustomers,
@@ -48,16 +48,21 @@ const {
 const {
   createKoiPackage,
   getAllKoiPackages,
-  getKoiPackageById,
-  updateKoiPackageAvailability,
   deleteKoiPackage,
+  getKoiPackageById,
+  updateKoiPackage,
 } = require("../controllers/koiPackageController");
 const {
-  createConsignment,
-  getAllConsignments,
-  getConsignmentById,
-  updateConsignmentStatus,
-} = require("../controllers/consignmentController");
+  createKoiConsignment,
+  getAllKoiConsignments,
+  getConsignmentsById,
+  // updateConsignmentStatus,
+  updateConsignmentToApproved,
+  assignConsignmentToStaff,
+  getAllStaffConsignmentsByUserId,
+  getPendingConsignmentsByUserId,
+  getApprovedConsignmentsByUserId
+} = require("../controllers/koiConsignmentController");
 const {
   createBreeder,
   getAllBreeders,
@@ -69,7 +74,7 @@ const {
   addKoiPackageVariety,
 } = require("../controllers/varietyController");
 const { getAllStaff } = require("../controllers/userController");
-
+const { getDashboardData } = require("../controllers/dashboardController");
 // User routes
 /**
  * @swagger
@@ -257,6 +262,25 @@ router.get("/staff", getAllStaff);
  */
 router.get("/orders/user/:userId", getAllStaffOrdersByUserId);
 
+/**
+ * @swagger
+ * /api/consignments/user/{userId}:
+ *   get:
+ *     summary: Get all consignments assigned to Staff
+ *     tags: [Consignments]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: User ID of the staff member
+ *     responses:
+ *       200:
+ *         description: List of consignments assigned to the staff member
+ */
+router.get("/consignments/user/:userId", getAllStaffConsignmentsByUserId);
+
 // Koi Fish routes
 
 /**
@@ -386,53 +410,9 @@ router.patch("/koifish/:koiId/availability", updateKoiFishAvailability);
  */
 router.delete("/deleteKoi/:koiId", deleteKoiFish);
 
-// Order routes
-/**
- * @swagger
- * /api/orders:
- *   post:
- *     summary: Create a new order
- *     tags: [Orders]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               customerID:
- *                 type: integer
- *                 example: 1
- *               shippingAddress:
- *                 type: string
- *                 example: "123 Main St"
- *               paymentMethod:
- *                 type: string
- *                 example: "Bank Transfer"
- *               orderItems:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     KoiID:
- *                       type: integer
- *                       example: null
- *                     PackageID:
- *                       type: integer
- *                       example: null
- *                     quantity:
- *                       type: integer
- *                       example: 1
- *     responses:
- *       201:
- *         description: Order created successfully
- *       400:
- *         description: Invalid input data
- *       500:
- *         description: Internal server error
- */
-router.post("/orders", createOrder);
+router.put("/updateKoi/:koiId", updateKoiFish);
 
+// Order routes
 /**
  * @swagger
  * /api/orders:
@@ -463,6 +443,33 @@ router.get("/orders", getAllOrders);
  *         description: Order details
  */
 router.get("/orders/:orderId", getOrderById);
+
+/**
+ * @swagger
+ * /api/orders:
+ *   post:
+ *     summary: Create a new order
+ *     tags: [Orders]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               customerID:
+ *                 type: integer
+ *               totalAmount:
+ *                 type: number
+ *               shippingAddress:
+ *                 type: string
+ *               paymentMethod:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Order created successfully
+ */
+router.post("/orders", createOrder);
 
 /**
  * @swagger
@@ -504,9 +511,9 @@ router.patch("/orders/:orderId/processing", updateOrderToProcessing);
 
 /**
  * @swagger
- * /api/orders/{orderId}/delivering:
+ * /api/orders/{orderId}/shipped:
  *   patch:
- *     summary: Update order status to delivering
+ *     summary: Update order status to Shipped
  *     tags: [Orders]
  *     parameters:
  *       - in: path
@@ -517,9 +524,9 @@ router.patch("/orders/:orderId/processing", updateOrderToProcessing);
  *         description: Order ID
  *     responses:
  *       200:
- *         description: Order status updated to delivering
+ *         description: Order status updated to Shipped
  */
-router.patch("/orders/:orderId/delivering", updateOrderToDelivering);
+router.patch("/orders/:orderId/Delivering", updateOrderToDelivering);
 
 /**
  * @swagger
@@ -558,31 +565,6 @@ router.patch("/orders/:orderId/delivered", updateOrderToDelivered);
  *         description: Order status updated to Cancelled
  */
 router.patch("/orders/:orderId/cancelled", updateOrderToCancelled);
-
-/**
- * @swagger
- * /api/orders/{orderId}/cancel:
- *   patch:
- *     summary: Cancel an order by ID
- *     tags: [Orders]
- *     parameters:
- *       - in: path
- *         name: orderId
- *         schema:
- *           type: integer
- *         required: true
- *         description: The ID of the order to be cancelled
- *     responses:
- *       200:
- *         description: Order cancelled successfully
- *       400:
- *         description: Cannot cancel a delivered order
- *       404:
- *         description: Order not found
- *       500:
- *         description: Internal server error
- */
-router.patch('/:orderId/cancel', cancelOrder);
 
 /**
  * @swagger
@@ -818,9 +800,9 @@ router.get("/koipackages", getAllKoiPackages);
 
 /**
  * @swagger
- * /api/koipackage/{packageId}:
- *   get:
- *     summary: Get Koi Package details by ID
+ * /api/deleteKoiPackage/{packageId}:
+ *   delete:
+ *     summary: Delete a Koi Package
  *     tags: [Koi Package]
  *     parameters:
  *       - in: path
@@ -831,141 +813,51 @@ router.get("/koipackages", getAllKoiPackages);
  *         description: Koi Package ID
  *     responses:
  *       200:
- *         description: Koi Package details
- *       404:
- *         description: Koi Package not found
- *       500:
- *         description: Server error
- */
-router.get("/koipackage/:packageId", getKoiPackageById);
-
-/**
- * @swagger
- * /api/koipackage/{packageId}/availability:
- *   patch:
- *     summary: Update Koi Package availability
- *     tags: [Koi Package]
- *     parameters:
- *       - in: path
- *         name: packageId
- *         schema:
- *           type: integer
- *         required: true
- *         description: The Koi Package ID
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               availability:
- *                 type: string
- *                 enum: [Available, Sold Out]
- *     responses:
- *       200:
- *         description: Koi Package availability updated successfully
- *       400:
- *         description: Invalid availability status
- *       404:
- *         description: Koi Package not found
- *       500:
- *         description: Server error
- */
-router.patch("/koipackage/:packageId/availability", authMiddleware, updateKoiPackageAvailability);
-
-/**
- * @swagger
- * /api/koipackage/{packageId}:
- *   delete:
- *     summary: Delete a Koi Package
- *     tags: [Koi Package]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: integer
- *         required: true
- *         description: The Koi Package ID
- *     responses:
- *       200:
  *         description: Koi Package deleted successfully
- *       404:
- *         description: Koi Package not found
- *       500:
- *         description: Server error
  */
-router.delete("/koipackage/:packageId", authMiddleware, deleteKoiPackage);
+router.delete("/deleteKoiPackage/:packageId", deleteKoiPackage);
 
+router.put("/updateKoiPackage/:packageId", updateKoiPackage);
+
+// Koi Consignment routes
 /**
  * @swagger
- * /api/Consignment:
+ * /api/koiconsignment:
  *   post:
  *     summary: Create a new Koi Consignment
  *     tags: [Koi Consignment]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: integer
- *         required: true
- *         description: The Koi Consignment ID
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
- *             properties:
- *               customerID:
- *                 type: integer
- *               koiID:
- *                 type: integer
- *               consignmentType:
- *                 type: string
- *               consignmentMode:
- *                 type: string
- *               priceAgreed:
- *                 type: number
- *               notes:
- *                 type: string
- *               koiType:
- *                 type: string
- *               koiColor:
- *                 type: string
- *               koiAge:
- *                 type: integer
- *               koiSize:
- *                 type: number
  *     responses:
  *       201:
  *         description: Koi Consignment created successfully
  */
-router.post('/createConsignment', authMiddleware, createConsignment);
-
+router.post(
+  "/createConsignment",
+  authMiddleware,
+  koiConsignmentController.createKoiConsignment
+);
 /**
  * @swagger
- * /api/Consignments:
+ * /api/koiconsignments:
  *   get:
  *     summary: Get all Koi Consignments
  *     tags: [Koi Consignment]
  *     responses:
  *       200:
- *         description: Koi Consignment status updated successfully
- *       400:
- *         description: Invalid status
- *       404:
- *         description: Koi Consignment not found
- *       500:
- *         description: Server error
+ *         description: List of all Koi Consignments
  */
-router.get("/koiconsignments", getAllConsignments);
+router.get("/koiconsignments", getAllKoiConsignments);
 
 /**
  * @swagger
- * /api/Consignment/{id}:
+ * /api/koiconsignment/{id}:
  *   get:
- *     summary: Get Koi Consignment details by ID
+ *     summary: Get Koi Consignment by ID
  *     tags: [Koi Consignment]
  *     parameters:
  *       - in: path
@@ -977,26 +869,51 @@ router.get("/koiconsignments", getAllConsignments);
  *     responses:
  *       200:
  *         description: Koi Consignment details
- *       404:
- *         description: Koi Consignment not found
- *       500:
- *         description: Server error
  */
-router.get("/koiconsignment/:id", authMiddleware, getConsignmentById);
+router.get("/koiconsignment/:id", getConsignmentsById);
 
 /**
  * @swagger
- * /api/Consignment/{id}/status:
+ * /api/koiconsignment/{consignmentId}/{status}:
  *   patch:
  *     summary: Update Koi Consignment status
  *     tags: [Koi Consignment]
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: consignmentId
+ *         schema:
+ *           type: integer
+ *       - in: path
+ *         name: status
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Koi Consignment status updated successfully
+ */
+
+
+// router.patch("/koiconsignment/:consignmentId/:status", updateConsignmentStatus);
+
+router.patch("/koiconsignment/:consignmentId/approved", updateConsignmentToApproved);
+      
+router.get("/koiconsignment/pending/:userId", getPendingConsignmentsByUserId);
+
+router.get("/koiconsignment/approved/:userId", getApprovedConsignmentsByUserId);
+
+/**
+ * @swagger
+ * /api/koiconsignment/{consignmentId}/assign:
+ *   patch:
+ *     summary: Assign consignment to staff
+ *     tags: [Koi Consignment]
+ *     parameters:
+ *       - in: path
+ *         name: consignmentId
  *         schema:
  *           type: integer
  *         required: true
- *         description: The Koi Consignment ID
+ *         description: Consignment ID
  *     requestBody:
  *       required: true
  *       content:
@@ -1004,20 +921,17 @@ router.get("/koiconsignment/:id", authMiddleware, getConsignmentById);
  *           schema:
  *             type: object
  *             properties:
- *               status:
- *                 type: string
- *                 enum: [Pending, Approved, Rejected, Completed]
+ *               userId:
+ *                 type: integer
  *     responses:
  *       200:
- *         description: Koi Consignment status updated successfully
- *       400:
- *         description: Invalid status
+ *         description: Consignment assigned to staff successfully
  *       404:
- *         description: Koi Consignment not found
+ *         description: Consignment not found
  *       500:
- *         description: Server error
+ *         description: Failed to assign consignment to staff
  */
-router.patch("/koiconsignment/:id/status", authMiddleware, updateConsignmentStatus);
+router.patch("/koiconsignment/:consignmentId/assign", assignConsignmentToStaff);
 
 // Breeders routes
 /**
@@ -1113,5 +1027,34 @@ router.post("/addKoiPackageVariety", addKoiPackageVariety);
 router.get("/orders/:orderId/details", getOrderDetails);
 
 router.get("/koipackage/:packageId", getKoiPackageById);
+
+// Dashboard routes
+/**
+ * @swagger
+ * /api/dashboard:
+ *   get:
+ *     summary: Get dashboard data
+ *     tags: [Dashboard]
+ *     responses:
+ *       200:
+ *         description: Dashboard data fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 ordersRevenue:
+ *                   type: number
+ *                   example: 1000000
+ *                 koiFishRevenue:
+ *                   type: number
+ *                   example: 500000
+ *                 koiPackageRevenue:
+ *                   type: number
+ *                   example: 200000
+ *       500:
+ *         description: Error fetching dashboard data
+ */
+router.get("/dashboard", getDashboardData);
 
 module.exports = router;

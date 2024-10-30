@@ -1,58 +1,79 @@
 const koiModel = require("../models/koiModel");
+const multer = require('multer');
+const path = require('path');
+
+// Configure multer for file upload
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, '../../uploads/'))
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname))
+  }
+});
+
+const upload = multer({ storage: storage });
+
 
 // Controller function to create a new KoiFish entry
-exports.createKoiFish = async (req, res) => {
-  try {
-    const {
-      name,
-      varietyId,
-      origin,
-      breederId,
-      gender,
-      born,
-      size,
-      price,
-      weight,
-      personality,
-      feedingAmountPerDay,
-      healthStatus,
-      screeningRate,
-      certificateLink,
-      imagesLink,
-      availability,
-    } = req.body;
+exports.createKoiFish = [
+  upload.single('imageFile'), // Add multer middleware
+  async (req, res) => {
+    try {
+      const {
+        name,
+        varietyId,
+        origin,
+        breederId,
+        gender,
+        born,
+        size,
+        price,
+        weight,
+        personality,
+        feedingAmountPerDay,
+        healthStatus,
+        screeningRate,
+        certificateLink,
+        availability,
+      } = req.body;
 
-    // Call the createKoiFish function from the model
-    const result = await koiModel.createKoiFish(
-      name,
-      varietyId,
-      origin,
-      breederId,
-      gender,
-      born,
-      size,
-      price,
-      weight,
-      personality,
-      feedingAmountPerDay,
-      healthStatus,
-      screeningRate,
-      certificateLink,
-      imagesLink,
-      availability
-    );
+      // Get the image path from the uploaded file
+      const imagesLink = req.file ? `/uploads/${req.file.filename}` : null;
 
-    res.status(201).json({
-      message: "Koi Fish created successfully!",
-      data: result,
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: "Error creating Koi Fish",
-      error: error.message,
-    });
+      // Call the createKoiFish function from the model
+      const result = await koiModel.createKoiFish(
+        name,
+        parseInt(varietyId),
+        origin,
+        parseInt(breederId),
+        gender,
+        parseInt(born),
+        parseFloat(size),
+        parseFloat(price),
+        parseFloat(weight),
+        personality,
+        parseFloat(feedingAmountPerDay),
+        healthStatus,
+        parseFloat(screeningRate),
+        certificateLink,
+        imagesLink,
+        availability
+      );
+
+      res.status(201).json({
+        message: "Koi Fish created successfully!",
+        data: result,
+      });
+    } catch (error) {
+      console.error('Error in createKoiFish:', error);
+      res.status(500).json({
+        message: "Error creating Koi Fish",
+        error: error.message,
+      });
+    }
   }
-};
+];
 
 // Controller function to get all KoiFish entries
  exports.getAllKoiFish = async (req, res) => {
@@ -133,4 +154,30 @@ exports.deleteKoiFish = async (req, res) => {
       error: error.message,
     });
   }
+};
+
+// Controller function to update a KoiFish entry
+exports.updateKoiFish = async (req, res) => {
+    try {
+        const { koiId } = req.params;
+        const updateData = req.body;
+
+        const success = await koiModel.updateKoiFish(koiId, updateData);
+        
+        if (!success) {
+            return res.status(404).json({ 
+                message: "Koi Fish not found or no changes made." 
+            });
+        }
+
+        res.json({ 
+            message: "Koi Fish updated successfully.",
+            data: updateData
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Error updating Koi Fish",
+            error: error.message
+        });
+    }
 };

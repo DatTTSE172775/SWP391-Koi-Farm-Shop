@@ -1,5 +1,5 @@
-﻿CREATE DATABASE KoiFarmShop2
-USE KoiFarmShop2
+﻿CREATE DATABASE KoiFarmShop3
+USE KoiFarmShop3
 
 
 CREATE TABLE Users (
@@ -32,6 +32,8 @@ CREATE TABLE Varieties (
     Origin NVARCHAR(50) CHECK (Origin IN ('Japan', 'Vietnam', 'Other'))
 );
 
+--select * from Varieties where VarietyID =1
+
 CREATE TABLE Breeders (
     BreederID INT IDENTITY(1,1) PRIMARY KEY,
     Name NVARCHAR(255) NOT NULL,
@@ -63,33 +65,42 @@ CREATE TABLE KoiFish (
     FOREIGN KEY (VarietyID) REFERENCES Varieties(VarietyID),
     FOREIGN KEY (BreederID) REFERENCES Breeders(BreederID)
 );
-
---select * from KoiFish where KoiID = 1
+SELECT SUM(TotalAmount) AS TotalOrderRevenue
+    FROM Orders
+    WHERE OrderStatus = 'Delivered'
+--select * from KoiFish
+--select * from Breeders
+--select * from Varieties
 
 
 CREATE TABLE KoiPackage(
     PackageID INT IDENTITY(1,1) PRIMARY KEY,
-    KoiID INT,
+    KoiID INT NOT NULL,
     PackageName NVARCHAR(255),
     ImageLink VARCHAR(255),
     Price DECIMAL(10, 2),
     PackageSize INT,
     CreatedDate DATETIME DEFAULT CURRENT_TIMESTAMP,
     Availability VARCHAR(50) CHECK (Availability IN ('Available', 'Sold Out')),
-    FOREIGN KEY (KoiID) REFERENCES KoiFish(KoiID)
+	Quantity INT DEFAULT NULL,
+    FOREIGN KEY (KoiID) REFERENCES KoiFish(KoiID),
 );
 
-ALTER TABLE KoiPackage
-ADD  Quantity INT
+--SELECT * FROM KoiPackage WHERE PackageID = 7
 
-SELECT * FROM KoiPackage
+
+--select * from KoiFish
+--SELECT * FROM KoiPackage
+--select * from KoiPackageVarieties
+--select * from KoiPackageBreeders
+--select * from Reviews
 
 CREATE TABLE KoiConsignment (
     ConsignmentID INT IDENTITY(1,1) PRIMARY KEY,
     CustomerID INT,
     KoiID INT,
-    ConsignmentType NVARCHAR(50),
-    ConsignmentMode VARCHAR(50) CHECK (ConsignmentMode IN ('Offline', 'Online')),
+    ConsignmentType VARCHAR(50) CHECK (ConsignmentType IN ('Care', 'Sale')), -- Should be Care or Sale only
+    ConsignmentMode VARCHAR(50) CHECK (ConsignmentMode IN ('Offline', 'Online')), -- Should be online only
     StartDate DATETIME DEFAULT CURRENT_TIMESTAMP,
     EndDate DATETIME,
     Status VARCHAR(50) CHECK (Status IN ('Pending', 'Approved', 'In Care', 'Listed for Sale', 'Sold', 'Withdrawn')) DEFAULT 'Pending',
@@ -98,22 +109,35 @@ CREATE TABLE KoiConsignment (
     ApprovedStatus VARCHAR(50) CHECK (ApprovedStatus IN ('Pending', 'Approved', 'Rejected')) DEFAULT 'Pending',
     InspectionResult NVARCHAR(MAX),
     Notes NVARCHAR(MAX),
+    KoiType NVARCHAR(100),
+    KoiColor NVARCHAR(100),
+    KoiAge INT,
+    KoiSize INT,
+    ImagePath NVARCHAR(255),
+    UserID INT,
     FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID),
-    FOREIGN KEY (KoiID) REFERENCES KoiFish(KoiID)
+    FOREIGN KEY (KoiID) REFERENCES KoiFish(KoiID),
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
 
-ALTER TABLE KoiConsignment
-ADD KoiType NVARCHAR(100),
-    KoiColor NVARCHAR(100),
-    KoiAge NVARCHAR(50),
-    KoiSize NVARCHAR(50),
-    ImagePath NVARCHAR(255);
 
+	--select * from KoiConsignment where UserID = 3 And ApprovedStatus = 'Pending'
+
+	--UPDATE KoiConsignment
+     --           SET ApprovedStatus = 'Pending'
+     --           WHERE ConsignmentID = 1
 
 --use KoiFarmShop
---select * from KoiConsignment;
-
+--SELECT * FROM KoiConsignment
+--select * from Orders	
 --select * from Users;
+--select * from OrderDetails
+
+
+--SELECT kc.* 
+--        FROM KoiConsignment kc
+--       JOIN Users u ON kc.UserID = u.userId
+--        WHERE u.userId = 3 AND u.Role = 'Staff'
 
 CREATE TABLE Promotions (
     PromotionID INT IDENTITY(1,1) PRIMARY KEY,
@@ -143,39 +167,23 @@ CREATE TABLE Orders (
     ConsignmentID INT,
     PromotionID INT DEFAULT NULL,
     UserID INT DEFAULT NULL,
-	KoiID INT NULL,
-    PackageID INT NULL
-    CONSTRAINT FK_Orders_Users FOREIGN KEY (UserID) REFERENCES Users(UserID),
-    CONSTRAINT FK_Orders_Customers FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID),
-    CONSTRAINT FK_Orders_Consignment FOREIGN KEY (ConsignmentID) REFERENCES KoiConsignment(ConsignmentID),
-    CONSTRAINT FK_Orders_Promotions FOREIGN KEY (PromotionID) REFERENCES Promotions(PromotionID),
-    CONSTRAINT FK_Orders_KoiFish FOREIGN KEY (KoiID) REFERENCES KoiFish(KoiID),
-    CONSTRAINT FK_Orders_KoiPackage FOREIGN KEY (PackageID) REFERENCES KoiPackage(PackageID)
+    FOREIGN KEY (UserID) REFERENCES Users(UserID),
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID),
+    FOREIGN KEY (ConsignmentID) REFERENCES KoiConsignment(ConsignmentID),
+    FOREIGN KEY (PromotionID) REFERENCES Promotions(PromotionID)
 );
+--select * from KoiFish
+--select * from Orders
+--select * from Customers
 
-Select * From Orders o
+--SELECT * FROM OrderDetails WHERE OrderID = 14
 
---SELECT o.OrderID, o.KoiID, k.VarietyID, k.Price AS KoiPrice, 
---       o.PackageID, p.PackageName, p.Price AS PackagePrice,
---       od.Quantity, od.UnitPrice
---FROM Orders o
---LEFT JOIN KoiFish k ON o.KoiID = k.KoiID
---LEFT JOIN KoiPackage p ON o.PackageID = p.PackageID
---JOIN OrderDetails od ON o.OrderID = od.OrderID;
-
---SELECT o.OrderID, 
---       COALESCE(k.Price, 0) + COALESCE(p.Price, 0) AS TotalPrice
---FROM [Orders] o
---LEFT JOIN KoiFish k ON o.KoiID = k.KoiID
---LEFT JOIN KoiPackage p ON o.PackageID = p.PackageID;
-
---SELECT * FROM Orders
 
 CREATE TABLE OrderDetails (
     OrderDetailID INT IDENTITY(1,1) PRIMARY KEY,
     OrderID INT,
-    ProductID INT,
-    Quantity INT,
+    ProductID INT NULL,      
+	Quantity INT,
     UnitPrice DECIMAL(10, 2),
     TotalPrice AS (Quantity * UnitPrice) PERSISTED, -- Công thức tự động
     ProductType VARCHAR(50) CHECK (ProductType IN ('Single Fish', 'Package', 'All')),
@@ -184,30 +192,17 @@ CREATE TABLE OrderDetails (
     PackageID INT NULL,
     FOREIGN KEY (OrderID) REFERENCES Orders(OrderID),
     FOREIGN KEY (ProductID) REFERENCES KoiFish(KoiID),
-	FOREIGN KEY (KoiID) REFERENCES KoiFish(KoiID),
-	FOREIGN KEY (PackageID) REFERENCES KoiPackage(PackageID),
+    FOREIGN KEY (PackageID) REFERENCES KoiPackage(PackageID)
 );
 
-
-ALTER TABLE OrderDetails
-ADD CONSTRAINT CK__OrderDeta__Certi__2739D489 
-CHECK (CertificateStatus IN ('Issued', 'Not Issued', 'Pending'));
-
-ALTER TABLE OrderDetails 
-DROP CONSTRAINT CK__OrderDeta__Produ__73BA3083;
-
-ALTER TABLE OrderDetails 
-ADD CONSTRAINT CK__OrderDeta__Produ__73BA3083 
-CHECK (ProductType IN ('Single Fish', 'Package', 'Mixed'));
-
---SELECT * FROM OrderDetails
-
---SELECT od.OrderDetailID, od.KoiID, k.VarietyID, k.Price AS KoiPrice, 
---       od.PackageID, p.PackageName, p.Price AS PackagePrice
+--SELECT od.OrderDetailID, kp.PackageName, kp.PackageID
 --FROM OrderDetails od
---LEFT JOIN KoiFish k ON od.KoiID = k.KoiID
---LEFT JOIN KoiPackage p ON od.PackageID = p.PackageID;
+--JOIN KoiPackage kp ON od.PackageID = kp.PackageID
+--WHERE od.OrderID = 14;
 
+--select * from Orders
+
+--select * from OrderDetails
 
 CREATE TABLE Payments (
     PaymentID INT IDENTITY(1,1) PRIMARY KEY,
@@ -308,6 +303,7 @@ CREATE TABLE KoiPackageVarieties (
     FOREIGN KEY (VarietyID) REFERENCES Varieties(VarietyID)
 );
 
+
 CREATE TABLE KoiPackageBreeders (
     PackageID INT,
     BreederID INT,
@@ -349,6 +345,7 @@ INSERT INTO Users (Username, PasswordHash, Role, SubscriptionStatus) VALUES
 ('AnhTuan', '$2b$10$OTPdR1qte0bX/iwWC2/Aqu8m.xnVPE1jDKmi/7KJpCDq.d2T7mc3O', 'Customer', 'Active'),
 ('DiemQuynh', '$2b$10$OTPdR1qte0bX/iwWC2/Aqu8m.xnVPE1jDKmi/7KJpCDq.d2T7mc3O', 'Customer', 'Active'),
 ('MinhKiet', '$2b$10$OTPdR1qte0bX/iwWC2/Aqu8m.xnVPE1jDKmi/7KJpCDq.d2T7mc3O', 'Customer', 'Active');
+
 --delete from Users
 --DBCC CHECKIDENT ('Users', RESEED, 0);
 select * from Users
@@ -409,7 +406,108 @@ INSERT INTO KoiFish (Name, VarietyID, Origin, BreederID, Gender, Born, Size, Wei
 ('Pearl Princess', 2, 'F1 Hybrid', 3, 'Female', 2023, 40, 2.2, 'Elegant and calm', 30, 'Good', 8.8, 4000000, 'https://cert.onkoi.vn/pearl-princess', 'https://onkoi.vn/wp-content/uploads/2021/03/onkoi-kujaku-80-cm-3-tuoi-010-300x300.jpg', 'Available'),
 ('Thunder Storm', 6, 'Imported', 5, 'Male', 2020, 65, 4.8, 'Powerful and dominant', 55, 'Excellent', 9.6, 9500000, 'https://cert.onkoi.vn/thunder-storm', 'https://onkoi.vn/wp-content/uploads/2021/03/onkoi-goshiki-72-cm-3-tuoi-013-300x300.jpg', 'Available'),
 ('Autumn Whisper', 4, 'Pure Vietnamese', 7, 'Female', 2022, 48, 2.8, 'Peaceful and adaptable', 35, 'Good', 8.9, 5500000, 'https://cert.onkoi.vn/autumn-whisper', 'https://onkoi.vn/wp-content/uploads/2021/03/onkoi-kujaku-75-cm-3-tuoi-009-300x300.jpg', 'Available'),
-('Midnight Samurai', 10, 'Imported', 10, 'Male', 2021, 58, 4.0, 'Mysterious and strong', 50, 'Excellent', 9.4, 8500000, 'https://cert.onkoi.vn/midnight-samurai', 'https://onkoi.vn/wp-content/uploads/2021/03/onkoi-kujaku-85-cm-4-tuoi-006-300x300.jpg', 'Available');
+('Midnight Samurai', 10, 'Imported', 10, 'Male', 2021, 58, 4.0, 'Mysterious and strong', 50, 'Excellent', 9.4, 8500000, 'https://cert.onkoi.vn/midnight-samurai', 'https://onkoi.vn/wp-content/uploads/2021/03/onkoi-kujaku-85-cm-4-tuoi-006-300x300.jpg', 'Available'),
+('Silver Shadow', 1, 'Imported', 1, 'Male', 2020, 45, 2.5, 'Graceful and agile', 30, 'Excellent', 9.0, 5000000, 'https://cert.onkoi.vn/silver-shadow', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image1.jpg', 'Available'),
+('Coral Queen', 2, 'F1 Hybrid', 2, 'Female', 2021, 50, 3.0, 'Elegant and calm', 35, 'Good', 8.8, 4500000, 'https://cert.onkoi.vn/coral-queen', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image2.jpg', 'Available'),
+('Mystic River', 3, 'Pure Vietnamese', 3, 'Male', 2022, 55, 3.5, 'Mysterious and strong', 40, 'Excellent', 9.2, 6000000, 'https://cert.onkoi.vn/mystic-river', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image3.jpg', 'Available'),
+('Emerald Flame', 4, 'Imported', 4, 'Female', 2023, 40, 2.2, 'Bright and energetic', 28, 'Good', 8.9, 4000000, 'https://cert.onkoi.vn/emerald-flame', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image4.jpg', 'Available'),
+('Sapphire Wave', 5, 'F1 Hybrid', 5, 'Male', 2020, 60, 4.0, 'Calm and majestic', 50, 'Excellent', 9.5, 7500000, 'https://cert.onkoi.vn/sapphire-wave', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image5.jpg', 'Available'),
+('Ruby Star', 6, 'Pure Vietnamese', 6, 'Female', 2021, 48, 2.8, 'Sparkling and lively', 32, 'Good', 8.7, 5000000, 'https://cert.onkoi.vn/ruby-star', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image6.jpg', 'Available'),
+('Jade Whisper', 7, 'Imported', 7, 'Male', 2022, 52, 3.3, 'Quiet and observant', 38, 'Excellent', 9.1, 6500000, 'https://cert.onkoi.vn/jade-whisper', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image7.jpg', 'Available'),
+('Crystal Sky', 8, 'F1 Hybrid', 8, 'Female', 2023, 42, 2.4, 'Gentle and graceful', 30, 'Good', 8.6, 4200000, 'https://cert.onkoi.vn/crystal-sky', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image8.jpg', 'Available'),
+('Amber Glow', 9, 'Pure Vietnamese', 9, 'Male', 2020, 58, 3.8, 'Warm and friendly', 45, 'Excellent', 9.3, 7000000, 'https://cert.onkoi.vn/amber-glow', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image9.jpg', 'Available'),
+('Twilight Dancer', 10, 'Imported', 10, 'Female', 2021, 47, 2.7, 'Active and playful', 34, 'Good', 8.9, 4800000, 'https://cert.onkoi.vn/twilight-dancer', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image10.jpg', 'Available'),
+('Golden Sun', 1, 'F1 Hybrid', 1, 'Male', 2022, 54, 3.5, 'Radiant and strong', 42, 'Excellent', 9.4, 6800000, 'https://cert.onkoi.vn/golden-sun', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image11.jpg', 'Available'),
+('Ocean Breeze', 2, 'Pure Vietnamese', 2, 'Female', 2023, 38, 2.0, 'Calm and serene', 28, 'Good', 8.7, 3900000, 'https://cert.onkoi.vn/ocean-breeze', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image12.jpg', 'Available'),
+('Desert Rose', 3, 'Imported', 3, 'Male', 2020, 60, 4.1, 'Resilient and tough', 50, 'Excellent', 9.6, 7200000, 'https://cert.onkoi.vn/desert-rose', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image13.jpg', 'Available'),
+('Thunder Bolt', 4, 'F1 Hybrid', 4, 'Female', 2021, 46, 2.6, 'Energetic and bold', 33, 'Good', 8.8, 4600000, 'https://cert.onkoi.vn/thunder-bolt', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image14.jpg', 'Available'),
+('Lightning Flash', 5, 'Pure Vietnamese', 5, 'Male', 2022, 56, 3.7, 'Fast and lively', 44, 'Excellent', 9.2, 6900000, 'https://cert.onkoi.vn/lightning-flash', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image15.jpg', 'Available'),
+('Snowflake', 6, 'Imported', 6, 'Female', 2023, 40, 2.3, 'Delicate and beautiful', 29, 'Good', 8.6, 4100000, 'https://cert.onkoi.vn/snowflake', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image16.jpg', 'Available'),
+('Midnight Dream', 7, 'F1 Hybrid', 7, 'Male', 2020, 59, 3.9, 'Mysterious and calm', 47, 'Excellent', 9.3, 7100000, 'https://cert.onkoi.vn/midnight-dream', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image17.jpg', 'Available'),
+('Autumn Leaf', 8, 'Pure Vietnamese', 8, 'Female', 2021, 48, 2.8, 'Peaceful and gentle', 35, 'Good', 8.8, 4600000, 'https://cert.onkoi.vn/autumn-leaf', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image18.jpg', 'Available'),
+('Spring Blossom', 9, 'Imported', 9, 'Male', 2022, 52, 3.4, 'Cheerful and bright', 40, 'Excellent', 9.1, 6500000, 'https://cert.onkoi.vn/spring-blossom', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image19.jpg', 'Available'),
+('Winter Frost', 10, 'F1 Hybrid', 10, 'Female', 2023, 42, 2.5, 'Cool and serene', 31, 'Good', 8.7, 4200000, 'https://cert.onkoi.vn/winter-frost', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image20.jpg', 'Available'),
+('Summer Rain', 1, 'Pure Vietnamese', 1, 'Male', 2020, 53, 3.2, 'Refreshing and lively', 40, 'Excellent', 9.0, 6400000, 'https://cert.onkoi.vn/summer-rain', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image21.jpg', 'Available'),
+('Harmony Echo', 2, 'Imported', 2, 'Female', 2021, 44, 2.6, 'Balanced and peaceful', 33, 'Good', 8.8, 4700000, 'https://cert.onkoi.vn/harmony-echo', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image22.jpg', 'Available'),
+('Silent Wind', 3, 'F1 Hybrid', 3, 'Male', 2022, 57, 3.6, 'Quiet and swift', 42, 'Excellent', 9.2, 6800000, 'https://cert.onkoi.vn/silent-wind', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image23.jpg', 'Available'),
+('Whispering Willow', 4, 'Pure Vietnamese', 4, 'Female', 2023, 43, 2.4, 'Gentle and nurturing', 30, 'Good', 8.9, 4300000, 'https://cert.onkoi.vn/whispering-willow', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image24.jpg', 'Available'),
+('Radiant Pearl', 5, 'Imported', 5, 'Male', 2020, 61, 4.2, 'Bright and valuable', 52, 'Excellent', 9.5, 7600000, 'https://cert.onkoi.vn/radiant-pearl', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image25.jpg', 'Available'),
+('Mystic Moon', 6, 'F1 Hybrid', 6, 'Female', 2021, 49, 2.9, 'Enigmatic and serene', 35, 'Good', 8.7, 4900000, 'https://cert.onkoi.vn/mystic-moon', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image26.jpg', 'Available'),
+('Velvet Thunder', 7, 'Pure Vietnamese', 7, 'Male', 2022, 58, 3.7, 'Smooth and powerful', 45, 'Excellent', 9.1, 7000000, 'https://cert.onkoi.vn/velvet-thunder', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image27.jpg', 'Available'),
+('Diamond Dust', 8, 'Imported', 8, 'Female', 2023, 41, 2.5, 'Sparkling and delicate', 31, 'Good', 8.6, 4200000, 'https://cert.onkoi.vn/diamond-dust', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image28.jpg', 'Available'),
+('Sunrise Glory', 9, 'F1 Hybrid', 9, 'Male', 2020, 55, 3.4, 'Bright and inspiring', 43, 'Excellent', 9.3, 6700000, 'https://cert.onkoi.vn/sunrise-glory', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image29.jpg', 'Available'),
+('Moonbeam', 10, 'Pure Vietnamese', 10, 'Female', 2021, 45, 2.7, 'Soft and luminous', 32, 'Good', 8.8, 4600000, 'https://cert.onkoi.vn/moonbeam', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image30.jpg', 'Available'),
+('Starfire', 1, 'Imported', 1, 'Male', 2022, 56, 3.6, 'Fiery and energetic', 44, 'Excellent', 9.4, 6900000, 'https://cert.onkoi.vn/starfire', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image31.jpg', 'Available'),
+('Shadow Dancer', 2, 'F1 Hybrid', 2, 'Female', 2023, 39, 2.3, 'Mysterious and agile', 29, 'Good', 8.7, 4100000, 'https://cert.onkoi.vn/shadow-dancer', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image32.jpg', 'Available'),
+('Crimson Tide', 3, 'Pure Vietnamese', 3, 'Male', 2020, 62, 4.3, 'Strong and dominant', 53, 'Excellent', 9.6, 7800000, 'https://cert.onkoi.vn/crimson-tide', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image33.jpg', 'Available'),
+('Blue Lagoon', 4, 'Imported', 4, 'Female', 2021, 46, 2.8, 'Calm and soothing', 34, 'Good', 8.9, 4500000, 'https://cert.onkoi.vn/blue-lagoon', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image34.jpg', 'Available'),
+('Golden Horizon', 5, 'F1 Hybrid', 5, 'Male', 2022, 59, 3.9, 'Bright and expansive', 47, 'Excellent', 9.2, 7200000, 'https://cert.onkoi.vn/golden-horizon', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image35.jpg', 'Available'),
+('Silent Echo', 6, 'Pure Vietnamese', 6, 'Female', 2023, 42, 2.5, 'Quiet and reflective', 31, 'Good', 8.8, 4300000, 'https://cert.onkoi.vn/silent-echo', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image36.jpg', 'Available'),
+('Misty Mountain', 7, 'Imported', 7, 'Male', 2020, 57, 3.7, 'Steady and strong', 45, 'Excellent', 9.3, 7000000, 'https://cert.onkoi.vn/misty-mountain', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image37.jpg', 'Available'),
+('Golden Leaf', 8, 'F1 Hybrid', 8, 'Female', 2021, 44, 2.7, 'Elegant and graceful', 33, 'Good', 8.7, 4500000, 'https://cert.onkoi.vn/golden-leaf', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image38.jpg', 'Available'),
+('Silver Stream', 9, 'Pure Vietnamese', 9, 'Male', 2022, 54, 3.5, 'Smooth and swift', 41, 'Excellent', 9.1, 6600000, 'https://cert.onkoi.vn/silver-stream', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image39.jpg', 'Available'),
+('Fire Blossom', 10, 'Imported', 10, 'Female', 2023, 43, 2.6, 'Fiery and delicate', 32, 'Good', 8.9, 4400000, 'https://cert.onkoi.vn/fire-blossom', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image40.jpg', 'Available'),
+('Twilight Glow', 1, 'F1 Hybrid', 1, 'Male', 2020, 58, 3.8, 'Warm and inviting', 46, 'Excellent', 9.4, 7100000, 'https://cert.onkoi.vn/twilight-glow', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image41.jpg', 'Available'),
+('Emerald Mist', 2, 'Pure Vietnamese', 2, 'Female', 2021, 41, 2.4, 'Mystical and serene', 30, 'Good', 8.7, 4200000, 'https://cert.onkoi.vn/emerald-mist', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image42.jpg', 'Available'),
+('Ruby Gleam', 3, 'Imported', 3, 'Male', 2022, 60, 4.0, 'Radiant and bold', 50, 'Excellent', 9.5, 7500000, 'https://cert.onkoi.vn/ruby-gleam', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image43.jpg', 'Available'),
+('Ocean Whisper', 4, 'F1 Hybrid', 4, 'Female', 2023, 44, 2.7, 'Calm and deep', 33, 'Good', 8.8, 4400000, 'https://cert.onkoi.vn/ocean-whisper', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image44.jpg', 'Available'),
+('Sunset Glow', 5, 'Pure Vietnamese', 5, 'Male', 2020, 55, 3.4, 'Warm and peaceful', 42, 'Excellent', 9.2, 6800000, 'https://cert.onkoi.vn/sunset-glow', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image45.jpg', 'Available'),
+('Whispering Wind', 6, 'Imported', 6, 'Female', 2021, 43, 2.5, 'Gentle and swift', 31, 'Good', 8.6, 4300000, 'https://cert.onkoi.vn/whispering-wind', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image46.jpg', 'Available'),
+('Mountain Echo', 7, 'F1 Hybrid', 7, 'Male', 2022, 58, 3.8, 'Strong and resonant', 46, 'Excellent', 9.3, 7200000, 'https://cert.onkoi.vn/mountain-echo', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image47.jpg', 'Available'),
+('Golden Ray', 8, 'Pure Vietnamese', 8, 'Female', 2023, 42, 2.6, 'Bright and cheerful', 32, 'Good', 8.7, 4400000, 'https://cert.onkoi.vn/golden-ray', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image48.jpg', 'Available'),
+('Crystal Brook', 9, 'Imported', 9, 'Male', 2020, 57, 3.7, 'Clear and flowing', 45, 'Excellent', 9.1, 7000000, 'https://cert.onkoi.vn/crystal-brook', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image49.jpg', 'Available'),
+('Amber Dawn', 10, 'F1 Hybrid', 10, 'Female', 2021, 44, 2.7, 'Warm and hopeful', 33, 'Good', 8.9, 4500000, 'https://cert.onkoi.vn/amber-dawn', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image50.jpg', 'Available'),
+('Silver Mist', 1, 'Pure Vietnamese', 1, 'Male', 2022, 54, 3.5, 'Elusive and graceful', 41, 'Excellent', 9.0, 6600000, 'https://cert.onkoi.vn/silver-mist', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image51.jpg', 'Available'),
+('Radiant Sky', 2, 'Imported', 2, 'Female', 2023, 40, 2.4, 'Bright and uplifting', 30, 'Good', 8.8, 4200000, 'https://cert.onkoi.vn/radiant-sky', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image52.jpg', 'Available'),
+('Golden Stream', 3, 'F1 Hybrid', 3, 'Male', 2020, 59, 3.9, 'Flowing and rich', 47, 'Excellent', 9.4, 7000000, 'https://cert.onkoi.vn/golden-stream', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image53.jpg', 'Available'),
+('Lunar Glow', 4, 'Pure Vietnamese', 4, 'Female', 2021, 45, 2.6, 'Soft and luminous', 32, 'Good', 8.9, 4400000, 'https://cert.onkoi.vn/lunar-glow', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image54.jpg', 'Available'),
+('Blazing Star', 5, 'Imported', 5, 'Male', 2022, 60, 4.1, 'Fiery and bold', 51, 'Excellent', 9.5, 7500000, 'https://cert.onkoi.vn/blazing-star', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image55.jpg', 'Available'),
+('Gentle Breeze', 6, 'F1 Hybrid', 6, 'Female', 2023, 41, 2.5, 'Calm and soothing', 31, 'Good', 8.7, 4300000, 'https://cert.onkoi.vn/gentle-breeze', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image56.jpg', 'Available'),
+('Ocean Wave', 7, 'Pure Vietnamese', 7, 'Male', 2020, 56, 3.6, 'Strong and steady', 44, 'Excellent', 9.2, 6800000, 'https://cert.onkoi.vn/ocean-wave', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image57.jpg', 'Available'),
+('Whispering Meadow', 8, 'Imported', 8, 'Female', 2021, 43, 2.5, 'Peaceful and gentle', 31, 'Good', 8.7, 4300000, 'https://cert.onkoi.vn/whispering-meadow', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image58.jpg', 'Available'),
+('Radiant Dawn', 9, 'F1 Hybrid', 9, 'Male', 2022, 58, 3.8, 'Bright and hopeful', 46, 'Excellent', 9.3, 7200000, 'https://cert.onkoi.vn/radiant-dawn', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image59.jpg', 'Available'),
+('Evening Star', 10, 'Pure Vietnamese', 10, 'Female', 2023, 42, 2.6, 'Calm and radiant', 32, 'Good', 8.9, 4400000, 'https://cert.onkoi.vn/evening-star', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image60.jpg', 'Available'),
+('Mystic Shadow', 1, 'Imported', 1, 'Male', 2020, 55, 3.5, 'Enigmatic and swift', 42, 'Excellent', 9.1, 6700000, 'https://cert.onkoi.vn/mystic-shadow', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image61.jpg', 'Available'),
+('Golden Mist', 2, 'F1 Hybrid', 2, 'Female', 2021, 44, 2.7, 'Bright and elusive', 33, 'Good', 8.8, 4500000, 'https://cert.onkoi.vn/golden-mist', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image62.jpg', 'Available'),
+('Silver Dawn', 3, 'Pure Vietnamese', 3, 'Male', 2022, 59, 3.9, 'Radiant and calm', 47, 'Excellent', 9.4, 7100000, 'https://cert.onkoi.vn/silver-dawn', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image63.jpg', 'Available'),
+('Amber Glow', 4, 'Imported', 4, 'Female', 2023, 41, 2.5, 'Warm and gentle', 31, 'Good', 8.7, 4300000, 'https://cert.onkoi.vn/amber-glow', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image64.jpg', 'Available'),
+('Twilight Whisper', 5, 'F1 Hybrid', 5, 'Male', 2020, 57, 3.7, 'Soft and mysterious', 45, 'Excellent', 9.2, 6900000, 'https://cert.onkoi.vn/twilight-whisper', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image65.jpg', 'Available'),
+('Sunbeam', 6, 'Pure Vietnamese', 6, 'Female', 2021, 43, 2.6, 'Bright and cheerful', 32, 'Good', 8.9, 4400000, 'https://cert.onkoi.vn/sunbeam', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image66.jpg', 'Available'),
+('Moonshadow', 7, 'Imported', 7, 'Male', 2022, 56, 3.6, 'Quiet and strong', 44, 'Excellent', 9.3, 7000000, 'https://cert.onkoi.vn/moonshadow', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image67.jpg', 'Available'),
+('Emerald Glow', 8, 'F1 Hybrid', 8, 'Female', 2023, 40, 2.4, 'Calm and radiant', 30, 'Good', 8.8, 4200000, 'https://cert.onkoi.vn/emerald-glow', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image68.jpg', 'Available'),
+('Crimson Flame', 9, 'Pure Vietnamese', 9, 'Male', 2020, 60, 4.0, 'Fiery and bold', 50, 'Excellent', 9.5, 7500000, 'https://cert.onkoi.vn/crimson-flame', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image69.jpg', 'Available'),
+('Azure Sky', 10, 'Imported', 10, 'Female', 2021, 44, 2.7, 'Bright and serene', 33, 'Good', 8.9, 4500000, 'https://cert.onkoi.vn/azure-sky', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image70.jpg', 'Available'),
+('Golden Horizon', 1, 'F1 Hybrid', 1, 'Male', 2022, 58, 3.8, 'Expansive and bright', 46, 'Excellent', 9.4, 7200000, 'https://cert.onkoi.vn/golden-horizon', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image71.jpg', 'Available'),
+('Whispering Rain', 2, 'Pure Vietnamese', 2, 'Female', 2023, 42, 2.6, 'Gentle and soothing', 32, 'Good', 8.7, 4400000, 'https://cert.onkoi.vn/whispering-rain', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image72.jpg', 'Available'),
+('Blazing Sun', 3, 'Imported', 3, 'Male', 2020, 61, 4.1, 'Radiant and powerful', 51, 'Excellent', 9.6, 7600000, 'https://cert.onkoi.vn/blazing-sun', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image73.jpg', 'Available'),
+('Silver Lining', 4, 'F1 Hybrid', 4, 'Female', 2021, 45, 2.6, 'Hopeful and calm', 32, 'Good', 8.8, 4400000, 'https://cert.onkoi.vn/silver-lining', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image74.jpg', 'Available'),
+('Crimson Moon', 5, 'Pure Vietnamese', 5, 'Male', 2022, 57, 3.7, 'Bold and mysterious', 45, 'Excellent', 9.2, 7000000, 'https://cert.onkoi.vn/crimson-moon', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image75.jpg', 'Available'),
+('Gentle Stream', 6, 'Imported', 6, 'Female', 2023, 41, 2.5, 'Calm and flowing', 31, 'Good', 8.7, 4300000, 'https://cert.onkoi.vn/gentle-stream', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image76.jpg', 'Available'),
+('Mystic Light', 7, 'F1 Hybrid', 7, 'Male', 2020, 56, 3.6, 'Enigmatic and bright', 44, 'Excellent', 9.3, 7000000, 'https://cert.onkoi.vn/mystic-light', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image77.jpg', 'Available'),
+('Whispering Shadows', 8, 'Pure Vietnamese', 8, 'Female', 2021, 43, 2.6, 'Gentle and mysterious', 31, 'Good', 8.8, 4400000, 'https://cert.onkoi.vn/whispering-shadows', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image78.jpg', 'Available'),
+('Golden Blaze', 9, 'Imported', 9, 'Male', 2022, 59, 3.9, 'Bright and fierce', 47, 'Excellent', 9.4, 7300000, 'https://cert.onkoi.vn/golden-blaze', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image79.jpg', 'Available'),
+('Crystal Clear', 10, 'F1 Hybrid', 10, 'Female', 2023, 40, 2.4, 'Transparent and pure', 30, 'Good', 8.7, 4200000, 'https://cert.onkoi.vn/crystal-clear', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image80.jpg', 'Available'),
+('Silver Wave', 1, 'Pure Vietnamese', 1, 'Male', 2020, 55, 3.5, 'Flowing and strong', 42, 'Excellent', 9.0, 6600000, 'https://cert.onkoi.vn/silver-wave', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image81.jpg', 'Available'),
+('Emerald Dream', 2, 'Imported', 2, 'Female', 2021, 44, 2.7, 'Peaceful and vibrant', 33, 'Good', 8.8, 4500000, 'https://cert.onkoi.vn/emerald-dream', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image82.jpg', 'Available'),
+('Crimson Sky', 3, 'F1 Hybrid', 3, 'Male', 2022, 60, 4.0, 'Bold and expansive', 50, 'Excellent', 9.5, 7600000, 'https://cert.onkoi.vn/crimson-sky', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image83.jpg', 'Available'),
+('Golden Whisper', 4, 'Pure Vietnamese', 4, 'Female', 2023, 42, 2.6, 'Soft and radiant', 32, 'Good', 8.9, 4400000, 'https://cert.onkoi.vn/golden-whisper', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image84.jpg', 'Available'),
+('Sunset Dream', 5, 'Imported', 5, 'Male', 2020, 58, 3.8, 'Warm and calming', 46, 'Excellent', 9.4, 7100000, 'https://cert.onkoi.vn/sunset-dream', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image85.jpg', 'Available'),
+('Whispering Tide', 6, 'F1 Hybrid', 6, 'Female', 2021, 41, 2.5, 'Gentle and steady', 31, 'Good', 8.7, 4300000, 'https://cert.onkoi.vn/whispering-tide', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image86.jpg', 'Available'),
+('Silver Shadow', 7, 'Pure Vietnamese', 7, 'Male', 2022, 56, 3.6, 'Elusive and swift', 44, 'Excellent', 9.3, 7000000, 'https://cert.onkoi.vn/silver-shadow', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image87.jpg', 'Available'),
+('Golden Flame', 8, 'Imported', 8, 'Female', 2023, 44, 2.7, 'Radiant and energetic', 33, 'Good', 8.8, 4500000, 'https://cert.onkoi.vn/golden-flame', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image88.jpg', 'Available'),
+('Crimson Whisper', 9, 'F1 Hybrid', 9, 'Male', 2020, 59, 3.9, 'Bold and gentle', 47, 'Excellent', 9.4, 7300000, 'https://cert.onkoi.vn/crimson-whisper', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image89.jpg', 'Available'),
+('Emerald Breeze', 10, 'Pure Vietnamese', 10, 'Female', 2021, 43, 2.6, 'Calm and vibrant', 31, 'Good', 8.9, 4400000, 'https://cert.onkoi.vn/emerald-breeze', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image90.jpg', 'Available'),
+('Mystic Flame', 1, 'Imported', 1, 'Male', 2022, 57, 3.7, 'Enigmatic and fiery', 45, 'Excellent', 9.2, 7000000, 'https://cert.onkoi.vn/mystic-flame', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image91.jpg', 'Available'),
+('Golden Mist', 2, 'F1 Hybrid', 2, 'Female', 2023, 41, 2.5, 'Bright and elusive', 31, 'Good', 8.7, 4300000, 'https://cert.onkoi.vn/golden-mist', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image92.jpg', 'Available'),
+('Silver Dawn', 3, 'Pure Vietnamese', 3, 'Male', 2020, 59, 3.9, 'Radiant and calm', 47, 'Excellent', 9.4, 7100000, 'https://cert.onkoi.vn/silver-dawn', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image93.jpg', 'Available'),
+('Amber Glow', 4, 'Imported', 4, 'Female', 2021, 41, 2.5, 'Warm and gentle', 31, 'Good', 8.7, 4300000, 'https://cert.onkoi.vn/amber-glow', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image94.jpg', 'Available'),
+('Twilight Whisper', 5, 'F1 Hybrid', 5, 'Male', 2022, 57, 3.7, 'Soft and mysterious', 45, 'Excellent', 9.2, 6900000, 'https://cert.onkoi.vn/twilight-whisper', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image95.jpg', 'Available'),
+('Sunbeam', 6, 'Pure Vietnamese', 6, 'Female', 2023, 43, 2.6, 'Bright and cheerful', 32, 'Good', 8.9, 4400000, 'https://cert.onkoi.vn/sunbeam', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image96.jpg', 'Available'),
+('Moonshadow', 7, 'Imported', 7, 'Male', 2020, 56, 3.6, 'Quiet and strong', 44, 'Excellent', 9.3, 7000000, 'https://cert.onkoi.vn/moonshadow', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image97.jpg', 'Available'),
+('Emerald Glow', 8, 'F1 Hybrid', 8, 'Female', 2021, 40, 2.4, 'Calm and radiant', 30, 'Good', 8.8, 4200000, 'https://cert.onkoi.vn/emerald-glow', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image98.jpg', 'Available'),
+('Crimson Flame', 9, 'Pure Vietnamese', 9, 'Male', 2022, 60, 4.0, 'Fiery and bold', 50, 'Excellent', 9.5, 7500000, 'https://cert.onkoi.vn/crimson-flame', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image99.jpg', 'Available'),
+('Harmony Wave', 10, 'Imported', 10, 'Female', 2023, 43, 2.6, 'Balanced and harmonious', 32, 'Good', 8.8, 4600000, 'https://cert.onkoi.vn/harmony-wave', 'https://onkoi.vn/wp-content/uploads/2021/03/sample-image100.jpg', 'Available');
+
 select * from KoiFish
 
 --SET IDENTITY_INSERT KoiPackage ON;
@@ -459,6 +557,9 @@ Select * from Orders
 --select * from Orders WHERE OrderID = 1
 
 
+
+--select * from Orders
+--select * from OrderDetails
 INSERT INTO OrderDetails (OrderID, Quantity, UnitPrice, ProductType, CertificateStatus, KoiID, PackageID) VALUES
 (1, 1, (SELECT Price FROM KoiFish WHERE KoiID = 1), 'Single Fish', 'Issued', 1, NULL),
 (2, 1, (SELECT Price FROM KoiPackage WHERE PackageID = 1), 'Package', 'Issued', NULL, 1),
@@ -603,7 +704,7 @@ INSERT INTO Comments (PostID, UserID, CommentText, CommentDate, Status) VALUES
 INSERT INTO KoiPackageVarieties (PackageID, VarietyID) VALUES
 (3, 1), (4, 2),
 (5, 8), (6, 3),
-(7, 9), (8, 5);
+(1, 9), (2, 5);
 --(6, 3), (4, 6), (4, 7),
 --(7, 5), (5, 9);
 --(6, 6), (6, 7), (6, 8), (6, 10),
@@ -618,7 +719,7 @@ INSERT INTO KoiPackageVarieties (PackageID, VarietyID) VALUES
 INSERT INTO KoiPackageBreeders (PackageID, BreederID) VALUES
 (3, 1), (4, 2),
 (5, 2), (6, 3),
-(7, 4), (8, 9);
+(1, 4), (2, 9);
 --(4, 6), (4, 5), (4, 8),
 --(5, 9), (5, 4),
 --(2, 2), (2, 1),
@@ -652,27 +753,8 @@ INSERT INTO OrderHistory (OrderID, TrackingNumber, ShipmentDate, DeliveryDate, S
 (8, NULL, NULL, NULL, 'In Transit'),
 (9, 'VN369258147', '2025-02-11 09:45:00', '2025-02-13 14:15:00', 'Delivered'),
 (10, 'VN741852963', '2025-03-16 10:30:00', '2025-03-18 16:00:00', 'Delivered');
+select * from OrderHistory
 --select * from OrderHistory
-
-INSERT INTO KoiConsignment (CustomerID, ConsignmentType, ConsignmentMode, StartDate, EndDate, Status, PriceAgreed, PickupDate, ApprovedStatus, InspectionResult, Notes) VALUES
--- Status: 'Pending', ApprovedStatus: 'Pending'
-(1, 'Standard', 'Offline', DEFAULT, '2024-12-31', 'Pending', 50000.00, '2024-10-25', 'Pending', 'Chưa kiểm tra', 'Ghi chú mẫu cho trạng thái Pending'),
-
--- Status: 'Approved', ApprovedStatus: 'Approved'
-(2, 'Premium', 'Online', DEFAULT, '2024-11-30', 'Approved', 80000.00, '2024-10-26', 'Approved', 'Koi đạt tiêu chuẩn', 'Ghi chú mẫu cho trạng thái Approved'),
-
--- Status: 'In Care', ApprovedStatus: 'Approved'
-(3, 'Standard', 'Offline', DEFAULT, '2024-11-15', 'In Care', 60000.00, '2024-10-27', 'Approved', 'Koi cần chăm sóc thêm', 'Ghi chú mẫu cho trạng thái In Care'),
-
--- Status: 'Listed for Sale', ApprovedStatus: 'Approved'
-(4, 'Premium', 'Online', DEFAULT, '2024-11-20', 'Listed for Sale', 100000.00, '2024-10-28', 'Approved', 'Koi đã sẵn sàng bán', 'Ghi chú mẫu cho trạng thái Listed for Sale'),
-
--- Status: 'Sold', ApprovedStatus: 'Approved'
-(5, 'Standard', 'Offline', DEFAULT, '2024-12-01', 'Sold', 120000.00, '2024-10-29', 'Approved', 'Koi đã bán', 'Ghi chú mẫu cho trạng thái Sold'),
-
--- Status: 'Withdrawn', ApprovedStatus: 'Rejected'
-(6, 'Premium', 'Online', DEFAULT, '2024-11-10', 'Withdrawn', 150000.00, '2024-10-30', 'Rejected', 'Koi không đủ tiêu chuẩn', 'Ghi chú mẫu cho trạng thái Withdrawn');
---select * from KoiConsignment
 
 
 
@@ -733,3 +815,24 @@ GROUP BY
 
 ORDER BY 
     o.OrderID;
+
+INSERT INTO KoiConsignment (CustomerID, KoiID, ConsignmentType, ConsignmentMode, StartDate, EndDate, Status, PriceAgreed, PickupDate, ApprovedStatus, InspectionResult, Notes) VALUES
+-- Status: 'Pending', ApprovedStatus: 'Pending'
+(1, 1, 'Standard', 'Offline', DEFAULT, '2024-12-31', 'Pending', 50000.00, '2024-10-25', 'Pending', 'Chưa kiểm tra', 'Ghi chú mẫu cho trạng thái Pending'),
+
+-- Status: 'Approved', ApprovedStatus: 'Approved'
+(2, 2, 'Premium', 'Online', DEFAULT, '2024-11-30', 'Approved', 80000.00, '2024-10-26', 'Approved', 'Koi đạt tiêu chuẩn', 'Ghi chú mẫu cho trạng thái Approved'),
+
+-- Status: 'In Care', ApprovedStatus: 'Approved'
+(3, 3, 'Standard', 'Offline', DEFAULT, '2024-11-15', 'In Care', 60000.00, '2024-10-27', 'Approved', 'Koi cần chăm sóc thêm', 'Ghi chú mẫu cho trạng thái In Care'),
+
+-- Status: 'Listed for Sale', ApprovedStatus: 'Approved'
+(4, 4, 'Premium', 'Online', DEFAULT, '2024-11-20', 'Listed for Sale', 100000.00, '2024-10-28', 'Approved', 'Koi đã sẵn sàng bán', 'Ghi chú mẫu cho trạng thái Listed for Sale'),
+
+-- Status: 'Sold', ApprovedStatus: 'Approved'
+(5, 5, 'Standard', 'Offline', DEFAULT, '2024-12-01', 'Sold', 120000.00, '2024-10-29', 'Approved', 'Koi đã bán', 'Ghi chú mẫu cho trạng thái Sold'),
+
+-- Status: 'Withdrawn', ApprovedStatus: 'Rejected'
+(6, 6, 'Premium', 'Online', DEFAULT, '2024-11-10', 'Withdrawn', 150000.00, '2024-10-30', 'Rejected', 'Koi không đủ tiêu chuẩn', 'Ghi chú mẫu cho trạng thái Withdrawn');
+
+--select * from KoiConsignment

@@ -25,15 +25,22 @@ const CartPage = () => {
       title: "Hình Ảnh",
       dataIndex: "image",
       key: "image",
-      render: (text, record) => (
-        <Image
-          src={record.image}
-          alt={record.name}
-          width={80}
-          height={140}
-          preview={false}
-        />
-      ),
+      render: (text, record) => {
+        // Handle both full URLs and relative paths
+        const imageUrl = record.image && record.image.startsWith('http') 
+          ? record.image 
+          : `${process.env.REACT_APP_BASE_URL}${record.image}`;
+          
+        return (
+          <Image
+            src={imageUrl}
+            alt={record.name}
+            width={80}
+            height={140}
+            preview={false}
+          />
+        );
+      },
       responsive: ["xs", "sm", "md", "lg"],
     },
     {

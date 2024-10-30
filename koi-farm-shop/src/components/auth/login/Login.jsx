@@ -30,9 +30,32 @@ const Login = () => {
     }
   }, [isAuthenticated, navigate]);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    dispatch(login(username, password)); // Dispatch login action with username & password
+    try {
+      const role = await dispatch(login(username, password));
+      
+      // Log the userId from localStorage
+      const userId = localStorage.getItem('userId');
+      console.log('User ID from localStorage:', userId);
+
+      switch(role) {
+        case 'Staff':
+          navigate('/staff');
+          break;
+        case 'Customer':
+          navigate('/home');
+          break;
+        case 'Manager':
+          navigate('/admin');
+          break;
+        default:
+          console.warn('Unknown role:', role);
+          navigate('/home');
+      }
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
   };
 
   return (

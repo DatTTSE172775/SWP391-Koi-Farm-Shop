@@ -11,14 +11,13 @@ const OrderList = ({ initialOrders, filterStatus }) => {
 
   console.log("Initial Orders:", initialOrders);
 
-  if (!orders || orders.length === 0) {
-    return (
-      <Empty
-        description={`Không có đơn hàng ở trạng thái ${filterStatus}`}
-        className="empty-state"
-      />
-    );
-  }
+  // Move the Empty component outside the early return
+  const emptyState = (
+    <Empty
+      description={`Không có đơn hàng ở trạng thái ${filterStatus}`}
+      className="empty-state"
+    />
+  );
 
   // Hàm xóa đơn hàng khỏi danh sách sau khi cập nhật trạng thái
   const removeOrder = (orderId) => {
@@ -38,15 +37,19 @@ const OrderList = ({ initialOrders, filterStatus }) => {
           ? "Đơn Hàng Đã Giao"
           : "Đơn Hàng Đã Hủy"}
       </Title>
-      <div className="order-grid">
-        {orders.map((order) => (
-          <OrderItem
-            key={order.OrderID}
-            order={order}
-            onRemove={removeOrder} // Truyền hàm xóa xuống OrderItem
-          />
-        ))}
-      </div>
+      {!orders || orders.length === 0 ? (
+        emptyState
+      ) : (
+        <div className="order-grid">
+          {orders.map((order) => (
+            <OrderItem
+              key={order.OrderID}
+              order={order}
+              onRemove={removeOrder}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

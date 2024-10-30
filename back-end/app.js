@@ -5,7 +5,7 @@ const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const cors = require('cors');
 const orderRoutes = require('./routes/orderRoutes'); // Import orderRoutes
-const consignmentRoutes = require('./routes/consignmentRoutes'); // Import consignmentRoutes
+const dashboardRoutes = require('./routes/dashboardRoutes');
 
 const app = express();
 
@@ -62,15 +62,17 @@ app.use('/api', routes);
 // Sử dụng route cho order
 app.use('/api/orders', orderRoutes);
 
-// Thêm route cho consignment
-app.use('/api/consignments', consignmentRoutes);
+// Sử dụng route cho dashboard
+app.use('/api/dashboard', dashboardRoutes);
 
 // Ví dụ về route login
 app.post('/api/auth/login', (req, res) => {
     res.json({ message: 'Login successful' });
 });
 
-// Middleware bắt lỗi chung
+const path = require('path');
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send({ message: 'Internal Server Error' });
@@ -82,3 +84,4 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`Swagger API Docs available at http://localhost:${PORT}/api-docs`);
 });
+

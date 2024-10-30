@@ -160,7 +160,7 @@ export const fetchOrdersByUser = (userId) => async (dispatch) => {
     dispatch(fetchOrdersByUserFailure(error.message)); // Sử dụng biến đã khai báo
     notification.error({
       message: "Lỗi",
-      description: "Không thể lấy danh sách đơn hàng cho nhân viên này.",
+      description: "Hiện tại không có đơn hàng nào.",
     });
   }
 };

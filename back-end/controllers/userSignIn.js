@@ -22,10 +22,12 @@ const userSignIn = async (req, res) => {
             return res.status(400).json({ message: 'Invalid password.' });
         }
 
-        const token = jwt.sign({ userId: user.UserID, role: user.Role }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        console.log('Generated Token:', token); // Log token được tạo
-
-        res.json({ token });
+        const token = jwt.sign(
+            { userId: user.UserID, role: user.Role },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' }
+        );
+        res.json({ token, role: user.Role, userId: user.UserID });
     } catch (err) {
         console.error('Error during sign in:', err); // Log lỗi chi tiết
         res.status(500).json({ message: 'Server error' });

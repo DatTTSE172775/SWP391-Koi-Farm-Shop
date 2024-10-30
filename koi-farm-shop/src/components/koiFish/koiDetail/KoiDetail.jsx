@@ -60,6 +60,10 @@ const KoiDetail = () => {
 
   const koiData = koi.data;
 
+  const imageUrl = koiData.ImagesLink && koiData.ImagesLink.startsWith('http') 
+    ? koiData.ImagesLink 
+    : `${process.env.REACT_APP_BASE_URL}${koiData.ImagesLink}`;
+
   console.log("Koi data:", koiData);
 
   return (
@@ -81,7 +85,7 @@ const KoiDetail = () => {
         {/* Hình Ảnh */}
         <Col xs={24} md={12}>
           <Image
-            src={koiData.ImagesLink}
+            src={imageUrl}
             alt={koiData.Name}
             className="koi-detail-image"
           />

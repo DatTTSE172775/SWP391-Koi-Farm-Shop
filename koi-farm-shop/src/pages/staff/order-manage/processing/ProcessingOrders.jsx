@@ -1,4 +1,4 @@
-import { Spin } from "antd";
+import { Spin, Empty } from "antd";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import OrderList from "../../../../components/staff/order/list/OrderList";
@@ -13,11 +13,17 @@ const OrderProcessing = () => {
     loading,
     error,
   } = useSelector((state) => state.order || {});
+  const userId = localStorage.getItem('userId');
+  console.log('User ID from localStorage:', userId);
 
   useEffect(() => {
-    const userId = 3; // ID của nhân viên
-    dispatch(fetchOrdersByUser(userId));
-  }, [dispatch]);
+    if (userId) {
+      console.log('Fetching orders for user ID:', userId);
+      dispatch(fetchOrdersByUser(userId));
+    } else {
+      console.warn('No user ID found in localStorage');
+    }
+  }, [dispatch, userId]);
 
   console.log("Fetched Orders:", orders); // Kiểm tra dữ liệu lấy từ store
 
@@ -29,6 +35,15 @@ const OrderProcessing = () => {
     (order) => order.OrderStatus && order.OrderStatus === "Processing"
   );
   console.log("Filtered Processing Orders:", processingOrders); // Kiểm tra danh sách đơn hàng
+
+  if (processingOrders.length === 0) {
+    return (
+      <Empty
+        description="Không có đơn hàng đang xử lý"
+        className="empty-state"
+      />
+    );
+  }
 
   return (
     <OrderList initialOrders={processingOrders} filterStatus="Processing" />

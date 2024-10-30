@@ -4,6 +4,7 @@ const initialState = {
   error: null,
   user: null,
   token: null,
+  userId: null,
   forgetPasswordSuccess: false,
 };
 
@@ -22,6 +23,7 @@ const authReducer = (state = initialState, action) => {
         loading: false,
         user: action.payload.username,
         token: action.payload.token,
+        userId: action.payload.userId,
       };
     case "LOGIN_FAILURE":
       return {

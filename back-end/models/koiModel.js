@@ -153,4 +153,50 @@ const deleteKoiFish = async (koiId) => {
     }
 };
 
-module.exports = { createKoiFish, getAllKoiFish, getKoiFishById, updateKoiFishAvailability, deleteKoiFish };
+// Function to update a KoiFish entry
+const updateKoiFish = async (koiId, updateData) => {
+    try {
+        const pool = await sql.connect();
+        
+        // First check if the koi exists
+        const checkKoi = await pool.request()
+            .input('KoiID', sql.Int, koiId)
+            .query('SELECT KoiID FROM KoiFish WHERE KoiID = @KoiID');
+            
+        if (checkKoi.recordset.length === 0) {
+            return false;
+        }
+
+        // Remove KoiID from updateData if it exists
+        const { KoiID, ...dataToUpdate } = updateData;
+
+        const result = await pool.request()
+            .input('KoiID', sql.Int, koiId)
+            .input('Name', sql.VarChar(255), dataToUpdate.Name)
+            .input('Gender', sql.VarChar(50), dataToUpdate.Gender)
+            .input('Origin', sql.VarChar(50), dataToUpdate.Origin)
+            .input('Born', sql.Int, dataToUpdate.Born)
+            .input('Size', sql.Float, dataToUpdate.Size)
+            .input('Price', sql.Decimal(10, 2), dataToUpdate.Price)
+            .input('HealthStatus', sql.VarChar(255), dataToUpdate.HealthStatus)
+            .input('Availability', sql.VarChar(50), dataToUpdate.Availability)
+            .query(`
+                UPDATE KoiFish
+                SET Name = @Name,
+                    Gender = @Gender,
+                    Origin = @Origin,
+                    Born = @Born,
+                    Size = @Size,
+                    Price = @Price,
+                    HealthStatus = @HealthStatus,
+                    Availability = @Availability
+                WHERE KoiID = @KoiID
+            `);
+        return result.rowsAffected[0] > 0;
+    } catch (err) {
+        console.error('Error updating KoiFish:', err);
+        throw err;
+    }
+};
+
+module.exports = { createKoiFish, getAllKoiFish, getKoiFishById, updateKoiFishAvailability, deleteKoiFish, updateKoiFish };

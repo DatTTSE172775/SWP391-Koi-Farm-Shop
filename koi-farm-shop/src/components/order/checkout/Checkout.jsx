@@ -23,7 +23,7 @@ const Checkout = () => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { cartItems } = useContext(CartContext);
+  const { cartItems, clearCart } = useContext(CartContext);
 
   const user = useSelector((state) => state.account.user);
   const { order, loading, error } = useSelector((state) => state.order);
@@ -53,13 +53,14 @@ const Checkout = () => {
     }
   }, [user, form]);
 
-  // Navigate to order success page when order is created
+  // Update the useEffect for order success
   useEffect(() => {
     if (order) {
       console.log("Order created successfully:", order);
+      clearCart(); // Clear the cart after successful order
       navigate("/order-success", { state: { order } });
     }
-  }, [order, navigate]);
+  }, [order, navigate, clearCart]);
 
   // Calculate total amount from the cart items
   const calculateTotal = () => {

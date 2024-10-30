@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import { logout } from "../../store/actions/authActions";
 import { CartContext } from "../order/cart-context/CartContext";
+import { useNavigate } from "react-router-dom";
 import "./Navigation.scss";
 
 
@@ -13,7 +14,7 @@ const { SubMenu } = Menu;
 const Navigation = () => {
   const location = useLocation();
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   const [current, setCurrent] = useState("home");
   
   // New state for scroll direction
@@ -76,12 +77,15 @@ const Navigation = () => {
     setCurrent(e.key);
   };
 
+  const username = localStorage.getItem("username"); //Display username on the navigation bar
   // Get auth state from redux store
-  const { isAuthenticated, username } = useSelector((state) => state.auth);
+  const { isAuthenticated } = useSelector((state) => state.auth);
 
   // Handle logout
   const handleLogout = () => {
     dispatch(logout());
+    navigate("/login");
+    window.location.reload();
   };
 
   // Menu cho Dropdown khi click vào avatar

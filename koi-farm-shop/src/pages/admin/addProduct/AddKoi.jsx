@@ -1,20 +1,33 @@
 import React, { useState, useEffect } from "react";
-import { Layout, Typography, Form, Input, InputNumber, Select, Button, message } from "antd";
 import AdminHeader from "../../../components/admin/header/AdminHeader";
 import AdminSidebar from "../../../components/admin/sidebar/AdminSidebar";
 import axiosPublic from "../../../api/axiosPublic";
-import "./AddProds.scss";
 import { useNavigate } from "react-router-dom";
-
-const { Content } = Layout;
-const { Title } = Typography;
-const { Option } = Select;
+import "./AddProds.scss";
 
 const AddKoi = () => {
-  const [form] = Form.useForm();
   const [breeders, setBreeders] = useState([]);
   const [varieties, setVarieties] = useState([]);
   const navigate = useNavigate();
+  const [formValues, setFormValues] = useState({
+    name: "",
+    varietyId: "",
+    origin: "",
+    breederId: "",
+    gender: "",
+    born: "",
+    size: "",
+    price: "",
+    weight: "",
+    personality: "",
+    feedingAmountPerDay: "",
+    healthStatus: "",
+    screeningRate: "",
+    certificateLink: "",
+    imageFile: null,
+    availability: "Available",
+  });
+
   useEffect(() => {
     fetchBreeders();
     fetchVarieties();
@@ -23,144 +36,211 @@ const AddKoi = () => {
   const fetchVarieties = async () => {
     try {
       const response = await axiosPublic.get("/varieties");
-      if (Array.isArray(response.data)) {
-          setVarieties(response.data);
-          console.log(response.data);
-      } else {
-        message.error("Failed to fetch varieties. Unexpected data format.");
-      }
+      setVarieties(response.data);
     } catch (error) {
       console.error("Error fetching varieties:", error);
-      message.error("Failed to fetch varieties. Please try again.");
+      alert("Failed to fetch varieties. Please try again.");
     }
   };
-
 
   const fetchBreeders = async () => {
     try {
       const response = await axiosPublic.get("/breeders");
-      if (Array.isArray(response.data)) {
-        setBreeders(response.data);
-        console.log(response.data);
-      } else {
-        message.error("Failed to fetch breeders. Unexpected data format.");
-      }
+      setBreeders(response.data);
     } catch (error) {
       console.error("Error fetching breeders:", error);
-      message.error("Failed to fetch breeders. Please try again.");
+      alert("Failed to fetch breeders. Please try again.");
     }
   };
 
-  const onFinish = async (values) => {
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    setFormValues({
+      ...formValues,
+      [name]: files ? files[0] : value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      console.log("Selected Breeder ID:", values.breederId);
-      const response = await axiosPublic.post("addKoiFish", values);
-      message.success("Koi fish added successfully!");
-      form.resetFields();
+      const formData = new FormData();
+      
+      // Validate required fields
+      const requiredFields = ['name', 'varietyId', 'origin', 'breederId', 'gender', 'born', 'size', 'price'];
+      for (const field of requiredFields) {
+        if (!formValues[field]) {
+          alert(`${field} is required!`);
+          return;
+        }
+      }
+      
+      // Append all form values to formData
+      Object.keys(formValues).forEach(key => {
+        if (key === 'imageFile') {
+          if (formValues.imageFile) {
+            formData.append('imageFile', formValues.imageFile);
+          }
+        } else if (formValues[key] !== null && formValues[key] !== '') {
+          // Convert numeric strings to numbers where appropriate
+          if (['varietyId', 'breederId', 'born'].includes(key)) {
+            formData.append(key, parseInt(formValues[key]));
+          } else if (['size', 'price', 'weight', 'feedingAmountPerDay', 'screeningRate'].includes(key)) {
+            formData.append(key, parseFloat(formValues[key]));
+          } else {
+            formData.append(key, formValues[key]);
+          }
+        }
+      });
+
+      const response = await axiosPublic.post("addKoiFish", formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      
+      console.log("API Response:", response);
+      
+      alert("Koi fish added successfully!");
+      // Reset form
+      setFormValues({
+        name: "",
+        varietyId: "",
+        origin: "",
+        breederId: "",
+        gender: "",
+        born: "",
+        size: "",
+        price: "",
+        weight: "",
+        personality: "",
+        feedingAmountPerDay: "",
+        healthStatus: "",
+        screeningRate: "",
+        certificateLink: "",
+        imageFile: null,
+        availability: "Available",
+      });
     } catch (error) {
       console.error("Error adding Koi fish:", error);
-      message.error("Failed to add Koi fish. Please try again.");
+      console.error("Error response:", error.response);
+      alert(`Failed to add Koi fish: ${error.response?.data?.message || error.message}`);
     }
   };
 
   return (
-    <Layout className="admin-layout">
+    <div className="admin-layout">
       <AdminSidebar />
-      <Layout>
+      <div className="admin-content">
         <AdminHeader />
-        <Content className="admin-content">
-          <div className="add-container">
-            <Title level={2}>Thêm cá Koi</Title>
-            <div className="button-group">
-              <Button type="primary" onClick={() => navigate("/admin/updateKoi")}>
-                Cập nhật cá Koi
-              </Button>
-              <Button type="primary" onClick={() => navigate("/admin/deleteKoi")}>
-                Xóa cá Koi
-              </Button>
-            </div>
-            <Form form={form} layout="vertical" onFinish={onFinish}>
-              <Form.Item name="name" label="Tên" rules={[{ required: true }]}>
-                <Input />
-              </Form.Item>
-              <Form.Item name="varietyId" label="Loại" rules={[{ required: true }]}>
-                <Select>
-                  {varieties.map((variety) => (
-                    <Option key={variety.VarietyID} value={variety.VarietyID}>
-                      {variety.VarietyName}
-                    </Option>
-                  ))}
-                </Select>
-              </Form.Item>
-              <Form.Item name="origin" label="Xuất xứ" rules={[{ required: true }]}>
-                <Select>
-                  <Option value="Imported">Nhập khẩu</Option>
-                  <Option value="F1 Hybrid">Lai tạo F1</Option>
-                  <Option value="Pure Vietnamese">Thuần Việt</Option>
-                </Select>
-              </Form.Item>
-              <Form.Item name="breederId" label="Người nuôi" rules={[{ required: true }]}>
-                <Select>
-                  {breeders.map((breeder) => (
-                    <Option key={breeder.BreederID} value={breeder.BreederID}>
-                      {breeder.Name}
-                    </Option>
-                  ))}
-                </Select>
-              </Form.Item>
-              <Form.Item name="gender" label="Giới tính" rules={[{ required: true }]}>
-                <Select>
-                  <Option value="Male">Đực</Option>
-                  <Option value="Female">Cái</Option>
-                  <Option value="Unknown">Không xác định</Option>
-                </Select>
-              </Form.Item>
-              <Form.Item name="born" label="Năm sinh" rules={[{ required: true }]}>
-                <InputNumber min={1900} max={new Date().getFullYear()} />
-              </Form.Item>
-              <Form.Item name="size" label="Kích thước (cm)" rules={[{ required: true }]}>
-                <InputNumber min={0} step={0.1} />
-              </Form.Item>
-              <Form.Item name="price" label="Giá" rules={[{ required: true }]}>
-                <InputNumber min={0} step={0.01} />
-              </Form.Item>
-              <Form.Item name="weight" label="Cân nặng (kg)" rules={[{ required: true }]}>
-                <InputNumber min={0} step={0.1} />
-              </Form.Item>
-              <Form.Item name="personality" label="Tính cách">
-                <Input.TextArea />
-              </Form.Item>
-              <Form.Item name="feedingAmountPerDay" label="Lượng thức ăn mỗi ngày (g)">
-                <InputNumber min={0} step={0.1} />
-              </Form.Item>
-              <Form.Item name="healthStatus" label="Tình trạng sức khỏe">
-                <Input />
-              </Form.Item>
-              <Form.Item name="screeningRate" label="Tỷ lệ sàng lọc">
-                <InputNumber min={0} max={100} step={0.1} />
-              </Form.Item>
-              <Form.Item name="certificateLink" label="Link chứng chỉ">
-                <Input placeholder="change this to Upload file"/>
-              </Form.Item>
-              <Form.Item name="imagesLink" label="Link hình ảnh">
-                <Input placeholder="change this to Upload file"/>
-              </Form.Item>
-              <Form.Item name="availability" label="Trạng thái">
-                <Select>
-                  <Option value="Available">Có sẵn</Option>
-                  <Option value="Sold Out">Đã bán</Option>
-                </Select>
-              </Form.Item>
-              <Form.Item>
-                <Button type="primary" htmlType="submit" size="large">
-                  Thêm cá Koi
-                </Button>
-              </Form.Item>
-            </Form>
+        <div className="add-container">
+          <h2>Thêm cá Koi</h2>
+          <div className="button-group">
+            <button onClick={() => navigate("/admin/updateKoi")}>Cập nhật cá Koi</button>
+            <button onClick={() => navigate("/admin/deleteKoi")}>Xóa cá Koi</button>
           </div>
-        </Content>
-      </Layout>
-    </Layout>
+          <form onSubmit={handleSubmit} className="form">
+            <div className="form-group">
+              <label>Tên</label>
+              <input name="name" value={formValues.name} onChange={handleChange} required />
+            </div>
+            <div className="form-group">
+              <label>Loại</label>
+              <select name="varietyId" value={formValues.varietyId} onChange={handleChange} required>
+                <option value="">Chọn loại</option>
+                {varieties.map((variety) => (
+                  <option key={variety.VarietyID} value={variety.VarietyID}>
+                    {variety.VarietyName}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Xuất xứ</label>
+              <select name="origin" value={formValues.origin} onChange={handleChange} required>
+                <option value="">Chọn xuất xứ</option>
+                <option value="Imported">Nhập khẩu</option>
+                <option value="F1 Hybrid">Lai tạo F1</option>
+                <option value="Pure Vietnamese">Thuần Việt</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Người nuôi</label>
+              <select name="breederId" value={formValues.breederId} onChange={handleChange} required>
+                <option value="">Chọn người nuôi</option>
+                {breeders.map((breeder) => (
+                  <option key={breeder.BreederID} value={breeder.BreederID}>
+                    {breeder.Name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Giới tính</label>
+              <select name="gender" value={formValues.gender} onChange={handleChange} required>
+                <option value="">Chọn giới tính</option>
+                <option value="Male">Đực</option>
+                <option value="Female">Cái</option>
+                <option value="Unknown">Không xác định</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Năm sinh</label>
+              <input type="number" name="born" min="1900" max={new Date().getFullYear()} value={formValues.born} onChange={handleChange} required />
+            </div>
+            <div className="form-group">
+              <label>Kích thước (cm)</label>
+              <input type="number" name="size" min="0" step="0.1" value={formValues.size} onChange={handleChange} required />
+            </div>
+            <div className="form-group">
+              <label>Giá</label>
+              <input type="number" name="price" min="0" step="0.01" value={formValues.price} onChange={handleChange} required />
+            </div>
+            <div className="form-group">
+              <label>Cân nặng (kg)</label>
+              <input type="number" name="weight" min="0" step="0.1" value={formValues.weight} onChange={handleChange} required />
+            </div>
+            <div className="form-group">
+              <label>Tính cách</label>
+              <textarea name="personality" value={formValues.personality} onChange={handleChange}></textarea>
+            </div>
+            <div className="form-group">
+              <label>Lượng thức ăn mỗi ngày (g)</label>
+              <input type="number" name="feedingAmountPerDay" min="0" step="0.1" value={formValues.feedingAmountPerDay} onChange={handleChange} />
+            </div>
+            <div className="form-group">
+              <label>Tình trạng sức khỏe</label>
+              <input name="healthStatus" value={formValues.healthStatus} onChange={handleChange} />
+            </div>
+            <div className="form-group">
+              <label>Tỷ lệ sàng lọc</label>
+              <input type="number" name="screeningRate" min="0" max="100" step="0.1" value={formValues.screeningRate} onChange={handleChange} />
+            </div>
+            <div className="form-group">
+              <label>Link chứng chỉ</label>
+              <input name="certificateLink" value={formValues.certificateLink} onChange={handleChange} />
+            </div>
+            <div className="form-group">
+              <label>Hình ảnh</label>
+              <input type="file" name="imageFile" accept="image/*" onChange={handleChange} />
+              {formValues.imageFile && (
+                <div className="image-preview">
+                  <img src={URL.createObjectURL(formValues.imageFile)} alt="Koi preview" style={{ width: "200px", height: "auto", marginTop: "10px" }} />
+                </div>
+              )}
+            </div>
+            <div className="form-group">
+              <label>Trạng thái</label>
+              <select name="availability" value={formValues.availability} onChange={handleChange}>
+                <option value="Available">Có sẵn</option>
+                <option value="Sold Out">Đã bán</option>
+              </select>
+            </div>
+            <button type="submit">Thêm cá Koi</button>
+          </form>
+        </div>
+      </div>
+    </div>
   );
 };
 

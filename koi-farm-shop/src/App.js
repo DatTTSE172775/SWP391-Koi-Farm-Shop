@@ -15,6 +15,7 @@ import AddKoi from "./pages/admin/addProduct/AddKoi";
 import AddPackage from "./pages/admin/addProduct/AddPackage";
 import DeleteKoi from "./pages/admin/deleteProduct/deleteKoi";
 import DeleteKoiPackage from "./pages/admin/deleteProduct/deleteKoiPackage";
+import UpdatePackage from "./pages/admin/updateProduct/updateKoiPackage";
 import OrderDetails from "./pages/admin/order-details/OrderDetails";
 import OrdersManagement from "./pages/admin/orderManagement/OrdersManagement";
 import UpdateKoi from "./pages/admin/updateProduct/updateKoi";
@@ -22,6 +23,9 @@ import WelcomeAdmin from "./pages/admin/welcome/WelcomeAdmin";
 import MainLayout from "./pages/MainLayout";
 import NotFound from "./pages/notfound/NotFound";
 import staffRoutes from "./routes/StaffRoutes";
+import PendingConsignments from "./pages/staff/consignment-manage/processing/ProcessingConsignment";
+import InCareConsignments from "./pages/staff/consignment-manage/completed/CompletedConsignment";
+import ManagerConsignmentPage from "./pages/admin/consign/AdminConsignment";
 
 // auth page
 const ForgetPassword = lazy(() =>
@@ -36,7 +40,10 @@ const About = lazy(() => import("./pages/about/About"));
 const Consignment = lazy(() => import("./pages/consignment/Consignment"));
 const ConsignmentForm = lazy(() =>
   import("./pages/consignment/ConsignmentForm")
+
 );
+const ConsignmentDetail = lazy(() => import("./pages/admin/consignment-details/consignmentDetails"));
+
 const Blog = lazy(() => import("./pages/blog/Blog"));
 const Contact = lazy(() => import("./pages/contact/Contact"));
 const HomePage = lazy(() => import("./pages/home/HomePage"));
@@ -141,13 +148,17 @@ function App() {
             <Route path="/admin/updateKoi" element={<UpdateKoi />} />
             <Route path="/admin/deleteKoi" element={<DeleteKoi />} />
             <Route path="/admin/deletePackage" element={<DeleteKoiPackage />} />
-            {/* <Route
+            <Route path="/admin/updatePackage" element={<UpdatePackage />} />
+            <Route
               path="/admin/manage-consign"
               element={<ManagerConsignmentPage />}
-            /> */}
-
+            />
+            <Route path="/admin/consign-detail/:id" element={<ConsignmentDetail />} />
             {/* Staff Routes */}
             {staffRoutes}
+
+            {/* <Route path="/staff/consignments/pending" element={<PendingConsignments />} />
+            <Route path="/staff/consignments/in-care" element={<InCareConsignments />} /> */}
 
             {/* Customer Routes */}
             <Route path="/account" element={<WelcomeAccount />} />
