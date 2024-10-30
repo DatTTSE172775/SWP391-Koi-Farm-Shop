@@ -1,0 +1,45 @@
+// src/styles/adminLayout.scss
+
+.admin-layout {
+  display: flex;
+  height: 100vh; // Layout chiếm toàn bộ màn hình
+  overflow: hidden; // Tránh tràn thanh cuộn không mong muốn
+
+  &__sidebar {
+    flex: 0 0 200px; // Sidebar cố định với chiều rộng 240px
+    background-color: #001529; // Màu sidebar tối hơn
+    color: #fff;
+    overflow-y: auto; // Sidebar có thể cuộn nếu cần
+    height: 100vh; // Chiều cao toàn màn hình
+    padding: 10px 0; // Padding nhỏ để tối ưu không gian
+    display: flex;
+    flex-direction: column; // Các mục theo chiều dọc
+  }
+
+  &__wrapper {
+    flex: 1; // Chiếm toàn bộ không gian còn lại bên cạnh sidebar
+    display: flex;
+    flex-direction: column;
+    height: 100vh; // Chiều cao toàn màn hình
+    overflow: hidden; // Tránh tràn không mong muốn
+  }
+
+  &__header {
+    height: 60px; // Chiều cao cố định cho header
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); // Hiệu ứng bóng
+    z-index: 10; // Đảm bảo header nằm trên các thành phần khác
+    flex-shrink: 0; // Không co lại khi nội dung thay đổi
+  }
+
+  &__main {
+    flex: 1; // Chiếm phần còn lại sau header
+    overflow-y: auto; // Cho phép cuộn nội dung chính
+    background-color: #f0f2f5;
+    padding: 20px;
+    box-sizing: border-box; // Đảm bảo padding không làm thay đổi kích thước
+  }
+}
