@@ -1,7 +1,8 @@
 const { 
   getRevenueToday, 
   getRevenueThisMonth, 
-  getRevenueThisYear 
+  getRevenueThisYear,
+  getOrderStatusCounts,
 } = require('../models/dashboardModel.js');
 
 // Lấy tổng doanh thu hôm nay, tháng này và năm nay
@@ -22,7 +23,7 @@ exports.getDashboardRevenue = async (req, res) => {
       throw new Error("Invalid response object.");
     }
     res.status(200).json(revenueData);
-    
+
   } catch (error) {
     console.error('Error fetching dashboard revenue:', error);
     res.status(500).json({ message: 'Error fetching dashboard revenue' });
@@ -43,5 +44,16 @@ exports.getDashboardData = async (req, res) => {
     if (!res.headersSent) {  
       res.status(500).json({ message: 'Error fetching dashboard data' });
     }
+  }
+};
+
+// Lấy số lượng đơn hàng theo trạng thái
+exports.getOrderStatusStatistics = async (req, res) => {
+  try {
+    const orderStatusCounts = await getOrderStatusCounts();
+    res.status(200).json(orderStatusCounts);
+  } catch (error) {
+    console.error('Error fetching order status statistics:', error);
+    res.status(500).json({ message: 'Error fetching order status statistics' });
   }
 };

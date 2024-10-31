@@ -106,3 +106,35 @@ exports.getRevenueThisYear = async () => {
     throw error;
   }
 };
+
+// Lấy thống kê đơn hàng theo trạng thái
+exports.getOrderStatusCounts = async () => {
+  try {
+    const pool = await connectDB();
+
+    const result = await pool.request().query(`
+      SELECT 
+        SUM(CASE WHEN OrderStatus = 'Pending' THEN 1 ELSE 0 END) AS Pending,
+        SUM(CASE WHEN OrderStatus = 'Processing' THEN 1 ELSE 0 END) AS Processing,
+        SUM(CASE WHEN OrderStatus = 'Delivering' THEN 1 ELSE 0 END) AS Delivering,
+        SUM(CASE WHEN OrderStatus = 'Delivered' THEN 1 ELSE 0 END) AS Delivered,
+        SUM(CASE WHEN OrderStatus = 'Cancelled' THEN 1 ELSE 0 END) AS Cancelled
+      FROM Orders
+    `);
+
+    // Định nghĩa object chứa kết quả
+    const orderStatusCounts = {
+      pending: result.recordset[0]?.Pending || 0,
+      processing: result.recordset[0]?.Processing || 0,
+      delivering: result.recordset[0]?.Delivering || 0,
+      delivered: result.recordset[0]?.Delivered || 0,
+      cancelled: result.recordset[0]?.Cancelled || 0,
+    };
+
+    // Trả về object
+    return orderStatusCounts;
+  } catch (error) {
+    console.error("Error fetching order status counts:", error);
+    throw error;
+  }
+};

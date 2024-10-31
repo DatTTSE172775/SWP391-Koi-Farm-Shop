@@ -19,6 +19,7 @@ const {
   deleteKoiFish,
   updateKoiFish,
 } = require("../controllers/koiController");
+
 const {
   getAllOrders,
   getOrderById,
@@ -33,11 +34,13 @@ const {
   updateOrderToDelivered,
   updateOrderToCancelled,
 } = require("../controllers/orderController");
+
 const {
   getAllCustomers,
   getCustomerById,
   getCustomerByUserName,
 } = require("../controllers/customerController");
+
 const {
   createReportController,
   getAllReportsController,
@@ -45,6 +48,7 @@ const {
   updateReportController,
   deleteReportController,
 } = require("../controllers/reportController");
+
 const {
   createKoiPackage,
   getAllKoiPackages,
@@ -52,6 +56,7 @@ const {
   getKoiPackageById,
   updateKoiPackage,
 } = require("../controllers/koiPackageController");
+
 const {
   createKoiConsignment,
   getAllKoiConsignments,
@@ -63,18 +68,24 @@ const {
   getPendingConsignmentsByUserId,
   getApprovedConsignmentsByUserId
 } = require("../controllers/koiConsignmentController");
+
 const {
   createBreeder,
   getAllBreeders,
   getBreederById,
 } = require("../controllers/breedersController");
+
 const {
   createVariety,
   getAllVarieties,
   addKoiPackageVariety,
 } = require("../controllers/varietyController");
 const { getAllStaff } = require("../controllers/userController");
-const { getDashboardRevenue } = require("../controllers/dashboardController");
+
+const { 
+  getDashboardRevenue,
+  getOrderStatusStatistics,
+ } = require("../controllers/dashboardController");
 // User routes
 /**
  * @swagger
@@ -1056,5 +1067,36 @@ router.get("/koipackage/:packageId", getKoiPackageById);
  *         description: Error fetching dashboard revenue
  */
 router.get("/dashboard/revenue", getDashboardRevenue);
+
+/**
+ * @swagger
+ * /api/dashboard/orders/status:
+ *   get:
+ *     summary: Get order count by status
+ *     tags: [Dashboard]
+ *     responses:
+ *       200:
+ *         description: Order status counts fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 pending:
+ *                   type: integer
+ *                   example: 10
+ *                 shipping:
+ *                   type: integer
+ *                   example: 5
+ *                 completed:
+ *                   type: integer
+ *                   example: 30
+ *                 cancelled:
+ *                   type: integer
+ *                   example: 2
+ *       500:
+ *         description: Error fetching order status counts
+ */
+router.get("/orders/status", getOrderStatusStatistics);
 
 module.exports = router;
