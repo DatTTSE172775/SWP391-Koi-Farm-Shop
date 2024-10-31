@@ -165,3 +165,49 @@ exports.getDailyRevenueThisMonthData = async () => {
     throw error;
   }
 };
+
+// Lấy số lượng yêu cầu ký gửi mới
+exports.getPendingConsignmentsCount = async () => {
+  try {
+    const pool = await connectDB();
+
+    const result = await pool.request().query(`
+      SELECT COUNT(*) AS NewConsignments
+      FROM KoiConsignment
+      WHERE Status = 'Pending'
+    `);
+
+    return { newConsignments: result.recordset[0]?.NewConsignments || 0 };
+  } catch (error) {
+    console.error("Error fetching new consignments count:", error);
+    throw error;
+  }
+};
+
+// Lấy số lượng cá koi đang ký gửi và trạng thái của chúng
+exports.getActiveConsignmentData = async () => {
+  try {
+    const pool = await connectDB();
+    
+    const result = await pool.request()
+      .query(`
+        SELECT 
+          COUNT(*) AS activeConsignments,
+          SUM(CASE WHEN ConsignmentType = 'Care' THEN 1 ELSE 0 END) AS forCare,
+          SUM(CASE WHEN ConsignmentType = 'Sale' THEN 1 ELSE 0 END) AS forSale
+        FROM KoiConsignment
+        WHERE ConsignmentType IN ('Care', 'Sale')
+      `);
+
+    const data = {
+      activeConsignments: result.recordset[0]?.activeConsignments || 0,
+      forCare: result.recordset[0]?.forCare || 0,
+      forSale: result.recordset[0]?.forSale || 0,
+    };
+
+    return data;
+  } catch (error) {
+    console.error('Error fetching active consignment data:', error);
+    res.status(500).json({ error: 'Failed to fetch active consignment data' });
+  }
+};

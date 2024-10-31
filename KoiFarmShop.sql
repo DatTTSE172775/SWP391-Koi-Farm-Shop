@@ -117,9 +117,14 @@ CREATE TABLE KoiConsignment (
     FOREIGN KEY (KoiID) REFERENCES KoiFish(KoiID),
     FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
+      SELECT 
+        COUNT(*) AS ActiveConsignments,
+        SUM(CASE WHEN Status = 'For Sale' THEN 1 ELSE 0 END) AS ForSale
+      FROM KoiConsignment
+      WHERE Status IN ('In Care', 'For Sale')
 
 
-	--select * from KoiConsignment where UserID = 3 And ApprovedStatus = 'Pending'
+	select * from KoiConsignment where UserID = 3 And ApprovedStatus = 'Pending'
 
 	--UPDATE KoiConsignment
      --           SET ApprovedStatus = 'Pending'

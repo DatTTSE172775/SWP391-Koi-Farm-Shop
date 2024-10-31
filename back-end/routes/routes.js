@@ -90,6 +90,8 @@ const {
   getDashboardRevenue,
   getOrderStatusStatistics,
   getDailyRevenueThisMonth,
+  getPendingConsignments,
+  getActiveConsignment,
  } = require("../controllers/dashboardController");
 
 // User routes
@@ -1172,5 +1174,55 @@ router.get("/orders/status", getOrderStatusStatistics);
  *         description: Error fetching daily revenue data
  */
 router.get("/revenue/daily", getDailyRevenueThisMonth);
+
+/**
+ * @swagger
+ * /api/dashboard/consignments/pending:
+ *   get:
+ *     summary: Get the count of new consignment requests
+ *     tags: [Dashboard]
+ *     responses:
+ *       200:
+ *         description: Number of new consignment requests
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 newConsignments:
+ *                   type: integer
+ *                   example: 3
+ *       500:
+ *         description: Server error
+ */
+router.get('/consignments/pending', getPendingConsignments);
+
+/**
+ * @swagger
+ * /api/dashboard/consignments/active:
+ *   get:
+ *     summary: Get the count of active consignments by type
+ *     tags: [Dashboard]
+ *     responses:
+ *       200:
+ *         description: Number of active consignments categorized by type (Care or Sale)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 activeConsignments:
+ *                   type: integer
+ *                   example: 12
+ *                 forCare:
+ *                   type: integer
+ *                   example: 7
+ *                 forSale:
+ *                   type: integer
+ *                   example: 5
+ *       500:
+ *         description: Server error
+ */
+router.get('consignments/active', getActiveConsignment);
 
 module.exports = router;

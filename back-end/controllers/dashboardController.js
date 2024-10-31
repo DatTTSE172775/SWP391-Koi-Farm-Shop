@@ -4,6 +4,8 @@ const {
   getRevenueThisYear,
   getOrderStatusCounts,
   getDailyRevenueThisMonthData,
+  getPendingConsignmentsCount,
+  getActiveConsignmentData,
 } = require('../models/dashboardModel.js');
 
 // Lấy tổng doanh thu hôm nay, tháng này và năm nay
@@ -67,5 +69,27 @@ exports.getDailyRevenueThisMonth = async (req, res) => {
   } catch (error) {
     console.error('Error fetching daily revenue data:', error);
     res.status(500).json({ message: 'Error fetching daily revenue data' });
+  }
+};
+
+// Lấy số lượng yêu cầu ký gửi mới
+exports.getPendingConsignments = async (req, res) => {
+  try {
+    const pendingConsignmentsCount = await getPendingConsignmentsCount();
+    res.status(200).json(pendingConsignmentsCount);
+  } catch (error) {
+    console.error('Error fetching new consignments count:', error);
+    res.status(500).json({ message: 'Error fetching new consignments count' });
+  }
+};
+
+// Lấy số lượng ký gửi hiện có
+exports.getActiveConsignment = async (req, res) => {
+  try {
+    const activeConsignmentData = await getActiveConsignmentData();
+    res.status(200).json(activeConsignmentData);
+  } catch (error) {
+    console.error("Error fetching active consignment data:", error);
+    res.status(500).json({ message: "Error fetching active consignment data" });
   }
 };
