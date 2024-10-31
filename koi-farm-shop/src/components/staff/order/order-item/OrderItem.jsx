@@ -10,8 +10,8 @@ const { Title, Text } = Typography;
 const getNextStatus = (status) => {
   switch (status) {
     case "Processing":
-      return "Shipped";
-    case "Shipped":
+      return "Delivering";
+    case "Delivering":
       return "Delivered";
     default:
       return null;
@@ -19,7 +19,7 @@ const getNextStatus = (status) => {
 };
 
 const shouldShowUpdateButton = (status) => {
-  return status === "Processing" || status === "Shipped";
+  return status === "Processing" || status === "Delivering";
 };
 
 const OrderItem = ({ order, onRemove }) => {
@@ -60,10 +60,12 @@ const OrderItem = ({ order, onRemove }) => {
         <div>
           <Title level={5}>Giá:</Title>
           <Text className="price-text">
-            {order.TotalAmount.toLocaleString("vi-VN", {
-              style: "currency",
-              currency: "VND",
-            })}
+            {order.TotalAmount != null
+                ? order.TotalAmount.toLocaleString("vi-VN", {
+                  style: "currency",
+                  currency: "VND",
+                })
+                : "N/A"}
           </Text>
         </div>
       </div>

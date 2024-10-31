@@ -23,7 +23,7 @@ const { Text, Title } = Typography;
 const statusColors = {
   Pending: "orange",
   Processing: "blue",
-  Shipped: "purple",
+  Delivering: "purple",
   Delivered: "green",
   Cancelled: "red",
 };
@@ -85,12 +85,12 @@ const OrderItem = ({ order }) => {
 
         <Col xs={12} md={4}>
           <Title level={5}>Ngày Đặt Hàng</Title>
-          <Text>{new Date(order.OrderDate).toLocaleDateString()}</Text>
+          <Text>{order.OrderDate ? new Date(order.OrderDate).toLocaleDateString() : 'N/A'}</Text>
         </Col>
 
         <Col xs={12} md={4}>
           <Title level={5}>Giá</Title>
-          <Text strong>{order.TotalAmount.toLocaleString()} VND</Text>
+          <Text strong>{order.TotalAmount ? order.TotalAmount.toLocaleString() + ' VND' : 'N/A'}</Text>
         </Col>
 
         <Col xs={12} md={5}>

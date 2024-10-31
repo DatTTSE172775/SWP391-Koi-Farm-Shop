@@ -528,9 +528,9 @@ router.patch("/orders/:orderId/processing", updateOrderToProcessing);
 
 /**
  * @swagger
- * /api/orders/{orderId}/shipped:
+ * /api/orders/{orderId}/delivering:
  *   patch:
- *     summary: Update order status to Shipped
+ *     summary: Update order status to Delivering
  *     tags: [Orders]
  *     parameters:
  *       - in: path
@@ -541,9 +541,9 @@ router.patch("/orders/:orderId/processing", updateOrderToProcessing);
  *         description: Order ID
  *     responses:
  *       200:
- *         description: Order status updated to Shipped
+ *         description: Order status updated to Delivering
  */
-router.patch("/orders/:orderId/Delivering", updateOrderToDelivering);
+router.patch("/orders/:orderId/delivering", updateOrderToDelivering);
 
 /**
  * @swagger
