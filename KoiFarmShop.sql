@@ -65,9 +65,7 @@ CREATE TABLE KoiFish (
     FOREIGN KEY (VarietyID) REFERENCES Varieties(VarietyID),
     FOREIGN KEY (BreederID) REFERENCES Breeders(BreederID)
 );
-SELECT SUM(TotalAmount) AS TotalOrderRevenue
-    FROM Orders
-    WHERE OrderStatus = 'Delivered'
+
 --select * from KoiFish
 --select * from Breeders
 --select * from Varieties
@@ -173,9 +171,17 @@ CREATE TABLE Orders (
     FOREIGN KEY (PromotionID) REFERENCES Promotions(PromotionID)
 );
 --select * from KoiFish
---select * from Orders
+select * from Orders
 --select * from Customers
-
+      SELECT 
+        CONVERT(VARCHAR, OrderDate, 23) AS Date,  -- Định dạng ngày theo "YYYY-MM-DD"
+        SUM(TotalAmount) AS DailyRevenue
+      FROM Orders
+      WHERE MONTH(OrderDate) = MONTH(GETDATE())
+      AND YEAR(OrderDate) = YEAR(GETDATE())
+      AND OrderStatus = 'Delivered'
+      GROUP BY CONVERT(VARCHAR, OrderDate, 23)
+      ORDER BY Date
 --SELECT * FROM OrderDetails WHERE OrderID = 14
 
 
@@ -802,7 +808,7 @@ FROM
     Orders o
 LEFT JOIN 
     OrderDetails od ON o.OrderID = od.OrderID
-LEFT JOIN order
+LEFT JOIN 
     KoiFish kf ON od.KoiID = kf.KoiID
 LEFT JOIN 
     KoiPackage kp ON od.PackageID = kp.PackageID
@@ -818,21 +824,21 @@ ORDER BY
 
 INSERT INTO KoiConsignment (CustomerID, KoiID, ConsignmentType, ConsignmentMode, StartDate, EndDate, Status, PriceAgreed, PickupDate, ApprovedStatus, InspectionResult, Notes) VALUES
 -- Status: 'Pending', ApprovedStatus: 'Pending'
-(1, 1, 'Standard', 'Offline', DEFAULT, '2024-12-31', 'Pending', 50000.00, '2024-10-25', 'Pending', 'Chưa kiểm tra', 'Ghi chú mẫu cho trạng thái Pending'),
+(1, 1, 'Sale', 'Offline', DEFAULT, '2024-12-31', 'Pending', 50000.00, '2024-10-25', 'Pending', 'Chưa kiểm tra', 'Ghi chú mẫu cho trạng thái Pending'),
 
 -- Status: 'Approved', ApprovedStatus: 'Approved'
-(2, 2, 'Premium', 'Online', DEFAULT, '2024-11-30', 'Approved', 80000.00, '2024-10-26', 'Approved', 'Koi đạt tiêu chuẩn', 'Ghi chú mẫu cho trạng thái Approved'),
+(2, 2, 'Sale', 'Online', DEFAULT, '2024-11-30', 'Approved', 80000.00, '2024-10-26', 'Approved', 'Koi đạt tiêu chuẩn', 'Ghi chú mẫu cho trạng thái Approved'),
 
 -- Status: 'In Care', ApprovedStatus: 'Approved'
-(3, 3, 'Standard', 'Offline', DEFAULT, '2024-11-15', 'In Care', 60000.00, '2024-10-27', 'Approved', 'Koi cần chăm sóc thêm', 'Ghi chú mẫu cho trạng thái In Care'),
+(3, 3, 'Sale', 'Offline', DEFAULT, '2024-11-15', 'In Care', 60000.00, '2024-10-27', 'Approved', 'Koi cần chăm sóc thêm', 'Ghi chú mẫu cho trạng thái In Care'),
 
 -- Status: 'Listed for Sale', ApprovedStatus: 'Approved'
-(4, 4, 'Premium', 'Online', DEFAULT, '2024-11-20', 'Listed for Sale', 100000.00, '2024-10-28', 'Approved', 'Koi đã sẵn sàng bán', 'Ghi chú mẫu cho trạng thái Listed for Sale'),
+(4, 4, 'Care', 'Online', DEFAULT, '2024-11-20', 'Listed for Sale', 100000.00, '2024-10-28', 'Approved', 'Koi đã sẵn sàng bán', 'Ghi chú mẫu cho trạng thái Listed for Sale'),
 
 -- Status: 'Sold', ApprovedStatus: 'Approved'
-(5, 5, 'Standard', 'Offline', DEFAULT, '2024-12-01', 'Sold', 120000.00, '2024-10-29', 'Approved', 'Koi đã bán', 'Ghi chú mẫu cho trạng thái Sold'),
+(5, 5, 'Care', 'Offline', DEFAULT, '2024-12-01', 'Sold', 120000.00, '2024-10-29', 'Approved', 'Koi đã bán', 'Ghi chú mẫu cho trạng thái Sold'),
 
 -- Status: 'Withdrawn', ApprovedStatus: 'Rejected'
-(6, 6, 'Premium', 'Online', DEFAULT, '2024-11-10', 'Withdrawn', 150000.00, '2024-10-30', 'Rejected', 'Koi không đủ tiêu chuẩn', 'Ghi chú mẫu cho trạng thái Withdrawn');
+(6, 6, 'Sale', 'Online', DEFAULT, '2024-11-10', 'Withdrawn', 150000.00, '2024-10-30', 'Rejected', 'Koi không đủ tiêu chuẩn', 'Ghi chú mẫu cho trạng thái Withdrawn');
 
 --select * from KoiConsignment
