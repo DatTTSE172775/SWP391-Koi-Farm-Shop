@@ -16,6 +16,7 @@ import { fetchUserByUsername } from "../../../store/actions/accountActions";
 import { createOrder } from "../../../store/actions/orderActions";
 import { CartContext } from "../cart-context/CartContext";
 import "./Checkout.scss";
+import axiosInstance from "../../../api/axiosInstance";
 
 const { Title, Text } = Typography;
 
@@ -71,13 +72,11 @@ const Checkout = () => {
   };
 
   // Handle form submission
-  const onFinish = (values) => {
-    console.log("Form submitted with values:", values);
-
+  const onFinish = async (values) => {
     const orderData = {
       totalAmount: calculateTotal(),
       shippingAddress: values.address,
-      paymentMethod: values.paymentMethod,
+      paymentMethod: values.paymentMethod === 'VNPAY' ? 'Credit Card' : values.paymentMethod,
       orderItems: cartItems.map(item => ({
         productId: item.type === 'koi' ? item.id : null,
         packageId: item.type === 'package' ? item.id : null,
@@ -88,9 +87,27 @@ const Checkout = () => {
       }))
     };
 
-    console.log("Creating order with:", orderData);
+    if (values.paymentMethod === 'VNPAY') {
+      try {
+        //Save the order data to local storage
+        localStorage.setItem('pendingOrder', JSON.stringify(orderData));
 
-    dispatch(createOrder(orderData));
+        const response = await axiosInstance.post('/payment/create', {
+          amount: calculateTotal(),
+          orderId: `ORDER_${Date.now()}`, // Generate a unique order ID
+          bankCode: '', // Optional: Leave empty for default VNPay gateway
+          language: 'vn'
+        });
+        
+        // Redirect to VNPay payment URL
+        window.location.href = response.data.vnpUrl;
+      } catch (error) {
+        console.error('Payment creation error:', error);
+      }
+    } else {
+      // Handle other payment methods
+      dispatch(createOrder(orderData));
+    }
   };
 
   return (
@@ -167,13 +184,9 @@ const Checkout = () => {
                 ]}
               >
                 <Radio.Group>
-                  <Radio.Button value="Credit Card">Credit Card</Radio.Button>
-                  <Radio.Button value="Bank Transfer">
-                    Bank Transfer
-                  </Radio.Button>
-                  <Radio.Button value="Cash on Delivery">
-                    Cash on Delivery
-                  </Radio.Button>
+                <Radio.Button value="VNPAY">VNPAY</Radio.Button>
+                <Radio.Button value="COD">Thanh toán khi nhận hàng</Radio.Button>
+                  <Radio.Button value="Cash on Delivery">Cash on Delivery</Radio.Button>
                 </Radio.Group>
               </Form.Item>
               <Divider />

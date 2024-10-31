@@ -10,6 +10,10 @@ const changePassword = require("../controllers/changePassword");
 const forgotPassword = require("../controllers/forgotPassword");
 
 const koiConsignmentController = require("../controllers/koiConsignmentController");
+const {
+  createPayment,
+  verifyPayment
+} = require('../controllers/paymentController');
 
 const {
   createKoiFish,
@@ -87,6 +91,7 @@ const {
   getOrderStatusStatistics,
   getDailyRevenueThisMonth,
  } = require("../controllers/dashboardController");
+
 // User routes
 /**
  * @swagger
@@ -1039,6 +1044,45 @@ router.post("/addKoiPackageVariety", addKoiPackageVariety);
 router.get("/orders/:orderId/details", getOrderDetails);
 
 router.get("/koipackage/:packageId", getKoiPackageById);
+
+/**
+ * @swagger
+ * /api/payment/create-payment:
+ *   post:
+ *     summary: Tạo URL thanh toán VNPay
+ *     tags: [Payment]
+ *     description: API tạo URL thanh toán cho khách hàng qua VNPay
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               orderId:
+ *                 type: number
+ *               amount:
+ *                 type: number
+ *               bankCode:
+ *                 type: string
+ *               language:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Trả về URL để người dùng thanh toán
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 paymentUrl:
+ *                   type: string
+ *                   description: URL thanh toán VNPay
+ *       400:
+ *         description: Lỗi khi tạo thanh toán
+ */
+router.post('/payment/create', createPayment);
+router.get('/payment/verify', verifyPayment);
 
 // Dashboard routes
 /**

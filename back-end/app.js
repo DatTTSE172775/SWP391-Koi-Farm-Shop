@@ -5,16 +5,21 @@ const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const cors = require('cors');
 const orderRoutes = require('./routes/orderRoutes'); // Import orderRoutes
+const paymentRoutes = require('./routes/paymentRoutes'); // Import route cho thanh toán VNPay
 const dashboardRoutes = require('./routes/dashboardRoutes');
 
 const app = express();
 
 // Cấu hình CORS
 app.use(cors({
-    origin: 'http://localhost:3000',  // Cho phép frontend từ localhost:3000
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],  // Cho phép các phương thức này
-    credentials: true,  // Cho phép gửi thông tin xác thực (cookie) nếu cần
-    allowedHeaders: ['Content-Type', 'Authorization'],  // Cho phép các tiêu đề cần thiết
+  origin: [
+      'http://localhost:3000',
+      'https://sandbox.vnpayment.vn',
+      process.env.FRONTEND_URL
+  ],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
 // Middleware để phân tích dữ liệu JSON từ body request
@@ -37,6 +42,29 @@ const swaggerOptions = {
       servers: [{ url: 'http://localhost:5000' }],
     },
     components: {
+      schemas: {
+        PaymentRequest: {
+          type: 'object',
+          required: ['orderId', 'amount'],
+          properties: {
+            orderId: {
+              type: 'string',
+              description: 'Mã đơn hàng',
+              example: '123456',
+            },
+            amount: {
+              type: 'number',
+              description: 'Số tiền thanh toán',
+              example: 100000,
+            },
+            bankCode: {
+              type: 'string',
+              description: 'Mã ngân hàng (tùy chọn)',
+              example: 'NCB',
+            },
+          },
+        },
+      },
       securitySchemes: {
         bearerAuth: {
           type: 'http',
@@ -49,8 +77,9 @@ const swaggerOptions = {
       bearerAuth: []
     }],
   },
-  apis: ['./routes/*.js'], // Đường dẫn đến file chứa các route và comment Swagger
+  apis: ['./routes/*.js', './routes/paymentRoutes.js'], // Đảm bảo trỏ đến 'paymentRoutes.js'
 };
+
 
 // Khởi tạo Swagger docs
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
@@ -60,7 +89,10 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use('/api', routes);
 
 // Sử dụng route cho order
-app.use('/api/orders', orderRoutes);
+app.use('/api/orders', orderRoutes); // Thêm route cho order
+
+// Sử dụng route cho thanh toán VNPay
+// app.use('/api/paymentRoutes', paymentRoutes); // Thêm route cho thanh toán VNPay
 
 // Sử dụng route cho dashboard
 app.use('/api/dashboard', dashboardRoutes);
