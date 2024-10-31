@@ -1,15 +1,19 @@
-.admin-layout {
-  height: 100vh;
+/* OrdersManagement.scss */
 
-  .admin-content {
-    padding: 20px;
-    background-color: #f0f2f5;
-    overflow-y: auto;
-  }
+/* Nội dung chính của trang quản lý */
+.admin-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+  background-color: #f0f2f5;
+  min-height: calc(100vh - 64px); /* Trừ header */
+  border-radius: 8px;
+}
 
-  .orders-list {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
+/* Danh sách các đơn hàng */
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }

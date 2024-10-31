@@ -10,7 +10,11 @@ CREATE TABLE Users (
     SubscriptionStatus VARCHAR(50) CHECK (SubscriptionStatus IN ('Active', 'Inactive')) NOT NULL
 );
 
+<<<<<<< HEAD
 --select * from Users
+=======
+select * from Users
+>>>>>>> 6b41d50d0a674b57a871fbdf711a50ba35c5edc0
 
 CREATE TABLE Customers (
     CustomerID INT IDENTITY(1,1) PRIMARY KEY,

@@ -26,6 +26,7 @@ import staffRoutes from "./routes/StaffRoutes";
 import PendingConsignments from "./pages/staff/consignment-manage/processing/ProcessingConsignment";
 import InCareConsignments from "./pages/staff/consignment-manage/completed/CompletedConsignment";
 import ManagerConsignmentPage from "./pages/admin/consign/AdminConsignment";
+import adminRoutes from "./routes/AdminRoutes";
 
 // auth page
 const ForgetPassword = lazy(() =>
@@ -141,6 +142,7 @@ function App() {
             </Route>
 
             {/* Admin Routes */}
+<<<<<<< HEAD
             <Route path="/admin" element={<WelcomeAdmin />} />
             <Route path="/admin/manage-orders" element={<OrdersManagement />} />
             <Route
@@ -158,6 +160,11 @@ function App() {
               element={<ManagerConsignmentPage />}
             />
             <Route path="/admin/consign-detail/:id" element={<ConsignmentDetail />} />
+=======
+            {adminRoutes}
+
+
+>>>>>>> 6b41d50d0a674b57a871fbdf711a50ba35c5edc0
             {/* Staff Routes */}
             {staffRoutes}
 
