@@ -1,30 +1,34 @@
-const { getTotalOrderRevenue, getTotalKoiFishRevenue, getTotalKoiPackageRevenue } = require('../models/dashboardModel.js');
+const { 
+  getRevenueToday, 
+  getRevenueThisMonth, 
+  getRevenueThisYear 
+} = require('../models/dashboardModel.js');
 
-// Hàm xử lý yêu cầu từ route và trả về tổng doanh thu
+// Lấy tổng doanh thu hôm nay, tháng này và năm nay
 exports.getDashboardRevenue = async (req, res) => {
   try {
-    console.log('Fetching dashboard revenue...');
+    const revenueToday = await getRevenueToday();
+    const revenueThisMonth = await getRevenueThisMonth();
+    const revenueThisYear = await getRevenueThisYear();
 
-    // Gọi các hàm model để lấy từng doanh thu riêng lẻ
-    const totalOrderRevenue = await getTotalOrderRevenue() || 0;
-    const totalKoiFishRevenue = await getTotalKoiFishRevenue() || 0;
-    const totalKoiPackageRevenue = await getTotalKoiPackageRevenue() || 0;
-    
-    // Định nghĩa đối tượng doanh thu
     const revenueData = {
-      totalOrderRevenue,
-      totalKoiFishRevenue,
-      totalKoiPackageRevenue,
+      revenueToday,
+      revenueThisMonth,
+      revenueThisYear,
     };
 
-    // Trả về đối tượng doanh thu
-    return revenueData;
-
+    // Kiểm tra nếu `res` là hợp lệ trước khi gọi `status`
+    if (!res || typeof res.status !== 'function') {
+      throw new Error("Invalid response object.");
+    }
+    res.status(200).json(revenueData);
+    
   } catch (error) {
     console.error('Error fetching dashboard revenue:', error);
-    res.status(500).send({ message: 'Error fetching dashboard revenue' });
+    res.status(500).json({ message: 'Error fetching dashboard revenue' });
   }
 };
+
 
 // Lấy dữ liệu tổng quan cho dashboard
 exports.getDashboardData = async (req, res) => {

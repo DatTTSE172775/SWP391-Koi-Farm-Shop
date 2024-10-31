@@ -51,3 +51,58 @@ exports.getTotalKoiPackageRevenue = async () => {
     throw error;
   }
 };
+
+// Lấy tổng doanh thu hôm nay cho các đơn hàng đã giao
+exports.getRevenueToday = async () => {
+  try {
+    const pool = await connectDB();
+    const result = await pool.request().query(`
+      SELECT SUM(TotalAmount) AS RevenueToday
+      FROM Orders
+      WHERE CAST(OrderDate AS DATE) = CAST(GETDATE() AS DATE)
+      AND OrderStatus = 'Delivered'
+    `);
+
+    return result.recordset[0]?.RevenueToday || 0;
+  } catch (error) {
+    console.error("Error fetching today's revenue:", error);
+    throw error;
+  }
+};
+
+// Lấy tổng doanh thu của tháng này cho các đơn hàng đã giao
+exports.getRevenueThisMonth = async () => {
+  try {
+    const pool = await connectDB();
+    const result = await pool.request().query(`
+      SELECT SUM(TotalAmount) AS RevenueThisMonth
+      FROM Orders
+      WHERE MONTH(OrderDate) = MONTH(GETDATE())
+      AND YEAR(OrderDate) = YEAR(GETDATE())
+      AND OrderStatus = 'Delivered'
+    `);
+
+    return result.recordset[0]?.RevenueThisMonth || 0;
+  } catch (error) {
+    console.error("Error fetching this month's revenue:", error);
+    throw error;
+  }
+};
+
+// Lấy tổng doanh thu của năm hiện tại cho các đơn hàng đã giao
+exports.getRevenueThisYear = async () => {
+  try {
+    const pool = await connectDB();
+    const result = await pool.request().query(`
+      SELECT SUM(TotalAmount) AS RevenueThisYear
+      FROM Orders
+      WHERE YEAR(OrderDate) = YEAR(GETDATE())
+      AND OrderStatus = 'Delivered'
+    `);
+
+    return result.recordset[0]?.RevenueThisYear || 0;
+  } catch (error) {
+    console.error("Error fetching this year's revenue:", error);
+    throw error;
+  }
+};

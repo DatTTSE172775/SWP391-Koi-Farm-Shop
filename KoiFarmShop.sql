@@ -1,4 +1,4 @@
-﻿CREATE DATABASE KoiFarmShop3
+﻿gCREATE DATABASE KoiFarmShop3
 USE KoiFarmShop3
 
 

@@ -74,7 +74,7 @@ const {
   addKoiPackageVariety,
 } = require("../controllers/varietyController");
 const { getAllStaff } = require("../controllers/userController");
-const { getDashboardData } = require("../controllers/dashboardController");
+const { getDashboardRevenue } = require("../controllers/dashboardController");
 // User routes
 /**
  * @swagger
@@ -1031,30 +1031,30 @@ router.get("/koipackage/:packageId", getKoiPackageById);
 // Dashboard routes
 /**
  * @swagger
- * /api/dashboard:
+ * /api/dashboard/revenue:
  *   get:
- *     summary: Get dashboard data
+ *     summary: Get today's, this month's, and this year's revenue
  *     tags: [Dashboard]
  *     responses:
  *       200:
- *         description: Dashboard data fetched successfully
+ *         description: Revenue data fetched successfully
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 ordersRevenue:
+ *                 revenueToday:
  *                   type: number
  *                   example: 1000000
- *                 koiFishRevenue:
+ *                 revenueThisMonth:
  *                   type: number
- *                   example: 500000
- *                 koiPackageRevenue:
+ *                   example: 80000000
+ *                 revenueThisYear:
  *                   type: number
- *                   example: 200000
+ *                   example: 500000000
  *       500:
- *         description: Error fetching dashboard data
+ *         description: Error fetching dashboard revenue
  */
-router.get("/dashboard", getDashboardData);
+router.get("/dashboard/revenue", getDashboardRevenue);
 
 module.exports = router;
