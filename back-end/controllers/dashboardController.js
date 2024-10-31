@@ -3,6 +3,7 @@ const {
   getRevenueThisMonth, 
   getRevenueThisYear,
   getOrderStatusCounts,
+  getDailyRevenueThisMonthData,
 } = require('../models/dashboardModel.js');
 
 // Lấy tổng doanh thu hôm nay, tháng này và năm nay
@@ -55,5 +56,16 @@ exports.getOrderStatusStatistics = async (req, res) => {
   } catch (error) {
     console.error('Error fetching order status statistics:', error);
     res.status(500).json({ message: 'Error fetching order status statistics' });
+  }
+};
+
+// Lấy dữ liệu doanh thu từng ngày trong tháng hiện tại
+exports.getDailyRevenueThisMonth = async (req, res) => {
+  try {
+    const dailyRevenueData = await getDailyRevenueThisMonthData();
+    res.status(200).json(dailyRevenueData);
+  } catch (error) {
+    console.error('Error fetching daily revenue data:', error);
+    res.status(500).json({ message: 'Error fetching daily revenue data' });
   }
 };

@@ -85,6 +85,7 @@ const { getAllStaff } = require("../controllers/userController");
 const { 
   getDashboardRevenue,
   getOrderStatusStatistics,
+  getDailyRevenueThisMonth,
  } = require("../controllers/dashboardController");
 // User routes
 /**
@@ -1098,5 +1099,34 @@ router.get("/dashboard/revenue", getDashboardRevenue);
  *         description: Error fetching order status counts
  */
 router.get("/orders/status", getOrderStatusStatistics);
+
+/**
+ * @swagger
+ * /api/dashboard/revenue/daily:
+ *   get:
+ *     summary: Get daily revenue data for the current month
+ *     tags: [Dashboard]
+ *     responses:
+ *       200:
+ *         description: Daily revenue data fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 labels:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                   example: ["2024-10-01", "2024-10-02", "2024-10-03"]
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: number
+ *                   example: [2000000, 3000000, 2500000]
+ *       500:
+ *         description: Error fetching daily revenue data
+ */
+router.get("/revenue/daily", getDailyRevenueThisMonth);
 
 module.exports = router;

@@ -138,3 +138,30 @@ exports.getOrderStatusCounts = async () => {
     throw error;
   }
 };
+
+// Lấy dữ liệu doanh thu từng ngày trong tháng hiện tại
+exports.getDailyRevenueThisMonthData = async () => {
+  try {
+    const pool = await connectDB();
+
+    const result = await pool.request().query(`
+      SELECT 
+        CONVERT(VARCHAR, OrderDate, 23) AS Date,  -- Định dạng ngày theo "YYYY-MM-DD"
+        SUM(TotalAmount) AS DailyRevenue
+      FROM Orders
+      WHERE MONTH(OrderDate) = MONTH(GETDATE())
+      AND YEAR(OrderDate) = YEAR(GETDATE())
+      AND OrderStatus = 'Delivered'
+      GROUP BY CONVERT(VARCHAR, OrderDate, 23)
+      ORDER BY Date
+    `);
+
+    const labels = result.recordset.map(row => row.Date);
+    const data = result.recordset.map(row => row.DailyRevenue);
+
+    return { labels, data };
+  } catch (error) {
+    console.error("Error fetching daily revenue for the current month:", error);
+    throw error;
+  }
+};
