@@ -35,7 +35,7 @@ const AdminSidebar = () => {
             <Link to="/admin">Trang chủ</Link>
           </Menu.Item>
           <Menu.Item key="dashboard" icon={<DashboardOutlined />}>
-            <Link to="/dashboard">Dashboard</Link>
+            <Link to="/admin/dashboard">Dashboard</Link>
           </Menu.Item>
           <SubMenu key="add-product" icon={<PlusOutlined />} title="Quản Lý Cá Koi">
             <Menu.Item key="AddKoi">

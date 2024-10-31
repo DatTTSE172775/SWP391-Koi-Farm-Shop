@@ -10,6 +10,7 @@ import UpdateKoi from "../pages/admin/updateProduct/updateKoi";
 import DeleteKoi from "../pages/admin/deleteProduct/deleteKoi";
 import DeleteKoiPackage from "../pages/admin/deleteProduct/deleteKoiPackage";
 import ManagerConsignmentPage from "../pages/admin/consign/AdminConsignment";
+import Dashboard from "../pages/admin/dashboard/Dashboard";
 
 const ProtectedAdminRoute = ({children}) => {
     const role = localStorage.getItem("role");
@@ -30,13 +31,14 @@ const AdminRoutes = (
     >
         <Route index element={<WelcomeAdmin/>}/>
         <Route path="manage-orders" element={<OrdersManagement/>}/>
-        {/*<Route path="manage-orders/:orderId" element={<OrderDetails/>}/>*/}
-        {/*<Route path="AddKoi" element={<AddKoi/>}/>*/}
-        {/*<Route path="AddPackage" element={<AddPackage/>}/>*/}
-        {/*<Route path="updateKoi" element={<UpdateKoi/>}/>*/}
-        {/*<Route path="deleteKoi" element={<DeleteKoi/>}/>*/}
-        {/*<Route path="deletePackage" element={<DeleteKoiPackage/>}/>*/}
-        {/*<Route path="manage-consign" element={<ManagerConsignmentPage/>}/>*/}
+        <Route path="dashboard" element={<Dashboard/>}/>
+        <Route path="manage-orders/:orderId" element={<OrderDetails/>}/>
+        <Route path="AddKoi" element={<AddKoi/>}/>
+        <Route path="AddPackage" element={<AddPackage/>}/>
+        <Route path="updateKoi" element={<UpdateKoi/>}/>
+        <Route path="deleteKoi" element={<DeleteKoi/>}/>
+        <Route path="deletePackage" element={<DeleteKoiPackage/>}/>
+        <Route path="manage-consign" element={<ManagerConsignmentPage/>}/>
         {/*<Route path="consign-detail/:id" element={<ConsignmentDetail/>}/>*/}
     </Route>
 );
