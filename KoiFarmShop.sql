@@ -1,4 +1,4 @@
-﻿gCREATE DATABASE KoiFarmShop3
+﻿CREATE DATABASE KoiFarmShop3
 USE KoiFarmShop3
 
 
@@ -10,11 +10,7 @@ CREATE TABLE Users (
     SubscriptionStatus VARCHAR(50) CHECK (SubscriptionStatus IN ('Active', 'Inactive')) NOT NULL
 );
 
-<<<<<<< HEAD
 --select * from Users
-=======
-select * from Users
->>>>>>> 6b41d50d0a674b57a871fbdf711a50ba35c5edc0
 
 CREATE TABLE Customers (
     CustomerID INT IDENTITY(1,1) PRIMARY KEY,
@@ -806,7 +802,7 @@ FROM
     Orders o
 LEFT JOIN 
     OrderDetails od ON o.OrderID = od.OrderID
-LEFT JOIN 
+LEFT JOIN order
     KoiFish kf ON od.KoiID = kf.KoiID
 LEFT JOIN 
     KoiPackage kp ON od.PackageID = kp.PackageID
