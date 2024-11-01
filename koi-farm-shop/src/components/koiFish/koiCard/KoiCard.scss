@@ -125,11 +125,31 @@
     }
 
     .koi-details {
-      font-size: 0.9rem;
-      color: #555;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 16px 0;
 
-      span {
-        font-weight: bold;
+      .ant-typography {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.95rem;
+        color: #4a4a4a;
+        
+        &::before {
+          content: attr(data-label);
+          font-weight: 500;
+          color: #666;
+          min-width: 90px;
+        }
+
+        &.ant-typography-strong {
+          color: #e74c3c;
+          font-size: 1.2rem;
+          font-weight: 600;
+          margin: 8px 0;
+        }
       }
     }
   }
@@ -143,19 +163,17 @@
   }
 
   .ant-btn {
-    background-color: #4caf50; /* Màu xanh lá */
-    color: white;
-    font-family: 'Poppins', sans-serif; /* Font chữ */
+    background: linear-gradient(135deg, #4caf50, #45a049);
     border: none;
-    font-size: 1rem;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-
+    height: 44px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    
     &:hover {
-      background-color: #45a049; /* Màu xanh lá đậm hơn khi hover */
-      transform: scale(1.05); /* Hiệu ứng phóng to nhẹ khi hover */
+      background: linear-gradient(135deg, #45a049, #3d8b40);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
     }
   }
 
@@ -220,5 +238,35 @@
   .ant-btn {
     margin-top: auto;
     height: 40px;
+  }
+
+  .image-container {
+    position: relative;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(
+        to bottom,
+        transparent 50%,
+        rgba(0, 0, 0, 0.1) 100%
+      );
+    }
+
+    .view-detail-btn {
+      background: rgba(255, 255, 255, 0.9);
+      color: #4caf50;
+      font-weight: 500;
+      border: 2px solid #4caf50;
+      
+      &:hover {
+        background: #4caf50;
+        color: white;
+      }
+    }
   }
 }

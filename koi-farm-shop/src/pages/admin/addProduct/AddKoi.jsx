@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import AdminHeader from "../../../components/admin/header/AdminHeader";
-import AdminSidebar from "../../../components/admin/sidebar/AdminSidebar";
 import axiosPublic from "../../../api/axiosPublic";
 import { useNavigate } from "react-router-dom";
 import "./AddProds.scss";
@@ -129,10 +127,7 @@ const AddKoi = () => {
   };
 
   return (
-    <div className="admin-layout">
-      <AdminSidebar />
       <div className="admin-content">
-        <AdminHeader />
         <div className="add-container">
           <h2>Thêm cá Koi</h2>
           <div className="button-group">
@@ -239,7 +234,6 @@ const AddKoi = () => {
             <button type="submit">Thêm cá Koi</button>
           </form>
         </div>
-      </div>
     </div>
   );
 };

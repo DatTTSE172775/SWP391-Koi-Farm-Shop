@@ -27,10 +27,10 @@ const ShippedOrders = () => {
 
   // Lọc các đơn hàng với trạng thái "Shipped"
   const shippedOrders = orders.filter(
-    (order) => order.OrderStatus === "Shipped"
+    (order) => order.OrderStatus === "Delivering"
   );
 
-  return <OrderList initialOrders={shippedOrders} filterStatus="Shipped" />;
+  return <OrderList initialOrders={shippedOrders} filterStatus="Delivering" />;
 };
 
 export default ShippedOrders;

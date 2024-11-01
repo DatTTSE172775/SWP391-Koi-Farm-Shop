@@ -164,3 +164,31 @@ exports.updateConsignmentToApproved = async (req, res) => {
     }
   };
 
+exports.updateConsignmentToPending = async (req, res) => {
+    const { consignmentId } = req.params;
+  
+    try {
+      const updatedConsignment = await consignmentModel.updateConsignmentStatus(consignmentId, "Pending");
+      if (!updatedConsignment) {
+        return res.status(404).send({ message: "Consignment not found." });
+      }
+      res.send({
+        message: "Consignment status updated to Approved.",
+        consignment: updatedConsignment,
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send({ message: "Failed to update consignment to Pending." });
+    }
+};
+
+exports.deleteConsignmentById = async (req, res) => {
+    try {
+        const { consignmentId } = req.params;
+        const result = await consignmentModel.deleteConsignmentById(consignmentId);
+        res.status(200).json({ message: 'Koi Consignment deleted successfully', data: result });
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting Koi Consignment', error: error.message });
+    }
+};
+

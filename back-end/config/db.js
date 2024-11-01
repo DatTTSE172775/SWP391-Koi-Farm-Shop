@@ -10,16 +10,20 @@ const dbConfig = {
   options: {
     encrypt: true,                      // Bật encrypt nếu dùng Azure, nếu không có thể để false
     trustServerCertificate: true        // Cần nếu bạn sử dụng SQL Server mà không có chứng chỉ SSL
-  }
+  },
+  port: parseInt(process.env.DB_PORT, 10) || 1433,
 };
 
 // Kết nối cơ sở dữ liệu
 const connectDB = async () => {
   try {
-    await sql.connect(dbConfig);        // Thực hiện kết nối
+    const pool = await sql.connect(dbConfig); // Thực hiện kết nối
     console.log('Connected to SQL Server');
+    return pool;
   } catch (err) {
-    console.error('SQL connection error:', err);  // In lỗi ra console nếu xảy ra lỗi
+    console.error('SQL connection error:', err.message);  // In lỗi ra console nếu xảy ra lỗi
+
+    process.exit(1); // Dừng ứng dụng nếu không kết nối được
   }
 };
 

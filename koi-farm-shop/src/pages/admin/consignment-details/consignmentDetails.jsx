@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Layout, Typography, Spin, Alert, Descriptions, Image, Tag, Select } from "antd";
-import AdminHeader from "../../../components/admin/header/AdminHeader";
-import AdminSidebar from "../../../components/admin/sidebar/AdminSidebar";
 import axiosInstance from "../../../api/axiosInstance";
 import { fetchStaff } from "../../../store/actions/staffActions";
 import "./consignmentDetails.scss";
@@ -62,33 +60,31 @@ const ConsignmentDetails = () => {
       const assignedStaff = staff.find((member) => member.UserID === userId);
       const username = assignedStaff ? assignedStaff.Username : "Chưa giao";
 
-      const payload = { userId: userId };
-      console.log("Frontend - Assigning consignment:", {
-        consignmentId: consignment.ConsignmentID,
-        payload: payload
-      });
-      // await axiosInstance.patch(`/koiconsignment/${consignment.ConsignmentID}/approved`);
-      const response = await axiosInstance.patch(`/koiconsignment/${consignment.ConsignmentID}/assign`, payload);
-      console.log("Frontend - Assignment response:", response.data);
+      // First assign the staff
+      const assignResponse = await axiosInstance.patch(
+        `/koiconsignment/${consignment.ConsignmentID}/assign`, 
+        { userId: userId }
+      );
 
-      if (response.data.message) {
+      // Then update the status to pending
+      const approveResponse = await axiosInstance.patch(
+        `/koiconsignment/${consignment.ConsignmentID}/pending`
+      );
+
+      if (assignResponse.data && approveResponse.data) {
         setConsignment((prevConsignment) => ({
           ...prevConsignment,
           UserID: userId,
-          AssignedTo: username,
-          ApprovedStatus: "Approved"
+          Status: "Pending",
+          ApprovedStatus: "Pending"
         }));
 
         notification.success({
           message: "Thành Công",
           description: `Ký gửi ${consignment.ConsignmentID} đã được giao cho ${username}`,
         });
-      } else {
-        throw new Error(response.data.message || "Failed to assign consignment");
       }
     } catch (error) {
-      console.error("Frontend - Error assigning consignment:", error);
-      console.log("Frontend - Error details:", error.response?.data);
       notification.error({
         message: "Lỗi",
         description: error.response?.data?.message || error.message || "Không thể giao ký gửi. Vui lòng thử lại.",
@@ -98,9 +94,7 @@ const ConsignmentDetails = () => {
 
   return (
     <Layout className="consignment-details">
-      <AdminSidebar />
       <Layout className="site-layout">
-        <AdminHeader />
         <Content>
           <div className="site-layout-background">
             <Title level={2}>Chi tiết ký gửi</Title>
@@ -121,7 +115,7 @@ const ConsignmentDetails = () => {
                   <Descriptions.Item label="Ngày ký gửi">
                     {new Date(consignment.StartDate).toLocaleString()}
                   </Descriptions.Item>
-                  <Descriptions.Item label="Trạng thái">{renderStatus(consignment.Status)}</Descriptions.Item>
+                  {/* <Descriptions.Item label="Trạng thái">{renderStatus(consignment.Status)}</Descriptions.Item> */}
                   <Descriptions.Item label="Giá thỏa thuận">
                     {consignment.PriceAgreed.toLocaleString()} VND
                   </Descriptions.Item>
@@ -158,10 +152,11 @@ const ConsignmentDetails = () => {
                         ))}
                       </Select>
                     ) : (
-                      <Typography.Text>{consignment.AssignedTo || "Chưa giao"}</Typography.Text>
+                      <Typography.Text>
+                        {staff.find(member => member.UserID === consignment.UserID)?.Username || "Chưa giao"}
+                      </Typography.Text>
                     )}
                   </Descriptions.Item>
-
 
                 </Descriptions>
                 {consignment.ImagePath && (

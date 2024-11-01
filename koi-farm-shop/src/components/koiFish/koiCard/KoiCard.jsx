@@ -96,7 +96,6 @@ const KoiCard = ({ koifish, isAuthenticated }) => {
       <div className="koi-details">
         <Text>Variety: {koifish.VarietyID}</Text>
         <Text>Size: {koifish.Size} cm</Text>
-        <Text>Weight: {koifish.Weight} kg</Text>
         <Text strong>Price: {koifish.Price.toLocaleString()} VND</Text>
         <Text>Health Status: {koifish.HealthStatus}</Text>
       </div>

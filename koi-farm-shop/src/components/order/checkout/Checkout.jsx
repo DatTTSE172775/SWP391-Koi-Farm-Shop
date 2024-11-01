@@ -185,8 +185,7 @@ const Checkout = () => {
               >
                 <Radio.Group>
                 <Radio.Button value="VNPAY">VNPAY</Radio.Button>
-                {/* <Radio.Button value="COD">Thanh toán khi nhận hàng</Radio.Button> */}
-                  <Radio.Button value="Cash on Delivery">Cash on Delivery</Radio.Button>
+                <Radio.Button value="Cash on Delivery">Thanh toán khi nhận hàng</Radio.Button>
                 </Radio.Group>
               </Form.Item>
               <Divider />

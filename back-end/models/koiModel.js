@@ -138,6 +138,14 @@ const deleteKoiFish = async (koiId) => {
                 WHERE KoiID = @KoiID
             `);
 
+        // Xóa các bản ghi liên quan trong bảng KoiConsignment
+        await pool.request()
+            .input('KoiID', sql.Int, koiId)
+            .query(`
+                DELETE FROM KoiConsignment
+                WHERE KoiID = @KoiID
+            `);
+
         // Xóa KoiFish
         const result = await pool.request()
             .input('KoiID', sql.Int, koiId)
@@ -199,4 +207,59 @@ const updateKoiFish = async (koiId, updateData) => {
     }
 };
 
-module.exports = { createKoiFish, getAllKoiFish, getKoiFishById, updateKoiFishAvailability, deleteKoiFish, updateKoiFish };
+// Function to create KoiFish from Consignment data
+const createKoiFishFromConsignment = async (consignmentData) => {
+    try {
+        const pool = await sql.connect();
+        
+        // Map con  signment data to KoiFish structure
+        const result = await pool.request()
+            .input('Name', sql.VarChar(255), `Koi ${consignmentData.KoiType}`)
+            .input('VarietyID', sql.Int, consignmentData.KoiType)
+            .input('Origin', sql.VarChar(50), 'Pure Vietnamese')
+            .input('Gender', sql.VarChar(50), 'Unknown')
+            .input('Born', sql.Int, new Date().getFullYear() - consignmentData.KoiAge)
+            .input('Size', sql.Float, consignmentData.KoiSize)
+            .input('Price', sql.Decimal(10, 2), consignmentData.PriceAgreed)
+            .input('HealthStatus', sql.VarChar(255), consignmentData.InspectionResult || 'Pending Inspection')
+            .input('ImagesLink', sql.VarChar(255), consignmentData.ImagePath)
+            .input('Availability', sql.VarChar(50), 'Available')
+            .query(`
+                INSERT INTO KoiFish (
+                    Name, VarietyID, Origin, Gender, Born, Size, 
+                    Price, HealthStatus, ImagesLink, Availability
+                )
+                OUTPUT INSERTED.KoiID
+                VALUES (
+                    @Name, @VarietyID, @Origin, @Gender, @Born, @Size,
+                    @Price, @HealthStatus, @ImagesLink, @Availability
+                );
+            `);
+            
+        return result.recordset[0].KoiID;
+    } catch (err) {
+        console.error('Error creating KoiFish from consignment:', err);
+        throw err;
+    }
+};
+
+// Function to update the KoiID in KoiConsignment
+const updateConsignmentKoiId = async (consignmentId, koiId) => {
+    try {
+        const pool = await sql.connect();
+        const result = await pool.request()
+            .input('ConsignmentID', sql.Int, consignmentId)
+            .input('KoiID', sql.Int, koiId)
+            .query(`
+                UPDATE KoiConsignment 
+                SET KoiID = @KoiID
+                WHERE ConsignmentID = @ConsignmentID
+            `);
+        return result.rowsAffected[0] > 0;
+    } catch (err) {
+        console.error('Error updating KoiID in KoiConsignment:', err);
+        throw err;
+    }
+};
+
+module.exports = { createKoiFish, getAllKoiFish, getKoiFishById, updateKoiFishAvailability, deleteKoiFish, updateKoiFish, createKoiFishFromConsignment, updateConsignmentKoiId };

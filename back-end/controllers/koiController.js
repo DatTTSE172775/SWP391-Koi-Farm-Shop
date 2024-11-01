@@ -181,3 +181,41 @@ exports.updateKoiFish = async (req, res) => {
         });
     }
 };
+
+// Controller function to create KoiFish from consignment data
+exports.createKoiFishFromConsignment = [
+  upload.single('imageFile'),
+  async (req, res) => {
+    try {
+      const consignmentData = {
+        KoiType: req.body.KoiType,
+        KoiAge: parseInt(req.body.KoiAge),
+        KoiSize: parseInt(req.body.KoiSize),
+        PriceAgreed: parseFloat(req.body.PriceAgreed),
+        InspectionResult: req.body.InspectionResult,
+        ImagePath: req.body.ImagePath
+      };
+
+      // Create KoiFish entry from consignment data
+      const koiId = await koiModel.createKoiFishFromConsignment(consignmentData);
+
+      res.status(201).json({
+        message: "Koi Fish created successfully from consignment!",
+        koiId: koiId
+      });
+    } catch (error) {
+      console.error('Error in createKoiFishFromConsignment:', error);
+      res.status(500).json({
+        message: "Error creating Koi Fish from consignment",
+        error: error.message
+      });
+    }
+  }
+];
+
+exports.updateConsignmentKoiId = async (req, res) => {
+  const { consignmentId } = req.params;
+  const { koiId } = req.body;
+  await koiModel.updateConsignmentKoiId(consignmentId, koiId);
+  res.json({ message: "KoiID updated in KoiConsignment successfully." });
+};

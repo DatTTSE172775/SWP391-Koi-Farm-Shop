@@ -110,16 +110,16 @@ const KoiDetail = () => {
             <Paragraph>
               <strong>Kích thước:</strong> {koiData.Size} cm
             </Paragraph>
-            <Paragraph>
+            {/* <Paragraph>
               <strong>Cân nặng:</strong> {koiData.Weight} kg
-            </Paragraph>
-            <Paragraph>
+            </Paragraph> */}
+            {/* <Paragraph>
               <strong>Tính cách:</strong> {koiData.Personality}
-            </Paragraph>
-            <Paragraph>
+            </Paragraph> */}
+            {/* <Paragraph>
               <strong>Lượng thức ăn mỗi ngày:</strong>{" "}
               {koiData.FeedingAmountPerDay} g
-            </Paragraph>
+            </Paragraph> */}
             <Paragraph>
               <strong>Tình trạng sức khỏe:</strong> {koiData.HealthStatus}
             </Paragraph>
