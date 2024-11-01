@@ -92,6 +92,7 @@ const {
   getDailyRevenueThisMonth,
   getPendingConsignments,
   getActiveConsignment,
+  getReturningCustomers,
  } = require("../controllers/dashboardController");
 
 // User routes
@@ -434,7 +435,7 @@ router.put("/updateKoi/:koiId", updateKoiFish);
 // Order routes
 /**
  * @swagger
- * /api/orders:
+ * /api/orders/all:
  *   get:
  *     summary: Get all orders
  *     tags: [Orders]
@@ -442,7 +443,7 @@ router.put("/updateKoi/:koiId", updateKoiFish);
  *       200:
  *         description: List of all orders
  */
-router.get("/orders", getAllOrders);
+router.get("/orders/all", getAllOrders);
 
 /**
  * @swagger
@@ -1224,5 +1225,27 @@ router.get('/consignments/pending', getPendingConsignments);
  *         description: Server error
  */
 router.get('consignments/active', getActiveConsignment);
+
+/**
+ * @swagger
+ * /api/dashboard/customers/returning:
+ *   get:
+ *     summary: Get the number of returning customers
+ *     tags: [Dashboard]
+ *     responses:
+ *       200:
+ *         description: Number of returning customers fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 returningCustomers:
+ *                   type: integer
+ *                   example: 25
+ *       500:
+ *         description: Server error
+ */
+router.get('/customers/returning', getReturningCustomers);
 
 module.exports = router;

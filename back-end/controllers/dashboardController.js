@@ -6,6 +6,7 @@ const {
   getDailyRevenueThisMonthData,
   getPendingConsignmentsCount,
   getActiveConsignmentData,
+  getReturningCustomerCount,
 } = require('../models/dashboardModel.js');
 
 // Lấy tổng doanh thu hôm nay, tháng này và năm nay
@@ -91,5 +92,19 @@ exports.getActiveConsignment = async (req, res) => {
   } catch (error) {
     console.error("Error fetching active consignment data:", error);
     res.status(500).json({ message: "Error fetching active consignment data" });
+  }
+};
+
+// Xử lý việc đếm khách hàng quay lại 
+exports.getReturningCustomers = async (req, res) => {
+  try {
+    // Gọi hàm từ model để lấy số lượng khách hàng quay lại
+    const count = await getReturningCustomerCount();
+    // Trả về phản hồi JSON với trạng thái 200 nếu thành công
+    res.status(200).json({ returningCustomers: count });
+  } catch (error) {
+    // Log lỗi và trả về phản hồi với lỗi 500 nếu có lỗi
+    console.error('Error fetching returning customer data:', error);
+    res.status(500).json({ message: 'Error fetching returning customer data' });
   }
 };

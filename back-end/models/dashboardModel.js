@@ -211,3 +211,31 @@ exports.getActiveConsignmentData = async () => {
     res.status(500).json({ error: 'Failed to fetch active consignment data' });
   }
 };
+
+// lấy số data lượng khách hàng quay lại mua hàng trong tháng
+exports.getReturningCustomerCount = async () => {
+  try {
+    // Kết nối đến cơ sở dữ liệu
+    const pool = await connectDB();
+
+    // Truy vấn để đếm số lượng khách hàng quay lại mua hàng trong tháng hiện tại
+    const result = await pool.request().query(`
+      SELECT COUNT(DISTINCT CustomerID) AS returningCustomers
+      FROM Orders
+      WHERE MONTH(OrderDate) = MONTH(GETDATE()) AND YEAR(OrderDate) = YEAR(GETDATE())
+      AND CustomerID IN (
+        SELECT CustomerID
+        FROM Orders
+        GROUP BY CustomerID
+        HAVING COUNT(OrderID) > 1
+      )
+    `);
+
+    // Trả về số lượng khách hàng quay lại mua hàng
+    return result.recordset[0].returningCustomers ?? 0;
+  } catch (error) {
+    // Log lỗi và ném lỗi nếu có lỗi xảy ra
+    console.error('Error fetching returning customer count:', error);
+    throw error;
+  }
+};
