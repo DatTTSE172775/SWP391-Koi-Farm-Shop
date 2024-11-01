@@ -1,56 +1,112 @@
-import { Button, Form, Input, Select } from "antd";
-import React from "react";
+import { Button, Form, Input, Select, Slider } from "antd";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { SearchOutlined, ReloadOutlined } from "@ant-design/icons";
 import "./KoiSearch.scss";
+import {getAllVarieties} from "../../../store/actions/KoiActions";
 
 const { Option } = Select;
 
-const KoiSearch = ({ onFilter }) => {
+const KoiSearch = ({ onFilter, setLoading }) => {
   const [form] = Form.useForm();
+  const dispatch = useDispatch();
+  const { varieties, loading: varietiesLoading, error } = useSelector(state => state.koi);
+
+  useEffect(() => {
+    // Gọi action để lấy danh sách giống cá Koi khi component được render lần đầu
+    dispatch(getAllVarieties());
+  }, [dispatch]);
+
+  if (error) {
+    console.error("Error fetching varieties:", error);
+  }
 
   const handleFinish = (values) => {
+    setLoading(true); // Bật loading khi nhấn "Tìm kiếm"
     onFilter(values);
   };
 
   const handleReset = () => {
     form.resetFields();
-    onFilter({});
+    setLoading(true); // Bật loading khi nhấn "Reset"
+    onFilter({}); // Gọi hàm onFilter với giá trị rỗng để reset bộ lọc
   };
 
   return (
-    <Form
-      form={form}
-      layout="inline"
-      onFinish={handleFinish}
-      className="koi-search-filter"
-    >
-      <Form.Item name="search" label="Tìm kiếm">
-        <Input placeholder="Nhập tên cá Koi" allowClear />
-      </Form.Item>
-      <Form.Item name="color" label="Màu sắc">
-        <Select placeholder="Chọn màu sắc" allowClear>
-          <Option value="Đỏ & Trắng">Đỏ & Trắng</Option>
-          <Option value="Đen & Đỏ & Trắng">Đen & Đỏ & Trắng</Option>
-          {/* Thêm các màu sắc khác */}
-        </Select>
-      </Form.Item>
-      <Form.Item name="size" label="Kích thước">
-        <Select placeholder="Chọn kích thước" allowClear>
-          <Option value="25 cm">25 cm</Option>
-          <Option value="30 cm">30 cm</Option>
-          {/* Thêm các kích thước khác */}
-        </Select>
-      </Form.Item>
-      <Form.Item>
-        <Button type="primary" htmlType="submit">
-          Lọc
-        </Button>
-      </Form.Item>
-      <Form.Item>
-        <Button htmlType="button" onClick={handleReset}>
-          Reset
-        </Button>
-      </Form.Item>
-    </Form>
+      <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleFinish}
+          className="koi-search-filter"
+          style={{ marginBottom: 16 }}
+      >
+        <Form.Item name="search" label="Tìm kiếm">
+          <Input placeholder="Nhập tên cá Koi" allowClear />
+        </Form.Item>
+        <Form.Item name="varieties" label="Giống cá">
+          <Select
+              mode="multiple" // Cho phép chọn nhiều giống cá
+              placeholder="Chọn giống cá Koi"
+              allowClear
+              loading={varietiesLoading}
+          >
+            {varieties.map((variety) => (
+                <Option key={variety.VarietyID} value={variety.VarietyID}>
+                  {variety.VarietyName}
+                </Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item name="origin" label="Nguồn gốc">
+          <Select placeholder="Chọn nguồn gốc" allowClear>
+            <Option value="Imported">Imported</Option>
+            <Option value="F1 Hybrid">F1 Hybrid</Option>
+            <Option value="Pure Vietnamese">Pure Vietnamese</Option>
+          </Select>
+        </Form.Item>
+        <Form.Item name="priceRange" label="Khoảng giá">
+          <Slider
+              range
+              max={10000000}
+              step={100000}
+              defaultValue={[0, 10000000]}
+              tipFormatter={(value) => `${value.toLocaleString()} VND`}
+          />
+        </Form.Item>
+        <Form.Item name="sizeRange" label="Kích thước (cm)">
+          <Slider
+              range
+              min={20}
+              max={80}
+              step={1}
+              defaultValue={[20, 80]}
+              tipFormatter={(value) => `${value} cm`}
+          />
+        </Form.Item>
+        <Form.Item name="weightRange" label="Cân nặng (kg)">
+          <Slider
+              range
+              min={1}
+              max={5}
+              step={0.1}
+              defaultValue={[1, 5]}
+              tipFormatter={(value) => `${value.toFixed(1)} kg`}
+          />
+        </Form.Item>
+        <Form.Item>
+          <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
+            Tìm kiếm
+          </Button>
+          <Button
+              style={{ marginLeft: 8 }}
+              htmlType="button"
+              onClick={handleReset}
+              icon={<ReloadOutlined />}
+          >
+            Reset
+          </Button>
+        </Form.Item>
+      </Form>
   );
 };
 

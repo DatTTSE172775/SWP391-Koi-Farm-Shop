@@ -1,224 +1,111 @@
-.koi-card {
-  width: 100%;
-  max-width: 300px;
-  height: 500px; // Set fixed height for consistency
-  margin: auto;
-  border-radius: 8px;
+.koi-card-modern {
+  max-width: 400px;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: box-shadow 0.3s ease-in-out;
-  display: flex;
-  flex-direction: column;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  transition: transform 0.2s;
 
   &:hover {
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    transform: translateY(-8px);
   }
 
-  .koi-image-container,
-  .image-container {
+  .image-container, .image-placeholder {
     position: relative;
-    width: 100%;
-    height: 300px; // Fixed height for images
-    overflow: hidden;
+    height: 350px;
+    border-radius: 16px;
 
-    img,
-    .koi-image {
+    img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      object-position: center;
-      transition: transform 0.3s ease-in-out;
+      transition: transform 0.3s;
+      border-radius: 16px;
     }
 
-    &:hover {
-      img,
-      .koi-image {
-        transform: scale(1.1);
-      }
+    &:hover img {
+      transform: scale(1.08);
     }
 
     .view-detail-btn {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      bottom: 15px;
+      left: 15px;
+      background-color: rgba(76, 175, 80, 0.85);
+      color: #fff;
+      border-radius: 8px;
+      padding: 10px 14px;
       opacity: 0;
-      transition: opacity 0.3s ease, transform 0.3s ease;
-      background-color: #4caf50; /* Màu xanh lá */
-      color: white;
-      padding: 10px 20px;
-      border-radius: 5px;
-      font-size: 14px;
-      font-family: 'Poppins', sans-serif; /* Font chữ */
-      z-index: 10; /* Đảm bảo nút nằm trên ảnh */
+      transition: opacity 0.3s;
+      font-size: 0.9rem;
     }
 
     &:hover .view-detail-btn {
       opacity: 1;
-      transform: translate(-50%, -50%) scale(1.05); /* Hiệu ứng phóng to nhẹ khi hover */
-    }
-
-    .hover-info {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.6);
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      opacity: 0;
-      transition: opacity 0.3s ease-in-out;
-      padding: 10px;
-
-      p {
-        margin-bottom: 10px;
-        text-align: center;
-        font-size: 0.9rem;
-      }
-
-      a {
-        text-decoration: none;
-      }
-    }
-
-    &:hover {
-      .koi-image {
-        transform: scale(1.1);
-      }
-
-      .hover-info {
-        opacity: 1;
-      }
     }
   }
 
-  .ant-card-body {
-    flex: 1;
+  .koi-info-section {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 16px;
+  }
+
+  .koi-details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .grid-item {
     display: flex;
-    flex-direction: column;
-    padding: 16px;
-  }
-
-  .ant-card-meta {
-    margin-bottom: 12px;
-
-    .ant-card-meta-title {
-      font-size: 1.1rem;
-      margin-bottom: 8px;
-      // Prevent long titles from breaking layout
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-  }
-
-  .koi-meta-description {
-    .koi-price {
-      color: #e74c3c;
-      font-weight: bold;
-      margin-bottom: 8px;
-      font-size: 1.1rem;
-    }
-
-    .koi-details {
-      font-size: 0.9rem;
-      color: #555;
-
-      span {
-        font-weight: bold;
-      }
-    }
-  }
-
-  .koi-card-footer {
-    margin-top: 16px;
-
-    .ant-btn {
-      border-radius: 4px;
-    }
-  }
-
-  .ant-btn {
-    background-color: #4caf50; /* Màu xanh lá */
-    color: white;
-    font-family: 'Poppins', sans-serif; /* Font chữ */
-    border: none;
+    align-items: center;
+    gap: 5px;
     font-size: 1rem;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-
-    &:hover {
-      background-color: #45a049; /* Màu xanh lá đậm hơn khi hover */
-      transform: scale(1.05); /* Hiệu ứng phóng to nhẹ khi hover */
-    }
-  }
-
-  .ant-card-actions {
-    border-top: none;
-    justify-content: space-around;
-  }
-
-  .ant-card-actions a {
-    display: flex;
-    align-items: center;
     color: #333;
 
+    i {
+      font-size: 1.1rem;
+      color: #4caf50;
+    }
+
+    strong {
+      font-weight: 600;
+    }
+  }
+
+  .koi-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .koi-origin {
+    font-size: 1rem;
+    color: #444;
+    margin-bottom: 6px;
+  }
+
+  .koi-price {
+    color: #d9534f;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+
+  .add-to-cart-btn {
+    background-color: #4caf50;
+    border: none;
+    color: white;
+    border-radius: 8px;
+    padding: 14px;
+    font-size: 1rem;
+    transition: background-color 0.3s, transform 0.2s;
+
     &:hover {
-      color: #ff9800;
+      background-color: #3c8e41;
+      transform: scale(1.05);
     }
-
-    svg {
-      margin-right: 4px;
-    }
-  }
-
-  @media (max-width: 768px) {
-    .koi-image-container,
-    .image-container {
-      height: 200px;
-    }
-
-    .koi-meta-description {
-      .koi-price {
-        font-size: 1rem;
-      }
-
-      .koi-details {
-        font-size: 0.8rem;
-      }
-    }
-
-    .koi-card-footer {
-      .ant-btn {
-        font-size: 0.9rem;
-        padding: 8px 12px;
-      }
-    }
-  }
-
-  .ant-card-actions a {
-    display: flex;
-    align-items: center;
-    color: #333;
-
-    &:hover {
-      color: #ff9800;
-    }
-
-    svg {
-      margin-right: 4px;
-    }
-  }
-
-  // Button always at bottom
-  .ant-btn {
-    margin-top: auto;
-    height: 40px;
   }
 }
