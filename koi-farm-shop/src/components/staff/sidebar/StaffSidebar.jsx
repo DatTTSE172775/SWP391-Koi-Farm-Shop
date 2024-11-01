@@ -77,12 +77,12 @@ const Sidebar = () => {
         </SubMenu>
 
 
-        <Menu.Item key="notification" icon={<NotificationFilled />}>
+        {/* <Menu.Item key="notification" icon={<NotificationFilled />}>
           <Link to="/staff/notification">Thông báo</Link>
         </Menu.Item>
         <Menu.Item key="setting" icon={<SettingOutlined />}>
           <Link to="/staff/setting">Cài đặt</Link>
-        </Menu.Item>
+        </Menu.Item> */}
       </Menu>
     </Sider>
   );

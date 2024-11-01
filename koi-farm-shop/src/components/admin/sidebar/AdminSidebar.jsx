@@ -38,18 +38,18 @@ const AdminSidebar = () => {
         <Menu.Item key="orders" icon={<ShoppingOutlined />}>
           <Link to="/admin/manage-orders">Quản lý đơn hàng</Link>
         </Menu.Item>
-        <Menu.Item key="users" icon={<UserOutlined />}>
+        {/* <Menu.Item key="users" icon={<UserOutlined />}>
           <Link to="/admin/users">Quản lý người dùng</Link>
-        </Menu.Item>
+        </Menu.Item> */}
         <Menu.Item key="users" icon={<ContrastOutlined />}>
           <Link to="/admin/manage-consign">Quản lý ký gửi</Link>
         </Menu.Item>
         {/* <Menu.Item key="approval" icon={<ContrastOutlined />}>
           <Link to="/admin/approval">Ký kết</Link>
         </Menu.Item> */}
-        <Menu.Item key="settings" icon={<SettingOutlined />}>
+        {/* <Menu.Item key="settings" icon={<SettingOutlined />}>
           <Link to="/admin/settings">Cài Đặt Hệ Thống</Link>
-        </Menu.Item>
+        </Menu.Item> */}
       </Menu>
     </Sider>
   );

@@ -1,11 +1,13 @@
 import "antd/dist/reset.css";
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import {
   Navigate,
   Route,
   BrowserRouter as Router,
   Routes,
 } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { initializeAuth } from "./store/actions/authActions";
 
 import Loading from "./components/loading/Loading";
 import CartProvider from "./components/order/cart-context/CartContext";
@@ -92,6 +94,12 @@ const WelcomeAccount = lazy(() =>
 );
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(initializeAuth());
+  }, [dispatch]);
+
   return (
     <CartProvider>
       <Router>
