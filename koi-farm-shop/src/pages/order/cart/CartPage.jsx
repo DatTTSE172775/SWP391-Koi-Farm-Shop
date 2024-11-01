@@ -17,7 +17,7 @@ import "./CartPage.scss";
 const { Title, Text } = Typography;
 
 const CartPage = () => {
-  const { cartItems, handleRemoveFromCart } = useContext(CartContext);
+  const { cartItems, handleRemoveFromCart, handleUpdateQuantity  } = useContext(CartContext);
 
   // Define columns for the table
   const columns = [
@@ -61,8 +61,16 @@ const CartPage = () => {
       title: "Số Lượng",
       dataIndex: "quantity",
       key: "quantity",
-      render: (quantity) => (
-        <InputNumber min={1} max={1} value={quantity} disabled />
+      render: (quantity, record) => (
+          record.type === 'package' ? (
+              <InputNumber
+                  min={1}
+                  value={quantity}
+                  onChange={(value) => handleUpdateQuantity(record.key, value)}
+              />
+          ) : (
+              <InputNumber min={1} max={1} value={quantity} disabled />
+          )
       ),
       responsive: ["sm", "md", "lg"],
     },
