@@ -1,0 +1,144 @@
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.admin-content {
+  flex: 1;
+  padding: 20px;
+  background-color: #f5f5f5;
+}
+
+.add-container {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 1200px;
+  margin: 0 auto;
+
+  h2, .ant-typography {
+    color: #2c3e50;
+    margin-bottom: 24px;
+    font-weight: 600;
+    border-bottom: 2px solid #eef2f7;
+    padding-bottom: 16px;
+  }
+
+  .button-group {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+
+    button {
+      padding: 12px 20px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+
+      &:hover {
+        background-color: #2980b9;
+        transform: translateY(-1px);
+      }
+    }
+  }
+
+  .form, .ant-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+
+    .form-group, .ant-form-item {
+      margin-bottom: 20px;
+
+      label, .ant-form-item-label {
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: #34495e;
+      }
+
+      input, 
+      select, 
+      textarea,
+      .ant-input,
+      .ant-select-selector,
+      .ant-input-number {
+        padding: 12px;
+        border: 1px solid #e1e8ef;
+        border-radius: 6px;
+        font-size: 14px;
+        width: 100%;
+        transition: all 0.3s ease;
+
+        &:focus, &:hover {
+          outline: none;
+          border-color: #3498db;
+          box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+      }
+
+      textarea {
+        min-height: 120px;
+      }
+
+      .ant-select-selector {
+        height: auto !important;
+        padding: 8px 12px !important;
+      }
+    }
+
+    button[type="submit"],
+    .ant-btn-primary {
+      grid-column: 1 / -1;
+      padding: 14px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      margin-top: 16px;
+
+      &:hover {
+        background-color: #2980b9;
+        transform: translateY(-1px);
+      }
+    }
+  }
+
+  .image-preview {
+    margin-top: 16px;
+    
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+  }
+}
+
+// Enhanced responsive adjustments
+@media (max-width: 768px) {
+  .add-container {
+    padding: 20px;
+    
+    .form, .ant-form {
+      grid-template-columns: 1fr;
+    }
+
+    .button-group {
+      flex-direction: column;
+      
+      button {
+        width: 100%;
+      }
+    }
+  }
+}

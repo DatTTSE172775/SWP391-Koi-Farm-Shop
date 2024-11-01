@@ -4,19 +4,42 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); // Tạo bóng đổ
+  height: 64px;
 
   .header-content {
     display: flex;
     align-items: center;
+
+    .ant-avatar {
+      margin-right: 10px;
+    }
+
+    .welcome-message {
+      font-weight: bold;
+      font-size: 18px;
+    }
   }
 
-  .welcome-message {
-    margin-right: 20px;
-    font-weight: bold;
+  .logout-section {
+    display: flex;
+    align-items: center;
+
+    .logout-icon {
+      font-size: 24px;
+      cursor: pointer;
+      color: #595959;
+      transition: color 0.3s;
+
+      &:hover {
+        color: #1890ff;
+      }
+    }
   }
 
-  .logout-icon {
-    font-size: 20px;
-    cursor: pointer;
+  @media (max-width: 768px) {
+    .welcome-message {
+      display: none; // Ẩn message trên thiết bị nhỏ hơn
+    }
   }
 }

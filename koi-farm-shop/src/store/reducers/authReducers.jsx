@@ -4,6 +4,8 @@ const initialState = {
   error: null,
   user: null,
   token: null,
+  userId: null,
+  forgetPasswordSuccess: false,
 };
 
 const authReducer = (state = initialState, action) => {
@@ -21,6 +23,7 @@ const authReducer = (state = initialState, action) => {
         loading: false,
         user: action.payload.username,
         token: action.payload.token,
+        userId: action.payload.userId,
       };
     case "LOGIN_FAILURE":
       return {
@@ -31,30 +34,48 @@ const authReducer = (state = initialState, action) => {
         user: null,
         token: null,
       };
-    case "REGISTER_REQUEST":
-      return {
-        ...state,
-        loading: true,
-        error: null,
-      };
-    case "REGISTER_SUCCESS":
-      return {
-        ...state,
-        loading: false,
-        isAuthenticated: false, // User is not logged in right after registration
-      };
-    case "REGISTER_FAILURE":
-      return {
-        ...state,
-        loading: false,
-        error: action.payload,
-      };
     case "LOGOUT":
       return {
         ...state,
         isAuthenticated: false,
         user: null,
         token: null,
+      };
+    case "FORGET_PASSWORD_REQUEST":
+      return {
+        ...state,
+        loading: true,
+        error: null,
+        forgetPasswordSuccess: false,
+      };
+    case "FORGET_PASSWORD_SUCCESS":
+      return {
+        ...state,
+        loading: false,
+        forgetPasswordSuccess: true,
+      };
+    case "FORGET_PASSWORD_FAILURE":
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    case "CHANGE_PASSWORD_REQUEST":
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+    case "CHANGE_PASSWORD_SUCCESS":
+      return {
+        ...state,
+        loading: false,
+      };
+    case "CHANGE_PASSWORD_FAILURE":
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
       };
     default:
       return state;

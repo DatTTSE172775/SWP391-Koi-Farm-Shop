@@ -1,118 +1,195 @@
 // src/pages/admin/OrderDetails.jsx
 
-import { Button, Card, Col, Divider, Layout, Row, Typography } from "antd";
-import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import {
+    Alert,
+    Button,
+    Card,
+    Descriptions,
+    Divider,
+    Layout,
+    Row,
+    Select,
+    Spin,
+    Tag,
+    Typography,
+    List,
+} from "antd";
+import React, {useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {useNavigate, useParams} from "react-router-dom";
+import axiosInstance from "../../../api/axiosInstance";
 import AdminHeader from "../../../components/admin/header/AdminHeader";
 import AdminSidebar from "../../../components/admin/sidebar/AdminSidebar";
+import {assignOrder} from "../../../store/actions/orderActions";
+import {fetchStaff} from "../../../store/actions/staffActions";
 import "./OrderDetails.scss";
 
-const { Content } = Layout;
-const { Title, Text } = Typography;
+const {Content} = Layout;
+const {Title} = Typography;
+const {Option} = Select;
 
-const sampleOrders = [
-  {
-    id: "ORD001",
-    productName: "Kohaku Koi",
-    date: "2024-10-01",
-    price: 2000000,
-    assignedTo: "Staff A",
-    status: "Đang xử lý",
-    customer: "Nguyễn Văn A",
-    phone: "0901234567",
-    address: "123 Đường ABC, Quận 1, TP.HCM",
-  },
-  {
-    id: "ORD002",
-    productName: "Showa Koi",
-    date: "2024-10-03",
-    price: 1800000,
-    assignedTo: "Chưa giao",
-    status: "Chưa xử lý",
-    customer: "Trần Văn B",
-    phone: "0912345678",
-    address: "456 Đường XYZ, Quận 3, TP.HCM",
-  },
-  {
-    id: "ORD003",
-    productName: "Shiro Utsuri Koi",
-    date: "2024-10-04",
-    price: 1500000,
-    assignedTo: "Staff B",
-    status: "Đã hoàn thành",
-    customer: "Trần Văn B",
-    phone: "0912345678",
-    address: "456 Đường XYZ, Quận 3, TP.HCM",
-  },
-  // Thêm dữ liệu khác nếu cần
-];
+const statusColors = {
+    Pending: "orange",
+    Processing: "blue",
+    Shipped: "purple",
+    Delivered: "green",
+    Cancelled: "red",
+};
 
 const OrderDetails = () => {
-  const { orderId } = useParams(); // Lấy mã đơn hàng từ URL
-  const navigate = useNavigate();
+    const {orderId} = useParams(); // Get the order ID from route params
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
-  // Tìm kiếm thông tin đơn hàng từ sampleOrders
-  const order = sampleOrders.find((o) => o.id === orderId);
+    const [order, setOrder] = useState(null); // Order details state
+    const [loading, setLoading] = useState(true); // Loading state
+    const [error, setError] = useState(null); // Error state
+    const [assignee, setAssignee] = useState(""); // Selected assignee
+    const {staff} = useSelector((state) => state.staff); // Get staff from Redux
+    const [orderDetails, setOrderDetails] = useState([]);
 
-  if (!order) {
-    return <div>Đơn hàng không tồn tại.</div>;
-  }
+    // Fetch order details from the API
+    useEffect(() => {
+        const fetchOrderDetails = async () => {
+            try {
+                const response = await axiosInstance.get(`/orders/${orderId}`);
+                console.log("Order Details Response:", response.data);
+                setOrder(response.data);
 
-  return (
-    <Layout className="admin-layout">
-      <AdminSidebar />
-      <Layout>
-        <AdminHeader />
-        <Content className="admin-content">
-          <Card className="order-details-card">
-            <Title level={3}>Chi Tiết Đơn Hàng: {order.id}</Title>
-            <Divider />
-            <Row gutter={[16, 16]}>
-              <Col xs={24} md={12}>
-                <Text strong>Tên Sản Phẩm:</Text>
-                <Text>{order.productName}</Text>
-              </Col>
-              <Col xs={24} md={12}>
-                <Text strong>Ngày Đặt Hàng:</Text>
-                <Text>{order.date}</Text>
-              </Col>
-              <Col xs={24} md={12}>
-                <Text strong>Giá:</Text>
-                <Text>{order.price.toLocaleString()} VND</Text>
-              </Col>
-              <Col xs={24} md={12}>
-                <Text strong>Trạng Thái:</Text>
-                <Text>{order.status}</Text>
-              </Col>
-              <Col xs={24} md={12}>
-                <Text strong>Người Phụ Trách:</Text>
-                <Text>{order.assignedTo}</Text>
-              </Col>
-              <Col xs={24} md={12}>
-                <Text strong>Khách Hàng:</Text>
-                <Text>{order.customer}</Text>
-              </Col>
-              <Col xs={24} md={12}>
-                <Text strong>Số Điện Thoại:</Text>
-                <Text>{order.phone}</Text>
-              </Col>
-              <Col xs={24} md={12}>
-                <Text strong>Địa Chỉ Giao Hàng:</Text>
-                <Text>{order.address}</Text>
-              </Col>
-            </Row>
-            <Divider />
-            <Button
-              type="default"
-              onClick={() => navigate("/admin/manage-orders")}
-            >
-              Quay Lại Danh Sách Đơn Hàng
-            </Button>
-          </Card>
-        </Content>
-      </Layout>
-    </Layout>
-  );
+                // Fetch order details
+                const detailsResponse = await axiosInstance.get(`/orders/${orderId}/details`);
+                console.log("Order Details:", detailsResponse.data);
+                setOrderDetails(detailsResponse.data);
+
+                // Set assignee based on the UserID
+                const assignedStaff = staff.find(
+                    (member) => member.UserID === response.data.UserID
+                );
+                setAssignee(assignedStaff ? assignedStaff.Username : "Chưa giao");
+
+                setLoading(false);
+            } catch (err) {
+                console.error("Failed to fetch order:", err);
+                setError("Đơn hàng không tồn tại.");
+                setLoading(false);
+            }
+        };
+
+        fetchOrderDetails();
+    }, [orderId, staff]);
+
+    // Fetch staff list when component mounts
+    useEffect(() => {
+        dispatch(fetchStaff());
+    }, [dispatch]);
+
+    // Handle assigning order to a staff member
+    const handleAssign = async (userId) => {
+        const assignedStaff = staff.find((member) => member.UserID === userId);
+        const username = assignedStaff ? assignedStaff.Username : "Chưa giao";
+
+        dispatch(assignOrder(orderId, userId, username));
+
+        // Update local state to reflect changes immediately
+        setAssignee(username);
+        setOrder((prevOrder) => ({
+            ...prevOrder,
+            UserID: userId,
+        }));
+    };
+
+    if (loading) {
+        return <Spin size="large" className="loading-spinner"/>;
+    }
+
+    if (error) {
+        return <Alert message="Error" description={error} type="error" showIcon/>;
+    }
+
+    return (
+        <Layout className="admin-layout">
+            <Content className="admin-content">
+                <Card className="order-details-card">
+                    <Title level={3} className="title">
+                        Chi Tiết Đơn Hàng: {order.OrderID}
+                    </Title>
+                    <Divider/>
+                    <Descriptions
+                        title="Thông Tin Đơn Hàng"
+                        bordered
+                        layout="vertical"
+                        column={2}
+                        size="middle"
+                    >
+                        <Descriptions.Item label="Mã Số Đơn Hàng">
+                            {order.TrackingNumber || "N/A"}
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Ngày Đặt Hàng">
+                            {new Date(order.OrderDate).toLocaleDateString()}
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Giá">
+                            {order.TotalAmount.toLocaleString()} VND
+                        </Descriptions.Item>
+
+                        <Descriptions.Item label="Sản Phẩm Đã Mua">
+                            <List
+                                size="small"
+                                dataSource={orderDetails}
+                                renderItem={item => (
+                                    <List.Item>
+                                        {item.ProductName} - Số lượng: {item.Quantity}
+                                    </List.Item>
+                                )}
+                            />
+                        </Descriptions.Item>
+
+                        <Descriptions.Item label="Trạng Thái">
+                            <Tag color={statusColors[order.OrderStatus]}>
+                                {order.OrderStatus}
+                            </Tag>
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Địa Chỉ Giao Hàng" span={2}>
+                            {order.ShippingAddress}
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Phương Thức Thanh Toán">
+                            {order.PaymentMethod}
+                        </Descriptions.Item>
+
+
+                        <Descriptions.Item label="Nhân Viên Phụ Trách">
+                            {order.OrderStatus === "Pending" ? (
+                                <Select
+                                    value={assignee}
+                                    onChange={(userId) => handleAssign(userId)}
+                                    style={{width: "100%"}}
+                                >
+                                    {staff.map((member) => (
+                                        <Option key={member.UserID} value={member.UserID}>
+                                            {member.Username}
+                                        </Option>
+                                    ))}
+                                </Select>
+                            ) : (
+                                <Typography.Text>{assignee}</Typography.Text>
+                            )}
+                        </Descriptions.Item>
+
+
+                    </Descriptions>
+                    <Divider/>
+                    <Row justify="end">
+                        <Button
+                            type="primary"
+                            onClick={() => navigate("/admin/manage-orders")}
+                            className="back-button"
+                        >
+                            Quay Lại Danh Sách Đơn Hàng
+                        </Button>
+                    </Row>
+                </Card>
+            </Content>
+        </Layout>
+    );
 };
 
 export default OrderDetails;

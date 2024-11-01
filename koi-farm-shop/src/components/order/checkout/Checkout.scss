@@ -15,45 +15,11 @@
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
   }
 
-  .payment-option {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 130px;
-    height: 60px;
-    border: 1px solid #d9d9d9;
-    border-radius: 8px;
-    margin-right: 10px;
-    background-color: #fafafa;
-    transition: all 0.3s;
-
-    &:hover {
-      border-color: #40a9ff;
-      transform: translateY(-2px);
-    }
-
-    &.ant-radio-button-wrapper-checked {
-      border-color: #1890ff;
-      background-color: #e6f7ff;
-      transform: translateY(-2px);
-    }
-  }
-
-  .payment-logo {
-    width: 32px;
-    height: 32px;
-    margin-right: 10px;
-  }
-
   .order-summary {
     .order-item {
       display: flex;
       justify-content: space-between;
       margin-bottom: 15px;
-
-      &:last-child {
-        margin-bottom: 0;
-      }
     }
 
     .order-total {
@@ -64,6 +30,24 @@
     }
   }
 
+  .ant-radio-button-wrapper {
+    display: inline-block;
+    margin-right: 10px;
+    border-radius: 8px;
+    background-color: #fafafa;
+    transition: all 0.3s;
+
+    &:hover {
+      border-color: #40a9ff;
+      background-color: #e6f7ff;
+    }
+
+    &.ant-radio-button-wrapper-checked {
+      border-color: #1890ff;
+      background-color: #e6f7ff;
+    }
+  }
+
   .ant-btn-primary {
     background: linear-gradient(90deg, #ff7e5f, #feb47b);
     border: none;
@@ -71,7 +55,6 @@
     font-size: 1.1rem;
     border-radius: 8px;
     font-weight: bold;
-    transition: background 0.3s ease;
 
     &:hover {
       background: linear-gradient(90deg, #feb47b, #ff7e5f);
@@ -85,25 +68,10 @@
       font-size: 1.5rem;
     }
 
-    .payment-option {
-      width: 100px;
-      height: 50px;
-      margin-right: 5px;
-    }
-
-    .payment-logo {
-      width: 25px;
-      height: 25px;
-    }
-
     .order-summary {
       .order-item {
         flex-direction: column;
         align-items: flex-start;
-
-        Text {
-          margin-bottom: 5px;
-        }
       }
 
       .order-total {

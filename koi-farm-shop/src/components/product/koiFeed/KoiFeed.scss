@@ -1,125 +1,106 @@
 .koi-feed-container {
-  max-width: 1500px;
-  margin: 100px auto;
-  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+  background-color: #f0f8ff; // Màu nền nhẹ hơn
 
-  .koi-feed-title {
-    font-size: 2.5rem;
-    color: #333;
+  .koi-feed-header {
     text-align: center;
+    background-color: #b3e5fc;
+    padding: 2rem;
+    border-radius: 12px;
     margin-bottom: 2rem;
-  }
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 
-  .guide {
-    background-color: #fff;
-    padding: 1.5rem;
-    border-radius: 8px;
-    margin-bottom: 2rem;
-
-    h2 {
-      text-align: center;
-      font-size: 1.8rem;
-      color: #444;
-      margin-bottom: 1rem;
+    h1 {
+      font-size: 2.8rem;
+      color: #0277bd;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
     }
 
     p {
       font-size: 1rem;
+      color: #01579b;
+      margin: 0 auto;
+      max-width: 800px;
       line-height: 1.6;
-      color: #666;
     }
   }
 
   .koi-feed-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 2rem;
 
     .koi-card {
       background-color: #fff;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
       overflow: hidden;
-      transition: transform 0.3s ease;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
 
       &:hover {
         transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
       }
 
       .koi-image-container {
-        position: relative;
+        width: 100%;
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         overflow: hidden;
-        padding-top: 155%;
 
-        .koi-image {
-          position: absolute;
-          top: 0;
-          left: 0;
+        img {
           width: 100%;
           height: 100%;
-          object-fit: cover;
-          object-position: center;
+          object-fit: contain; // Ảnh sẽ luôn căn vừa khung
           transition: transform 0.3s ease;
         }
 
-        &:hover .accessory-image {
-          transform: scale(1.05);
-        }
-
-        .view-detail-button {
-          position: absolute;
-          bottom: 10px;
-          right: 10px;
-          background-color: rgba(255, 255, 255, 0.8);
-          color: #333;
-          border: none;
-          padding: 0.5rem 1rem;
-          border-radius: 4px;
-          cursor: pointer;
-          transition: background-color 0.3s ease;
-
-          &:hover {
-            background-color: rgba(255, 255, 255, 1);
-          }
+        &:hover img {
+          transform: scale(1.1);
         }
       }
 
       .koi-info {
-        padding: 1rem;
+        padding: 1.5rem;
+        text-align: center;
 
         h3 {
-          font-size: 1.4rem;
-          color: #333;
-          margin-bottom: 0.5rem;
+          font-size: 1.5rem;
+          color: #2c3e50;
+          margin-bottom: 0.8rem;
         }
 
         p {
-          font-size: 0.9rem;
-          color: #666;
-          margin-bottom: 0.3rem;
+          font-size: 1rem;
+          color: #7f8c8d;
+          margin: 0.3rem 0;
         }
 
         .koi-price {
-          font-size: 1.1rem;
+          font-size: 1.2rem;
           color: #e74c3c;
-          margin-top: 0.5rem;
+          font-weight: bold;
+          margin-top: 1rem;
         }
 
         .buy-button {
-          display: block;
-          width: 100%;
-          background-color: #3498db;
+          background-color: #4caf50;
           color: #fff;
           border: none;
           padding: 0.8rem;
-          border-radius: 4px;
-          font-size: 1rem;
+          border-radius: 8px;
+          width: 100%;
           cursor: pointer;
-          transition: background-color 0.3s ease;
           margin-top: 1rem;
+          transition: background-color 0.3s ease;
 
           &:hover {
-            background-color: #2980b9;
+            background-color: #388e3c;
           }
         }
       }

@@ -1,13 +1,21 @@
 // Variables
-$primary-color: #e65100;
+$primary-color: #2f855a;
 $secondary-color: #f9f9f9;
 $accent-color: #fff;
 $font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 $border-radius: 10px;
+$hover-brighten: 10%; // Mức sáng khi hover
+$primary-hover-color: lighten($primary-color, $hover-brighten);
+$primary-active-color: darken($primary-color, 10%);
+$font-size: 16px;
 
 // Mixins
-@mixin box-shadow($x: 0, $y: 2px, $blur: 4px, $color: rgba(0, 0, 0, 0.1)) {
+@mixin box-shadow($x: 0, $y: 2px, $blur: 4px, $color: rgba(0, 0, 0, 0.1), $hover-color: rgba(0, 0, 0, 0.2)) {
   box-shadow: $x $y $blur $color;
+
+  &:hover {
+    box-shadow: $x $y $blur $hover-color;
+  }
 }
 
 @mixin flex-center {
@@ -18,89 +26,158 @@ $border-radius: 10px;
 
 // Styles
 .about-container {
-  max-width: 1400px;
-  margin: 100px auto;
-  padding: 20px;
-  font-family: $font-family;
+  width: 100%;  // Đặt chiều rộng 100% để tận dụng toàn bộ không gian
+  max-width: 1000px;  // Giữ kích thước tối đa như cũ
+  margin: 0 auto;  // Căn giữa
+  padding: 20px;  // Giữ lại padding nếu cần
+  background-color: #fafafa;  // Màu nền
+  border: none;  // Đảm bảo không có viền
+  box-shadow: none;  // Loại bỏ bóng nếu có
 }
 
+
+
 .main-title {
+  font-size: 2.8em; // Có thể thay đổi thành 2.4em hoặc giá trị khác nếu cần
   color: $primary-color;
-  width: 50%;
-  background-color: #fff;
-  font-size: 2.8em;
   text-align: center;
-  margin: 0 auto 60px;
-  position: relative;
-  overflow: hidden;
-  padding: 15px;
-  border-radius: $border-radius;
+  margin-bottom: 40px;
 }
+
 
 .section-title {
   font-size: 2em;
   color: $primary-color;
   margin-bottom: 20px;
+  animation: fadeIn 0.8s ease-in-out; // Làm animation nhẹ nhàng hơn
+  transition: color 0.3s ease; // Thêm transition khi hover
+
+  &:hover {
+    color: darken($primary-color, 10%);
+  }
 }
 
 .about-section {
-  background-color: $secondary-color;
-  border-radius: $border-radius;
-  margin-bottom: 40px;
-  @include box-shadow;
-  overflow: hidden;
-  padding: 20px;
+  background-color: $secondary-color; // Màu nền
+  margin: 0; // Đặt margin là 0 để không có viền
+  padding: 20px; // Giữ lại padding nếu cần
+  border: none; // Đảm bảo không có viền
+  box-shadow: none; // Loại bỏ bóng nếu có
+  p {
+    font-size: 1.2rem; // Có thể thay đổi thành 1rem hoặc giá trị khác nếu cần
+    line-height: 1.8; // Có thể điều chỉnh để tạo khoảng cách giữa các dòng
+    color: #333;
+    margin-bottom: 20px;
+  }
 }
 
-.about-image {
-  width: 80%;
+.about-image, .team-member img {
+  width: 70%;
+  max-width: 100%;
   height: auto;
   border-radius: $border-radius;
-  margin: 15px auto; // Changed from margin-top to margin
-  display: block; // Added to center the image
+  margin-top: 15px;
   background-attachment: fixed;
   background-size: cover;
+  margin: 20px auto;
+  display: block;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05); // Phóng to hình ảnh nhẹ khi hover
+    @include box-shadow(0, 4px, 8px, rgba(0, 0, 0, 0.2));
+  }
 }
 
+// Values section styling
 .about-values {
-  ul {
-    list-style-type: disc;
-    padding-left: 20px;
+  .about-values {
+    ul {
+      li {
+        font-size: 1.1rem; // Có thể thay đổi thành 1rem hoặc giá trị khác nếu cần
+        line-height: 1.6;
+        color: #333;
+  
+        strong {
+          color: $primary-color;
+          font-weight: bold;
+        }
+      }
+    }
   }
-
-  li {
-    margin-bottom: 10px;
-  }
+  
 }
 
+// Team member section
 .team-images {
-  @include flex-center;
-  flex-wrap: wrap;
-  gap: 20px;
+  display: flex;
+  justify-content: center; // Center content in the middle
+  flex-wrap: wrap; // Allow wrapping for responsiveness
+  gap: 40px; // Add larger spacing between items
   margin-top: 20px;
 }
 
 .team-member {
-  width: calc(50% - 10px);
-  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 18%; // Adjust width to better fit the screen for five members
+  max-width: 160px; // Constrain the size to prevent large images on bigger screens
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 
   img {
-    width: 100%;
-    height: auto;
-    border-radius: $border-radius;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-
-    &:hover {
-      transform: scale(1.05);
-      @include box-shadow(0, 4px, 8px, rgba(0, 0, 0, 0.2));
-    }
+    width: 80px; // Kích thước avatar
+    height: 80px; // Đảm bảo tỉ lệ chiều cao
+    border-radius: 50%; // Hình dạng tròn
+    margin-bottom: 10px; // Khoảng cách dưới hình ảnh
   }
 
   h3 {
     margin-top: 10px;
     margin-bottom: 5px;
+    font-size: 1.2rem;
+  }
+
+  p {
+    font-style: italic;
+  }
+}
+// Team member section
+.team-images {
+  display: flex; // Enable flexbox layout
+  justify-content: space-evenly; // Ensure even spacing between team members
+  flex-wrap: wrap; // Allow wrapping for smaller screens
+  gap: 20px; // Uniform gap between members
+  margin-top: 20px;
+}
+
+.team-row {
+  display: flex; /* Sử dụng flex cho hàng */
+  width: 100%; /* Đặt chiều rộng cho hàng mới là 100% */
+  justify-content: center; /* Căn giữa cho hàng này */
+}
+
+.team-member {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 22%; // Each team member takes 22% of the width for 4 in a row (adjustable)
+  max-width: 200px; // Max width to avoid stretching
+  text-align: center;
+  margin-bottom: 20px;
+
+  img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%; // Circular avatar
+    margin-bottom: 10px;
+  }
+
+  h3 {
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-size: 1.2rem;
   }
 
   p {
@@ -108,28 +185,9 @@ $border-radius: 10px;
   }
 }
 
-.show-more-btn {
-  display: block;
-  margin: 20px auto;
-  padding: 10px 20px;
-  background-color: $primary-color;
-  color: #fff;
-  border: none;
-  border-radius: $border-radius;
-  font-size: 1em;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
 
-  &:hover {
-    background-color: lighten($primary-color, 10%);
-    transform: scale(1.05);
-  }
 
-  &:active {
-    transform: scale(0.95);
-  }
-}
-
+// Closing message styling
 .closing-message {
   font-size: 1.2em;
   font-weight: bold;
@@ -137,20 +195,89 @@ $border-radius: 10px;
   margin-top: 30px;
 }
 
-// Media Queries
-@media (max-width: 768px) {
-  .about-container {
-    margin: 60px auto;
-  }
+// Testimonials section styling
+.about-testimonials {
+  padding: 50px;
+  background-color: #f1f1f1;
+  border-radius: $border-radius;
+  @include box-shadow(0, 4px, 8px, rgba(0, 0, 0, 0.1));
 
-  .team-images {
+  .testimonial-item {
+    display: flex;
     flex-direction: column;
     align-items: center;
+    background-color: $accent-color;
+    border-radius: $border-radius;
+    padding: 30px;
+    margin-bottom: 40px;
+    max-width: 700px;
+    margin: 0 auto 40px;
+
+    img.testimonial-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      margin-bottom: 20px;
+    }
+
+    h3 {
+      font-size: 1.5rem;
+      color: $primary-color;
+      margin-bottom: 10px;
+    }
+
+    p.testimonial-quote {
+      font-size: 1.2rem;
+      font-style: italic;
+      color: #444;
+      margin-bottom: 10px;
+      text-align: left;
+    }
+
+    h4.testimonial-author {
+      font-size: 1rem;
+      font-weight: bold;
+      color: #666;
+      margin-top: 20px;
+    }
+  }
+}
+
+// Call-to-action section styling
+.call-to-action {
+  padding: 50px;
+  background-color: #004d40;
+  color: white;
+  text-align: center;
+
+  h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
   }
 
-  .team-member {
-    width: 100%;
-    max-width: 250px;
+  .cta-button {
+    background-color: #ff9800;
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.2rem;
+
+    &:hover {
+      background-color: #e68900;
+    }
+  }
+}
+
+// Media Queries - Giảm kích thước cho mobile
+@media (max-width: 768px) {
+  .main-title {
+    font-size: 2.4em;
+  }
+
+  .section-title {
+    font-size: 1.6em;
   }
 
   .about-section {
@@ -160,6 +287,134 @@ $border-radius: 10px;
   .show-more-btn {
     font-size: 0.9em;
     padding: 8px 16px;
+  }
+
+  .team-member {
+    width: 45%; // Two members per row for smaller screens
+    max-width: 150px; // Reduce max width for mobile
+  }
+
+  .testimonial-item {
+    img.testimonial-avatar {
+      width: 60px;
+      height: 60px;
+    }
+
+    .testimonial-content {
+      max-width: 100%;
+      padding: 15px;
+    }
+  }
+}
+
+// Animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Specific Mission Section Styling
+.about-mission {
+  background-color: $secondary-color;
+  padding: 30px;
+  border-radius: $border-radius;
+  margin-bottom: 40px;
+  @include box-shadow(0, 4px, 8px, rgba(0, 0, 0, 0.1));
+
+  p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #333;
+    margin-bottom: 20px;
+  }
+
+  .section-title {
+    color: $primary-color;
+    font-size: 2.4rem;
+    text-align: center;
+    margin-bottom: 20px;
+    animation: fadeIn 0.8s ease-in-out;
+  }
+}
+
+.about-container {
+  padding: 20px;
+  background-color: #fafafa;
+  border-radius: none;
+  border: none; // Nếu có border, bạn có thể xóa hoặc chỉnh thành none
+  @include box-shadow(0, 4px, 8px, rgba(0, 0, 0, 0.05)); // Có thể giữ lại hoặc xóa
+}
+
+
+.about-values {
+  background-color: $secondary-color;
+  padding: 20px;
+  border-radius: $border-radius;
+  margin-bottom: 40px;
+  @include box-shadow(0, 4px, 8px, rgba(0, 0, 0, 0.1));
+
+  ul {
+    padding-left: 20px;
+
+    li {
+      font-size: 1.1rem;
+      color: #333;
+      margin-bottom: 10px;
+      line-height: 1.6;
+      
+      strong {
+        color: $primary-color;
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .about-mission, .about-values {
+    padding: 15px;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+  }
+
+  .about-container {
+    padding: 15px;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+}
+
+.value-item {
+  display: flex;
+  align-items: center; // Căn giữa icon và text theo chiều dọc
+  margin-bottom: 20px;
+
+  .value-icon {
+    width: 30px;  // Tăng kích thước icon lên
+    height: 30px; // Đảm bảo kích thước cân đối
+    margin-right: 10px; // Khoảng cách giữa icon và text, bạn có thể điều chỉnh nếu cần
+  }
+
+  .value-text {
+    font-size: 1.1rem;
+    color: #333;
+    line-height: 1.6;
+  }
+
+  strong {
+    color: $primary-color;
+    font-weight: bold;
   }
 }
 

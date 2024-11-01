@@ -1,5 +1,3 @@
-// src/components/Register/Register.jsx
-
 import { Google as GoogleIcon } from "@mui/icons-material";
 import {
   Box,
@@ -10,30 +8,28 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { notification } from "antd";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { register } from "../../../store/actions/authActions";
 import "./Register.scss";
 
 const Register = () => {
-  // const dispatch = useDispatch();
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const auth = useSelector((state) => state.auth);
-  const { isAuthenticated, loading} = auth;
+  const { isAuthenticated, loading, error } = auth;
 
   const [formData, setFormData] = useState({
     username: "",
+    email: "",
     password: "",
     fullname: "",
     phone: "",
-    email: "",
   });
 
-  const { username, password, fullname, phone, email } = formData;
+  const { username, email, password, fullname, phone } = formData;
 
   const handleChange = (e) => {
     setFormData({
@@ -44,24 +40,8 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Dispatch the registration action
-    dispatch(register(username, password, fullname, phone, email))
-      .then(() => {
-        notification.success({
-          message: "Đăng ký thành công",
-          description: "Tài khoản của bạn đã được tạo thành công!",
-          placement: "topRight",
-        });
-        navigate("/login"); // Redirect to login page after successful registration
-      })
-      .catch((error) => {
-        notification.error({
-          message: "Đăng ký thất bại",
-          description: error || "Có lỗi xảy ra trong quá trình đăng ký.",
-          placement: "topRight",
-        });
-      });
+    console.log(formData);
+    dispatch(register(username, email, password, fullname, phone));
   };
 
   // Redirect nếu đã đăng nhập
@@ -87,6 +67,19 @@ const Register = () => {
                 value={username}
                 onChange={handleChange}
                 placeholder="Nhập tên tài khoản"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Email"
+                type="email"
+                variant="outlined"
+                fullWidth
+                required
+                name="email"
+                value={email}
+                onChange={handleChange}
+                placeholder="Nhập email"
               />
             </Grid>
             <Grid item xs={12}>
@@ -126,19 +119,13 @@ const Register = () => {
                 placeholder="Nhập số điện thoại"
               />
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Email"
-                type="email"
-                variant="outlined"
-                fullWidth
-                required
-                name="email"
-                value={email}
-                onChange={handleChange}
-                placeholder="Nhập email"
-              />
-            </Grid>
+            {error && (
+              <Grid item xs={12}>
+                <Typography color="error" align="center">
+                  {error}
+                </Typography>
+              </Grid>
+            )}
             <Grid item xs={12}>
               <Button
                 type="submit"

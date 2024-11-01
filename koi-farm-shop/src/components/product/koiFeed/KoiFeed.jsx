@@ -8,8 +8,7 @@ import food4 from "../../../assets/koiFood/food-aquamasterStaple.jpg";
 import food5 from "../../../assets/koiFood/food-hikariColorEnhancer.jpg";
 import food6 from "../../../assets/koiFood/food-JPDShogun.jpg";
 import food7 from "../../../assets/koiFood/food-sakuraHighGrowth.jpg";
-import food8 from "../../../assets/koiFood/food-sakuraHighGrowth&Color.jpg"; 
-
+import food8 from "../../../assets/koiFood/food-sakuraHighGrowth&Color.jpg";
 
 const koiFoodSampleList = [
   {
@@ -94,26 +93,22 @@ const koiFoodSampleList = [
   },
 ];
 
+const KoiFeedHeader = () => (
+  <div className="koi-feed-header">
+    <h1>Koi Feed Products</h1>
+    <p>Give your koi the nutrition they need to thrive with our specially formulated koi food. Designed to promote optimal health, vibrant colors, and strong growth.</p>
+  </div>
+);
 
 const KoiFeed = () => {
   return (
     <div className="koi-feed-container">
-      
-      <div className="guide">
-        <h2>Cám cho cá Koi</h2>
-        <p>Cung cấp cho cá koi của bạn dinh dưỡng cần thiết để phát triển mạnh mẽ 
-          với thức ăn cá koi được pha chế đặc biệt của chúng tôi. Được thiết kế để thúc 
-          đẩy sức khỏe tối ưu, màu sắc rực rỡ và tăng trưởng mạnh mẽ, thức ăn cá koi của
-           chúng tôi pha trộn các thành phần chất lượng cao để đáp ứng nhu cầu dinh dưỡng 
-           của cá koi ở mọi giai đoạn của cuộc đời.</p>
-      </div>
-
+      <KoiFeedHeader/>
       <div className="koi-feed-grid">
         {koiFoodSampleList.map((koi) => (
           <div key={koi.id} className="koi-card">
             <div className="koi-image-container">
               <img src={koi.image} alt={koi.name} className="koi-image" />
-              <button className="view-detail-button">View detail</button>
             </div>
             <div className="koi-info">
               <h3>{koi.name}</h3>

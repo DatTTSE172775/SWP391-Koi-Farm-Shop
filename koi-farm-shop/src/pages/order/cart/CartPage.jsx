@@ -10,32 +10,37 @@ import {
   Typography,
 } from "antd";
 import React, { useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { CartContext } from "../../../components/order/cart-context/CartContext";
 import "./CartPage.scss";
 
 const { Title, Text } = Typography;
 
 const CartPage = () => {
-  const navigate = useNavigate();
-  const { cartItems, handleRemoveFromCart, handleUpdateQuantity } =
-    useContext(CartContext);
+  const { cartItems, handleRemoveFromCart } = useContext(CartContext);
 
-  // Định nghĩa các cột cho bảng
+  // Define columns for the table
   const columns = [
     {
       title: "Hình Ảnh",
       dataIndex: "image",
       key: "image",
-      render: (text, record) => (
-        <Image
-          src={record.image}
-          alt={record.name}
-          width={80}
-          height={140}
-          preview={false}
-        />
-      ),
+      render: (text, record) => {
+        // Handle both full URLs and relative paths
+        const imageUrl = record.image && record.image.startsWith('http') 
+          ? record.image 
+          : `${process.env.REACT_APP_BASE_URL}${record.image}`;
+          
+        return (
+          <Image
+            src={imageUrl}
+            alt={record.name}
+            width={80}
+            height={140}
+            preview={false}
+          />
+        );
+      },
       responsive: ["xs", "sm", "md", "lg"],
     },
     {
@@ -49,19 +54,15 @@ const CartPage = () => {
       title: "Giá",
       dataIndex: "price",
       key: "price",
-      render: (price) => <Text>{price.toLocaleString()}</Text>,
+      render: (price) => <Text>{price.toLocaleString()} VND</Text>,
       responsive: ["sm", "md", "lg"],
     },
     {
       title: "Số Lượng",
       dataIndex: "quantity",
       key: "quantity",
-      render: (quantity, record) => (
-        <InputNumber
-          min={1}
-          defaultValue={quantity}
-          onChange={(value) => handleUpdateQuantity(record.key, value)}
-        />
+      render: (quantity) => (
+        <InputNumber min={1} max={1} value={quantity} disabled />
       ),
       responsive: ["sm", "md", "lg"],
     },
@@ -69,7 +70,7 @@ const CartPage = () => {
       title: "Tổng Tiền",
       dataIndex: "total",
       key: "total",
-      render: (total) => <Text strong>{total.toLocaleString()}</Text>,
+      render: (total) => <Text strong>{total.toLocaleString()} VND</Text>,
       responsive: ["sm", "md", "lg"],
     },
     {
@@ -87,11 +88,7 @@ const CartPage = () => {
     },
   ];
 
-  const handleCheckOut = () => {
-    navigate("/checkout");
-  };
-
-  // Tổng tiền tất cả sản phẩm
+  // Calculate total price of all items
   const totalPrice = cartItems.reduce((acc, item) => acc + item.total, 0);
 
   return (
@@ -109,26 +106,20 @@ const CartPage = () => {
         <Col xs={24} sm={12} md={8} lg={6}>
           <div className="summary-item">
             <Text>Tổng Tiền:</Text>
-            <Text strong>{totalPrice.toLocaleString()}</Text>
+            <Text strong>{totalPrice.toLocaleString()} VND</Text>
           </div>
-          {/* Bạn có thể thêm thuế, phí vận chuyển ở đây */}
+          {/* Add tax or shipping fees here if needed */}
           <div className="summary-actions">
-            =
-            <Button
-              type="default"
-              className="continue-shopping"
-              onClick={() => navigate("/koi-list")}
-            >
-              Tiếp Tục Mua Sắm
-            </Button>
-            =
-            <Button
-              type="primary"
-              className="proceed-to-checkout"
-              onClick={handleCheckOut}
-            >
-              Thanh Toán
-            </Button>
+            <Link to="/koi-list">
+              <Button type="default" className="continue-shopping">
+                Tiếp Tục Mua Sắm
+              </Button>
+            </Link>
+            <Link to="/checkout">
+              <Button type="primary" className="proceed-to-checkout">
+                Thanh Toán
+              </Button>
+            </Link>
           </div>
         </Col>
       </Row>

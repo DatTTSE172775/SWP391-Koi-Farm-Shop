@@ -1,0 +1,64 @@
+.account-content {
+  padding: 20px;
+  
+  .welcome-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    
+    h2 {
+      color: #2f855a; // màu xanh lá đậm phù hợp với môi trường nước và cá
+    }
+
+    .quick-access {
+      margin-top: 30px;
+      .ant-card {
+        text-align: center;
+        border-radius: 8px;
+        transition: transform 0.3s ease;
+        background-color: #f0f9ff; // màu xanh nhạt nhẹ
+        &:hover {
+          transform: scale(1.05);
+          background-color: #e6f7ff; // hiệu ứng khi hover
+        }
+      }
+    }
+
+    .featured-products {
+      margin-top: 40px;
+      h3 {
+        font-size: 1.8rem;
+        color: #2f855a;
+      }
+
+      .ant-card {
+        transition: all 0.3s ease;
+        &:hover {
+          box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+        }
+      }
+    }
+  }
+}
+.custom-button {
+  font-weight: bold;
+  border-radius: 8px;
+  padding: 10px 20px;
+  transition: background-color 0.3s, transform 0.2s;
+
+  &:hover {
+    transform: scale(1.1);
+    opacity: 0.9;
+  }
+
+  &.green {
+    background-color: #2f855a;
+    border-color: #276749;
+    color: white;
+
+    &:hover {
+      background-color: #276749;
+    }
+  }
+}

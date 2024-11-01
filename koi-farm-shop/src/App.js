@@ -1,21 +1,35 @@
 import "antd/dist/reset.css";
-import { lazy, Suspense } from "react";
+import React, { lazy, Suspense } from "react";
 import {
-  Navigate,
-  Route,
-  BrowserRouter as Router,
-  Routes,
+    Navigate,
+    Route,
+    BrowserRouter as Router,
+    Routes,
 } from "react-router-dom";
 
 import Loading from "./components/loading/Loading";
 import CartProvider from "./components/order/cart-context/CartContext";
 // main layout
+import ChangePassword from "./pages/account/change-password/ChangePassword";
+import AddKoi from "./pages/admin/addProduct/AddKoi";
+import AddPackage from "./pages/admin/addProduct/AddPackage";
+import DeleteKoi from "./pages/admin/deleteProduct/deleteKoi";
+import DeleteKoiPackage from "./pages/admin/deleteProduct/deleteKoiPackage";
+import OrderDetails from "./pages/admin/order-details/OrderDetails";
+import OrdersManagement from "./pages/admin/orderManagement/OrdersManagement";
+import UpdateKoi from "./pages/admin/updateProduct/updateKoi";
+import WelcomeAdmin from "./pages/admin/welcome/WelcomeAdmin";
 import MainLayout from "./pages/MainLayout";
 import NotFound from "./pages/notfound/NotFound";
+import staffRoutes from "./routes/StaffRoutes";
+import PendingConsignments from "./pages/staff/consignment-manage/processing/ProcessingConsignment";
+import InCareConsignments from "./pages/staff/consignment-manage/completed/CompletedConsignment";
+import ManagerConsignmentPage from "./pages/admin/consign/AdminConsignment";
+import adminRoutes from "./routes/AdminRoutes";
 
 // auth page
 const ForgetPassword = lazy(() =>
-  import("./components/auth/forget-password/ForgetPassWord")
+    import("./components/auth/forget-password/ForgetPassWord")
 );
 const Login = lazy(() => import("./components/auth/login/Login"));
 const Register = lazy(() => import("./components/auth/register/Register"));
@@ -25,145 +39,123 @@ const AuthPage = lazy(() => import("./pages/auth/AuthPage"));
 const About = lazy(() => import("./pages/about/About"));
 const Consignment = lazy(() => import("./pages/consignment/Consignment"));
 const ConsignmentForm = lazy(() =>
-  import("./pages/consignment/ConsignmentForm")
+    import("./pages/consignment/ConsignmentForm")
+
 );
+const ConsignmentDetail = lazy(() => import("./pages/admin/consignment-details/consignmentDetails"));
+
 const Blog = lazy(() => import("./pages/blog/Blog"));
 const Contact = lazy(() => import("./pages/contact/Contact"));
 const HomePage = lazy(() => import("./pages/home/HomePage"));
 const Guide = lazy(() => import("./pages/guide/guide"));
 
 // koi page
+const KoiPackage = lazy(() => import("./pages/koi-fish/KoiPackage/KoiPackage"));
 const KoiDetail = lazy(() =>
-  import("./components/koiFish/koiDetail/KoiDetail")
+    import("./components/koiFish/koiDetail/KoiDetail")
 );
 const KoiListPage = lazy(() =>
-  import("./pages/koi-fish/koiList/Koi-List-Page")
+    import("./pages/koi-fish/koiList/Koi-List-Page")
 );
 const KoiBreeders = lazy(() =>
-  import("./pages/koi-fish/koi-breeders/KoiBreeders")
+    import("./pages/koi-fish/koi-breeders/KoiBreeders")
 );
-const KoiPackage = lazy(() => import("./pages/koi-fish/KoiPackage/KoiPackage"));
-
+const HighQualityKoi = lazy(() =>
+    import("./components/koiFish/high-quality-koi/HighQualityKoi")
+);
+const KoiCollection = lazy(() =>
+    import("./components/koiFish/koi-collection/KoiCollection")
+);
 // product page
 const KoiFeed = lazy(() => import("./components/product/koiFeed/KoiFeed"));
 const PondAccessories = lazy(() =>
-  import("./components/product/pondAccessories/PondAccessories")
+    import("./components/product/pondAccessories/PondAccessories")
 );
 const PondFilter = lazy(() =>
-  import("./components/product/pondFilter/PondFilter")
+    import("./components/product/pondFilter/PondFilter")
 );
 const ProductPage = lazy(() => import("./pages/product/ProductPage"));
 
 // order page
 const Checkout = lazy(() => import("./components/order/checkout/Checkout"));
 const OrderSuccess = lazy(() =>
-  import("./pages/order/orderSuccess/OrderSuccess")
+    import("./pages/order/orderSuccess/OrderSuccess")
 );
 const Cart = lazy(() => import("./pages/order/cart/CartPage"));
 
 // customer page
-const AccountPage = lazy(() =>
-  import("./pages/account/welcome/WelcomeCustomer")
-);
-const OrderHistory = lazy(() => import("./pages/account/orders/OrderHistory"));
-
-// staff page
-const WelcomeStaff = lazy(() => import("./pages/staff/layout/WelcomeStaff"));
-const StaffOrderManage = lazy(() =>
-  import("./pages/staff/order-manage/StaffOrderManage")
-);
-// const StaffNotificationPage = lazy(() =>
-//   import("./pages/staff/notification/StaffNotificationPage")
-// );
-// const StaffConsignmentPage = lazy(() =>
-//   import("./pages/staff/consign/StaffConsignmentPage")
-// );
-
-//admin page
-const WelcomeAdmin = lazy(() => import("./pages/admin/welcome/WelcomeAdmin"));
-const OrderDetails = lazy(() =>
-  import("./pages/admin/order-details/OrderDetails")
-);
-const OrdersManagement = lazy(() =>
-  import("./pages/admin/orderManagement/OrdersManagement")
+const WelcomeAccount = lazy(() =>
+    import("./pages/account/welcome/WelcomeAccount")
 );
 
 function App() {
-  return (
-    <CartProvider>
-      <Router>
-        <Suspense fallback={<Loading />}>
-          <Routes>
-            {/* Routes with MainLayout */}
-            <Route path="/" element={<MainLayout />}>
-              <Route index element={<Navigate to="/home" replace />} />
-              <Route path="home" element={<HomePage />} />
-              <Route path="about" element={<About />} />
-              <Route path="guide" element={<Guide />} />
+    return (
+        <CartProvider>
+            <Router>
+                <Suspense fallback={<Loading />}>
+                    <Routes>
+                        {/* Routes with MainLayout */}
+                        <Route path="/" element={<MainLayout />}>
+                            <Route index element={<Navigate to="/home" replace />} />
+                            <Route path="home" element={<HomePage />} />
+                            <Route path="about" element={<About />} />
+                            <Route path="guide" element={<Guide />} />
+                            <Route path="change-password" element={<ChangePassword />} />
 
-              {/* Koi Routes */}
-              <Route path="koi-list" element={<KoiListPage />} />
-              <Route path="koi-details/:id" element={<KoiDetail />} />
-              <Route path="koi-breeders" element={<KoiBreeders />} />
-              <Route path="koi-package" element={<KoiPackage />} />
+                            {/* Koi Routes */}
+                            <Route path="koi-list" element={<KoiListPage />} />
+                            <Route path="koiDetail/:id" element={<KoiDetail />} />
+                            <Route path="koi-breeders" element={<KoiBreeders />} />
+                            <Route path="koi-package" element={<KoiPackage />} />
+                            <Route path="koi-high-quality" element={<HighQualityKoi />} />
+                            <Route path="koi-collection" element={<KoiCollection />} />
 
-              {/* Product Routes */}
-              <Route path="product" element={<ProductPage />}>
-                <Route index element={<Navigate to="koi-feed" replace />} />
-                <Route path="koi-feed" element={<KoiFeed />} />
-                <Route path="pond-filter-system" element={<PondFilter />} />
-                <Route path="pond-accessories" element={<PondAccessories />} />
-              </Route>
+                            {/* Product Routes */}
+                            <Route path="product" element={<ProductPage />}>
+                                <Route index element={<Navigate to="koi-feed" replace />} />
+                                <Route path="koi-feed" element={<KoiFeed />} />
+                                <Route path="pond-filter-system" element={<PondFilter />} />
+                                <Route path="pond-accessories" element={<PondAccessories />} />
+                            </Route>
 
-              <Route path="blog" element={<Blog />} />
-              <Route path="consign" element={<Consignment />} />
-              <Route path="consign-form" element={<ConsignmentForm />} />
-              <Route path="contact" element={<Contact />} />
+                            <Route path="blog" element={<Blog />} />
+                            <Route path="consign" element={<Consignment />} />
+                            <Route path="consign-form" element={<ConsignmentForm />} />
+                            <Route path="contact" element={<Contact />} />
 
-              {/* Order Routes */}
-              <Route path="cart" element={<Cart />} />
-              <Route path="checkout" element={<Checkout />} />
-              <Route path="order-success" element={<OrderSuccess />} />
-            </Route>
+                            {/* Order Routes */}
+                            <Route path="cart" element={<Cart />} />
+                            <Route path="checkout" element={<Checkout />} />
+                            <Route path="order-success" element={<OrderSuccess />} />
+                        </Route>
 
-            {/* Account Route */}
-            <Route path="/account" element={<AccountPage />} />
-            <Route path="/account/orders" element={<OrderHistory />} />
+                        {/* Auth Routes without MainLayout */}
+                        <Route path="/" element={<AuthPage />}>
+                            <Route path="login" element={<Login />} />
+                            <Route path="register" element={<Register />} />
+                            <Route path="forget-password" element={<ForgetPassword />} />
+                        </Route>
 
-            {/* Auth Routes without MainLayout */}
-            <Route path="/" element={<AuthPage />}>
-              <Route path="login" element={<Login />} />
-              <Route path="register" element={<Register />} />
-              <Route path="forget-password" element={<ForgetPassword />} />
-            </Route>
+                        {/* Admin Routes */}
+                        {adminRoutes}
 
-            {/* Admin Routes */}
-            <Route path="/admin" element={<WelcomeAdmin />} />
-            <Route path="/admin/manage-orders" element={<OrdersManagement />} />
-            <Route
-              path="/admin/manage-orders/:orderId"
-              element={<OrderDetails />}
-            />
-            {/* <Route
-              path="/admin/manage-consign"
-              element={<ManagerConsignmentPage />}
-            />
-            <Route
-              path="/admin/approval"
-              element={<ManagerConsignmentApprovalPage />}
-            /> */}
 
-            {/* Staff Routes */}
-            <Route path="/staff" element={<WelcomeStaff />} />
-            <Route path="/staff/orders" element={<StaffOrderManage />} />
+                        {/* Staff Routes */}
+                        {staffRoutes}
 
-            {/* Fallback Route */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
-      </Router>
-    </CartProvider>
-  );
+                        {/* <Route path="/staff/consignments/pending" element={<PendingConsignments />} />
+            <Route path="/staff/consignments/in-care" element={<InCareConsignments />} /> */}
+
+                        {/* Customer Routes */}
+                        <Route path="/account" element={<WelcomeAccount />} />
+
+                        {/* Fallback Route */}
+                        <Route path="*" element={<NotFound />} />
+                    </Routes>
+                </Suspense>
+            </Router>
+        </CartProvider>
+    );
 }
 
 export default App;

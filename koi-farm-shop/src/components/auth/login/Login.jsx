@@ -9,8 +9,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { notification } from "antd";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { login } from "../../../store/actions/authActions";
@@ -23,7 +22,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   const auth = useSelector((state) => state.auth);
-  const { isAuthenticated } = auth;
+  const { isAuthenticated, error, user } = auth;
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -31,23 +30,32 @@ const Login = () => {
     }
   }, [isAuthenticated, navigate]);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    dispatch(login(username, password))
-      .then(() => {
-        notification.success({
-          message: "Đăng nhập thành công",
-          description: "Bạn đã đăng nhập thành công!",
-          placement: "topRight",
-        });
-      })
-      .catch((error) => {
-        notification.error({
-          message: "Đăng nhập thất bại",
-          description: error || "Tên tài khoản hoặc mật khẩu không đúng.",
-          placement: "topRight",
-        });
-      });
+    try {
+      const role = await dispatch(login(username, password));
+      
+      // Log the userId from localStorage
+      const userId = localStorage.getItem('userId');
+      console.log('User ID from localStorage:', userId);
+
+      switch(role) {
+        case 'Staff':
+          navigate('/staff');
+          break;
+        case 'Customer':
+          navigate('/home');
+          break;
+        case 'Manager':
+          navigate('/admin');
+          break;
+        default:
+          console.warn('Unknown role:', role);
+          navigate('/home');
+      }
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
   };
 
   return (
@@ -94,6 +102,8 @@ const Login = () => {
             Đăng nhập
           </Button>
 
+          {error && <Typography className="message">{error}</Typography>}
+
           <Divider sx={{ my: 2 }}>HOẶC</Divider>
 
           <Button
@@ -106,7 +116,7 @@ const Login = () => {
           </Button>
 
           <Typography variant="body2" align="center" className="register-text">
-            Bạn chưa có tài khoản ?{" "}
+            Bạn chưa có tài khoản?{" "}
             <Link component={RouterLink} to="/register" variant="body2">
               Đăng ký ngay
             </Link>

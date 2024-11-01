@@ -1,248 +1,186 @@
-import axios from "axios";
-import { useState } from "react";
+import axiosPublic from "../../api/axiosPublic";
+import { useState, useCallback } from "react";
 import "./Consignment.scss";
 
 const ConsignmentForm = () => {
   const [formData, setFormData] = useState({
-    customerID: "", // You might want to get this from the user's session
-    koiID: "", // You might want to create a separate form or API to create a new Koi first
-    consignmentType: "Care",
-    consignmentMode: "Offline",
+    koiId: "",
+    consignmentType: "",
+    consignmentMode: "Online",
     priceAgreed: "",
-    pickupDate: "",
     notes: "",
-    name: "",
-    phone: "",
-    email: "",
-    koiBreed: "",
+    koiType: "",
     koiColor: "",
     koiAge: "",
     koiSize: "",
-    description: "",
-    image: null,
-    money: "",
+    imageFile: null, // Store the file itself
   });
 
-  //Xử lý back-end
-  const handleInputChange = (e) => {
+  const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
+  }, []);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData((prevData) => ({
+        ...prevData,
+        imageFile: file, // Store the file directly
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const formDataObj = new FormData();
+    formDataObj.append("koiId", formData.koiId);
+    formDataObj.append("consignmentType", formData.consignmentType);
+    formDataObj.append("consignmentMode", formData.consignmentMode);
+    formDataObj.append("priceAgreed", formData.priceAgreed);
+    formDataObj.append("notes", formData.notes);
+    formDataObj.append("koiType", formData.koiType);
+    formDataObj.append("koiColor", formData.koiColor);
+    formDataObj.append("koiAge", formData.koiAge);
+    formDataObj.append("koiSize", formData.koiSize);
+    if (formData.imageFile) {
+      formDataObj.append("imageFile", formData.imageFile, formData.imageFile.name); // Include the file name
+    }
+
     try {
-      const response = await axios.post("/api/consignments", {
-        customerID: formData.customerID,
-        koiID: formData.koiID,
-        consignmentType: formData.consignmentType,
-        consignmentMode: formData.consignmentMode,
-        priceAgreed: formData.priceAgreed,
-        pickupDate: formData.pickupDate,
-        notes: formData.notes,
+      const response = await axiosPublic.post("createConsignment", formDataObj, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
-      console.log(response.data);
-      alert("Consignment created successfully");
-      // Reset form or redirect user
+      console.log("Consignment created:", response.data);
+      setFormData({
+        koiId: "",
+        consignmentType: "",
+        consignmentMode: "Online",
+        priceAgreed: "",
+        notes: "",
+        koiType: "",
+        koiColor: "",
+        koiAge: "",
+        koiSize: "",
+        imageFile: null,
+      });
+      alert("Consignment submitted successfully!");
     } catch (error) {
-      console.error("Error creating consignment:", error);
-      alert("Error creating consignment");
+      console.error("Error submitting consignment:", error);
+      alert(`Error submitting consignment: ${error.message}`);
     }
   };
 
-  const formatCurrency = (value) => {
-    // Remove non-digit characters
-    const number = value.replace(/\D/g, "");
-    // Format number with thousands separators
-    return new Intl.NumberFormat("vi-VN").format(number);
-  };
-
-  const handleMoneyChange = (e) => {
-    const formattedValue = formatCurrency(e.target.value);
-    setFormData((prevData) => ({
-      ...prevData,
-      money: formattedValue,
-    }));
-  };
-
   return (
-    <div className="consign-form">
-      <h2>Ký gửi cá Koi</h2>
+    <div className="consignment-form">
+      <h1>--------------------------------</h1>
+      <h1>Consignment Form</h1>
       <form onSubmit={handleSubmit}>
-        <div className="customer-info">
-          <div className="form-group">
-            <label>Tên của bạn</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="phone">Số điện thoại</label>
-            <input
-              type="tel"
-              id="phone"
-              name="phone"
-              value={formData.phone}
-              onChange={handleInputChange}
-              pattern="[0-9]{10}"
-              placeholder="Nhập số điện thoại 10 chữ số"
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              placeholder="example@email.com"
-              required
-            />
-          </div>
-        </div>
-
-        <div className="koi-info">
-          <div className="form-group">
-            <label>Giống cá Koi</label>
-            <input
-              type="text"
-              name="koiBreed"
-              value={formData.koiBreed}
-              onChange={handleInputChange}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Màu cá Koi</label>
-            <input
-              type="text"
-              name="koiColor"
-              value={formData.koiColor}
-              onChange={handleInputChange}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Tuổi của cá Koi</label>
-            <input
-              type="text"
-              name="koiAge"
-              value={formData.koiAge}
-              onChange={handleInputChange}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Kích thước cá Koi</label>
-            <input
-              type="text"
-              name="koiSize"
-              value={formData.koiSize}
-              onChange={handleInputChange}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Hình ảnh cá Koi muốn ký gửi</label>
-            <input
-              type="file"
-              name="image"
-              accept="image/*"
-              onChange={handleInputChange}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Số tiền ký gửi mong muốn (VND)</label>
-            <div className="input-wrapper">
-              <input
-                type="text"
-                id="money"
-                name="money"
-                value={formData.money}
-                onChange={handleMoneyChange}
-                required
-              />
-              <span className="currency-symbol">Đồng</span>
-            </div>
-          </div>
-
-          <div className="form-group desc">
-            <label>Ghi chú</label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleInputChange}
-              style={{ resize: "none" }}
-            />
-          </div>
-        </div>
-
         <div className="form-group">
-          <label>Loại ký gửi</label>
+          <label htmlFor="consignmentType">Consignment Type:</label>
           <select
+            id="consignmentType"
             name="consignmentType"
             value={formData.consignmentType}
-            onChange={handleInputChange}
+            onChange={handleChange}
+            required
           >
-            <option value="Care">Chăm sóc</option>
-            <option value="Sell">Bán</option>
+            <option value="">Select type</option>
+            <option value="Care">Care</option>
+            <option value="Sell">Sell</option>
           </select>
         </div>
 
-        <div className="form-group">
-          <label>Hình thức ký gửi</label>
-          <select
-            name="consignmentMode"
-            value={formData.consignmentMode}
-            onChange={handleInputChange}
-          >
-            <option value="Offline">Offline</option>
-            <option value="Online">Online</option>
-          </select>
-        </div>
-
-        <div className="form-group">
-          <label>Giá thỏa thuận</label>
+        <div>
+          <label htmlFor="priceAgreed">Price Agreed:</label>
           <input
             type="number"
+            id="priceAgreed"
             name="priceAgreed"
             value={formData.priceAgreed}
-            onChange={handleInputChange}
+            onChange={handleChange}
+            step="0.01"
+            min="0"
+            required
           />
         </div>
-
-        <div className="form-group">
-          <label>Ngày nhận cá</label>
-          <input
-            type="date"
-            name="pickupDate"
-            value={formData.pickupDate}
-            onChange={handleInputChange}
-          />
-        </div>
-
-        <div className="form-group">
-          <label>Ghi chú</label>
+        <div>
+          <label htmlFor="notes">Notes:</label>
           <textarea
+            id="notes"
             name="notes"
             value={formData.notes}
-            onChange={handleInputChange}
-            style={{ resize: "none" }}
+            onChange={handleChange}
+          ></textarea>
+        </div>
+        <div>
+          <label htmlFor="koiType">Koi Type:</label>
+          <input
+            type="text"
+            id="koiType"
+            name="koiType"
+            value={formData.koiType}
+            onChange={handleChange}
+            required
           />
         </div>
-
-        <button type="submit">Gửi yêu cầu ký gửi</button>
+        <div>
+          <label htmlFor="koiColor">Koi Color:</label>
+          <input
+            type="text"
+            id="koiColor"
+            name="koiColor"
+            value={formData.koiColor}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="koiAge">Koi Age:</label>
+          <input
+            type="text"
+            id="koiAge"
+            name="koiAge"
+            value={formData.koiAge}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="koiSize">Koi Size:</label>
+          <input
+            type="text"
+            id="koiSize"
+            name="koiSize"
+            value={formData.koiSize}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="imageFile">Image File:</label>
+          <input
+            type="file"
+            id="imageFile"
+            name="imageFile"
+            accept="image/*"
+            onChange={handleFileChange}
+          />
+          {formData.imageFile && (
+            <div className="image-preview">
+              <img
+                src={URL.createObjectURL(formData.imageFile)}
+                alt="Koi preview"
+                style={{ width: "200px", height: "auto" }}
+              />
+            </div>
+          )}
+        </div>
+        <button type="submit">Submit Consignment</button>
       </form>
     </div>
   );
