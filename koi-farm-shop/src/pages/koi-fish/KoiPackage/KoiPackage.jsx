@@ -44,10 +44,11 @@ const KoiPackage = () => {
       image: pkg.ImageLink,
       size: pkg.PackageSize,
       availability: pkg.Availability,
-      type: 'package'
+      type: 'koi-package' // Thêm type cụ thể để phân biệt
     };
     handleAddToCart(koiPackage);
   };
+
 
   return (
     <div className="koi-package">
