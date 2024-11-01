@@ -1,9 +1,9 @@
-import { Button, Form, Input, Select, Slider } from "antd";
-import React, { useEffect } from "react";
+import { Button, Form, Input, Select, Slider, Row, Col } from "antd";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { SearchOutlined, ReloadOutlined } from "@ant-design/icons";
 import "./KoiSearch.scss";
-import {getAllVarieties} from "../../../store/actions/KoiActions";
+import { getAllVarieties } from "../../../store/actions/KoiActions";
 
 const { Option } = Select;
 
@@ -12,8 +12,11 @@ const KoiSearch = ({ onFilter, setLoading }) => {
   const dispatch = useDispatch();
   const { varieties, loading: varietiesLoading, error } = useSelector(state => state.koi);
 
+  const [priceRange, setPriceRange] = useState([0, 10000000]);
+  const [sizeRange, setSizeRange] = useState([20, 80]);
+  const [weightRange, setWeightRange] = useState([1, 5]);
+
   useEffect(() => {
-    // Gọi action để lấy danh sách giống cá Koi khi component được render lần đầu
     dispatch(getAllVarieties());
   }, [dispatch]);
 
@@ -22,14 +25,17 @@ const KoiSearch = ({ onFilter, setLoading }) => {
   }
 
   const handleFinish = (values) => {
-    setLoading(true); // Bật loading khi nhấn "Tìm kiếm"
+    setLoading(true);
     onFilter(values);
   };
 
   const handleReset = () => {
     form.resetFields();
-    setLoading(true); // Bật loading khi nhấn "Reset"
-    onFilter({}); // Gọi hàm onFilter với giá trị rỗng để reset bộ lọc
+    setPriceRange([0, 10000000]);
+    setSizeRange([20, 80]);
+    setWeightRange([1, 5]);
+    setLoading(true);
+    onFilter({});
   };
 
   return (
@@ -38,74 +44,93 @@ const KoiSearch = ({ onFilter, setLoading }) => {
           layout="vertical"
           onFinish={handleFinish}
           className="koi-search-filter"
-          style={{ marginBottom: 16 }}
       >
-        <Form.Item name="search" label="Tìm kiếm">
-          <Input placeholder="Nhập tên cá Koi" allowClear />
-        </Form.Item>
-        <Form.Item name="varieties" label="Giống cá">
-          <Select
-              mode="multiple" // Cho phép chọn nhiều giống cá
-              placeholder="Chọn giống cá Koi"
-              allowClear
-              loading={varietiesLoading}
-          >
-            {varieties.map((variety) => (
-                <Option key={variety.VarietyID} value={variety.VarietyID}>
-                  {variety.VarietyName}
-                </Option>
-            ))}
-          </Select>
-        </Form.Item>
-        <Form.Item name="origin" label="Nguồn gốc">
-          <Select placeholder="Chọn nguồn gốc" allowClear>
-            <Option value="Imported">Imported</Option>
-            <Option value="F1 Hybrid">F1 Hybrid</Option>
-            <Option value="Pure Vietnamese">Pure Vietnamese</Option>
-          </Select>
-        </Form.Item>
-        <Form.Item name="priceRange" label="Khoảng giá">
-          <Slider
-              range
-              max={10000000}
-              step={100000}
-              defaultValue={[0, 10000000]}
-              tipFormatter={(value) => `${value.toLocaleString()} VND`}
-          />
-        </Form.Item>
-        <Form.Item name="sizeRange" label="Kích thước (cm)">
-          <Slider
-              range
-              min={20}
-              max={80}
-              step={1}
-              defaultValue={[20, 80]}
-              tipFormatter={(value) => `${value} cm`}
-          />
-        </Form.Item>
-        <Form.Item name="weightRange" label="Cân nặng (kg)">
-          <Slider
-              range
-              min={1}
-              max={5}
-              step={0.1}
-              defaultValue={[1, 5]}
-              tipFormatter={(value) => `${value.toFixed(1)} kg`}
-          />
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
-            Tìm kiếm
-          </Button>
-          <Button
-              style={{ marginLeft: 8 }}
-              htmlType="button"
-              onClick={handleReset}
-              icon={<ReloadOutlined />}
-          >
-            Reset
-          </Button>
-        </Form.Item>
+        <Row gutter={[16, 16]}>
+          <Col xs={24} md={12} lg={8}>
+            <Form.Item name="search" label="Tìm kiếm">
+              <Input placeholder="Nhập tên cá Koi" allowClear />
+            </Form.Item>
+          </Col>
+          <Col xs={24} md={12} lg={8}>
+            <Form.Item name="varieties" label="Giống cá">
+              <Select
+                  mode="multiple"
+                  placeholder="Chọn giống cá Koi"
+                  allowClear
+                  loading={varietiesLoading}
+              >
+                {varieties.map((variety) => (
+                    <Option key={variety.VarietyID} value={variety.VarietyID}>
+                      {variety.VarietyName}
+                    </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col xs={24} md={12} lg={8}>
+            <Form.Item name="origin" label="Nguồn gốc">
+              <Select placeholder="Chọn nguồn gốc" allowClear>
+                <Option value="Imported">Imported</Option>
+                <Option value="F1 Hybrid">F1 Hybrid</Option>
+                <Option value="Pure Vietnamese">Pure Vietnamese</Option>
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col xs={24} lg={24}>
+            <Form.Item name="priceRange" label={`Khoảng giá: ${priceRange[0].toLocaleString()} VND - ${priceRange[1].toLocaleString()} VND`}>
+              <Slider
+                  range
+                  max={10000000}
+                  step={100000}
+                  defaultValue={[0, 10000000]} // Đặt giá trị mặc định đầy đủ
+                  value={priceRange}
+                  onChange={(value) => setPriceRange(value)}
+                  tipFormatter={(value) => `${value.toLocaleString()} VND`}
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={24} lg={24}>
+            <Form.Item name="sizeRange" label={`Kích thước (cm): ${sizeRange[0]} cm - ${sizeRange[1]} cm`}>
+              <Slider
+                  range
+                  min={20}
+                  max={80}
+                  step={1}
+                  defaultValue={[20, 80]} // Đặt giá trị mặc định đầy đủ
+                  value={sizeRange}
+                  onChange={(value) => setSizeRange(value)}
+                  tipFormatter={(value) => `${value} cm`}
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={24} lg={24}>
+            <Form.Item name="weightRange" label={`Cân nặng (kg): ${weightRange[0].toFixed(1)} kg - ${weightRange[1].toFixed(1)} kg`}>
+              <Slider
+                  range
+                  min={1}
+                  max={5}
+                  step={0.1}
+                  defaultValue={[1, 5]} // Đặt giá trị mặc định đầy đủ
+                  value={weightRange}
+                  onChange={(value) => setWeightRange(value)}
+                  tipFormatter={(value) => `${value.toFixed(1)} kg`}
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={24} style={{ textAlign: "center" }}>
+            <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
+              Tìm kiếm
+            </Button>
+            <Button
+                style={{ marginLeft: 8 }}
+                htmlType="button"
+                onClick={handleReset}
+                icon={<ReloadOutlined />}
+            >
+              Reset
+            </Button>
+          </Col>
+        </Row>
       </Form>
   );
 };
