@@ -95,6 +95,7 @@ const {
   getReturningCustomers,
   getDailyOrderCount,
   getPendingOrdersInfo,
+  getPendingConsignmentsInfo,
  } = require("../controllers/dashboardController");
 
 // User routes
@@ -1325,5 +1326,50 @@ router.get('/orders/daily', getDailyOrderCount);
  *         description: Server error
  */
 router.get('/orders/pending', getPendingOrdersInfo);
+
+/**
+ * @swagger
+ * /api/dashboard/consignments/pending:
+ *   get:
+ *     summary: Get the list of pending consignment requests
+ *     tags: [Dashboard]
+ *     responses:
+ *       200:
+ *         description: List of pending consignment requests fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   consignmentId:
+ *                     type: string
+ *                     example: "CON001"
+ *                   customerName:
+ *                     type: string
+ *                     example: "Nguyễn Văn A"
+ *                   koiType:
+ *                     type: string
+ *                     example: "Kohaku"
+ *                   status:
+ *                     type: string
+ *                     example: "Chờ xử lý"
+ *                   fullName:
+ *                     type: string
+ *                     example: "Nguyễn Văn A"
+ *                   email:
+ *                     type: string
+ *                     example: "example@example.com"
+ *                   phoneNumber:
+ *                     type: string
+ *                     example: "0123456789"
+ *                   address:
+ *                     type: string
+ *                     example: "123 Lê Lợi, Quận 1, TP.HCM"
+ *       500:
+ *         description: Server error
+ */
+router.get('/consignments/pending', getPendingConsignmentsInfo);
 
 module.exports = router;

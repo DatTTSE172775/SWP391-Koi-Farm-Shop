@@ -339,3 +339,45 @@ exports.getPendingOrdersInfoData = async () => {
   }
 };
 
+// Lấy data thông tin chi tiết về các yêu cầu ký gửi đang chờ xử lý
+exports.getPendingConsignmentsInfoData = async () => {
+  try {
+      const pool = await connectDB();
+      
+      // Truy vấn SQL để lấy thông tin chi tiết về các yêu cầu ký gửi đang chờ xử lý
+      const result = await pool.request().query(`
+          SELECT 
+              kc.ConsignmentID,
+              kc.CustomerID,
+              kc.KoiID,
+              kc.ConsignmentType,
+              kc.ConsignmentMode,
+              kc.StartDate,
+              kc.EndDate,
+              kc.Status,
+              kc.PriceAgreed,
+              kc.PickupDate,
+              kc.ApprovedStatus,
+              kc.InspectionResult,
+              kc.Notes,
+              kc.KoiType,
+              kc.KoiColor,
+              kc.KoiAge,
+              kc.KoiSize,
+              kc.ImagePath,
+              c.FullName,
+              c.Email,
+              c.PhoneNumber,
+              c.Address
+          FROM KoiConsignment kc
+          JOIN Customers c ON kc.CustomerID = c.CustomerID
+          WHERE kc.Status = 'Pending'
+          ORDER BY kc.ConsignmentID;
+      `);
+
+      return result.recordset;
+  } catch (error) {
+      console.error('Error fetching pending consignment details:', error);
+      throw error;
+  }
+};

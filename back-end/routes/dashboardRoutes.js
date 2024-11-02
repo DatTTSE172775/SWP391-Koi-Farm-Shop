@@ -8,7 +8,8 @@ const {
     getActiveConsignment, 
     getReturningCustomers, 
     getDailyOrderCount, 
-    getPendingOrdersInfo, 
+    getPendingOrdersInfo,
+    getPendingConsignmentsInfo,
 } = require("../controllers/dashboardController"); // Import dashboardController
 
 // Định nghĩa route cho tổng doanh thu trên dashboard
@@ -34,5 +35,8 @@ router.get('/orders/daily', getDailyOrderCount);
 
 // Route for detailed pending orders
 router.get('/orders/pending', getPendingOrdersInfo);
+
+//Rroute lấy danh sách yêu cầu ký gửi đang chờ xử lý
+router.get('/consignments/pending', getPendingConsignmentsInfo);
 
 module.exports = router;
