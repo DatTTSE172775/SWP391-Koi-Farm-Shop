@@ -270,3 +270,72 @@ exports.getDailyOrderCountThisMonth = async () => {
     throw error;
   }
 };
+
+// lấy thông tin chi tiết về các đơn hàng đang chờ xử lý
+exports.getPendingOrdersInfoData = async () => {
+  try {
+      const pool = await connectDB();
+
+      // Thực hiện truy vấn SQL để lấy thông tin đầy đủ về các đơn hàng có trạng thái "Pending"
+      const result = await pool.request().query(`
+          SELECT 
+              o.OrderID,
+              o.CustomerID,
+              o.OrderDate,
+              o.TotalAmount,
+              o.ShippingAddress,
+              o.OrderStatus,
+              o.PaymentMethod,
+              o.PaymentStatus,
+              o.TrackingNumber,
+              o.Discount,
+              o.ShippingCost,
+              o.PromotionID,
+
+              -- Customer information
+              c.FullName,
+              c.Email,
+              c.PhoneNumber,
+              c.Address,
+
+              -- OrderDetails information
+              STRING_AGG(CAST(od.OrderDetailID AS VARCHAR), ', ') AS OrderDetailIDs,
+              STRING_AGG(CAST(od.Quantity AS VARCHAR), ', ') AS Quantities,
+              STRING_AGG(od.ProductType, ', ') AS ProductTypes,
+              STRING_AGG(od.CertificateStatus, ', ') AS CertificateStatuses,
+
+              -- KoiFish information
+              STRING_AGG(kf.Name, ', ') AS KoiNames,
+              STRING_AGG(CAST(kf.Size AS VARCHAR), ', ') AS KoiSizes,
+              STRING_AGG(kf.Gender, ', ') AS KoiGenders,
+              STRING_AGG(CAST(kf.Price AS VARCHAR), ', ') AS KoiPrices,
+
+              -- Package information
+              STRING_AGG(kp.PackageName, ', ') AS PackageNames,
+              STRING_AGG(CAST(kp.PackageSize AS VARCHAR), ', ') AS PackageSizes,
+              STRING_AGG(CAST(kp.Price AS VARCHAR), ', ') AS PackagePrices,
+              STRING_AGG(kp.Availability, ', ') AS PackageAvailabilities
+
+          FROM Orders o
+          JOIN Customers c ON o.CustomerID = c.CustomerID
+          LEFT JOIN OrderDetails od ON o.OrderID = od.OrderID
+          LEFT JOIN KoiFish kf ON od.KoiID = kf.KoiID
+          LEFT JOIN KoiPackage kp ON od.PackageID = kp.PackageID
+          WHERE o.OrderStatus = 'Pending'
+          GROUP BY 
+              o.OrderID, o.CustomerID, o.OrderDate, o.TotalAmount, 
+              o.ShippingAddress, o.OrderStatus, o.PaymentMethod, 
+              o.PaymentStatus, o.TrackingNumber, o.Discount, 
+              o.ShippingCost, o.PromotionID, c.FullName, c.Email, 
+              c.PhoneNumber, c.Address
+          ORDER BY o.OrderID;
+      `);
+
+      // Trả về kết quả truy vấn
+      return result.recordset;
+  } catch (error) {
+      console.error('Error fetching pending order details:', error);
+      throw error;
+  }
+};
+

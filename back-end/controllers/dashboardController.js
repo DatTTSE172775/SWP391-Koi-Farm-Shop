@@ -8,6 +8,7 @@ const {
   getActiveConsignmentData,
   getReturningCustomerCount,
   getDailyOrderCountThisMonth,
+  getPendingOrdersInfoData,
 } = require('../models/dashboardModel.js');
 
 // Lấy tổng doanh thu hôm nay, tháng này và năm nay
@@ -121,5 +122,15 @@ exports.getDailyOrderCount = async (req, res) => {
   } catch (error) {
     // Trả về phản hồi lỗi nếu xảy ra vấn đề
     res.status(500).json({ error: 'Failed to fetch daily order count' });
+  }
+};
+
+// Controller to get detailed information of pending orders
+exports.getPendingOrdersInfo = async (req, res) => {
+  try {
+      const data = await getPendingOrdersInfoData();
+      res.status(200).json(data);
+  } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch pending order details' });
   }
 };

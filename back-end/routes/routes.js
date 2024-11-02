@@ -94,6 +94,7 @@ const {
   getActiveConsignment,
   getReturningCustomers,
   getDailyOrderCount,
+  getPendingOrdersInfo,
  } = require("../controllers/dashboardController");
 
 // User routes
@@ -1179,7 +1180,7 @@ router.get("/revenue/daily", getDailyRevenueThisMonth);
 
 /**
  * @swagger
- * /api/dashboard/consignments/pending:
+ * /api/dashboard/consignments/pending/count:
  *   get:
  *     summary: Get the count of new consignment requests
  *     tags: [Dashboard]
@@ -1197,7 +1198,7 @@ router.get("/revenue/daily", getDailyRevenueThisMonth);
  *       500:
  *         description: Server error
  */
-router.get('/consignments/pending', getPendingConsignments);
+router.get('/consignments/pending/count', getPendingConsignments);
 
 /**
  * @swagger
@@ -1279,5 +1280,50 @@ router.get('/customers/returning', getReturningCustomers);
  *         description: Server error
  */
 router.get('/orders/daily', getDailyOrderCount);
+
+
+/**
+ * @swagger
+ * /api/dashboard/orders/pending:
+ *   get:
+ *     summary: Get full details of pending orders
+ *     tags: [Dashboard]
+ *     responses:
+ *       200:
+ *         description: Full details of pending orders retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   OrderID:
+ *                     type: integer
+ *                     example: 1
+ *                   CustomerID:
+ *                     type: integer
+ *                     example: 7
+ *                   FullName:
+ *                     type: string
+ *                     example: "Nguyễn Thị Tuyết Hương"
+ *                   Email:
+ *                     type: string
+ *                     example: "nguyenthituyethuong10.1@gmail.com"
+ *                   OrderDate:
+ *                     type: string
+ *                     format: date-time
+ *                     example: "2024-06-15T10:30:00Z"
+ *                   TotalAmount:
+ *                     type: number
+ *                     format: float
+ *                     example: 1000000.0
+ *                   KoiNames:
+ *                     type: string
+ *                     example: "Sakura Beauty, Golden Dragon"
+ *       500:
+ *         description: Server error
+ */
+router.get('/orders/pending', getPendingOrdersInfo);
 
 module.exports = router;
