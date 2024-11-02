@@ -36,7 +36,7 @@ const createKoiFish = async (name, varietyId, origin, breederId, gender, born, s
 const getAllKoiFish = async () => {
     try {
         const pool = await sql.connect();
-        const result = await pool.request().query('SELECT * FROM KoiFish');
+        const result = await pool.request().query('SELECT * FROM KoiFish where Availability = \'Available\'');
         return result.recordset;
     } catch (err) {
         console.error('Error fetching KoiFish:', err);
@@ -207,14 +207,19 @@ const updateKoiFish = async (koiId, updateData) => {
     }
 };
 
-// Function to create KoiFish from Consignment data
 const createKoiFishFromConsignment = async (consignmentData) => {
     try {
         const pool = await sql.connect();
         
-        // Map con  signment data to KoiFish structure
+        // First get the variety name
+        const varietyResult = await pool.request()
+            .input('VarietyID', sql.Int, consignmentData.KoiType)
+            .query('SELECT VarietyName FROM Varieties WHERE VarietyID = @VarietyID');
+            
+        const varietyName = varietyResult.recordset[0]?.VarietyName || 'Unknown Variety';
+        
         const result = await pool.request()
-            .input('Name', sql.VarChar(255), `Koi ${consignmentData.KoiType}`)
+            .input('Name', sql.VarChar(255), `Consigned Koi ${varietyName}`)
             .input('VarietyID', sql.Int, consignmentData.KoiType)
             .input('Origin', sql.VarChar(50), 'Pure Vietnamese')
             .input('Gender', sql.VarChar(50), 'Unknown')

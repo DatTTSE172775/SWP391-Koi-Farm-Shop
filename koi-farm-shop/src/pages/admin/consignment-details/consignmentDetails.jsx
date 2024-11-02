@@ -13,6 +13,7 @@ const { Option } = Select;
 
 const ConsignmentDetails = () => {
   const [consignment, setConsignment] = useState(null);
+  const [varieties, setVarieties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { staff } = useSelector((state) => state.staff);
@@ -21,21 +22,30 @@ const ConsignmentDetails = () => {
 
 
   useEffect(() => {
-    const fetchConsignmentDetails = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await axiosInstance.get(`koiconsignment/${id}`);
-        setConsignment(response.data.data);
-        console.log("Consignment details:", response.data.data);
+        const [consignmentResponse, varietiesResponse] = await Promise.all([
+          axiosInstance.get(`koiconsignment/${id}`),
+          axiosInstance.get('/varieties')
+        ]);
+        
+        setConsignment(consignmentResponse.data.data);
+        setVarieties(varietiesResponse.data);
         setLoading(false);
       } catch (err) {
-        console.error("Error fetching consignment details:", err);
-        setError("Failed to fetch consignment details");
+        console.error("Error fetching data:", err);
+        setError("Failed to fetch data");
         setLoading(false);
       }
     };
-    fetchConsignmentDetails();
+    fetchData();
   }, [id]);
+
+  const getVarietyName = (varietyId) => {
+    const variety = varieties.find(v => v.VarietyID === parseInt(varietyId));
+    return variety ? variety.VarietyName : 'Unknown Variety';
+  };
 
   const renderStatus = (status) => {
     let color = 'default';
@@ -115,7 +125,7 @@ const ConsignmentDetails = () => {
                   <Descriptions.Item label="Ngày ký gửi">
                     {new Date(consignment.StartDate).toLocaleString()}
                   </Descriptions.Item>
-                  {/* <Descriptions.Item label="Trạng thái">{renderStatus(consignment.Status)}</Descriptions.Item> */}
+                  <Descriptions.Item label="Trạng thái">{renderStatus(consignment.Status)}</Descriptions.Item>
                   <Descriptions.Item label="Giá thỏa thuận">
                     {consignment.PriceAgreed.toLocaleString()} VND
                   </Descriptions.Item>
@@ -125,7 +135,7 @@ const ConsignmentDetails = () => {
                       {consignment.ApprovedStatus}
                     </Tag>
                   </Descriptions.Item>
-                  <Descriptions.Item label="Loại Koi">{consignment.KoiType}</Descriptions.Item>
+                  <Descriptions.Item label="Loại Koi">{getVarietyName(consignment.KoiType)}</Descriptions.Item>
                   <Descriptions.Item label="Màu sắc">{consignment.KoiColor}</Descriptions.Item>
                   <Descriptions.Item label="Tuổi">{consignment.KoiAge}</Descriptions.Item>
                   <Descriptions.Item label="Kích thước">{consignment.KoiSize}</Descriptions.Item>

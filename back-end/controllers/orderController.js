@@ -76,22 +76,22 @@ const updateOrderToProcessing = async (req, res) => {
   }
 };
 
-// Cập nhật trạng thái thành "Shipped"
-const updateOrderToShipped = async (req, res) => {
+// Cập nhật trạng thái thành "Delivering"
+const updateOrderToDelivering = async (req, res) => {
   const { orderId } = req.params;
 
   try {
-    const updatedOrder = await Order.updateOrderStatus(orderId, "Shipped");
+    const updatedOrder = await Order.updateOrderStatus(orderId, "Delivering");
     if (!updatedOrder) {
       return res.status(404).send({ message: "Order not found." });
     }
     res.send({
-      message: "Order status updated to Shipped.",
+      message: "Order status updated to Delivering.",
       order: updatedOrder,
     });
   } catch (err) {
     console.error(err);
-    res.status(500).send({ message: "Failed to update order to Shipped." });
+    res.status(500).send({ message: "Failed to update order to Delivering." });
   }
 };
 
@@ -248,7 +248,7 @@ module.exports = {
   createOrder,
   updateOrderToPending,
   updateOrderToProcessing,
-  updateOrderToShipped,
+  updateOrderToDelivering,
   updateOrderToDelivered,
   updateOrderToCancelled,
   deleteOrder,

@@ -73,40 +73,78 @@ const Checkout = () => {
 
   // Handle form submission
   const onFinish = async (values) => {
+    // Log cart items first
+    console.log("Cart Items:", cartItems);
+
     const orderData = {
       totalAmount: calculateTotal(),
       shippingAddress: values.address,
       paymentMethod: values.paymentMethod === 'VNPAY' ? 'Credit Card' : values.paymentMethod,
-      orderItems: cartItems.map(item => ({
-        productId: item.type === 'koi' ? item.id : null,
-        packageId: item.type === 'package' ? item.id : null,
-        quantity: item.quantity,
-        unitPrice: item.price,
-        totalPrice: item.total,
-        productType: item.type === 'koi' ? 'Single Fish' : 'Package'
-      }))
+      orderItems: cartItems.map(item => {
+        const orderItem = {
+          productId: item.type === 'koi' ? item.id : null,
+          packageId: item.type === 'package' ? item.id : null,
+          quantity: item.quantity,
+          unitPrice: item.price,
+          totalPrice: item.total,
+          productType: item.type === 'koi' ? 'Single Fish' : 'Package',
+          koiId: item.id
+        };
+        
+        console.log("Original cart item:", item);
+        console.log("Transformed order item:", orderItem);
+        
+        return orderItem;
+      })
+    };
+
+    // Log the final orderData
+    console.log("Final orderData:", orderData);
+
+    // Update consignment status for sold Koi
+    const updateConsignmentStatus = async () => {
+      for (const item of cartItems) {
+        if (item.type === 'koi') {
+          try {
+            console.log(`Updating consignment status for KoiID: ${item.id}`);
+            const response = await axiosInstance.patch(`/koiconsignment/${item.id}/sold`);
+            console.log('Update consignment response:', response);
+          } catch (error) {
+            console.error('Error updating consignment status:', error);
+          }
+        }
+      }
     };
 
     if (values.paymentMethod === 'VNPAY') {
       try {
-        //Save the order data to local storage
-        localStorage.setItem('pendingOrder', JSON.stringify(orderData));
+        // Save the order data to local storage
+        localStorage.setItem('pendingOrder', JSON.stringify({
+          ...orderData,
+          cartItems: cartItems
+        }));
 
         const response = await axiosInstance.post('/payment/create', {
           amount: calculateTotal(),
-          orderId: `ORDER_${Date.now()}`, // Generate a unique order ID
-          bankCode: '', // Optional: Leave empty for default VNPay gateway
+          orderId: `ORDER_${Date.now()}`,
+          bankCode: '',
           language: 'vn'
         });
         
-        // Redirect to VNPay payment URL
         window.location.href = response.data.vnpUrl;
       } catch (error) {
         console.error('Payment creation error:', error);
       }
     } else {
-      // Handle other payment methods
-      dispatch(createOrder(orderData));
+      try {
+        // For COD, create order and update status immediately
+        await dispatch(createOrder(orderData));
+        await updateConsignmentStatus();
+        clearCart(); // Clear the cart after successful order
+        navigate("/order-success", { state: { order: orderData } });
+      } catch (error) {
+        console.error('Error processing COD order:', error);
+      }
     }
   };
 

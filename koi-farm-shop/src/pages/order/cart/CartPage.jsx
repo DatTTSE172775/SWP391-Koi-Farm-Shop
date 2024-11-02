@@ -18,7 +18,7 @@ const { Title, Text } = Typography;
 
 const CartPage = () => {
   const { cartItems, handleRemoveFromCart, handleUpdateQuantity  } = useContext(CartContext);
-
+console.log("Cart Items:", cartItems);
   // Define columns for the table
   const columns = [
     {

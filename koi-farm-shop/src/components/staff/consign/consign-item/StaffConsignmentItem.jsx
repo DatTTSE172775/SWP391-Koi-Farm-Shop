@@ -44,6 +44,10 @@ const StaffConsignmentItem = ({ consignment, onRemove }) => {
         `/koiconsignment/${ConsignmentID}/${nextStatus}`
       );
 
+      const statusToSale = await axiosInstance.patch(
+        `/koiconsignment/${ConsignmentID}/sale`
+      );
+
       if (statusResponse.data.success || statusResponse.data.message.includes("updated to Approved")) {
         // If status update is successful and new status is Approved, create KoiFish entry
         if (nextStatus === "Approved") {

@@ -6,7 +6,7 @@ const ConsignmentForm = () => {
   const [varieties, setVarieties] = useState([]);
   const [formData, setFormData] = useState({
     koiId: "",
-    consignmentType: "Sell",
+    consignmentType: "Sale",
     consignmentMode: "Offline",
     priceAgreed: "",
     notes: "",
@@ -75,7 +75,7 @@ const ConsignmentForm = () => {
       console.log("Consignment created:", response.data);
       setFormData({
         koiId: "",
-        consignmentType: "Sell",
+        consignmentType: "Sale",
         consignmentMode: "Offline",
         priceAgreed: "",
         notes: "",

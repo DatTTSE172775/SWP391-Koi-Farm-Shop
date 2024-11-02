@@ -1,6 +1,7 @@
 const consignmentModel = require("../models/koiConsignmentModel");
 const multer = require('multer');
 const path = require('path');
+const sql = require('mssql');
 
 
 // Configure multer for file upload
@@ -179,6 +180,59 @@ exports.updateConsignmentToPending = async (req, res) => {
     } catch (err) {
       console.error(err);
       res.status(500).send({ message: "Failed to update consignment to Pending." });
+    }
+};
+
+exports.updateConsignmentToSold = async (req, res) => {
+    try {
+        const { KoiID } = req.params;
+        console.log('Attempting to update KoiID:', KoiID);
+
+        // First, verify the consignment exists
+        const pool = await sql.connect();
+        const checkResult = await pool.request()
+            .input('KoiID', sql.Int, KoiID)
+            .query('SELECT Status FROM KoiConsignment WHERE KoiID = @KoiID');
+
+        console.log('Current consignment status:', checkResult.recordset);
+
+        if (checkResult.recordset.length === 0) {
+            return res.status(404).json({ 
+                message: 'Consignment not found',
+                koiId: KoiID 
+            });
+        }
+
+        const result = await consignmentModel.updateConsignmentToSold(KoiID);
+        
+        if (result) {
+            res.status(200).json({ 
+                message: 'Consignment status updated to Sold.',
+                koiId: KoiID
+            });
+        } else {
+            res.status(400).json({ 
+                message: 'Failed to update consignment status',
+                koiId: KoiID
+            });
+        }
+    } catch (error) {
+        console.error('Error in updateConsignmentToSold:', error);
+        res.status(500).json({ 
+            message: 'Error updating consignment to Sold', 
+            error: error.message,
+            koiId: req.params.KoiID
+        });
+    }
+};
+
+exports.updateConsignmentToSale = async (req, res) => {
+    try {
+        const { consignmentId } = req.params;
+        await consignmentModel.updateConsignmentToSale(consignmentId);
+        res.status(200).json({ message: 'Consignment status updated to Sale.' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating consignment to Sale', error: error.message });
     }
 };
 

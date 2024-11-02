@@ -212,6 +212,56 @@ const updateConsignmentToPending = async (consignmentId) => {
   }
 };
 
+const updateConsignmentToSold = async (koiId) => {
+  try {
+    const pool = await sql.connect();
+    const result = await pool.request()
+      .input('KoiID', sql.Int, koiId)
+      .query(`
+        UPDATE KoiConsignment 
+        SET Status = 'Sold'
+        WHERE KoiID = @KoiID
+      `);
+
+    // Log the query result
+    console.log('Update result:', result);
+    
+    if (result.rowsAffected[0] === 0) {
+      console.log('No rows were updated. KoiID might not exist:', koiId);
+      return false;
+    }
+
+    // Verify the update
+    const verifyResult = await pool.request()
+      .input('KoiID', sql.Int, koiId)
+      .query('SELECT Status FROM KoiConsignment WHERE KoiID = @KoiID');
+    
+    console.log('Verification result:', verifyResult.recordset);
+    
+    return result.rowsAffected[0] > 0;
+  } catch (error) {
+    console.error("Error updating consignment to sold:", error);
+    throw new Error("Error updating consignment to sold");
+  }
+};
+
+const updateConsignmentToSale = async (consignmentId) => {
+  try {
+    const pool = await sql.connect();
+    const result = await pool.request()
+      .input('consignmentId', sql.Int, consignmentId)
+      .query(`
+        UPDATE KoiConsignment 
+        SET Status = 'Listed for Sale'
+          WHERE ConsignmentID = @consignmentId
+      `);
+    return result.rowsAffected[0] > 0;
+  } catch (error) {
+    console.error("Error updating consignment to sale:", error);
+    throw new Error("Error updating consignment to sale");
+  }
+};
+
 const getAllStaffConsignmentsByUserId = async (userId) => {
     try {  
       const pool = await sql.connect();
@@ -282,5 +332,7 @@ module.exports = {
     isUserStaff,
     deleteConsignmentById,
     updateConsignmentToApproved,
-    updateConsignmentToPending
+    updateConsignmentToPending,
+    updateConsignmentToSold,
+    updateConsignmentToSale
 };

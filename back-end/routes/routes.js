@@ -35,7 +35,7 @@ const {
   getOrderDetails,
   updateOrderToPending,
   updateOrderToProcessing,
-  updateOrderToShipped,
+  updateOrderToDelivering,
   updateOrderToDelivered,
   updateOrderToCancelled,
 } = require("../controllers/orderController");
@@ -70,6 +70,8 @@ const {
   getAllStaffConsignmentsByUserId,
   getPendingConsignmentsByUserId,
   getApprovedConsignmentsByUserId,
+  updateConsignmentToSold,
+  updateConsignmentToSale,
 } = require("../controllers/koiConsignmentController");
 const {
   createBreeder,
@@ -534,7 +536,7 @@ router.patch("/orders/:orderId/processing", updateOrderToProcessing);
  *       200:
  *         description: Order status updated to Shipped
  */
-router.patch("/orders/:orderId/shipped", updateOrderToShipped);
+router.patch("/orders/:orderId/delivering", updateOrderToDelivering);
 
 /**
  * @swagger
@@ -912,6 +914,10 @@ router.patch("/koiconsignment/:consignmentId/approved", updateConsignmentToAppro
 router.get("/koiconsignment/pending/:userId", getPendingConsignmentsByUserId);
 
 router.get("/koiconsignment/approved/:userId", getApprovedConsignmentsByUserId);
+
+router.patch("/koiconsignment/:KoiID/sold", updateConsignmentToSold);
+
+router.patch("/koiconsignment/:consignmentId/sale", updateConsignmentToSale);
 
 /**
  * @swagger
