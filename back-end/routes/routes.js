@@ -93,6 +93,7 @@ const {
   getPendingConsignments,
   getActiveConsignment,
   getReturningCustomers,
+  getDailyOrderCount,
  } = require("../controllers/dashboardController");
 
 // User routes
@@ -1224,7 +1225,7 @@ router.get('/consignments/pending', getPendingConsignments);
  *       500:
  *         description: Server error
  */
-router.get('consignments/active', getActiveConsignment);
+router.get('/consignments/active', getActiveConsignment);
 
 /**
  * @swagger
@@ -1247,5 +1248,36 @@ router.get('consignments/active', getActiveConsignment);
  *         description: Server error
  */
 router.get('/customers/returning', getReturningCustomers);
+
+/**
+ * @swagger
+ * /api/dashboard/orders/daily:
+ *   get:
+ *     summary: Get daily order counts for the current month
+ *     tags: [Dashboard]
+ *     responses:
+ *       200:
+ *         description: Daily order counts fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 labels:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                   description: List of dates in the current month
+ *                   example: ["2024-10-01", "2024-10-02", "2024-10-03"]
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: integer
+ *                   description: Number of orders for each date
+ *                   example: [5, 7, 4]
+ *       500:
+ *         description: Server error
+ */
+router.get('/orders/daily', getDailyOrderCount);
 
 module.exports = router;

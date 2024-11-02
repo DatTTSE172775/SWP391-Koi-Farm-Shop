@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getDashboardRevenue, getOrderStatusStatistics, getDailyRevenueThisMonth, getPendingConsignments, getActiveConsignment, getReturningCustomers, } = require("../controllers/dashboardController"); // Import dashboardController
+const { getDashboardRevenue, getOrderStatusStatistics, getDailyRevenueThisMonth, getPendingConsignments, getActiveConsignment, getReturningCustomers, getDailyOrderCount, } = require("../controllers/dashboardController"); // Import dashboardController
 
 // Định nghĩa route cho tổng doanh thu trên dashboard
 router.get('/revenue', getDashboardRevenue); // Định nghĩa route
@@ -19,5 +19,8 @@ router.get('/consignments/active', getActiveConsignment);
 
 // Route cho API lấy số lượng khách hàng quay lại mua hàng
 router.get('/customers/returning', getReturningCustomers);
+
+// Định nghĩa route để lấy số lượng đơn hàng theo ngày trong tháng hiện tại
+router.get('/orders/daily', getDailyOrderCount);
 
 module.exports = router;

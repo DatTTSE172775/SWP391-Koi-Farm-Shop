@@ -7,6 +7,7 @@ const {
   getPendingConsignmentsCount,
   getActiveConsignmentData,
   getReturningCustomerCount,
+  getDailyOrderCountThisMonth,
 } = require('../models/dashboardModel.js');
 
 // Lấy tổng doanh thu hôm nay, tháng này và năm nay
@@ -106,5 +107,19 @@ exports.getReturningCustomers = async (req, res) => {
     // Log lỗi và trả về phản hồi với lỗi 500 nếu có lỗi
     console.error('Error fetching returning customer data:', error);
     res.status(500).json({ message: 'Error fetching returning customer data' });
+  }
+};
+
+// Hàm xử lý yêu cầu API lấy số lượng đơn hàng theo ngày trong tháng hiện tại
+exports.getDailyOrderCount = async (req, res) => {
+  try {
+    // Gọi hàm từ model để lấy dữ liệu
+    const result = await getDailyOrderCountThisMonth();
+    
+    // Trả về phản hồi thành công với dữ liệu JSON
+    res.status(200).json(result);
+  } catch (error) {
+    // Trả về phản hồi lỗi nếu xảy ra vấn đề
+    res.status(500).json({ error: 'Failed to fetch daily order count' });
   }
 };

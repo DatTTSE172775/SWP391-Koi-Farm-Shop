@@ -239,3 +239,34 @@ exports.getReturningCustomerCount = async () => {
     throw error;
   }
 };
+
+// Hàm kết nối đến database và truy vấn tổng số đơn hàng theo ngày trong tháng hiện tại
+exports.getDailyOrderCountThisMonth = async () => {
+  try {
+    // Kết nối đến cơ sở dữ liệu
+    const pool = await connectDB();
+    
+    // Truy vấn SQL để lấy số lượng đơn hàng mỗi ngày trong tháng hiện tại
+    const result = await pool.request().query(`
+      SELECT 
+        CONVERT(VARCHAR, OrderDate, 23) AS Date,  -- Định dạng ngày theo kiểu 'YYYY-MM-DD'
+        COUNT(*) AS DailyOrderCount               -- Đếm số đơn hàng trong mỗi ngày
+      FROM Orders
+      WHERE MONTH(OrderDate) = MONTH(GETDATE())   -- Chỉ lấy dữ liệu trong tháng hiện tại
+      AND YEAR(OrderDate) = YEAR(GETDATE())       -- Chỉ lấy dữ liệu trong năm hiện tại
+      GROUP BY CONVERT(VARCHAR, OrderDate, 23)   -- Gom nhóm theo ngày
+      ORDER BY Date                              -- Sắp xếp theo ngày
+    `);
+
+    // Tạo mảng labels và data từ kết quả truy vấn
+    const labels = result.recordset.map(row => row.Date);
+    const data = result.recordset.map(row => row.DailyOrderCount);
+
+    // Trả về kết quả dưới dạng đối tượng với các mảng labels và data
+    return { labels, data };
+  } catch (error) {
+    // Xử lý lỗi trong quá trình truy vấn
+    console.error("Error fetching daily order count for the current month:", error);
+    throw error;
+  }
+};
