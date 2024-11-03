@@ -2,24 +2,6 @@ const sql = require('mssql');
 
 const Order = require("../models/orderModel");
 
-// // Tạo đơn hàng
-const createOrder = async (req, res) => {
-  const { customerID, totalAmount, shippingAddress, paymentMethod } = req.body;
-
-  try {
-    await Order.create({
-      customerID,
-      totalAmount,
-      shippingAddress,
-      paymentMethod,
-    });
-    res.status(201).json({ message: "Order created successfully" });
-  } catch (err) {
-    console.error("Error creating order:", err);
-    res.status(500).json({ message: "Error creating order" });
-  }
-};
-
 // Get all orders
 const getAllOrders = async (req, res) => {
   try {
@@ -29,7 +11,7 @@ const getAllOrders = async (req, res) => {
     console.error(err);
     res.status(500).send({ message: "Server error." });
   }
-};7
+};
 
 // Create a new order
 const createOrder = async (req, res) => {
