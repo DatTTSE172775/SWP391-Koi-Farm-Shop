@@ -8,6 +8,10 @@ const userSignIn = require("../controllers/userSignIn");
 const logoutUser = require("../controllers/userLogout");
 const changePassword = require("../controllers/changePassword");
 const forgotPassword = require("../controllers/forgotPassword");
+const { updateOrderStatus } = require('../controllers/orderController');
+const orderController = require('../controllers/orderController');
+
+
 
 const koiConsignmentController = require("../controllers/koiConsignmentController");
 const {
@@ -1227,7 +1231,7 @@ router.get("/revenue/daily", getDailyRevenueThisMonth);
  *       200:
  *         description: Danh sách tất cả đơn hàng
  */
-router.get('/orders', orderController.getAllOrders);
+router.get('/orders', getAllOrders);
 
 /**
  * @swagger
@@ -1328,7 +1332,7 @@ router.post('/orders', async (req, res) => {
  *       500:
  *         description: Lỗi khi cập nhật trạng thái đơn hàng
  */
-router.put('/orders/:id/status', orderController.updateOrderStatus);
+router.put('/orders/:id/status', updateOrderStatus);
 
 /**
  * @swagger

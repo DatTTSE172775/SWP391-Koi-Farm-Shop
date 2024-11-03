@@ -299,6 +299,26 @@ const cancelOrder = async (req, res) => {
     res.status(500).send({ message: "Failed to cancel order." });
   }
 };
+// Hàm tổng quát để cập nhật trạng thái của đơn hàng
+const updateOrderStatus = async (req, res) => {
+  const { orderId } = req.params;
+  const { status } = req.body;
+
+  try {
+    const updatedOrder = await Order.updateOrderStatus(orderId, status);
+    if (!updatedOrder) {
+      return res.status(404).send({ message: "Order not found." });
+    }
+    res.send({
+      message: `Order status updated to ${status}.`,
+      order: updatedOrder,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ message: `Failed to update order to ${status}.` });
+  }
+};
+
 
 module.exports = {
   getAllOrders,
@@ -315,4 +335,5 @@ module.exports = {
   getOrderDetails,
   cancelOrder,
   getOrderByCustomerId,
+  updateOrderStatus,
 };

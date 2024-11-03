@@ -5,18 +5,17 @@ const path = require('path');
 // Configure multer for file upload
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, '../../uploads/'))
+    cb(null, path.join(__dirname, '../../uploads/'));
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname))
+    cb(null, Date.now() + path.extname(file.originalname));
   }
 });
 
 const upload = multer({ storage: storage });
 
-
 // Controller function to create a new KoiFish entry
-exports.createKoiFish = [
+const createKoiFish = [
   upload.single('imageFile'), // Add multer middleware
   async (req, res) => {
     try {
@@ -76,18 +75,18 @@ exports.createKoiFish = [
 ];
 
 // Controller function to get all KoiFish entries
- exports.getAllKoiFish = async (req, res) => {
+const getAllKoiFish = async (req, res) => {
   try {
-      const koiFish = await koiModel.getAllKoiFish();
-      res.json(koiFish);
+    const koiFish = await koiModel.getAllKoiFish();
+    res.json(koiFish);
   } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: 'Server error.' });
+    console.error(err);
+    res.status(500).json({ message: 'Server error.' });
   }
 };
 
 // Controller function to get a KoiFish entry by ID
-exports.getKoiFishById = async (req, res) => {
+const getKoiFishById = async (req, res) => {
   try {
     const koiId = req.params.koiId;
 
@@ -112,72 +111,82 @@ exports.getKoiFishById = async (req, res) => {
   }
 };
 
-// controller để cập nhật trạng thái sẵn có của KoiFish
-exports.updateKoiFishAvailability = async (req, res) => {
+// Controller to update availability status of KoiFish
+const updateKoiFishAvailability = async (req, res) => {
   try {
     const { koiId } = req.params;
     const { availability } = req.body;
 
     const validAvailabilities = ['Available', 'Sold Out'];
     if (!validAvailabilities.includes(availability)) {
-      return res.status(400).json({ message: "Trạng thái sẵn có không hợp lệ." });
+      return res.status(400).json({ message: "Invalid availability status." });
     }
 
     const success = await koiModel.updateKoiFishAvailability(koiId, availability);
     if (!success) {
-      return res.status(404).json({ message: "Không tìm thấy Koi Fish." });
+      return res.status(404).json({ message: "Koi Fish not found." });
     }
 
-    res.json({ message: "Cập nhật trạng thái sẵn có của Koi Fish thành công." });
+    res.json({ message: "Koi Fish availability updated successfully." });
   } catch (error) {
     res.status(500).json({
-      message: "Lỗi cập nhật trạng thái sẵn có của Koi Fish",
+      message: "Error updating Koi Fish availability",
       error: error.message,
     });
   }
 };
 
-// controller để xóa KoiFish
-exports.deleteKoiFish = async (req, res) => {
+// Controller to delete KoiFish
+const deleteKoiFish = async (req, res) => {
   try {
     const { koiId } = req.params;
 
     const success = await koiModel.deleteKoiFish(koiId);
     if (!success) {
-      return res.status(404).json({ message: "Không tìm thấy Koi Fish." });
+      return res.status(404).json({ message: "Koi Fish not found." });
     }
 
-    res.json({ message: "Xóa Koi Fish thành công." });
+    res.json({ message: "Koi Fish deleted successfully." });
   } catch (error) {
     res.status(500).json({
-      message: "Lỗi xóa Koi Fish",
+      message: "Error deleting Koi Fish",
       error: error.message,
     });
   }
 };
 
 // Controller function to update a KoiFish entry
-exports.updateKoiFish = async (req, res) => {
-    try {
-        const { koiId } = req.params;
-        const updateData = req.body;
+const updateKoiFish = async (req, res) => {
+  try {
+    const { koiId } = req.params;
+    const updateData = req.body;
 
-        const success = await koiModel.updateKoiFish(koiId, updateData);
-        
-        if (!success) {
-            return res.status(404).json({ 
-                message: "Koi Fish not found or no changes made." 
-            });
-        }
-
-        res.json({ 
-            message: "Koi Fish updated successfully.",
-            data: updateData
-        });
-    } catch (error) {
-        res.status(500).json({
-            message: "Error updating Koi Fish",
-            error: error.message
-        });
+    const success = await koiModel.updateKoiFish(koiId, updateData);
+    
+    if (!success) {
+      return res.status(404).json({ 
+        message: "Koi Fish not found or no changes made." 
+      });
     }
+
+    res.json({ 
+      message: "Koi Fish updated successfully.",
+      data: updateData
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error updating Koi Fish",
+      error: error.message
+    });
+  }
+};
+
+// Export all controller functions
+module.exports = {
+  createKoiFish,
+  getAllKoiFish,
+  getKoiFishById,
+  updateKoiFishAvailability,
+  deleteKoiFish,
+  updateKoiFish,
 };
