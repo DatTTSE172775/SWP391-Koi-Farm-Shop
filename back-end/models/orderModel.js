@@ -276,7 +276,78 @@ exports.updateOrderStatus = async (orderId, status) => {
 exports.getAllOrders = async () => {
   try {
     const result =
-      await sql.query`SELECT * FROM Orders ORDER BY OrderDate DESC`;
+      await sql.query`
+       SELECT 
+        o.OrderID,
+        o.CustomerID,
+        u.UserID AS StaffUserID,
+        u.Username AS StaffUsername,
+        u.Role AS StaffRole,
+        o.OrderDate,
+        o.TotalAmount,
+        o.ShippingAddress,
+        o.OrderStatus,
+        o.PaymentMethod,
+        o.PaymentStatus,
+        o.TrackingNumber,
+        o.Discount,
+        o.ShippingCost,
+        o.PromotionID,
+        
+        c.FullName,
+        c.Email,
+        c.PhoneNumber,
+        c.Address,
+        c.LoyaltyPoints,
+
+        -- Thông tin từ OrderDetails
+        STRING_AGG(CAST(od.ProductID AS VARCHAR), ', ') AS ProductIDs,
+        STRING_AGG(CAST(od.KoiID AS VARCHAR), ', ') AS KoiIDs,
+        STRING_AGG(CAST(od.PackageID AS VARCHAR), ', ') AS PackageIDs,
+        STRING_AGG(od.ProductType, ', ') AS ProductTypes,
+        STRING_AGG(od.CertificateStatus, ', ') AS CertificateStatuses,
+        SUM(od.Quantity) AS TotalQuantity,
+        SUM(od.TotalPrice) AS TotalOrderDetailPrice, -- Tổng giá từ OrderDetails
+
+        -- Thông tin từ KoiFish
+        STRING_AGG(kf.Name, ', ') AS KoiNames,
+        STRING_AGG(CAST(kf.VarietyID AS VARCHAR), ', ') AS VarietyIDs,
+        STRING_AGG(kf.Origin, ', ') AS Origins,
+        STRING_AGG(kf.Gender, ', ') AS Genders,
+        STRING_AGG(CAST(kf.Size AS VARCHAR), ', ') AS KoiSizes,
+        STRING_AGG(CAST(kf.Weight AS VARCHAR), ', ') AS KoiWeights,
+        STRING_AGG(kf.HealthStatus, ', ') AS KoiHealthStatuses,
+        STRING_AGG(CAST(kf.Price AS VARCHAR), ', ') AS KoiPrices,
+
+        -- Thông tin từ KoiPackage
+        STRING_AGG(kp.PackageName, ', ') AS PackageNames,
+        STRING_AGG(CAST(kp.PackageSize AS VARCHAR), ', ') AS PackageSizes,
+        STRING_AGG(CAST(kp.Price AS VARCHAR), ', ') AS PackagePrices,
+        STRING_AGG(CAST(kp.Quantity AS VARCHAR), ', ') AS PackageQuantities,
+        STRING_AGG(kp.Availability, ', ') AS PackageAvailabilities
+
+        FROM 
+            Orders o
+        LEFT JOIN 
+            OrderDetails od ON o.OrderID = od.OrderID
+        LEFT JOIN 
+            KoiFish kf ON od.KoiID = kf.KoiID
+        LEFT JOIN 
+            KoiPackage kp ON od.PackageID = kp.PackageID
+        LEFT JOIN 
+            Customers c ON o.CustomerID = c.CustomerID
+        LEFT JOIN 
+            Users u ON o.UserID = u.UserID AND u.Role = 'Staff' -- Chỉ lấy UserID và Username từ những user có Role là 'Staff'
+
+        GROUP BY 
+            o.OrderID, o.CustomerID, u.UserID, u.Username, u.Role, o.OrderDate, o.TotalAmount, 
+            o.ShippingAddress, o.OrderStatus, o.PaymentMethod, o.PaymentStatus, 
+            o.TrackingNumber, o.Discount, o.ShippingCost, o.PromotionID,
+            c.FullName, c.Email, c.PhoneNumber, c.Address, c.LoyaltyPoints
+
+        ORDER BY 
+            o.OrderID;
+      `;
     return result.recordset;
   } catch (error) {
     throw new Error("Error fetching all orders");
