@@ -1,11 +1,66 @@
 .koi-search-filter {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 16px;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   margin-bottom: 24px;
 
   .ant-form-item {
-    margin: 0;
+    margin-bottom: 16px;
+  }
+
+  .ant-form-item-label > label {
+    font-weight: 500;
+    font-size: 1.1rem;
+    color: #333;
+  }
+
+  .ant-input,
+  .ant-select-selector,
+  .ant-slider {
+    border-radius: 8px;
+  }
+
+  .ant-input {
+    padding: 8px 12px;
+  }
+
+  .ant-select-selector {
+    padding: 6px 12px;
+  }
+
+  .ant-slider-track {
+    background-color: #1890ff;
+  }
+
+  .ant-slider-handle {
+    border: 2px solid #1890ff;
+    width: 14px;
+    height: 14px;
+  }
+
+  .ant-btn {
+    border-radius: 8px;
+    padding: 6px 16px;
+    font-size: 1rem;
+
+    &.ant-btn-primary {
+      background-color: #1890ff;
+      border-color: #1890ff;
+
+      &:hover {
+        background-color: #1677cb;
+        border-color: #1677cb;
+      }
+    }
+
+    &.ant-btn-default {
+      color: #333;
+      border-color: #ddd;
+
+      &:hover {
+        border-color: #bbb;
+      }
+    }
   }
 }
