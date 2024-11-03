@@ -227,6 +227,21 @@ const getOrderById = async (req, res) => {
   }
 };
 
+// Get order by customerID
+const getOrderByCustomerId = async (req, res) => {
+  const { customerId } = req.params; 
+  try {
+    const orders = await Order.getOrdersByCustomerId(customerId); 
+    if (!orders || orders.length === 0) {
+      return res.status(404).json({ message: "No orders found for this customer." });
+    }
+    res.status(200).json(orders);
+  } catch (err) {
+    console.error("Error fetching orders by customer ID:", err);
+    res.status(500).json({ message: "Server error." });
+  }
+};
+
 // Delete an order
 const deleteOrder = async (req, res) => {
   const { orderId } = req.params;
@@ -299,4 +314,5 @@ module.exports = {
   assignOrderToStaff,
   getOrderDetails,
   cancelOrder,
+  getOrderByCustomerId,
 };
