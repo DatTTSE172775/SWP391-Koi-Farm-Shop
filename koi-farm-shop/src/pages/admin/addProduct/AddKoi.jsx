@@ -21,7 +21,7 @@ const AddKoi = () => {
     feedingAmountPerDay: "",
     healthStatus: "",
     screeningRate: "",
-    certificateLink: "",
+    certificateLink: null,
     imageFile: null,
     availability: "Available",
   });
@@ -75,9 +75,9 @@ const AddKoi = () => {
       
       // Append all form values to formData
       Object.keys(formValues).forEach(key => {
-        if (key === 'imageFile') {
-          if (formValues.imageFile) {
-            formData.append('imageFile', formValues.imageFile);
+        if (key === 'imageFile' || key === 'certificateLink') {
+          if (formValues[key]) {
+            formData.append(key, formValues[key]);
           }
         } else if (formValues[key] !== null && formValues[key] !== '') {
           // Convert numeric strings to numbers where appropriate
@@ -115,7 +115,7 @@ const AddKoi = () => {
         feedingAmountPerDay: "",
         healthStatus: "",
         screeningRate: "",
-        certificateLink: "",
+        certificateLink: null,
         imageFile: null,
         availability: "Available",
       });
@@ -212,8 +212,22 @@ const AddKoi = () => {
               <input type="number" name="screeningRate" min="0" max="100" step="0.1" value={formValues.screeningRate} onChange={handleChange} />
             </div>
             <div className="form-group">
-              <label>Link chứng chỉ</label>
-              <input name="certificateLink" value={formValues.certificateLink} onChange={handleChange} />
+              <label>Chứng chỉ</label>
+              <input 
+                type="file" 
+                name="certificateLink" 
+                accept="image/*" 
+                onChange={handleChange} 
+              />
+              {formValues.certificateLink && (
+                <div className="image-preview">
+                  <img 
+                    src={URL.createObjectURL(formValues.certificateLink)} 
+                    alt="Certificate preview" 
+                    style={{ width: "200px", height: "auto", marginTop: "10px" }} 
+                  />
+                </div>
+              )}
             </div>
             <div className="form-group">
               <label>Hình ảnh</label>

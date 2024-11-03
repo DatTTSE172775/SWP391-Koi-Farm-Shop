@@ -17,7 +17,10 @@ const upload = multer({ storage: storage });
 
 // Controller function to create a new KoiFish entry
 exports.createKoiFish = [
-  upload.single('imageFile'), // Add multer middleware
+  upload.fields([
+    { name: 'imageFile', maxCount: 1 },
+    { name: 'certificateLink', maxCount: 1 }
+  ]),
   async (req, res) => {
     try {
       const {
@@ -34,12 +37,12 @@ exports.createKoiFish = [
         feedingAmountPerDay,
         healthStatus,
         screeningRate,
-        certificateLink,
         availability,
       } = req.body;
 
       // Get the image path from the uploaded file
-      const imagesLink = req.file ? `/uploads/${req.file.filename}` : null;
+      const imagesLink = req.files.imageFile ? `/uploads/${req.files.imageFile[0].filename}` : null;
+      const certificateLink = req.files.certificateLink ? `/uploads/${req.files.certificateLink[0].filename}` : null;
 
       // Call the createKoiFish function from the model
       const result = await koiModel.createKoiFish(
