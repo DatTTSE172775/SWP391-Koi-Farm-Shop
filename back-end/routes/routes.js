@@ -482,15 +482,49 @@ router.get("/orders/:orderId", getOrderById);
  *             properties:
  *               customerID:
  *                 type: integer
- *               totalAmount:
- *                 type: number
  *               shippingAddress:
  *                 type: string
  *               paymentMethod:
  *                 type: string
+ *                 enum: [Credit Card, Bank Transfer, Cash on Delivery]
+ *               orderItems:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     KoiID:
+ *                       type: integer
+ *                       nullable: true
+ *                     PackageID:
+ *                       type: integer
+ *                       nullable: true
+ *                     quantity:
+ *                       type: integer
+ *                       example: 1
+ *               TrackingNumber:
+ *                 type: string
+ *                 description: Tracking number provided by the frontend or during order creation
+ *               Discount:
+ *                 type: number
+ *                 format: float
+ *                 example: 0.0
+ *                 description: Optional discount for the order
+ *               ShippingCost:
+ *                 type: number
+ *                 format: float
+ *                 example: 0.0
+ *                 description: Optional shipping cost
+ *               PromotionID:
+ *                 type: integer
+ *                 nullable: true
+ *                 description: Optional promotion ID for the order
  *     responses:
  *       201:
  *         description: Order created successfully
+ *       400:
+ *         description: Invalid request body
+ *       500:
+ *         description: Internal server error
  */
 router.post("/orders", createOrder);
 

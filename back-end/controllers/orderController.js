@@ -11,7 +11,7 @@ const getAllOrders = async (req, res) => {
     console.error(err);
     res.status(500).send({ message: "Server error." });
   }
-};7
+};
 
 // Create a new order
 const createOrder = async (req, res) => {
@@ -20,8 +20,11 @@ const createOrder = async (req, res) => {
     shippingAddress,
     paymentMethod,
     orderItems,
+    trackingNumber,
+    discount,
+    shippingCost,
+    promotionID,
   } = req.body;
-
   try {
     
     // Kiểm tra xem orderItems có ít nhất một sản phẩm hợp lệ (KoiID hoặc PackageID)
@@ -41,12 +44,17 @@ const createOrder = async (req, res) => {
       totalAmount,
       shippingAddress,
       paymentMethod,
-      orderItems
+      orderItems,
+      trackingNumber,
+      discount,
+      shippingCost,
+      promotionID
     );
+
     res.status(201).send(newOrder);
   } catch (err) {
     console.error(err);
-    res.status(500).send({ message: "Failed to create order." });
+    res.status(500).send({ message: "Lỗi khi tạo đơn hàng." });
   }
 };
 

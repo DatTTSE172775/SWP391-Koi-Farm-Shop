@@ -1,13 +1,14 @@
-const { sql } = require("../config/db");
+const { sql, connectDB } = require("../config/db");
 
 const validStatuses = ['Pending', 'Processing', 'Delivering', 'Delivered', 'Cancelled'];
+const validPaymentMethods = ['Credit Card', 'Bank Transfer', 'Cash on Delivery'];
+
 
 // Hàm tính tổng số tiền (totalAmount) của đơn hàng dựa trên KoiID hoặc PackageID
 exports.calculateTotalAmount = async (orderItems) => {
   let totalAmount = 0; // Khởi tạo biến tổng tiền với giá trị ban đầu là 0
 
-  // Kết nối với SQL Server
-  const pool = await sql.connect();
+  const pool = await connectDB();
 
   // Duyệt qua từng mục hàng trong orderItems
   for (const item of orderItems) {
@@ -62,25 +63,42 @@ exports.createOrder = async (
   shippingAddress,
   paymentMethod,
   orderItems,
+  trackingNumber,
+  discount = 0,
+  shippingCost = 0,
+  promotionID = null,
 ) => {
-  const pool = await sql.connect();
+  const pool = await connectDB();
   const transaction = new sql.Transaction(pool);
 
   try {
     console.log("Starting order creation..."); // Ghi log bắt đầu
 
+    // Bắt đầu giao dịch
     await transaction.begin();
 
     // Tạo đơn hàng mới và lấy OrderID
     const orderResult = await transaction
       .request()
-      .input("customerID", sql.Int, customerID)
-      .input("totalAmount", sql.Decimal(10, 2), totalAmount)
-      .input("shippingAddress", sql.NVarChar(sql.MAX), shippingAddress)
-      .input("paymentMethod", sql.NVarChar(50), paymentMethod).query(`
-        INSERT INTO Orders (CustomerID, TotalAmount, ShippingAddress, PaymentMethod, OrderDate, OrderStatus)
+      .input('CustomerID', sql.Int, customerID)
+      .input('TotalAmount', sql.Decimal(10, 2), totalAmount)
+      .input('ShippingAddress', sql.NVarChar(sql.MAX), shippingAddress)
+      .input('PaymentMethod', sql.VarChar(50), paymentMethod)
+      .input('OrderDate', sql.DateTime, new Date()) // Lấy thời gian hiện tại cho OrderDate
+      .input('TrackingNumber', sql.VarChar(255), trackingNumber)
+      .input('Discount', sql.Decimal(10, 2), discount)
+      .input('ShippingCost', sql.Decimal(10, 2), shippingCost)
+      .input('PromotionID', sql.Int, promotionID)
+      .query(`
+        INSERT INTO Orders (
+          CustomerID, TotalAmount, ShippingAddress, PaymentMethod, OrderDate, 
+          OrderStatus, TrackingNumber, Discount, ShippingCost, PromotionID
+        )
         OUTPUT INSERTED.OrderID
-        VALUES (@customerID, @totalAmount, @shippingAddress, @paymentMethod, GETDATE(), 'Pending')
+        VALUES (
+          @CustomerID, @TotalAmount, @ShippingAddress, @PaymentMethod, @OrderDate,
+          'Pending', @TrackingNumber, @Discount, @ShippingCost, @PromotionID
+        )
       `);
 
     const orderId = orderResult.recordset[0].OrderID;
@@ -89,19 +107,10 @@ exports.createOrder = async (
     // Insert into OrderDetails table
     for (const item of orderItems) {
       const koiID = item.KoiID || null;  // Nếu không có KoiID thì là null
-      const packageID = item.PackageID || null;  // Nếu   không có PackageID thì là null
+      const packageID = item.PackageID || null;  // Nếu không có PackageID thì là null
 
       // Xác định productType dựa trên KoiID và PackageID
-      let productType = "";
-      if (koiID && packageID) {
-        productType = "Mixed"; // Thay vì "Single Fish, Package"
-      } else if (koiID) {
-        productType = "Single Fish";
-      } else if (packageID) {
-        productType = "Package";
-      } else {
-        throw new Error("Yêu cầu cần có ít nhất 1 Koi Fish hoặc 1 Koi Package.");
-      }
+      let productType = koiID && packageID ? "All" : koiID ? "Single Fish" : "Package";
 
       console.log(`Processing item: ${JSON.stringify(item)}`); // Ghi log mục hàng
 
@@ -141,15 +150,15 @@ exports.createOrder = async (
 
       // Thêm sản phẩm vào bảng OrderDetails
       await transaction.request()
-        .input('orderId', sql.Int, orderId)
-        .input('koiID', sql.Int, koiID)
-        .input('packageID', sql.Int, packageID)
-        .input('quantity', sql.Int, quantity)
-        .input('unitPrice', sql.Decimal(10, 2), unitPrice)
-        .input('productType', sql.VarChar(50), productType)
+        .input('OrderID', sql.Int, orderId)
+        .input('KoiID', sql.Int, koiID)
+        .input('PackageID', sql.Int, packageID)
+        .input('Quantity', sql.Int, quantity)
+        .input('UnitPrice', sql.Decimal(10, 2), unitPrice)
+        .input('ProductType', sql.VarChar(50), productType)
         .query(`
           INSERT INTO OrderDetails (OrderID, KoiID, PackageID, Quantity, UnitPrice, ProductType )
-          VALUES (@orderId, @koiID, @packageID, @quantity, @unitPrice, @productType )
+          VALUES (@OrderID, @KoiID, @PackageID, @Quantity, @UnitPrice, @ProductType)
         `);
     }
 
@@ -158,7 +167,7 @@ exports.createOrder = async (
     console.log("Order committed successfully."); // Ghi log hoàn tất đơn hàng
     return { orderId, message: "Order created successfully." };
   } catch (error) {
-    await transaction.rollback();
+    await transaction.rollback(); // Hủy giao dịch nếu có lỗi
     console.error("Error creating order:", error); // Ghi log lỗi chi tiết
     throw new Error("Error creating order.");
   }
@@ -166,7 +175,7 @@ exports.createOrder = async (
 
 // Kiểm tra tồn kho cho Koi Fish hoặc Koi Package 
 const checkProductAvailability = async (koiID, packageID, quantity) => {
-  const pool = await sql.connect();
+  const pool = await connectDB();
 
   if (koiID) {
     // Kiểm tra xem Koi với KoiID có còn tồn tại không (vì mỗi cá chỉ có 1)
@@ -184,7 +193,7 @@ const checkProductAvailability = async (koiID, packageID, quantity) => {
       .query('SELECT Quantity FROM Packages WHERE PackageID = @packageID');
 
     if (packageResult.recordset.length === 0 || packageResult.recordset[0].Quantity < quantity) {
-      throw new Error(`Not enough stock for PackageID ${packageID}.`);
+      throw new Error(`Không đủ hàng trong kho cho PackageID ${packageID}.`);
     }
   }
 };
