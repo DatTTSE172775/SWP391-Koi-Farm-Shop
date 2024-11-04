@@ -31,7 +31,6 @@ const {
   getAllStaffOrdersByUserId,
   assignOrderToStaff,
   deleteOrder,
-  getOrderDetails,
   updateOrderToPending,
   updateOrderToProcessing,
   updateOrderToDelivering,
@@ -501,22 +500,23 @@ router.get("/orders/:orderId", getOrderById);
  *                     quantity:
  *                       type: integer
  *                       example: 1
- *               TrackingNumber:
+ *               trackingNumber:
  *                 type: string
  *                 description: Tracking number provided by the frontend or during order creation
- *               Discount:
+ *               discount:
  *                 type: number
  *                 format: float
  *                 example: 0.0
  *                 description: Optional discount for the order
- *               ShippingCost:
+ *               shippingCost:
  *                 type: number
  *                 format: float
  *                 example: 0.0
  *                 description: Optional shipping cost
- *               PromotionID:
+ *               promotionID:
  *                 type: integer
  *                 nullable: true
+ *                 example: null
  *                 description: Optional promotion ID for the order
  *     responses:
  *       201:
@@ -1080,8 +1080,6 @@ router.post("/varieties", createVariety);
 router.get("/varieties", getAllVarieties);
 
 router.post("/addKoiPackageVariety", addKoiPackageVariety);
-
-router.get("/orders/:orderId/details", getOrderDetails);
 
 router.get("/koipackage/:packageId", getKoiPackageById);
 

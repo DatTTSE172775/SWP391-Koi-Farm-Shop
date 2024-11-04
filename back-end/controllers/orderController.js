@@ -45,10 +45,10 @@ const createOrder = async (req, res) => {
       shippingAddress,
       paymentMethod,
       orderItems,
-      trackingNumber,
       discount,
       shippingCost,
-      promotionID
+      promotionID,
+      trackingNumber
     );
 
     res.status(201).send(newOrder);
@@ -158,24 +158,23 @@ const getAllStaffOrdersByUserId = async (req, res) => {
   try {
     const { userId } = req.params; // Lấy userId từ route params
 
-    // Kết nối đến database và thực hiện truy vấn để lấy đơn hàng của nhân viên
-    const pool = await sql.connect(); // Kết nối đến SQL Server
+    // Kiểm tra xem người dùng có phải là nhân viên không
+    const isStaff = await Order.isUserStaff(userId);
+    if (!isStaff) {
+      return res.status(400).send({ message: "User is not a Staff member." });
+    }
 
-    const result = await pool.request().input("userId", sql.Int, userId) // Đặt giá trị userId vào truy vấn
-      .query(`
-        SELECT o.* 
-        FROM Orders o
-        JOIN Users u ON o.userId = u.userId
-        WHERE u.userId = @userId AND u.Role = 'Staff'
-      `); // Truy vấn để lấy tất cả đơn hàng cho nhân viên dựa trên UserId và Role
+    // Gọi hàm lấy danh sách đơn hàng theo staff từ data
+    const orders = await Order.getAllStaffOrdersByUserIdData(userId);
 
-    if (result.recordset.length === 0) {
+    // Nếu không tìm thấy đơn hàng, trả về lỗi 404 - Not Found
+    if (orders === null) {
       return res
         .status(404)
         .send({ message: "No orders found for the given user ID" });
     }
 
-    res.status(200).send(result.recordset); // Trả về danh sách đơn hàng tìm thấy
+    res.status(200).send(orders); // Trả về danh sách đơn hàng tìm thấy
   } catch (error) {
     console.error("Error fetching orders by user ID:", error);
     res.status(500).send({ message: "Error fetching orders by user ID" });
@@ -251,17 +250,6 @@ const deleteOrder = async (req, res) => {
   }
 };
 
-const getOrderDetails = async (req, res) => {
-  try {
-    const { orderId } = req.params;
-    const orderDetails = await Order.getOrderDetails(orderId);
-    res.send(orderDetails);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send({ message: "Failed to fetch order details." });
-  }
-};
-
 // Hàm hủy đơn hàng theo orderId
 const cancelOrder = async (req, res) => {
   // Lấy orderId từ tham số URL
@@ -305,6 +293,5 @@ module.exports = {
   deleteOrder,
   getAllStaffOrdersByUserId,
   assignOrderToStaff,
-  getOrderDetails,
   cancelOrder,
 };
