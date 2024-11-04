@@ -1,4 +1,4 @@
-const sql = require("mssql");
+const sql = require('mssql');
 
 const Order = require("../models/orderModel");
 
@@ -234,6 +234,21 @@ const getOrderById = async (req, res) => {
   }
 };
 
+// Get order by customerID
+const getOrderByCustomerId = async (req, res) => {
+  const { customerId } = req.params; 
+  try {
+    const orders = await Order.getOrdersByCustomerId(customerId); 
+    if (!orders || orders.length === 0) {
+      return res.status(404).json({ message: "No orders found for this customer." });
+    }
+    res.status(200).json(orders);
+  } catch (err) {
+    console.error("Error fetching orders by customer ID:", err);
+    res.status(500).json({ message: "Server error." });
+  }
+};
+
 // Delete an order
 const deleteOrder = async (req, res) => {
   const { orderId } = req.params;
@@ -280,6 +295,26 @@ const cancelOrder = async (req, res) => {
     res.status(500).send({ message: "Failed to cancel order." });
   }
 };
+// Hàm tổng quát để cập nhật trạng thái của đơn hàng
+const updateOrderStatus = async (req, res) => {
+  const { orderId } = req.params;
+  const { status } = req.body;
+
+  try {
+    const updatedOrder = await Order.updateOrderStatus(orderId, status);
+    if (!updatedOrder) {
+      return res.status(404).send({ message: "Order not found." });
+    }
+    res.send({
+      message: `Order status updated to ${status}.`,
+      order: updatedOrder,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ message: `Failed to update order to ${status}.` });
+  }
+};
+
 
 module.exports = {
   getAllOrders,
@@ -294,4 +329,6 @@ module.exports = {
   getAllStaffOrdersByUserId,
   assignOrderToStaff,
   cancelOrder,
+  getOrderByCustomerId,
+  updateOrderStatus,
 };

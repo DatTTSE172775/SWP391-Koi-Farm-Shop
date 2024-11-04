@@ -8,6 +8,10 @@ const userSignIn = require("../controllers/userSignIn");
 const logoutUser = require("../controllers/userLogout");
 const changePassword = require("../controllers/changePassword");
 const forgotPassword = require("../controllers/forgotPassword");
+const { updateOrderStatus } = require('../controllers/orderController');
+const orderController = require('../controllers/orderController');
+
+
 
 const koiConsignmentController = require("../controllers/koiConsignmentController");
 const {
@@ -36,6 +40,7 @@ const {
   updateOrderToDelivering,
   updateOrderToDelivered,
   updateOrderToCancelled,
+  getOrderByCustomerId,
 } = require("../controllers/orderController");
 
 const {
@@ -527,6 +532,48 @@ router.get("/orders/:orderId", getOrderById);
  *         description: Internal server error
  */
 router.post("/orders", createOrder);
+
+/**
+ * @swagger
+ * /api/orders/customer/{customerId}:
+ *   get:
+ *     summary: Get orders by customer ID
+ *     tags: [Orders]
+ *     parameters:
+ *       - in: path
+ *         name: customerId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: Customer ID to retrieve orders for
+ *     responses:
+ *       200:
+ *         description: List of orders for the given customer ID
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   orderId:
+ *                     type: integer
+ *                   customerID:
+ *                     type: integer
+ *                   totalAmount:
+ *                     type: number
+ *                   shippingAddress:
+ *                     type: string
+ *                   paymentMethod:
+ *                     type: string
+ *                   status:
+ *                     type: string
+ *       404:
+ *         description: No orders found for this customer ID
+ *       500:
+ *         description: Internal server error
+ */
+router.get("/customer/:customerId", getOrderByCustomerId);
 
 /**
  * @swagger

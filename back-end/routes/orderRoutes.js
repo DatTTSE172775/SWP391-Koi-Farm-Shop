@@ -24,4 +24,8 @@ router.get("/user/:userId/orders", orderController.getAllStaffOrdersByUserId);
 // Route để hủy đơn hàng theo ID
 router.patch('/:orderId/cancel', orderController.cancelOrder);
 
+// Get order by customerID
+router.get('/customer/:customerId', orderController.getOrderByCustomerId);
+
+
 module.exports = router;

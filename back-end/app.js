@@ -1,10 +1,10 @@
 const express = require('express');
 const { connectDB } = require('./config/db'); // Kết nối cơ sở dữ liệu
-const routes = require('./routes/routes'); // Import routes
+const routes = require('./routes/routes');  // Import các route chính
+const orderRoutes = require('./routes/orderRoutes'); // Import orderRoutes.js
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
-const cors = require('cors');
-const orderRoutes = require('./routes/orderRoutes'); // Import orderRoutes
+const cors = require('cors'); // Import orderRoutes
 const paymentRoutes = require('./routes/paymentRoutes'); // Import route cho thanh toán VNPay
 const dashboardRoutes = require('./routes/dashboardRoutes');
 
@@ -92,7 +92,7 @@ app.use('/api', routes);
 app.use('/api/orders', orderRoutes); // Thêm route cho order
 
 // Sử dụng route cho thanh toán VNPay
-// app.use('/api/paymentRoutes', paymentRoutes); // Thêm route cho thanh toán VNPay
+app.use('/api/paymentRoutes', paymentRoutes); // Thêm route cho thanh toán VNPay
 
 // Sử dụng route cho dashboard
 app.use('/api/dashboard', dashboardRoutes);
