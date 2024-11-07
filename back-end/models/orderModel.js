@@ -583,7 +583,7 @@ exports.getOrderById = async (orderId) => {
           Users u ON o.UserID = u.UserID
 
       WHERE 
-          u.Role = 'Staff' AND o.OrderID = ${orderId}
+          o.OrderID = ${orderId}
 
       ORDER BY 
           o.OrderID; 
