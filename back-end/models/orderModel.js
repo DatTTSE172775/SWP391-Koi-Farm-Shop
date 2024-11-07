@@ -202,7 +202,109 @@ const checkProductAvailability = async (koiID, packageID, quantity) => {
 exports.getOrdersByCustomerId = async (customerID) => {
   try {
     const result =
-      await sql.query`SELECT * FROM Orders WHERE CustomerID = ${customerID}`;
+      await sql.query`
+        SELECT 
+          o.OrderID,
+          o.CustomerID,
+          u.UserID,
+          u.Username,
+          u.Role,
+          o.OrderDate,
+          o.TotalAmount,
+          o.ShippingAddress,
+          o.OrderStatus,
+          o.PaymentMethod,
+          o.PaymentStatus,
+          o.TrackingNumber,
+          o.Discount,
+          o.ShippingCost,
+          o.PromotionID,
+          
+          c.FullName,
+          c.Email,
+          c.PhoneNumber,
+          c.Address,
+          c.LoyaltyPoints,
+      
+          -- Thông tin từ OrderDetails
+          od.OrderDetailID,
+          od.ProductID,
+          od.KoiID,
+          od.PackageID,
+          od.Quantity,
+          od.UnitPrice,
+          od.TotalPrice,
+          od.ProductType,
+          od.CertificateStatus,
+      
+          -- Thông tin chi tiết về KoiFish
+          kf.KoiID AS KoiID_Details,
+          kf.Name AS KoiName,
+          kf.VarietyID,
+          kf.Origin,
+          kf.Gender,
+          kf.Born,
+          kf.Size,
+          kf.Weight,
+          kf.Personality,
+          kf.FeedingAmountPerDay,
+          kf.HealthStatus,
+          kf.ScreeningRate,
+          kf.Price AS KoiPrice,
+          kf.CertificateLink AS KoiCertificateLink,
+          kf.ImagesLink AS KoiImagesLink,
+          kf.AddedDate,
+          kf.Availability AS KoiAvailability,
+      
+          -- Thông tin chi tiết về KoiPackage
+          kp.PackageID AS PackageID_Details,
+          kp.PackageName,
+          kp.ImageLink AS PackageImageLink,
+          kp.Price AS PackagePrice,
+          kp.PackageSize,
+          kp.CreatedDate AS PackageCreatedDate,
+          kp.Availability AS PackageAvailability,
+          kp.Quantity AS PackageQuantity,
+      
+          -- Thông tin chi tiết về KoiConsignment (nếu có)
+          kc.ConsignmentID,
+          kc.ConsignmentType,
+          kc.ConsignmentMode,
+          kc.StartDate,
+          kc.EndDate,
+          kc.Status AS ConsignmentStatus,
+          kc.PriceAgreed,
+          kc.PickupDate,
+          kc.ApprovedStatus,
+          kc.InspectionResult,
+          kc.Notes,
+          kc.KoiType,
+          kc.KoiColor,
+          kc.KoiAge,
+          kc.KoiSize,
+          kc.ImagePath
+      
+        FROM 
+            Orders o
+        LEFT JOIN 
+            OrderDetails od ON o.OrderID = od.OrderID
+        LEFT JOIN 
+            KoiFish kf ON od.KoiID = kf.KoiID
+        LEFT JOIN 
+            KoiPackage kp ON od.PackageID = kp.PackageID
+        LEFT JOIN 
+            KoiConsignment kc ON kc.CustomerID = o.CustomerID AND kc.KoiID = kf.KoiID
+        LEFT JOIN 
+            Customers c ON o.CustomerID = c.CustomerID
+        LEFT JOIN 
+            Users u ON o.UserID = u.UserID
+        
+        WHERE 
+            o.CustomerID = ${customerID}
+        
+        ORDER BY 
+            o.OrderID;
+    `;
     return result.recordset;
   } catch (error) {
     throw new Error("Error fetching orders by customer ID");
