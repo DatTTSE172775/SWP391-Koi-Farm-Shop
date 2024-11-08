@@ -2,10 +2,13 @@ import React from "react";
 import { Card, Typography, Button, Tag, notification } from "antd";
 import "./StaffConsignmentItem.scss";
 import axiosInstance from "../../../../api/axiosInstance";
+import { useNavigate } from "react-router-dom";
 
 const { Text } = Typography;
 
 const StaffConsignmentItem = ({ consignment, onRemove }) => {
+  const navigate = useNavigate();
+
   if (!consignment) {
     return null;
   }
@@ -96,6 +99,10 @@ const StaffConsignmentItem = ({ consignment, onRemove }) => {
     }
   };
 
+  const handleSeeDetails = () => {
+    navigate(`/staff/consignments/detail/${ConsignmentID}`);
+  };
+
   return (
     <Card className="staff-consignment-item">
       <div className="consignment-info">
@@ -125,7 +132,7 @@ const StaffConsignmentItem = ({ consignment, onRemove }) => {
         </div>
       </div>
       <div className="action-buttons">
-        <Button type="default">Xem Chi Tiết</Button>
+        <Button type="default" onClick={handleSeeDetails}>Xem Chi Tiết</Button>
         {shouldShowUpdateButton(ApprovedStatus) && (
           <Button type="primary" onClick={handleStatusChange}>Chuyển Trạng Thái</Button>
         )}

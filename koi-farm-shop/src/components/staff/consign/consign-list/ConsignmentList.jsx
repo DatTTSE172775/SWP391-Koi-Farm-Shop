@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import StaffConsignmentItem from "../consign-item/StaffConsignmentItem";
 import "./ConsignmentList.scss";
 
-const { Title } = Typography;
+// const { Title } = Typography;
 
 const ConsignmentList = ({ initialConsignments = [], filterStatus }) => {
   const [consignments, setConsignments] = useState([]);
@@ -32,7 +32,7 @@ const ConsignmentList = ({ initialConsignments = [], filterStatus }) => {
 
   return (
     <div className="consignment-list-container">
-      <Title level={3} className="list-title">
+      {/* <Title level={3} className="list-title">
         {filterStatus === "Processing"
           ? "Đơn Ký Gửi Đang Xử Lý"
           : filterStatus === "Approved"
@@ -42,7 +42,7 @@ const ConsignmentList = ({ initialConsignments = [], filterStatus }) => {
           : filterStatus === "Pending"
           ? "Đơn Ký Gửi Đang Chờ Xử Lý"
           : "Đơn Ký Gửi"}
-      </Title>
+      </Title> */}
       <div className="consignment-list">
         {consignments.map((consignment) => (
           <StaffConsignmentItem
