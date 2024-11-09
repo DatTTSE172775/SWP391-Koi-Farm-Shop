@@ -3,7 +3,7 @@ import React from 'react';
 import { Row, Col, Card, Button} from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { ShoppingOutlined, AppstoreOutlined, UserAddOutlined } from '@ant-design/icons';
-import WelcomeCard from '../../../components/admin/layout/welcome/WelcomeCard';
+import WelcomeCard from '../../../components/admin/layout/WelcomeCard';
 import './WelcomeAdmin.scss';
 
 const WelcomeAdmin = () => {

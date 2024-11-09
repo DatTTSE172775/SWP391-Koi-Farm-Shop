@@ -1,52 +1,36 @@
+// src/components/admin/dashboard/CustomersWidget.scss
+
 .customers-widget {
   text-align: center;
   padding: 20px;
-  background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-  border-radius: 12px;
-  transition: transform 0.3s, box-shadow 0.3s;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  transition: transform 0.3s;
 
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  }
-
-  &__header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 10px;
-
-    .customers-widget__icon {
-      font-size: 1.5rem;
-      color: #007bff;
-      margin-left: 8px;
-    }
+    transform: scale(1.05);
   }
 
   &__title {
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: #004085;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 10px;
   }
 
   &__value {
-    font-size: 2.5rem;
-    font-weight: 800;
+    font-size: 2rem;
+    font-weight: 700;
     color: #007bff;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
   }
 
   &__details {
     font-size: 1rem;
-    color: #2f4f4f;
-
-    .customers-widget__detail {
-      margin-bottom: 5px;
-      span {
-        font-weight: 600;
-        color: #0056b3;
-      }
+    color: #6c757d;
+    span {
+      display: inline-block;
+      margin-right: 10px;
     }
   }
 }

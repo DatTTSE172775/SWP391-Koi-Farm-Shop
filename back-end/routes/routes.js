@@ -22,6 +22,8 @@ const {
   updateKoiFishAvailability,
   deleteKoiFish,
   updateKoiFish,
+  createKoiFishFromConsignment,
+  updateConsignmentKoiId
 } = require("../controllers/koiController");
 
 const {
@@ -65,12 +67,16 @@ const {
   createKoiConsignment,
   getAllKoiConsignments,
   getConsignmentsById,
+  deleteConsignmentById,
   // updateConsignmentStatus,
   updateConsignmentToApproved,
+  updateConsignmentToPending,
   assignConsignmentToStaff,
   getAllStaffConsignmentsByUserId,
   getPendingConsignmentsByUserId,
-  getApprovedConsignmentsByUserId
+  getApprovedConsignmentsByUserId,
+  updateConsignmentToSold,
+  updateConsignmentToSale,
 } = require("../controllers/koiConsignmentController");
 
 const {
@@ -912,11 +918,19 @@ router.get("/koiconsignment/:id", getConsignmentsById);
 
 // router.patch("/koiconsignment/:consignmentId/:status", updateConsignmentStatus);
 
+router.delete("/koiconsignment/:consignmentId", deleteConsignmentById);
+
+router.patch("/koiconsignment/:consignmentId/pending", updateConsignmentToPending);
+
 router.patch("/koiconsignment/:consignmentId/approved", updateConsignmentToApproved);
       
 router.get("/koiconsignment/pending/:userId", getPendingConsignmentsByUserId);
 
 router.get("/koiconsignment/approved/:userId", getApprovedConsignmentsByUserId);
+
+router.patch("/koiconsignment/:KoiID/sold", updateConsignmentToSold);
+
+router.patch("/koiconsignment/:consignmentId/sale", updateConsignmentToSale);
 
 /**
  * @swagger
@@ -949,6 +963,10 @@ router.get("/koiconsignment/approved/:userId", getApprovedConsignmentsByUserId);
  *         description: Failed to assign consignment to staff
  */
 router.patch("/koiconsignment/:consignmentId/assign", assignConsignmentToStaff);
+
+router.post('/from-consignment', createKoiFishFromConsignment);
+
+router.patch('/koiconsignment/:consignmentId', updateConsignmentKoiId);
 
 // Breeders routes
 /**

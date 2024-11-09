@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Layout, Typography, Table, Button, message, Popconfirm } from "antd";
-import AdminHeader from "../../../components/admin/header/AdminHeader";
-import AdminSidebar from "../../../components/admin/sidebar/AdminSidebar";
 import axiosPublic from "../../../api/axiosPublic";
 import { useNavigate } from "react-router-dom";
 import "./delete.scss";
@@ -79,10 +77,8 @@ const DeleteKoiPackage = () => {
   ];
 
   return (
-    <Layout className="admin-layout">
-      <AdminSidebar />
+    <Layout>
       <Layout>
-        <AdminHeader />
         <Content className="admin-content">
           <div className="delete-koi-package-container">
             <Title level={2}>Xóa Gói cá Koi</Title>

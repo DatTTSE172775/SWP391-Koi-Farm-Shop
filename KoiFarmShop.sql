@@ -1,5 +1,4 @@
-﻿CREATE DATABASE KoiFarmShop3
-USE KoiFarmShop3
+﻿
 
 CREATE TABLE Users (
     UserID INT IDENTITY(1,1) PRIMARY KEY,
@@ -9,7 +8,7 @@ CREATE TABLE Users (
     SubscriptionStatus VARCHAR(50) CHECK (SubscriptionStatus IN ('Active', 'Inactive')) NOT NULL
 );
 
-select * from Users
+--select * from Users
 
 CREATE TABLE Customers (
     CustomerID INT IDENTITY(1,1) PRIMARY KEY,
@@ -70,6 +69,7 @@ CREATE TABLE KoiFish (
 --select * from Varieties
 
 
+
 CREATE TABLE KoiPackage(
     PackageID INT IDENTITY(1,1) PRIMARY KEY,
     KoiID INT NOT NULL,
@@ -116,6 +116,11 @@ CREATE TABLE KoiConsignment (
     FOREIGN KEY (KoiID) REFERENCES KoiFish(KoiID),
     FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
+      SELECT 
+        COUNT(*) AS ActiveConsignments,
+        SUM(CASE WHEN Status = 'For Sale' THEN 1 ELSE 0 END) AS ForSale
+      FROM KoiConsignment
+      WHERE Status IN ('In Care', 'For Sale')
 
 
 	--select * from KoiConsignment where UserID = 3 And ApprovedStatus = 'Pending'
@@ -172,16 +177,6 @@ CREATE TABLE Orders (
 --select * from KoiFish
 select * from Orders
 --select * from Customers
-      SELECT 
-        CONVERT(VARCHAR, OrderDate, 23) AS Date,  -- Định dạng ngày theo "YYYY-MM-DD"
-        SUM(TotalAmount) AS DailyRevenue
-      FROM Orders
-      WHERE MONTH(OrderDate) = MONTH(GETDATE())
-      AND YEAR(OrderDate) = YEAR(GETDATE())
-      AND OrderStatus = 'Delivered'
-      GROUP BY CONVERT(VARCHAR, OrderDate, 23)
-      ORDER BY Date
---SELECT * FROM OrderDetails WHERE OrderID = 14
 
 
 CREATE TABLE OrderDetails (
@@ -199,6 +194,15 @@ CREATE TABLE OrderDetails (
     FOREIGN KEY (ProductID) REFERENCES KoiFish(KoiID),
     FOREIGN KEY (PackageID) REFERENCES KoiPackage(PackageID)
 );
+
+UPDATE OrderDetails
+SET ProductType = 
+    CASE 
+        WHEN KoiID IS NOT NULL AND PackageID IS NOT NULL THEN 'All'
+        WHEN KoiID IS NOT NULL THEN 'Single Fish'
+        WHEN PackageID IS NOT NULL THEN 'Package'
+        ELSE ProductType  -- Giữ nguyên nếu không có điều kiện nào thỏa mãn
+    END;
 
 --SELECT od.OrderDetailID, kp.PackageName, kp.PackageID
 --FROM OrderDetails od
@@ -342,6 +346,7 @@ INSERT INTO Users (Username, PasswordHash, Role, SubscriptionStatus) VALUES
 ('QuocTrieu', '$2b$10$OTPdR1qte0bX/iwWC2/Aqu8m.xnVPE1jDKmi/7KJpCDq.d2T7mc3O', 'Customer', 'Active'),
 ('ThanhDien', '$2b$10$OTPdR1qte0bX/iwWC2/Aqu8m.xnVPE1jDKmi/7KJpCDq.d2T7mc3O', 'Customer', 'Active'),
 ('MinhAnh', '$2b$10$OTPdR1qte0bX/iwWC2/Aqu8m.xnVPE1jDKmi/7KJpCDq.d2T7mc3O', 'Customer', 'Active');
+;
 
 INSERT INTO Users (Username, PasswordHash, Role, SubscriptionStatus) VALUES
 ('ThaiBao', '$2b$10$OTPdR1qte0bX/iwWC2/Aqu8m.xnVPE1jDKmi/7KJpCDq.d2T7mc3O', 'Customer', 'Inactive'),
@@ -351,53 +356,56 @@ INSERT INTO Users (Username, PasswordHash, Role, SubscriptionStatus) VALUES
 ('DiemQuynh', '$2b$10$OTPdR1qte0bX/iwWC2/Aqu8m.xnVPE1jDKmi/7KJpCDq.d2T7mc3O', 'Customer', 'Active'),
 ('MinhKiet', '$2b$10$OTPdR1qte0bX/iwWC2/Aqu8m.xnVPE1jDKmi/7KJpCDq.d2T7mc3O', 'Customer', 'Active');
 
+
 --delete from Users
 --DBCC CHECKIDENT ('Users', RESEED, 0);
 select * from Users
 
 INSERT INTO Customers (UserID, FullName, Email, PhoneNumber, Address, LoyaltyPoints) VALUES
-(7, 'Nguyễn Thị Tuyết Hương', 'nguyenthituyethuong10.1@gmail.com', '0799670750', '123 Lê Lợi, Quận 1, TP.HCM', 100),
-(8, 'Trần Thanh Phú Ninh', 'ninhttpsa170260@fpt.edu.vn', '0387142103', '456 Nguyễn Huệ, Quận 1, TP.HCM', 50),
-(9, 'Nguyễn Tường Huy', 'huyntse172712@fpt.edu.vn', '0366629575', '789 Trần Hưng Đạo, Quận 5, TP.HCM', 75),
-(10, 'Phạm Việt Hàn ', 'hanpvse170116@fpt.edu.vn', '0854315552', '101 Võ Văn Tần, Quận 3, TP.HCM', 200),
-(11, 'Trần Lê Duy', 'duytlse172563@fpt.edu.vn', '0565678442', '202 Nguyễn Thị Minh Khai, Quận 3, TP.HCM', 150),
-(12, 'Lương Quốc Triệu', 'trieulqse172431@fpt.edu.vn', '0705726731', '303 Điện Biên Phủ, Quận Bình Thạnh, TP.HCM', 25),
-(13, 'Ngô Viết Thanh Điền', 'ngodien2905@gmail.com', '0929617045', '404 Phan Xích Long, Quận Phú Nhuận, TP.HCM', 80),
-(14, 'Trần Thị Minh Ánh', 'AnhTTMSS170415@fpt.edu.vn', '0393034039', '139 Nguyễn Kiệm, Quận 4, TP.HCM', 55),
-(15, 'Nguyễn Thái Bảo', 'nguyenthaibao726@gmail.com', '0936616938', '254 Võ Nguyên Giáp, Quận 2, TP.HCM', 15),
-(16, 'Đoàn Minh Khôi', 'khoidmse182684@fpt.edu.vn', '0776100666', '70 Quốc lộ 50, Quận 8, TP.HCM', 305),
-(17, 'Đặng Mạnh Hùng', 'hungdmss180045@fpt.edu.vn', '0393034039', '139 Nguyễn Kiệm, Quận 4, TP.HCM', 95),
-(18, 'Lê Anh Tuấn', 'tuanlase173591@fpt.edu.vn', '0934105023', '20/8 Trần Đăng Khoa, Quận 6, TP.HCM', 54),
-(19, 'Nguyễn Ngọc Diễm Quỳnh', 'Quynhnndse172195@fpt.edu.vn', '0919895530', '27/5 Ký hòa, Quận 7, TP.HCM', 55),
-(20, 'Nguyễn Lê Minh Kiệt', 'kietnlmse171427@fpt.edu.vn', '0782131516', '250 Nguyễn Văn Tăng, Quận 9, TP.HCM', 55);
+(7, N'Nguyễn Thị Tuyết Hương', 'nguyenthituyethuong10.1@gmail.com', '0799670750', N'123 Lê Lợi, Quận 1, TP.HCM', 100),
+(8, N'Trần Thanh Phú Ninh', 'ninhttpsa170260@fpt.edu.vn', '0387142103', N'456 Nguyễn Huệ, Quận 1, TP.HCM', 50),
+(9, N'Nguyễn Tường Huy', 'huyntse172712@fpt.edu.vn', '0366629575', N'789 Trần Hưng Đạo, Quận 5, TP.HCM', 75),
+(10, N'Phạm Việt Hàn ', 'hanpvse170116@fpt.edu.vn', '0854315552', N'101 Võ Văn Tần, Quận 3, TP.HCM', 200),
+(11, N'Trần Lê Duy', 'duytlse172563@fpt.edu.vn', '0565678442', N'202 Nguyễn Thị Minh Khai, Quận 3, TP.HCM', 150),
+(12, N'Lương Quốc Triệu', 'trieulqse172431@fpt.edu.vn', '0705726731', N'303 Điện Biên Phủ, Quận Bình Thạnh, TP.HCM', 25),
+(13, N'Ngô Viết Thanh Điền', 'ngodien2905@gmail.com', '0929617045', N'404 Phan Xích Long, Quận Phú Nhuận, TP.HCM', 80),
+(14, N'Trần Thị Minh Ánh', 'AnhTTMSS170415@fpt.edu.vn', '0393034039', N'139 Nguyễn Kiệm, Quận 4, TP.HCM', 55),
+(15, N'Nguyễn Thái Bảo', 'nguyenthaibao726@gmail.com', '0936616938', N'254 Võ Nguyên Giáp, Quận 2, TP.HCM', 15),
+(16, N'Đoàn Minh Khôi', 'khoidmse182684@fpt.edu.vn', '0776100666', N'70 Quốc lộ 50, Quận 8, TP.HCM', 305),
+(17, N'Đặng Mạnh Hùng', 'hungdmss180045@fpt.edu.vn', '0393034039', N'139 Nguyễn Kiệm, Quận 4, TP.HCM', 95),
+(18, N'Lê Anh Tuấn', 'tuanlase173591@fpt.edu.vn', '0934105023', N'20/8 Trần Đăng Khoa, Quận 6, TP.HCM', 54),
+(19, N'Nguyễn Ngọc Diễm Quỳnh', 'Quynhnndse172195@fpt.edu.vn', '0919895530', N'27/5 Ký hòa, Quận 7, TP.HCM', 55),
+(20, N'Nguyễn Lê Minh Kiệt', 'kietnlmse171427@fpt.edu.vn', '0782131516', N'250 Nguyễn Văn Tăng, Quận 9, TP.HCM', 55);
+
+
 --delete from Customers
 --DBCC CHECKIDENT ('Customers', RESEED, 0);
 select * from Customers
 
 INSERT INTO Varieties (VarietyName, Description, Origin) VALUES
-('Kohaku', 'Cá Koi trắng với các mảng đỏ', 'Japan'),
-('Sanke', 'Cá Koi trắng với các mảng đỏ và đen', 'Japan'),
-('Showa', 'Cá Koi đen với các mảng đỏ và trắng', 'Japan'),
-('Chagoi', 'Cá Koi màu nâu đồng', 'Japan'),
-('Shusui', 'Cá Koi vảy gương với màu xanh và đỏ', 'Japan'),
-('Kujaku', 'Cá Koi trắng với vảy bạc và mảng đỏ', 'Japan'),
-('Goshiki', 'Cá Koi năm màu', 'Japan'),
-('Yamabuki', 'Cá Koi màu vàng', 'Japan'),
-('Asagi', 'Cá Koi xanh trên lưng, đỏ ở bụng', 'Japan'),
-('Beni Kumonryu', 'Cá Koi đen với mảng trắng và đỏ', 'Japan');
+(N'Kohaku', N'Cá Koi trắng với các mảng đỏ', N'Japan'),
+(N'Sanke', N'Cá Koi trắng với các mảng đỏ và đen', N'Japan'),
+(N'Showa', N'Cá Koi đen với các mảng đỏ và trắng', N'Japan'),
+(N'Chagoi', N'Cá Koi màu nâu đồng', N'Japan'),
+(N'Shusui', N'Cá Koi vảy gương với màu xanh và đỏ', N'Japan'),
+(N'Kujaku', N'Cá Koi trắng với vảy bạc và mảng đỏ', N'Japan'),
+(N'Goshiki', N'Cá Koi năm màu', N'Japan'),
+(N'Yamabuki', N'Cá Koi màu vàng', N'Japan'),
+(N'Asagi', N'Cá Koi xanh trên lưng, đỏ ở bụng', N'Japan'),
+(N'Beni Kumonryu', N'Cá Koi đen với mảng trắng và đỏ', N'Japan');
 select * from Varieties
 
 INSERT INTO Breeders (Name, Address, ContactInfo, CertificationLink, Notes) VALUES
-('Dainichi Koi Farm', 'Niigata, Japan', 'contact@dainichi.com', 'https://dainichi-certification.jp', 'Nổi tiếng với dòng Koi Chagoi'),
-('Momotaro Koi Farm', 'Aichi, Japan', 'info@momotaro-koi.com', 'https://momotaro-cert.jp', 'Chuyên về Koi Kohaku và Sanke'),
-('Sakai Fish Farm', 'Hiroshima, Japan', 'sakai@koi.jp', 'https://sakai-fish-cert.jp', 'Một trong những trại cá Koi lâu đời nhất'),
-('Omosako Koi Farm', 'Niigata, Japan', 'omosako@koifarm.jp', 'https://omosako-cert.jp', 'Nổi tiếng với dòng Koi Shiro Utsuri'),
-('Marudo Koi Farm', 'Niigata, Japan', 'contact@marudo.jp', 'https://marudo-certification.jp', 'Chuyên về Koi Gosanke'),
-('Isa Koi Farm', 'Niigata, Japan', 'isa@koifarm.com', 'https://isa-cert.jp', 'Nổi tiếng với dòng Koi Showa'),
-('Kaneko Koi Farm', 'Fukuoka, Japan', 'info@kaneko-koi.jp', 'https://kaneko-certification.jp', 'Chuyên về Koi Doitsu'),
-('Marusaka Koi Farm', 'Niigata, Japan', 'marusaka@koi.com', 'https://marusaka-cert.jp', 'Nổi tiếng với dòng Koi Goshiki'),
-('Yagenji Koi Farm', 'Niigata, Japan', 'contact@yagenji.jp', 'https://yagenji-certification.jp', 'Chuyên về Koi Asagi và Shusui'),
-('Otsuka Koi Farm', 'Saitama, Japan', 'otsuka@koifarm.jp', 'https://otsuka-cert.jp', 'Nổi tiếng với dòng Koi Kujaku');
+('Dainichi Koi Farm', 'Niigata, Japan', 'contact@dainichi.com', 'https://dainichi-certification.jp', N'Nổi tiếng với dòng Koi Chagoi'),
+('Momotaro Koi Farm', 'Aichi, Japan', 'info@momotaro-koi.com', 'https://momotaro-cert.jp', N'Chuyên về Koi Kohaku và Sanke'),
+('Sakai Fish Farm', 'Hiroshima, Japan', 'sakai@koi.jp', 'https://sakai-fish-cert.jp', N'Một trong những trại cá Koi lâu đời nhất'),
+('Omosako Koi Farm', 'Niigata, Japan', 'omosako@koifarm.jp', 'https://omosako-cert.jp', N'Nổi tiếng với dòng Koi Shiro Utsuri'),
+('Marudo Koi Farm', 'Niigata, Japan', 'contact@marudo.jp', 'https://marudo-certification.jp', N'Chuyên về Koi Gosanke'),
+('Isa Koi Farm', 'Niigata, Japan', 'isa@koifarm.com', 'https://isa-cert.jp', N'Nổi tiếng với dòng Koi Showa'),
+('Kaneko Koi Farm', 'Fukuoka, Japan', 'info@kaneko-koi.jp', 'https://kaneko-certification.jp', N'Chuyên về Koi Doitsu'),
+('Marusaka Koi Farm', 'Niigata, Japan', 'marusaka@koi.com', 'https://marusaka-cert.jp', N'Nổi tiếng với dòng Koi Goshiki'),
+('Yagenji Koi Farm', 'Niigata, Japan', 'contact@yagenji.jp', 'https://yagenji-certification.jp', N'Chuyên về Koi Asagi và Shusui'),
+('Otsuka Koi Farm', 'Saitama, Japan', 'otsuka@koifarm.jp', 'https://otsuka-cert.jp', N'Nổi tiếng với dòng Koi Kujaku');
 --select * from Breeders
 
 --SET IDENTITY_INSERT KoiFish OFF;
@@ -532,29 +540,29 @@ select * from KoiPackage
 --DBCC CHECKIDENT ('KoiPackage', RESEED, 0);
 
 INSERT INTO Promotions (PromotionCode, Description, DiscountType, DiscountValue, StartDate, EndDate, Status, MinPurchaseAmount) VALUES
-('SUMMER2024', 'Khuyến mãi mùa hè 2024', 'Percentage', 15.00, '2024-06-01', '2024-08-31', 'Active', 5000000),
-('NEWCUSTOMER', 'Ưu đãi cho khách hàng mới', 'Fixed Amount', 500000, '2024-01-01', '2024-12-31', 'Active', 3000000),
-('LOYALTY10', 'Giảm giá cho khách hàng thân thiết', 'Percentage', 10.00, '2024-03-01', '2024-12-31', 'Active', 8000000),
-('FLASH24H', 'Khuyến mãi flash 24 giờ', 'Percentage', 20.00, '2024-07-15', '2024-07-16', 'Active', 2000000),
-('AUTUMN2024', 'Ưu đãi mùa thu 2024', 'Percentage', 12.00, '2024-09-01', '2024-11-30', 'Active', 6000000),
-('BLACKFRIDAY', 'Giảm giá Black Friday', 'Percentage', 25.00, '2024-11-29', '2024-11-30', 'Active', 10000000),
-('XMAS2024', 'Quà tặng Giáng sinh', 'Fixed Amount', 1000000, '2024-12-20', '2024-12-25', 'Active', 15000000),
-('NEWYEAR2025', 'Chào đón năm mới 2025', 'Percentage', 18.00, '2024-12-31', '2025-01-07', 'Active', 5000000),
-('TETHOLIDAY', 'Ưu đãi Tết Nguyên Đán', 'Percentage', 15.00, '2025-01-25', '2025-02-05', 'Active', 8000000),
-('SPRINGJOY', 'Hân hoan mùa xuân', 'Fixed Amount', 750000, '2025-03-01', '2025-03-31', 'Active', 4000000);
+('SUMMER2024', N'Khuyến mãi mùa hè 2024', 'Percentage', 15.00, '2024-06-01', '2024-08-31', 'Active', 5000000),
+('NEWCUSTOMER', N'Ưu đãi cho khách hàng mới', 'Fixed Amount', 500000, '2024-01-01', '2024-12-31', 'Active', 3000000),
+('LOYALTY10', N'Giảm giá cho khách hàng thân thiết', 'Percentage', 10.00, '2024-03-01', '2024-12-31', 'Active', 8000000),
+('FLASH24H', N'Khuyến mãi flash 24 giờ', 'Percentage', 20.00, '2024-07-15', '2024-07-16', 'Active', 2000000),
+('AUTUMN2024', N'Ưu đãi mùa thu 2024', 'Percentage', 12.00, '2024-09-01', '2024-11-30', 'Active', 6000000),
+('BLACKFRIDAY', N'Giảm giá Black Friday', 'Percentage', 25.00, '2024-11-29', '2024-11-30', 'Active', 10000000),
+('XMAS2024', N'Quà tặng Giáng sinh', 'Fixed Amount', 1000000, '2024-12-20', '2024-12-25', 'Active', 15000000),
+('NEWYEAR2025', N'Chào đón năm mới 2025', 'Percentage', 18.00, '2024-12-31', '2025-01-07', 'Active', 5000000),
+('TETHOLIDAY', N'Ưu đãi Tết Nguyên Đán', 'Percentage', 15.00, '2025-01-25', '2025-02-05', 'Active', 8000000),
+('SPRINGJOY', N'Hân hoan mùa xuân', 'Fixed Amount', 750000, '2025-03-01', '2025-03-31', 'Active', 4000000);
 --select * from Promotions
 
 INSERT INTO Orders (CustomerID, OrderDate, ShippingAddress, OrderStatus, PaymentMethod, PaymentStatus, TrackingNumber, Discount, ShippingCost, PromotionID) VALUES
-(1, '2024-06-15 10:30:00', '123 Lê Lợi, Quận 1, TP.HCM', 'Pending', 'Credit Card', 'Completed', 'VN123456789', 500000, 200000, 1),
-(2, '2024-07-20 14:45:00', '456 Nguyễn Huệ, Quận 1, TP.HCM', 'Pending', 'Bank Transfer', 'Completed', 'VN987654321', 800000, 250000, 3),
-(5, '2024-08-05 09:15:00','789 Trần Hưng Đạo, Quận 5, TP.HCM', 'Pending', 'Cash on Delivery', 'Pending', NULL, 300000, 150000, 2),
-(6, '2024-09-10 16:20:00', '101 Võ Văn Tần, Quận 3, TP.HCM', 'Pending', 'Credit Card', 'Pending', NULL, 1500000, 300000, 5),
-(7, '2024-10-01 11:00:00', '202 Nguyễn Thị Minh Khai, Quận 3, TP.HCM', 'Pending', 'Bank Transfer', 'Completed', 'VN135792468', 700000, 200000, 4),
-(9, '2024-11-15 13:30:00', '303 Điện Biên Phủ, Quận Bình Thạnh, TP.HCM', 'Pending', 'Credit Card', 'Completed', 'VN246813579', 1000000, 250000, 6),
-(10, '2024-12-20 15:45:00', '404 Phan Xích Long, Quận Phú Nhuận, TP.HCM', 'Pending', 'Bank Transfer', 'Completed', NULL, 2000000, 300000, 7),
-(11, '2025-01-05 08:30:00', '123 Lê Lợi, Quận 1, TP.HCM', 'Pending', 'Cash on Delivery', 'Pending', NULL, 600000, 200000, 8),
-(12, '2025-02-10 10:00:00', '456 Nguyễn Huệ, Quận 1, TP.HCM', 'Pending', 'Credit Card', 'Completed', 'VN369258147', 1200000, 250000, 9),
-(14, '2025-03-15 14:15:00', '789 Trần Hưng Đạo, Quận 5, TP.HCM', 'Pending', 'Bank Transfer', 'Completed', 'VN741852963', 450000, 150000, 10);
+(1, '2024-06-15 10:30:00', N'123 Lê Lợi, Quận 1, TP.HCM', 'Pending', 'Credit Card', 'Completed', 'VN123456789', 500000, 200000, 1),
+(2, '2024-07-20 14:45:00', N'456 Nguyễn Huệ, Quận 1, TP.HCM', 'Pending', 'Bank Transfer', 'Completed', 'VN987654321', 800000, 250000, 3),
+(5, '2024-08-05 09:15:00',N'789 Trần Hưng Đạo, Quận 5, TP.HCM', 'Pending', 'Cash on Delivery', 'Pending', 'VN135792468', 300000, 150000, 2),
+(6, '2024-09-10 16:20:00', N'101 Võ Văn Tần, Quận 3, TP.HCM', 'Pending', 'Credit Card', 'Pending', 'VN135792468', 1500000, 300000, 5),
+(7, '2024-10-01 11:00:00', N'202 Nguyễn Thị Minh Khai, Quận 3, TP.HCM', 'Pending', 'Bank Transfer', 'Completed', 'VN135792468', 700000, 200000, 4),
+(9, '2024-11-15 13:30:00', N'303 Điện Biên Phủ, Quận Bình Thạnh, TP.HCM', 'Pending', 'Credit Card', 'Completed', 'VN246813579', 1000000, 250000, 6),
+(10, '2024-12-20 15:45:00', N'404 Phan Xích Long, Quận Phú Nhuận, TP.HCM', 'Pending', 'Bank Transfer', 'Completed', 'VN135792468', 2000000, 300000, 7),
+(11, '2025-01-05 08:30:00', N'123 Lê Lợi, Quận 1, TP.HCM', 'Pending', 'Cash on Delivery', 'Pending', 'VN135792468', 600000, 200000, 8),
+(12, '2025-02-10 10:00:00', N'456 Nguyễn Huệ, Quận 1, TP.HCM', 'Pending', 'Credit Card', 'Completed', 'VN369258147', 1200000, 250000, 9),
+(14, '2025-03-15 14:15:00', N'789 Trần Hưng Đạo, Quận 5, TP.HCM', 'Pending', 'Bank Transfer', 'Completed', 'VN741852963', 450000, 150000, 10);
 --Select * from KoiFish
 --Delete from Orders
 --DBCC CHECKIDENT ('Orders', RESEED, 0);
@@ -563,7 +571,7 @@ Select * from Orders
 
 
 
---select * from Orders
+select * from Orders
 --select * from OrderDetails
 INSERT INTO OrderDetails (OrderID, Quantity, UnitPrice, ProductType, CertificateStatus, KoiID, PackageID) VALUES
 (1, 1, (SELECT Price FROM KoiFish WHERE KoiID = 1), 'Single Fish', 'Issued', 1, NULL),
@@ -582,6 +590,9 @@ INSERT INTO OrderDetails (OrderID, Quantity, UnitPrice, ProductType, Certificate
 (9, 1, (SELECT Price FROM KoiFish WHERE KoiID = 8), 'Single Fish', 'Issued', 8, NULL),
 (9, 2, (SELECT Price FROM KoiPackage WHERE PackageID = 7), 'Package', 'Not Issued', NULL, 7),
 (9, 1, (SELECT Price FROM KoiPackage WHERE PackageID = 8), 'Package', 'Not Issued', NULL, 8);
+
+INSERT INTO OrderDetails (OrderID, Quantity, UnitPrice, ProductType, CertificateStatus, KoiID, PackageID) VALUES
+(10, 1, (SELECT Price FROM KoiPackage WHERE PackageID = 8), 'Package', 'Not Issued', NULL, 8);
 
 select * from OrderDetails
 SELECT * FROM KoiFish WHERE KoiID = 2;
@@ -607,16 +618,16 @@ INSERT INTO Payments (OrderID, PaymentDate, PaymentMethod, PaymentStatus) VALUES
 --select * from Payments
 
 INSERT INTO KoiImages (KoiID, ImageLink, Description, UploadedDate) VALUES
-(1, 'https://img.onkoi.vn/sakura-beauty-1.jpg', 'Sakura Beauty - Mặt bên', '2024-05-01 09:00:00'),
-(1, 'https://img.onkoi.vn/sakura-beauty-2.jpg', 'Sakura Beauty - Mặt trên', '2024-05-01 09:05:00'),
-(2, 'https://img.onkoi.vn/golden-dragon-1.jpg', 'Golden Dragon - Toàn thân', '2024-05-02 10:30:00'),
-(3, 'https://img.onkoi.vn/azure-dream-1.jpg', 'Azure Dream - Mặt bên', '2024-05-03 11:15:00'),
-(4, 'https://img.onkoi.vn/crimson-warrior-1.jpg', 'Crimson Warrior - Toàn cảnh', '2024-05-04 14:00:00'),
-(4, 'https://img.onkoi.vn/crimson-warrior-2.jpg', 'Crimson Warrior - Cận cảnh đầu', '2024-05-04 14:05:00'),
-(5, 'https://img.onkoi.vn/moonlight-serenade-1.jpg', 'Moonlight Serenade - Mặt bên', '2024-05-05 16:30:00'),
-(6, 'https://img.onkoi.vn/sunset-blaze-1.jpg', 'Sunset Blaze - Toàn thân', '2024-05-06 09:45:00'),
-(7, 'https://img.onkoi.vn/pearl-princess-1.jpg', 'Pearl Princess - Mặt trên', '2024-05-07 11:20:00'),
-(8, 'https://img.onkoi.vn/thunder-storm-1.jpg', 'Thunder Storm - Cận cảnh vảy', '2024-05-08 13:00:00');
+(1, 'https://img.onkoi.vn/sakura-beauty-1.jpg', N'Sakura Beauty - Mặt bên', '2024-05-01 09:00:00'),
+(1, 'https://img.onkoi.vn/sakura-beauty-2.jpg', N'Sakura Beauty - Mặt trên', '2024-05-01 09:05:00'),
+(2, 'https://img.onkoi.vn/golden-dragon-1.jpg', N'Golden Dragon - Toàn thân', '2024-05-02 10:30:00'),
+(3, 'https://img.onkoi.vn/azure-dream-1.jpg', N'Azure Dream - Mặt bên', '2024-05-03 11:15:00'),
+(4, 'https://img.onkoi.vn/crimson-warrior-1.jpg', N'Crimson Warrior - Toàn cảnh', '2024-05-04 14:00:00'),
+(4, 'https://img.onkoi.vn/crimson-warrior-2.jpg', N'Crimson Warrior - Cận cảnh đầu', '2024-05-04 14:05:00'),
+(5, 'https://img.onkoi.vn/moonlight-serenade-1.jpg', N'Moonlight Serenade - Mặt bên', '2024-05-05 16:30:00'),
+(6, 'https://img.onkoi.vn/sunset-blaze-1.jpg', N'Sunset Blaze - Toàn thân', '2024-05-06 09:45:00'),
+(7, 'https://img.onkoi.vn/pearl-princess-1.jpg', N'Pearl Princess - Mặt trên', '2024-05-07 11:20:00'),
+(8, 'https://img.onkoi.vn/thunder-storm-1.jpg', N'Thunder Storm - Cận cảnh vảy', '2024-05-08 13:00:00');
 --select * from KoiImages
 
 INSERT INTO KoiCertificates (KoiID, CertificateLink, IssuedDate, SoldDate) VALUES
@@ -641,26 +652,26 @@ INSERT INTO LoyaltyPoints (CustomerID, PointsEarned, PointsUsed, TotalPoints, La
 --select * from LoyaltyPoints
 
 INSERT INTO Reviews (ProductID, CustomerID, Rating, Comment, ReviewDate, Status) VALUES
-(1, 1, 5, 'Cá Koi Sakura Beauty thật sự đẹp và khỏe mạnh. Rất hài lòng với sản phẩm!', '2024-06-30 09:00:00', 'Visible'),
-(2, 2, 4, 'Golden Dragon là một con cá Koi ấn tượng. Chỉ tiếc là hơi nhút nhát.', '2024-08-05 14:30:00', 'Visible'),
-(3, 4, 5, 'Azure Dream là một lựa chọn tuyệt vời cho người mới chơi Koi như tôi.', '2024-08-20 11:15:00', 'Visible'),
-(4, 6, 5, 'Crimson Warrior quả thực xứng đáng với cái tên. Rất mạnh mẽ và đẹp!', '2024-09-25 16:45:00', 'Visible'),
-(5, 7, 4, 'Moonlight Serenade có màu sắc rất dịu dàng, phù hợp với hồ cá của tôi.', '2024-10-15 10:20:00', 'Visible'),
-(6, 9, 5, 'Sunset Blaze là một bổ sung tuyệt vời cho bộ sưu tập Koi của tôi.', '2024-11-30 13:00:00', 'Visible'),
-(7, 10, 4, 'Pearl Princess rất duyên dáng. Chỉ có điều hơi nhỏ so với mong đợi.', '2024-12-30 15:30:00', 'Visible'),
-(8, 1, 5, 'Thunder Storm quả là một con cá Koi ấn tượng. Rất hài lòng với việc mua hàng!', '2025-01-20 09:45:00', 'Visible'),
-(9, 2, 5, 'Autumn Whisper là một lựa chọn tuyệt vời. Màu sắc rất hài hòa và đẹp mắt.', '2025-02-25 11:30:00', 'Visible'),
-(10, 4, 5, 'Midnight Samurai thực sự là một tác phẩm nghệ thuật sống. Rất ấn tượng!', '2025-03-30 14:15:00', 'Visible');
+(1, 1, 5, N'Cá Koi Sakura Beauty thật sự đẹp và khỏe mạnh. Rất hài lòng với sản phẩm!', '2024-06-30 09:00:00', 'Visible'),
+(2, 2, 4, N'Golden Dragon là một con cá Koi ấn tượng. Chỉ tiếc là hơi nhút nhát.', '2024-08-05 14:30:00', 'Visible'),
+(3, 4, 5, N'Azure Dream là một lựa chọn tuyệt vời cho người mới chơi Koi như tôi.', '2024-08-20 11:15:00', 'Visible'),
+(4, 6, 5, N'Crimson Warrior quả thực xứng đáng với cái tên. Rất mạnh mẽ và đẹp!', '2024-09-25 16:45:00', 'Visible'),
+(5, 7, 4, N'Moonlight Serenade có màu sắc rất dịu dàng, phù hợp với hồ cá của tôi.', '2024-10-15 10:20:00', 'Visible'),
+(6, 9, 5, N'Sunset Blaze là một bổ sung tuyệt vời cho bộ sưu tập Koi của tôi.', '2024-11-30 13:00:00', 'Visible'),
+(7, 10, 4, N'Pearl Princess rất duyên dáng. Chỉ có điều hơi nhỏ so với mong đợi.', '2024-12-30 15:30:00', 'Visible'),
+(8, 1, 5, N'Thunder Storm quả là một con cá Koi ấn tượng. Rất hài lòng với việc mua hàng!', '2025-01-20 09:45:00', 'Visible'),
+(9, 2, 5, N'Autumn Whisper là một lựa chọn tuyệt vời. Màu sắc rất hài hòa và đẹp mắt.', '2025-02-25 11:30:00', 'Visible'),
+(10, 4, 5, N'Midnight Samurai thực sự là một tác phẩm nghệ thuật sống. Rất ấn tượng!', '2025-03-30 14:15:00', 'Visible');
 --select * from Reviews
 
 
 INSERT INTO BlogPosts (UserID, Title, Content, CreatedDate, UpdatedDate, Status) VALUES
-(5, 'Cách chọn cá Koi chất lượng', 'Khi chọn cá Koi, có một số yếu tố quan trọng cần xem xét...', '2024-06-01 09:00:00', '2024-06-01 09:00:00', 'Published'),
-(3, 'Dinh dưỡng cho cá Koi: Những điều cần biết', 'Chế độ dinh dưỡng đóng vai trò quan trọng trong sức khỏe và màu sắc của cá Koi...', '2024-07-15 10:30:00', '2024-07-15 10:30:00', 'Published'),
-(5, 'Các loại cá Koi phổ biến tại Việt Nam', 'Tại Việt Nam, có nhiều loại cá Koi được yêu thích...', '2024-08-20 14:00:00', '2024-08-20 14:00:00', 'Published'),
-(3, 'Cách xây dựng hồ Koi đúng cách', 'Để có một hồ Koi hoàn hảo, bạn cần chú ý đến một số yếu tố...', '2024-09-10 11:45:00', '2024-09-10 11:45:00', 'Published'),
-(5, 'Lịch sử và ý nghĩa của cá Koi trong văn hóa Nhật Bản', 'Cá Koi không chỉ là một loài cá cảnh, mà còn mang nhiều ý nghĩa sâu sắc...', '2024-10-05 16:20:00', '2024-10-05 16:20:00', 'Published'),
-(3, 'Cách phòng và trị bệnh cho cá Koi', 'Bệnh tật là một trong những thách thức lớn nhất khi nuôi cá Koi...', '2024-11-12 13:10:00', '2024-11-12 13:10:00', 'Published'),
+(5, N'Cách chọn cá Koi chất lượng', N'Khi chọn cá Koi, có một số yếu tố quan trọng cần xem xét...', '2024-06-01 09:00:00', '2024-06-01 09:00:00', 'Published'),
+(3, N'Dinh dưỡng cho cá Koi: Những điều cần biết', N'Chế độ dinh dưỡng đóng vai trò quan trọng trong sức khỏe và màu sắc của cá Koi...', '2024-07-15 10:30:00', '2024-07-15 10:30:00', 'Published'),
+(5, N'Các loại cá Koi phổ biến tại Việt Nam', N'Tại Việt Nam, có nhiều loại cá Koi được yêu thích...', '2024-08-20 14:00:00', '2024-08-20 14:00:00', 'Published'),
+(3, N'Cách xây dựng hồ Koi đúng cách', N'Để có một hồ Koi hoàn hảo, bạn cần chú ý đến một số yếu tố...', '2024-09-10 11:45:00', '2024-09-10 11:45:00', 'Published'),
+(5, N'Lịch sử và ý nghĩa của cá Koi trong văn hóa Nhật Bản', N'Cá Koi không chỉ là một loài cá cảnh, mà còn mang nhiều ý nghĩa sâu sắc...', '2024-10-05 16:20:00', '2024-10-05 16:20:00', 'Published'),
+(3, N'Cách phòng và trị bệnh cho cá Koi', N'Bệnh tật là một trong những thách thức lớn nhất khi nuôi cá Koi...', '2024-11-12 13:10:00', '2024-11-12 13:10:00', 'Published'),
 (5, 'Kỹ thuật cho cá Koi ăn đúng cách', 'Cho cá Koi ăn không chỉ đơn giản là thả thức ăn vào hồ...', '2024-12-18 09:30:00', '2024-12-18 09:30:00', 'Published'),
 (3, 'Cách nhận biết cá Koi có chất lượng tốt', 'Để chọn được một con cá Koi chất lượng, bạn cần biết một số đặc điểm...', '2025-01-22 15:00:00', '2025-01-22 15:00:00', 'Published'),
 (5, 'Xu hướng nuôi cá Koi tại Việt Nam', 'Trong những năm gần đây, việc nuôi cá Koi tại Việt Nam ngày càng phổ biến...', '2025-02-28 10:45:00', '2025-02-28 10:45:00', 'Published'),
@@ -668,16 +679,16 @@ INSERT INTO BlogPosts (UserID, Title, Content, CreatedDate, UpdatedDate, Status)
 --select * from BlogPosts
 
 INSERT INTO Categories (CategoryName) VALUES
-('Chăm sóc cá Koi'),
-('Dinh dưỡng'),
-('Thiết kế hồ'),
-('Lịch sử và văn hóa'),
-('Sức khỏe cá'),
-('Kỹ thuật nuôi'),
-('Chọn lựa cá Koi'),
-('Xu hướng thị trường'),
-('Môi trường sống'),
-('Giống cá Koi');
+(N'Chăm sóc cá Koi'),
+(N'Dinh dưỡng'),
+(N'Thiết kế hồ'),
+(N'Lịch sử và văn hóa'),
+(N'Sức khỏe cá'),
+(N'Kỹ thuật nuôi'),
+(N'Chọn lựa cá Koi'),
+(N'Xu hướng thị trường'),
+(N'Môi trường sống'),
+(N'Giống cá Koi');
 --select * from Categories
 
 INSERT INTO BlogCategories (PostID, CategoryID) VALUES
@@ -750,22 +761,34 @@ INSERT INTO Comments (PostID, UserID, CommentText, CommentDate, Status) VALUES
 INSERT INTO OrderHistory (OrderID, TrackingNumber, ShipmentDate, DeliveryDate, ShipmentStatus) VALUES
 (1, 'VN123456789', '2024-06-16 09:00:00', '2024-06-18 14:30:00', 'Delivered'),
 (2, 'VN987654321', '2024-07-21 10:15:00', '2024-07-23 16:45:00', 'Delivered'),
-(3, NULL, NULL, NULL, 'In Transit'),
-(4, NULL, NULL, NULL, 'In Transit'),
+(3, 'VN135792468', NULL, NULL, 'In Transit'),
+(4, 'VN135792468', NULL, NULL, 'In Transit'),
 (5, 'VN135792468', '2024-10-02 08:30:00', '2024-10-04 13:20:00', 'Delivered'),
 (6, 'VN246813579', '2024-11-16 11:00:00', '2024-11-18 15:40:00', 'Delivered'),
-(7, NULL, NULL, NULL, 'In Transit'),
-(8, NULL, NULL, NULL, 'In Transit'),
+(7, 'VN135792468', NULL, NULL, 'In Transit'),
+(8, 'VN135792468', NULL, NULL, 'In Transit'),
 (9, 'VN369258147', '2025-02-11 09:45:00', '2025-02-13 14:15:00', 'Delivered'),
 (10, 'VN741852963', '2025-03-16 10:30:00', '2025-03-18 16:00:00', 'Delivered');
 select * from OrderHistory
 --select * from OrderHistory
 
 
+      SELECT COUNT(DISTINCT CustomerID) AS returningCustomers
+      FROM Orders
+      WHERE MONTH(OrderDate) = MONTH(GETDATE()) AND YEAR(OrderDate) = YEAR(GETDATE())
+      AND CustomerID IN (
+        SELECT CustomerID
+        FROM Orders
+        GROUP BY CustomerID
+        HAVING COUNT(OrderID) > 1
+      )
 
 SELECT 
     o.OrderID,
     o.CustomerID,
+    u.UserID,
+    u.Username,
+    u.Role,
     o.OrderDate,
     o.TotalAmount,
     o.ShippingAddress,
@@ -776,6 +799,12 @@ SELECT
     o.Discount,
     o.ShippingCost,
     o.PromotionID,
+    
+    c.FullName,
+    c.Email,
+    c.PhoneNumber,
+    c.Address,
+    c.LoyaltyPoints,
 
     -- Thông tin từ OrderDetails
     STRING_AGG(CAST(od.ProductID AS VARCHAR), ', ') AS ProductIDs,
@@ -801,7 +830,173 @@ SELECT
     STRING_AGG(CAST(kp.PackageSize AS VARCHAR), ', ') AS PackageSizes,
     STRING_AGG(CAST(kp.Price AS VARCHAR), ', ') AS PackagePrices,
     STRING_AGG(CAST(kp.Quantity AS VARCHAR), ', ') AS PackageQuantities,
-    STRING_AGG(kp.Availability, ', ') AS PackageAvailabilities
+    STRING_AGG(kp.Availability, ', ') AS PackageAvailabilities,
+
+	    -- Thông tin chi tiết về KoiConsignment
+    STRING_AGG(CAST(kc.ConsignmentID AS VARCHAR), ', ') AS ConsignmentIDList,
+    STRING_AGG(CAST(kc.CustomerID AS VARCHAR), ', ') AS ConsignmentCustomerIDs,
+    STRING_AGG(CAST(kc.KoiID AS VARCHAR), ', ') AS ConsignmentKoiIDs,
+    STRING_AGG(kc.ConsignmentType, ', ') AS ConsignmentTypes,
+    STRING_AGG(kc.ConsignmentMode, ', ') AS ConsignmentModes,
+    STRING_AGG(CAST(kc.PriceAgreed AS VARCHAR), ', ') AS ConsignmentPriceAgreeds,
+    STRING_AGG(kc.Status, ', ') AS ConsignmentStatuses,
+    STRING_AGG(kc.ApprovedStatus, ', ') AS ConsignmentApprovedStatuses,
+    STRING_AGG(kc.Notes, ', ') AS ConsignmentNotes
+FROM 
+    Orders o
+LEFT JOIN 
+    OrderDetails od ON o.OrderID = od.OrderID
+LEFT JOIN 
+    KoiFish kf ON od.KoiID = kf.KoiID
+LEFT JOIN 
+    KoiPackage kp ON od.PackageID = kp.PackageID
+LEFT JOIN 
+	KoiConsignment kc ON kc.CustomerID = o.CustomerID AND kc.KoiID = kf.KoiID
+LEFT JOIN 
+    Customers c ON o.CustomerID = c.CustomerID
+LEFT JOIN 
+    Users u ON c.UserID = u.UserID
+
+GROUP BY  
+    o.OrderID, o.CustomerID, u.UserID, u.Username, u.Role, o.OrderDate, o.TotalAmount, 
+    o.ShippingAddress, o.OrderStatus, o.PaymentMethod, o.PaymentStatus, 
+    o.TrackingNumber, o.Discount, o.ShippingCost, o.PromotionID,
+    c.FullName, c.Email, c.PhoneNumber, c.Address, c.LoyaltyPoints
+
+ORDER BY 
+    o.OrderID;
+
+
+INSERT INTO KoiConsignment (CustomerID, KoiID, ConsignmentType, ConsignmentMode, StartDate, EndDate, Status, PriceAgreed, PickupDate, ApprovedStatus, InspectionResult, Notes) VALUES
+-- Status: 'Pending', ApprovedStatus: 'Pending'
+(1, 1, 'Sale', 'Offline', DEFAULT, '2024-12-31', 'Pending', 50000.00, '2024-10-25', 'Pending', N'Chưa kiểm tra', N'Ghi chú mẫu cho trạng thái Pending'),
+
+-- Status: 'Approved', ApprovedStatus: 'Approved'
+(2, 2, 'Sale', 'Online', DEFAULT, '2024-11-30', 'Approved', 80000.00, '2024-10-26', 'Approved', N'Koi đạt tiêu chuẩn', N'Ghi chú mẫu cho trạng thái Approved'),
+
+-- Status: 'In Care', ApprovedStatus: 'Approved'
+(3, 3, 'Sale', 'Offline', DEFAULT, '2024-11-15', 'In Care', 60000.00, '2024-10-27', 'Approved', N'Koi cần chăm sóc thêm', N'Ghi chú mẫu cho trạng thái In Care'),
+
+-- Status: 'Listed for Sale', ApprovedStatus: 'Approved'
+(4, 4, 'Care', 'Online', DEFAULT, '2024-11-20', 'Listed for Sale', 100000.00, '2024-10-28', 'Approved', N'Koi đã sẵn sàng bán', N'Ghi chú mẫu cho trạng thái Listed for Sale'),
+
+-- Status: 'Sold', ApprovedStatus: 'Approved'
+(5, 5, 'Care', 'Offline', DEFAULT, '2024-12-01', 'Sold', 120000.00, '2024-10-29', 'Approved', N'Koi đã bán', N'Ghi chú mẫu cho trạng thái Sold'),
+
+-- Status: 'Withdrawn', ApprovedStatus: 'Rejected'
+(6, 6, 'Sale', 'Online', DEFAULT, '2024-11-10', 'Withdrawn', 150000.00, '2024-10-30', 'Rejected', N'Koi không đủ tiêu chuẩn', N'Ghi chú mẫu cho trạng thái Withdrawn');
+
+--select * from KoiConsignment
+
+          SELECT 
+              kc.ConsignmentID,
+              kc.CustomerID,
+              kc.KoiID,
+              kc.ConsignmentType,
+              kc.ConsignmentMode,
+              kc.StartDate,
+              kc.EndDate,
+              kc.Status,
+              kc.PriceAgreed,
+              kc.PickupDate,
+              kc.ApprovedStatus,
+              kc.InspectionResult,
+              kc.Notes,
+              kc.KoiType,
+              kc.KoiColor,
+              kc.KoiAge,
+              kc.KoiSize,
+              kc.ImagePath,
+              c.FullName,
+              c.Email,
+              c.PhoneNumber,
+              c.Address
+          FROM KoiConsignment kc
+          JOIN Customers c ON kc.CustomerID = c.CustomerID
+          WHERE kc.Status = 'Pending'
+          ORDER BY kc.ConsignmentID;
+
+
+SELECT 
+    o.OrderID,
+    o.CustomerID,
+    u.UserID,
+    u.Username,
+    u.Role,
+    o.OrderDate,
+    o.TotalAmount,
+    o.ShippingAddress,
+    o.OrderStatus,
+    o.PaymentMethod,
+    o.PaymentStatus,
+    o.TrackingNumber,
+    o.Discount,
+    o.ShippingCost,
+    o.PromotionID,
+    
+    c.FullName,
+    c.Email,
+    c.PhoneNumber,
+    c.Address,
+    c.LoyaltyPoints,
+
+    -- Thông tin từ OrderDetails
+    od.OrderDetailID,
+    od.ProductID,
+    od.KoiID,
+    od.PackageID,
+    od.Quantity,
+    od.UnitPrice,
+    od.TotalPrice,
+    od.ProductType,
+    od.CertificateStatus,
+
+    -- Thông tin chi tiết về KoiFish
+    kf.KoiID AS KoiID_Details,
+    kf.Name AS KoiName,
+    kf.VarietyID,
+    kf.Origin,
+    kf.Gender,
+    kf.Born,
+    kf.Size,
+    kf.Weight,
+    kf.Personality,
+    kf.FeedingAmountPerDay,
+    kf.HealthStatus,
+    kf.ScreeningRate,
+    kf.Price AS KoiPrice,
+    kf.CertificateLink AS KoiCertificateLink,
+    kf.ImagesLink AS KoiImagesLink,
+    kf.AddedDate,
+    kf.Availability AS KoiAvailability,
+
+    -- Thông tin chi tiết về KoiPackage
+    kp.PackageID AS PackageID_Details,
+    kp.PackageName,
+    kp.ImageLink AS PackageImageLink,
+    kp.Price AS PackagePrice,
+    kp.PackageSize,
+    kp.CreatedDate AS PackageCreatedDate,
+    kp.Availability AS PackageAvailability,
+    kp.Quantity AS PackageQuantity,
+
+    -- Thông tin chi tiết về KoiConsignment (nếu có)
+    kc.ConsignmentID,
+    kc.ConsignmentType,
+    kc.ConsignmentMode,
+    kc.StartDate,
+    kc.EndDate,
+    kc.Status AS ConsignmentStatus,
+    kc.PriceAgreed,
+    kc.PickupDate,
+    kc.ApprovedStatus,
+    kc.InspectionResult,
+    kc.Notes,
+    kc.KoiType,
+    kc.KoiColor,
+    kc.KoiAge,
+    kc.KoiSize,
+    kc.ImagePath
 
 FROM 
     Orders o
@@ -811,33 +1006,122 @@ LEFT JOIN
     KoiFish kf ON od.KoiID = kf.KoiID
 LEFT JOIN 
     KoiPackage kp ON od.PackageID = kp.PackageID
+LEFT JOIN 
+    KoiConsignment kc ON kc.CustomerID = o.CustomerID AND kc.KoiID = kf.KoiID
+LEFT JOIN 
+    Customers c ON o.CustomerID = c.CustomerID
+LEFT JOIN 
+    Users u ON o.UserID = u.UserID
 
-GROUP BY 
-    o.OrderID, o.CustomerID, o.OrderDate, o.TotalAmount, 
-    o.ShippingAddress, o.OrderStatus, o.PaymentMethod, 
-    o.PaymentStatus, o.TrackingNumber, o.Discount, 
-    o.ShippingCost, o.PromotionID
+WHERE 
+    u.Role = 'Staff' AND c.CustomerID = 1 -- Thay @OrderID bằng ID cụ thể
 
 ORDER BY 
     o.OrderID;
 
-INSERT INTO KoiConsignment (CustomerID, KoiID, ConsignmentType, ConsignmentMode, StartDate, EndDate, Status, PriceAgreed, PickupDate, ApprovedStatus, InspectionResult, Notes) VALUES
--- Status: 'Pending', ApprovedStatus: 'Pending'
-(1, 1, 'Sale', 'Offline', DEFAULT, '2024-12-31', 'Pending', 50000.00, '2024-10-25', 'Pending', 'Chưa kiểm tra', 'Ghi chú mẫu cho trạng thái Pending'),
+	SELECT * FROM Orders WHERE OrderID = 30
 
--- Status: 'Approved', ApprovedStatus: 'Approved'
-(2, 2, 'Sale', 'Online', DEFAULT, '2024-11-30', 'Approved', 80000.00, '2024-10-26', 'Approved', 'Koi đạt tiêu chuẩn', 'Ghi chú mẫu cho trạng thái Approved'),
+	SELECT 
+		o.OrderID,
+		o.CustomerID,
+		o.OrderDate,
+		o.TotalAmount,
+		o.ShippingAddress,
+		o.OrderStatus,
+		o.PaymentMethod,
+		o.PaymentStatus,
+		o.TrackingNumber,
+		o.Discount,
+		o.ShippingCost,
+		o.PromotionID,
+    
+		c.FullName,
+		c.Email,
+		c.PhoneNumber,
+		c.Address,
+		c.LoyaltyPoints,
 
--- Status: 'In Care', ApprovedStatus: 'Approved'
-(3, 3, 'Sale', 'Offline', DEFAULT, '2024-11-15', 'In Care', 60000.00, '2024-10-27', 'Approved', 'Koi cần chăm sóc thêm', 'Ghi chú mẫu cho trạng thái In Care'),
+		-- Thông tin từ OrderDetails
+		od.OrderDetailID,
+		od.ProductID,
+		od.KoiID,
+		od.PackageID,
+		od.Quantity,
+		od.UnitPrice,
+		od.TotalPrice,
+		od.ProductType,
+		od.CertificateStatus,
 
--- Status: 'Listed for Sale', ApprovedStatus: 'Approved'
-(4, 4, 'Care', 'Online', DEFAULT, '2024-11-20', 'Listed for Sale', 100000.00, '2024-10-28', 'Approved', 'Koi đã sẵn sàng bán', 'Ghi chú mẫu cho trạng thái Listed for Sale'),
+		-- Thông tin chi tiết về KoiFish
+		kf.KoiID AS KoiID_Details,
+		kf.Name AS KoiName,
+		kf.VarietyID,
+		kf.Origin,
+		kf.Gender,
+		kf.Born,
+		kf.Size,
+		kf.Weight,
+		kf.Personality,
+		kf.FeedingAmountPerDay,
+		kf.HealthStatus,
+		kf.ScreeningRate,
+		kf.Price AS KoiPrice,
+		kf.CertificateLink AS KoiCertificateLink,
+		kf.ImagesLink AS KoiImagesLink,
+		kf.AddedDate,
+		kf.Availability AS KoiAvailability,
 
--- Status: 'Sold', ApprovedStatus: 'Approved'
-(5, 5, 'Care', 'Offline', DEFAULT, '2024-12-01', 'Sold', 120000.00, '2024-10-29', 'Approved', 'Koi đã bán', 'Ghi chú mẫu cho trạng thái Sold'),
+		-- Thông tin chi tiết về KoiPackage
+		kp.PackageID AS PackageID_Details,
+		kp.PackageName,
+		kp.ImageLink AS PackageImageLink,
+		kp.Price AS PackagePrice,
+		kp.PackageSize,
+		kp.CreatedDate AS PackageCreatedDate,
+		kp.Availability AS PackageAvailability,
+		kp.Quantity AS PackageQuantity,
 
--- Status: 'Withdrawn', ApprovedStatus: 'Rejected'
-(6, 6, 'Sale', 'Online', DEFAULT, '2024-11-10', 'Withdrawn', 150000.00, '2024-10-30', 'Rejected', 'Koi không đủ tiêu chuẩn', 'Ghi chú mẫu cho trạng thái Withdrawn');
+		-- Thông tin chi tiết về KoiConsignment (nếu có)
+		kc.ConsignmentID,
+		kc.ConsignmentType,
+		kc.ConsignmentMode,
+		kc.StartDate,
+		kc.EndDate,
+		kc.Status AS ConsignmentStatus,
+		kc.PriceAgreed,
+		kc.PickupDate,
+		kc.ApprovedStatus,
+		kc.InspectionResult,
+		kc.Notes,
+		kc.KoiType,
+		kc.KoiColor,
+		kc.KoiAge,
+		kc.KoiSize,
+		kc.ImagePath,
 
---select * from KoiConsignment
+		-- Thông tin người dùng (Staff)
+		u.UserID,
+		u.Username,
+		u.Role
+
+	FROM 
+		Orders o
+	LEFT JOIN 
+		OrderDetails od ON o.OrderID = od.OrderID
+	LEFT JOIN 
+		KoiFish kf ON od.KoiID = kf.KoiID
+	LEFT JOIN 
+		KoiPackage kp ON od.PackageID = kp.PackageID
+	LEFT JOIN 
+		KoiConsignment kc ON kc.CustomerID = o.CustomerID AND kc.KoiID = kf.KoiID
+	LEFT JOIN 
+		Customers c ON o.CustomerID = c.CustomerID
+	JOIN 
+		Users u ON o.UserID = u.UserID
+
+	WHERE 
+		u.UserID = 2
+		AND u.Role = 'Staff'
+
+	ORDER BY 
+		o.OrderID;

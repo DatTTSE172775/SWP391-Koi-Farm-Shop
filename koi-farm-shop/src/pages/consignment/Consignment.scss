@@ -107,76 +107,151 @@
 }
 
 .consignment-form {
-  max-width: 1450px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 
   h1 {
     text-align: center;
-    color: #333;
-    margin-bottom: 20px;
+    color: #2f855a;
+    margin-bottom: 30px;
+    font-size: 2em;
+    font-weight: 600;
+    
+    &.divider {
+      color: #e2e8f0;
+      margin: 20px 0;
+    }
   }
 
   form {
     display: grid;
-    gap: 15px;
+    gap: 20px;
 
     div {
       display: flex;
       flex-direction: column;
+      
+      &.form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
     }
 
     label {
-      margin-bottom: 5px;
-      font-weight: bold;
-      color: #555;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #4a5568;
+      font-size: 0.95em;
     }
 
     input,
-    textarea {
-      padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 14px;
+    textarea,
+    select {
+      padding: 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 1em;
+      transition: all 0.3s ease;
+      background-color: #f8fafc;
 
       &:focus {
         outline: none;
-        border-color: #4a90e2;
+        border-color: #2f855a;
+        box-shadow: 0 0 0 3px rgba(47, 133, 90, 0.1);
+        background-color: #ffffff;
       }
     }
 
     textarea {
       resize: vertical;
-      min-height: 100px;
+      min-height: 120px;
     }
 
-    button {
-      padding: 10px 15px;
-      background-color: #4a90e2;
+    input[type="file"] {
+      padding: 8px;
+      background-color: #f8fafc;
+      cursor: pointer;
+
+      &::-webkit-file-upload-button {
+        padding: 8px 16px;
+        background-color: #2f855a;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        margin-right: 10px;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+          background-color: #276749;
+        }
+      }
+    }
+
+    .image-preview {
+      margin-top: 10px;
+      
+      img {
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+    }
+
+    button[type="submit"] {
+      padding: 14px 28px;
+      background-color: #2f855a;
       color: white;
       border: none;
-      border-radius: 4px;
+      border-radius: 8px;
       cursor: pointer;
-      font-size: 16px;
-      transition: background-color 0.3s;
+      font-size: 1.1em;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      margin-top: 20px;
 
       &:hover {
-        background-color: #357abd;
+        background-color: #276749;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(47, 133, 90, 0.2);
       }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+  }
+
+  .price-input {
+    text-align: right;
+    font-family: 'Courier New', monospace;
+    
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      opacity: 1;
+      margin-left: 5px;
+    }
+    
+    &::placeholder {
+      text-align: right;
     }
   }
 }
 
-// Add responsive design for smaller screens
+// Responsive design
 @media (max-width: 768px) {
   .consignment-form {
-    padding: 15px;
+    margin: 20px;
+    padding: 20px;
 
     form {
-      gap: 10px;
+      div.form-row {
+        grid-template-columns: 1fr;
+      }
     }
   }
 }

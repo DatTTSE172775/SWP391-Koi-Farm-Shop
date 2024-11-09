@@ -8,6 +8,7 @@ const OrderSuccess = () => {
 
   const handleReturnHome = () => {
     navigate("/home");
+    window.location.reload();
   };
 
   const handleCheckOrderStatus = () => {

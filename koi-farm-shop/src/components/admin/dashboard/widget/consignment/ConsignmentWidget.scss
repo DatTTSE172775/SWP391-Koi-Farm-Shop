@@ -1,52 +1,36 @@
+// src/components/admin/dashboard/ConsignmentWidget.scss
+
 .consignment-widget {
   text-align: center;
   padding: 20px;
-  background: linear-gradient(135deg, #ffe29a, #ffcc66);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-  border-radius: 12px;
-  transition: transform 0.3s, box-shadow 0.3s;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  transition: transform 0.3s;
 
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  }
-
-  &__header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 10px;
-
-    .consignment-widget__icon {
-      font-size: 1.5rem;
-      color: #ffc107;
-      margin-left: 8px;
-    }
+    transform: scale(1.05);
   }
 
   &__title {
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: #ff9800;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 10px;
   }
 
   &__value {
-    font-size: 2.5rem;
-    font-weight: 800;
+    font-size: 2rem;
+    font-weight: 700;
     color: #ffc107;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
   }
 
   &__details {
     font-size: 1rem;
     color: #6c757d;
-
-    .consignment-widget__detail {
-      margin-bottom: 5px;
-      span {
-        font-weight: 600;
-        color: #ff9800;
-      }
+    span {
+      display: inline-block;
+      margin-right: 10px;
     }
   }
 }

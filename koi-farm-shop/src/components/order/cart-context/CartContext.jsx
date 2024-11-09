@@ -15,7 +15,7 @@ const CartProvider = ({ children }) => {
 
     if (existingItem) {
       // Chỉ tăng số lượng nếu item là "lô cá koi" hoặc "koi package"
-      if (item.type === "lot" || item.type === "koi-package") {
+      if (item.type === "package") {
         existingItem.quantity += 1;
         existingItem.total = existingItem.quantity * existingItem.price;
       } else {
@@ -58,7 +58,7 @@ const CartProvider = ({ children }) => {
     const updatedCartItems = [...cartItems];
     const item = updatedCartItems.find((item) => item.key === key);
 
-    if (item && item.type === 'koi-package') {
+    if (item && item.type === 'package') {
       item.quantity = quantity > 0 ? quantity : 1; // Đảm bảo số lượng không dưới 1
       item.total = item.price * item.quantity;
       setCartItems(updatedCartItems);

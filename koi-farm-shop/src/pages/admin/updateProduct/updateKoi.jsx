@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Layout, Typography, Form, Input, InputNumber, Select, Button, message, Table } from "antd";
-import AdminHeader from "../../../components/admin/header/AdminHeader";
-import AdminSidebar from "../../../components/admin/sidebar/AdminSidebar";
 import axiosPublic from "../../../api/axiosPublic";
 import "./update.scss";
 import { useNavigate } from "react-router-dom";
@@ -129,10 +127,8 @@ const UpdateKoi = () => {
   };
 
   return (
-    <Layout className="admin-layout">
-      <AdminSidebar />
+    <Layout>
       <Layout>
-        <AdminHeader />
         <Content className="admin-content">
           <div className="update-koi-container">
             <Title level={2}>Cập nhật cá Koi</Title>

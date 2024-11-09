@@ -18,7 +18,7 @@ const { Title, Text } = Typography;
 
 const CartPage = () => {
   const { cartItems, handleRemoveFromCart, handleUpdateQuantity  } = useContext(CartContext);
-
+console.log("Cart Items:", cartItems);
   // Define columns for the table
   const columns = [
     {
@@ -62,7 +62,7 @@ const CartPage = () => {
       dataIndex: "quantity",
       key: "quantity",
       render: (quantity, record) => (
-          record.type === 'koi-package' ? (
+          record.type === 'package' ? (
               <InputNumber
                   min={1}
                   value={quantity}
