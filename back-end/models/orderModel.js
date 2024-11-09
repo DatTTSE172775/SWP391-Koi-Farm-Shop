@@ -61,17 +61,15 @@ exports.createOrder = async (
   totalAmount,
   shippingAddress,
   paymentMethod,
-  orderItems,
+  orderItems
 ) => {
   const pool = await sql.connect();
   const transaction = new sql.Transaction(pool);
 
   try {
-    console.log("Starting order creation..."); // Ghi log bắt đầu
-
     await transaction.begin();
 
-    // Tạo đơn hàng mới và lấy OrderID
+    // Insert into Orders table
     const orderResult = await transaction
       .request()
       .input("customerID", sql.Int, customerID)
@@ -84,111 +82,31 @@ exports.createOrder = async (
       `);
 
     const orderId = orderResult.recordset[0].OrderID;
-    
 
     // Insert into OrderDetails table
     for (const item of orderItems) {
-      const koiID = item.KoiID || null;  // Nếu không có KoiID thì là null
-      const packageID = item.PackageID || null;  // Nếu   không có PackageID thì là null
-
-      // Xác định productType dựa trên KoiID và PackageID
-      let productType = "";
-      if (koiID && packageID) {
-        productType = "Mixed"; // Thay vì "Single Fish, Package"
-      } else if (koiID) {
-        productType = "Single Fish";
-      } else if (packageID) {
-        productType = "Package";
-      } else {
-        throw new Error("Yêu cầu cần có ít nhất 1 Koi Fish hoặc 1 Koi Package.");
-      }
-
-      console.log(`Processing item: ${JSON.stringify(item)}`); // Ghi log mục hàng
-
-      // Kiểm tra tồn kho cho Koi hoặc Package
-      await checkProductAvailability(koiID, packageID, item.quantity);
-
-      let unitPrice = 0;
-      if (koiID) {
-        // Lấy giá từ bảng KoiFish nếu có KoiID
-        const koiResult = await pool.request()
-          .input('koiID', sql.Int, koiID)
-          .query('SELECT Price FROM KoiFish WHERE KoiID = @koiID');
-
-        if (koiResult.recordset.length === 0) {
-          throw new Error(`KoiFish with ID ${koiID} not found.`);
-        }
-        unitPrice = koiResult.recordset[0].Price;
-      } else if (packageID) {
-        // Lấy giá từ bảng Packages nếu có PackageID
-        const packageResult = await pool.request()
-          .input('packageID', sql.Int, packageID)
-          .query('SELECT Price FROM Packages WHERE PackageID = @packageID');
-
-        if (packageResult.recordset.length === 0) {
-          throw new Error(`Package with ID ${packageID} not found.`);
-        }
-        unitPrice = packageResult.recordset[0].Price;
-      }
-
-      // Nếu là sản phẩm đơn lẻ (Koi Fish), quantity mặc định là 1
-      const quantity = koiID ? 1 : item.quantity || 1;
-      const totalPrice = unitPrice * quantity;  // Tính tổng giá
-
-      console.log(`Adding item to OrderDetails: ${JSON.stringify({
-        orderId, koiID, packageID, quantity, unitPrice, totalPrice, productType
-      })}`); // Ghi log mục hàng chi tiết
-
-      // Thêm sản phẩm vào bảng OrderDetails
       await transaction.request()
         .input('orderId', sql.Int, orderId)
-        .input('koiID', sql.Int, koiID)
-        .input('packageID', sql.Int, packageID)
-        .input('quantity', sql.Int, quantity)
-        .input('unitPrice', sql.Decimal(10, 2), unitPrice)
-        .input('productType', sql.VarChar(50), productType)
+        .input('productId', sql.Int, item.productId)
+        .input('packageId', sql.Int, item.packageId)
+        .input('quantity', sql.Int, item.quantity)
+        .input('unitPrice', sql.Decimal(10, 2), item.unitPrice)
+        .input('productType', sql.VarChar(50), item.productType)
         .query(`
-          INSERT INTO OrderDetails (OrderID, KoiID, PackageID, Quantity, UnitPrice, ProductType )
-          VALUES (@orderId, @koiID, @packageID, @quantity, @unitPrice, @productType )
+          INSERT INTO OrderDetails (OrderID, ProductID, PackageID, Quantity, UnitPrice, ProductType)
+          VALUES (@orderId, @productId, @packageId, @quantity, @unitPrice, @productType)
         `);
     }
 
     await transaction.commit();
 
-    console.log("Order committed successfully."); // Ghi log hoàn tất đơn hàng
-    return { orderId, message: "Order created successfully." };
+    return { orderId, message: "Order created successfully" };
   } catch (error) {
     await transaction.rollback();
-    console.error("Error creating order:", error); // Ghi log lỗi chi tiết
-    throw new Error("Error creating order.");
+    console.error("Error creating order:", error);
+    throw new Error("Error creating order");
   }
 };
-
-// Kiểm tra tồn kho cho Koi Fish hoặc Koi Package 
-const checkProductAvailability = async (koiID, packageID, quantity) => {
-  const pool = await sql.connect();
-
-  if (koiID) {
-    // Kiểm tra xem Koi với KoiID có còn tồn tại không (vì mỗi cá chỉ có 1)
-    const koiResult = await pool.request()
-      .input('koiID', sql.Int, koiID)
-      .query('SELECT COUNT(*) AS Count FROM KoiFish WHERE KoiID = @koiID');
-
-    if (koiResult.recordset[0].Count === 0) {
-      throw new Error(`KoiFish with ID ${koiID} is not available.`);
-    }
-  } else if (packageID) {
-    // Kiểm tra số lượng tồn kho cho Package
-    const packageResult = await pool.request()
-      .input('packageID', sql.Int, packageID)
-      .query('SELECT Quantity FROM Packages WHERE PackageID = @packageID');
-
-    if (packageResult.recordset.length === 0 || packageResult.recordset[0].Quantity < quantity) {
-      throw new Error(`Not enough stock for PackageID ${packageID}.`);
-    }
-  }
-};
-
 
 exports.getOrderDetails = async (orderId) => {
   try {

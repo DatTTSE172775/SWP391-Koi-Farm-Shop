@@ -89,7 +89,6 @@ const AddPackage = () => {
 
 
   return (
-    <Layout className="admin-layout">
       <Layout>
         <Content className="admin-content">
           <div className="add-container">
@@ -146,14 +145,13 @@ const AddPackage = () => {
               </Form.Item>
               <Form.Item>
                 <Button type="primary" htmlType="submit" size="large">
-                  Thêm cá Koi
+                  Thêm gói cá Koi
                 </Button>
               </Form.Item>
             </Form>
           </div>
         </Content>
       </Layout>
-    </Layout>
   );
 };
 
