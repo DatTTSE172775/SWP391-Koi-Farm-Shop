@@ -17,25 +17,13 @@ const getAllOrders = async (req, res) => {
 const createOrder = async (req, res) => {
   const {
     customerID,
+    totalAmount,
     shippingAddress,
     paymentMethod,
     orderItems,
   } = req.body;
 
   try {
-    
-    // Kiểm tra xem orderItems có ít nhất một sản phẩm hợp lệ (KoiID hoặc PackageID)
-    for (const item of orderItems) {
-      if (!item.KoiID && !item.PackageID) {
-        return res.status(400).send({
-          message: "Yêu cầu cần có ít nhất 1 Koi Fish hoặc 1 Koi Package."
-        });
-      }
-    }
-
-    // Gọi hàm để tính toán totalAmount từ orderItems
-    const totalAmount = await Order.calculateTotalAmount(orderItems);
-
     const newOrder = await Order.createOrder(
       customerID,
       totalAmount,

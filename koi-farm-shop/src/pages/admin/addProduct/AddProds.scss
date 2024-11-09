@@ -5,60 +5,69 @@
 
 .admin-content {
   flex: 1;
-  padding: 20px;
-  background-color: #f5f5f5;
+  padding: 24px;
+  background-color: #f0f2f5;
 }
 
 .add-container {
   background-color: #ffffff;
-  border-radius: 12px;
-  padding: 30px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   max-width: 1200px;
   margin: 0 auto;
 
   h2, .ant-typography {
-    color: #2c3e50;
-    margin-bottom: 24px;
+    font-size: 28px;
+    color: #1a1a1a;
+    margin-bottom: 28px;
     font-weight: 600;
-    border-bottom: 2px solid #eef2f7;
-    padding-bottom: 16px;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 20px;
   }
 
   .button-group {
     display: flex;
-    gap: 16px;
-    margin-bottom: 24px;
+    gap: 12px;
+    margin-bottom: 32px;
 
-    button {
-      padding: 12px 20px;
-      background-color: #3498db;
+    button, .ant-btn {
+      padding: 8px 16px;
+      height: 40px;
+      background-color: #1890ff;
       color: white;
       border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.3s ease;
+      border-radius: 8px;
       font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
 
       &:hover {
-        background-color: #2980b9;
-        transform: translateY(-1px);
+        background-color: #096dd9;
+        transform: translateY(-2px);
       }
     }
   }
 
   .form, .ant-form {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
 
     .form-group, .ant-form-item {
-      margin-bottom: 20px;
+      width: 100%;
+      margin-bottom: 16px;
 
       label, .ant-form-item-label {
+        display: block;
         margin-bottom: 8px;
+        color: #262626;
         font-weight: 500;
-        color: #34495e;
+        font-size: 15px;
       }
 
       input, 
@@ -67,78 +76,102 @@
       .ant-input,
       .ant-select-selector,
       .ant-input-number {
-        padding: 12px;
-        border: 1px solid #e1e8ef;
-        border-radius: 6px;
-        font-size: 14px;
         width: 100%;
-        transition: all 0.3s ease;
+        padding: 10px;
+        border: 1.5px solid #d9d9d9;
+        border-radius: 8px;
+        font-size: 14px;
+        background-color: #fafafa;
+        transition: all 0.2s ease;
 
         &:focus, &:hover {
-          outline: none;
-          border-color: #3498db;
-          box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+          border-color: #1890ff;
+          background-color: #ffffff;
+          box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
         }
-      }
-
-      textarea {
-        min-height: 120px;
-      }
-
-      .ant-select-selector {
-        height: auto !important;
-        padding: 8px 12px !important;
       }
     }
 
-    button[type="submit"],
-    .ant-btn-primary {
-      grid-column: 1 / -1;
-      padding: 14px;
-      background-color: #3498db;
+    .form-group:has(textarea) {
+      grid-column: span 2;
+    }
+
+    .form-group:has(input[type="file"]) {
+      grid-column: span 3;
+      
+      .image-preview {
+        margin-top: 12px;
+        display: flex;
+        justify-content: center;
+        
+        img {
+          max-width: 200px;
+          height: auto;
+          border-radius: 8px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+      }
+    }
+
+    button[type="submit"] {
+      grid-column: span 3;
+      justify-self: center;
+      width: 100%;
+      max-width: 200px;
+      margin-top: 32px;
+      height: 40px;
+      background-color: #1890ff;
       color: white;
       border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 16px;
+      border-radius: 8px;
       font-weight: 500;
-      transition: all 0.3s ease;
-      margin-top: 16px;
+      cursor: pointer;
+      transition: all 0.2s ease;
 
       &:hover {
-        background-color: #2980b9;
-        transform: translateY(-1px);
+        background-color: #096dd9;
+        transform: translateY(-2px);
       }
     }
   }
 
   .image-preview {
     margin-top: 16px;
+    display: flex;
+    justify-content: center;
     
     img {
       max-width: 100%;
       height: auto;
       border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
   }
 }
 
-// Enhanced responsive adjustments
-@media (max-width: 768px) {
-  .add-container {
-    padding: 20px;
-    
-    .form, .ant-form {
-      grid-template-columns: 1fr;
+// Responsive improvements
+@media (max-width: 1200px) {
+  .add-container .form {
+    grid-template-columns: repeat(2, 1fr);
+
+    .form-group:has(input[type="file"]) {
+      grid-column: span 2;
     }
 
-    .button-group {
-      flex-direction: column;
-      
-      button {
-        width: 100%;
-      }
+    button[type="submit"] {
+      grid-column: span 2;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .add-container .form {
+    grid-template-columns: 1fr;
+    
+    .form-group:has(textarea),
+    .form-group:has(input[type="file"]),
+    button[type="submit"] {
+      grid-column: span 1;
     }
   }
 }
