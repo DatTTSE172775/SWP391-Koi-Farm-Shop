@@ -133,6 +133,7 @@ export const register =
 
       if (response.data && response.data.message) {
         dispatch({ type: REGISTER_SUCCESS, payload: response.data.message });
+        return response.data;
       } else {
         dispatch({
           type: REGISTER_FAILURE,
