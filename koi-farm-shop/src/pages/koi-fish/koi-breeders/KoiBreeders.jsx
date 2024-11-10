@@ -34,7 +34,6 @@ const KoiBreeders = () => {
           cá riêng, các nhà lai tạo của chúng tôi đều mang đến những chú cá
           hàng đầu với màu sắc, kích thước và sức khỏe vượt trội.
         </p>
-        <h3>Nhấn vào hình ảnh để xem chi tiết.</h3>
       </div>
 
       <div className="koi-breeders__list">

@@ -32,7 +32,6 @@ $body-font: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 body {
   font-family: $body-font;
   color: $text-color;
-  background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
   animation: waterRipple 15s ease-in-out infinite;
   background-size: 400% 400%;
 }
