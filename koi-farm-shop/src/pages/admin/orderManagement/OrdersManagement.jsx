@@ -16,6 +16,10 @@ const OrdersManagement = () => {
         dispatch(fetchOrders());
     }, [dispatch]);
 
+    const sortedOrders = orders ? [...orders].sort((a, b) => {
+        return new Date(b.OrderDate) - new Date(a.OrderDate);
+    }) : [];
+
     if (loading) {
         return (
             <div className="loading-spinner">
@@ -36,8 +40,8 @@ const OrdersManagement = () => {
         <Content className="admin-content">
             <Title level={2}>Quản Lý Đơn Hàng</Title>
             <div className="orders-list">
-                {Array.isArray(orders) && orders.length > 0 ? (
-                    orders.map((order) => (
+                {Array.isArray(sortedOrders) && sortedOrders.length > 0 ? (
+                    sortedOrders.map((order) => (
                         <OrderItem key={order.OrderID} order={order} className="order-item" />
                     ))
                 ) : (

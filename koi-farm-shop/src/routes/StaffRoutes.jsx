@@ -11,6 +11,7 @@ import ProcessingOrders from "../pages/staff/order-manage/processing/ProcessingO
 import ShippingOrders from "../pages/staff/order-manage/shipping/ShippingOrders";
 import PendingConsignments from "../pages/staff/consignment-manage/processing/ProcessingConsignment";
 import InCareConsignments from "../pages/staff/consignment-manage/completed/CompletedConsignment";
+import StaffConsignmentDetails from "../pages/staff/consignment-manage/consignmentDetails/staffConsignmentDetails";
 
 const ProtectedStaffRoute = ({ children }) => {
   const role = localStorage.getItem("role");
@@ -39,8 +40,11 @@ const staffRoutes = (
       <Route path="orders/:id" element={<OrderDetail />} />
     </Route>
 
-    <Route path="/staff/consignments/pending" element={<PendingConsignments />} />
-    <Route path="/staff/consignments/in-care" element={<InCareConsignments />} />
+    <Route path="consignments">
+      <Route path="pending" element={<PendingConsignments />} />
+      <Route path="in-care" element={<InCareConsignments />} />
+      <Route path="detail/:id" element={<StaffConsignmentDetails />} />
+    </Route>
   </Route>
 );
 
