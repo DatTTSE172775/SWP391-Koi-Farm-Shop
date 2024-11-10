@@ -165,3 +165,219 @@ exports.getDailyRevenueThisMonthData = async () => {
     throw error;
   }
 };
+
+// Lấy số lượng yêu cầu ký gửi mới
+exports.getPendingConsignmentsCount = async () => {
+  try {
+    const pool = await connectDB();
+
+    const result = await pool.request().query(`
+      SELECT COUNT(*) AS NewConsignments
+      FROM KoiConsignment
+      WHERE Status = 'Pending'
+    `);
+
+    return { newConsignments: result.recordset[0]?.NewConsignments || 0 };
+  } catch (error) {
+    console.error("Error fetching new consignments count:", error);
+    throw error;
+  }
+};
+
+// Lấy số lượng cá koi đang ký gửi và trạng thái của chúng
+exports.getActiveConsignmentData = async () => {
+  try {
+    const pool = await connectDB();
+    
+    const result = await pool.request()
+      .query(`
+        SELECT 
+          COUNT(*) AS activeConsignments,
+          SUM(CASE WHEN ConsignmentType = 'Care' THEN 1 ELSE 0 END) AS forCare,
+          SUM(CASE WHEN ConsignmentType = 'Sale' THEN 1 ELSE 0 END) AS forSale
+        FROM KoiConsignment
+        WHERE ConsignmentType IN ('Care', 'Sale')
+      `);
+
+    const data = {
+      activeConsignments: result.recordset[0]?.activeConsignments || 0,
+      forCare: result.recordset[0]?.forCare || 0,
+      forSale: result.recordset[0]?.forSale || 0,
+    };
+
+    return data;
+  } catch (error) {
+    console.error('Error fetching active consignment data:', error);
+    res.status(500).json({ error: 'Failed to fetch active consignment data' });
+  }
+};
+
+// lấy số data lượng khách hàng quay lại mua hàng trong tháng
+exports.getReturningCustomerCount = async () => {
+  try {
+    // Kết nối đến cơ sở dữ liệu
+    const pool = await connectDB();
+
+    // Truy vấn để đếm số lượng khách hàng quay lại mua hàng trong tháng hiện tại
+    const result = await pool.request().query(`
+      SELECT COUNT(DISTINCT CustomerID) AS returningCustomers
+      FROM Orders
+      WHERE MONTH(OrderDate) = MONTH(GETDATE()) AND YEAR(OrderDate) = YEAR(GETDATE())
+      AND CustomerID IN (
+        SELECT CustomerID
+        FROM Orders
+        GROUP BY CustomerID
+        HAVING COUNT(OrderID) > 1
+      )
+    `);
+
+    // Trả về số lượng khách hàng quay lại mua hàng
+    return result.recordset[0].returningCustomers ?? 0;
+  } catch (error) {
+    // Log lỗi và ném lỗi nếu có lỗi xảy ra
+    console.error('Error fetching returning customer count:', error);
+    throw error;
+  }
+};
+
+// Hàm kết nối đến database và truy vấn tổng số đơn hàng theo ngày trong tháng hiện tại
+exports.getDailyOrderCountThisMonth = async () => {
+  try {
+    // Kết nối đến cơ sở dữ liệu
+    const pool = await connectDB();
+    
+    // Truy vấn SQL để lấy số lượng đơn hàng mỗi ngày trong tháng hiện tại
+    const result = await pool.request().query(`
+      SELECT 
+        CONVERT(VARCHAR, OrderDate, 23) AS Date,  -- Định dạng ngày theo kiểu 'YYYY-MM-DD'
+        COUNT(*) AS DailyOrderCount               -- Đếm số đơn hàng trong mỗi ngày
+      FROM Orders
+      WHERE MONTH(OrderDate) = MONTH(GETDATE())   -- Chỉ lấy dữ liệu trong tháng hiện tại
+      AND YEAR(OrderDate) = YEAR(GETDATE())       -- Chỉ lấy dữ liệu trong năm hiện tại
+      GROUP BY CONVERT(VARCHAR, OrderDate, 23)   -- Gom nhóm theo ngày
+      ORDER BY Date                              -- Sắp xếp theo ngày
+    `);
+
+    // Tạo mảng labels và data từ kết quả truy vấn
+    const labels = result.recordset.map(row => row.Date);
+    const data = result.recordset.map(row => row.DailyOrderCount);
+
+    // Trả về kết quả dưới dạng đối tượng với các mảng labels và data
+    return { labels, data };
+  } catch (error) {
+    // Xử lý lỗi trong quá trình truy vấn
+    console.error("Error fetching daily order count for the current month:", error);
+    throw error;
+  }
+};
+
+// lấy thông tin chi tiết về các đơn hàng đang chờ xử lý
+exports.getPendingOrdersInfoData = async () => {
+  try {
+      const pool = await connectDB();
+
+      // Thực hiện truy vấn SQL để lấy thông tin đầy đủ về các đơn hàng có trạng thái "Pending"
+      const result = await pool.request().query(`
+          SELECT 
+              o.OrderID,
+              o.CustomerID,
+              o.OrderDate,
+              o.TotalAmount,
+              o.ShippingAddress,
+              o.OrderStatus,
+              o.PaymentMethod,
+              o.PaymentStatus,
+              o.TrackingNumber,
+              o.Discount,
+              o.ShippingCost,
+              o.PromotionID,
+
+              -- Customer information
+              c.FullName,
+              c.Email,
+              c.PhoneNumber,
+              c.Address,
+
+              -- OrderDetails information
+              STRING_AGG(CAST(od.OrderDetailID AS VARCHAR), ', ') AS OrderDetailIDs,
+              STRING_AGG(CAST(od.Quantity AS VARCHAR), ', ') AS Quantities,
+              STRING_AGG(od.ProductType, ', ') AS ProductTypes,
+              STRING_AGG(od.CertificateStatus, ', ') AS CertificateStatuses,
+
+              -- KoiFish information
+              STRING_AGG(kf.Name, ', ') AS KoiNames,
+              STRING_AGG(CAST(kf.Size AS VARCHAR), ', ') AS KoiSizes,
+              STRING_AGG(kf.Gender, ', ') AS KoiGenders,
+              STRING_AGG(CAST(kf.Price AS VARCHAR), ', ') AS KoiPrices,
+
+              -- Package information
+              STRING_AGG(kp.PackageName, ', ') AS PackageNames,
+              STRING_AGG(CAST(kp.PackageSize AS VARCHAR), ', ') AS PackageSizes,
+              STRING_AGG(CAST(kp.Price AS VARCHAR), ', ') AS PackagePrices,
+              STRING_AGG(kp.Availability, ', ') AS PackageAvailabilities
+
+          FROM Orders o
+          JOIN Customers c ON o.CustomerID = c.CustomerID
+          LEFT JOIN OrderDetails od ON o.OrderID = od.OrderID
+          LEFT JOIN KoiFish kf ON od.KoiID = kf.KoiID
+          LEFT JOIN KoiPackage kp ON od.PackageID = kp.PackageID
+          WHERE o.OrderStatus = 'Pending'
+          GROUP BY 
+              o.OrderID, o.CustomerID, o.OrderDate, o.TotalAmount, 
+              o.ShippingAddress, o.OrderStatus, o.PaymentMethod, 
+              o.PaymentStatus, o.TrackingNumber, o.Discount, 
+              o.ShippingCost, o.PromotionID, c.FullName, c.Email, 
+              c.PhoneNumber, c.Address
+          ORDER BY o.OrderID;
+      `);
+
+      // Trả về kết quả truy vấn
+      return result.recordset;
+  } catch (error) {
+      console.error('Error fetching pending order details:', error);
+      throw error;
+  }
+};
+
+// Lấy data thông tin chi tiết về các yêu cầu ký gửi đang chờ xử lý
+exports.getPendingConsignmentsInfoData = async () => {
+  try {
+      const pool = await connectDB();
+      
+      // Truy vấn SQL để lấy thông tin chi tiết về các yêu cầu ký gửi đang chờ xử lý
+      const result = await pool.request().query(`
+          SELECT 
+              kc.ConsignmentID,
+              kc.CustomerID,
+              kc.KoiID,
+              kc.ConsignmentType,
+              kc.ConsignmentMode,
+              kc.StartDate,
+              kc.EndDate,
+              kc.Status,
+              kc.PriceAgreed,
+              kc.PickupDate,
+              kc.ApprovedStatus,
+              kc.InspectionResult,
+              kc.Notes,
+              kc.KoiType,
+              kc.KoiColor,
+              kc.KoiAge,
+              kc.KoiSize,
+              kc.ImagePath,
+              c.FullName,
+              c.Email,
+              c.PhoneNumber,
+              c.Address
+          FROM KoiConsignment kc
+          JOIN Customers c ON kc.CustomerID = c.CustomerID
+          WHERE kc.Status = 'Pending'
+          ORDER BY kc.ConsignmentID;
+      `);
+
+      return result.recordset;
+  } catch (error) {
+      console.error('Error fetching pending consignment details:', error);
+      throw error;
+  }
+};
