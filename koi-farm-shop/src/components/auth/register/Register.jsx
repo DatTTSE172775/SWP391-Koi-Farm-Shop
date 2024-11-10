@@ -1,4 +1,4 @@
-import { Google as GoogleIcon } from "@mui/icons-material";
+// import { Google as GoogleIcon } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -140,7 +140,7 @@ const Register = () => {
             <Grid item xs={12}>
               <Divider>HOẶC</Divider>
             </Grid>
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <Button
                 variant="outlined"
                 color="primary"
@@ -154,7 +154,7 @@ const Register = () => {
               >
                 Đăng ký với Google
               </Button>
-            </Grid>
+            </Grid> */}
             <Grid item xs={12}>
               <Typography variant="body2" align="center">
                 Bạn đã có tài khoản?{" "}

@@ -1,7 +1,5 @@
-// OrderItem.jsx
 import { Button, Card, Divider, notification, Space, Typography } from "antd";
 import React from "react";
-import { Link } from "react-router-dom";
 import axiosInstance from "../../../../api/axiosInstance";
 import "./OrderItem.scss";
 
@@ -88,9 +86,9 @@ const OrderItem = ({ order, onRemove }) => {
 
       <div className="order-actions">
         <Space size="middle">
-          <Button type="default" className="detail-button">
+          {/* <Button type="default" className="detail-button">
             <Link to={`/staff/orders/${order.OrderID}`}>Xem Chi Tiết</Link>
-          </Button>
+          </Button> */}
           {shouldShowUpdateButton(order.OrderStatus) && (
             <Button
               type="primary"

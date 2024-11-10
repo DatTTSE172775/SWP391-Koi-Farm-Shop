@@ -1,4 +1,4 @@
-import GoogleIcon from "@mui/icons-material/Google";
+// import GoogleIcon from "@mui/icons-material/Google";
 import {
   Box,
   Button,
@@ -89,10 +89,10 @@ const Login = () => {
           />
 
           <Box className="login-options">
-            <FormControlLabel
+            {/* <FormControlLabel
               control={<Checkbox color="primary" required />}
               label="Chấp nhận các điều khoản"
-            />
+            /> */}
             <Link component={RouterLink} to="/forget-password" variant="body2">
               Quên mật khẩu ?
             </Link>
@@ -106,14 +106,14 @@ const Login = () => {
 
           <Divider sx={{ my: 2 }}>HOẶC</Divider>
 
-          <Button
+          {/* <Button
             variant="outlined"
             color="primary"
             fullWidth
             startIcon={<GoogleIcon />}
           >
             Đăng nhập với Google
-          </Button>
+          </Button> */}
 
           <Typography variant="body2" align="center" className="register-text">
             Bạn chưa có tài khoản?{" "}
