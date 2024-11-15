@@ -109,7 +109,7 @@ export const fetchOrders = () => async (dispatch) => {
   dispatch(fetchOrdersRequest());
 
   try {
-    const response = await axiosInstance.get("/orders");
+    const response = await axiosInstance.get("orders/all");
     dispatch(fetchOrdersSuccess(response.data));
   } catch (error) {
     dispatch(fetchOrdersFailure(error.message || "Failed to fetch orders"));

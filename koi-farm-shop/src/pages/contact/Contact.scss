@@ -166,3 +166,67 @@
     color: #007bb5;
   }
 }
+
+.contact-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin: 2rem 0;
+  padding: 0 1rem;
+
+  .info-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    transition: transform 0.2s;
+
+    &:hover {
+      transform: translateY(-5px);
+    }
+
+    .icon {
+      font-size: 1.5rem;
+      color: #007bff;
+      margin-right: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .info-content {
+      h3 {
+        margin: 0 0 0.5rem 0;
+        color: #333;
+      }
+
+      p {
+        margin: 0;
+        color: #666;
+        line-height: 1.5;
+      }
+    }
+  }
+}
+
+.social-links {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin: 2rem 0;
+
+  .link-button {
+    background-color: #0099cc;
+    color: white;
+    padding: 0.8rem 2rem;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    text-decoration: underline;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #007399;
+    }
+  }
+}

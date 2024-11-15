@@ -95,8 +95,8 @@ const koiFoodSampleList = [
 
 const KoiFeedHeader = () => (
   <div className="koi-feed-header">
-    <h1>Koi Feed Products</h1>
-    <p>Give your koi the nutrition they need to thrive with our specially formulated koi food. Designed to promote optimal health, vibrant colors, and strong growth.</p>
+    <h1>Thức Ăn Cho Cá Koi</h1>
+    <p>Cung cấp cho cá Koi của bạn những dưỡng chất cần thiết để phát triển tốt với thức ăn được điều chế đặc biệt của chúng tôi. Được thiết kế để tăng cường sức khỏe tối ưu, màu sắc rực rỡ và sự phát triển mạnh mẽ.</p>
   </div>
 );
 

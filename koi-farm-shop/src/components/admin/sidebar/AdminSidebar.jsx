@@ -1,9 +1,6 @@
-// src/components/AdminSidebar.jsx
 import {
   DashboardOutlined,
-  SettingOutlined,
   ShoppingOutlined,
-  UserOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
 import { ContrastOutlined, HomeMiniOutlined } from "@mui/icons-material";
@@ -48,17 +45,9 @@ const AdminSidebar = () => {
               <Menu.Item key="manage-orders" icon={<ShoppingOutlined />}>
                   <Link to="/admin/manage-orders">Quản lý đơn hàng</Link>
               </Menu.Item>
-              <Menu.Item key="users" icon={<UserOutlined />}>
-                  <Link to="/admin/users">Quản lý người dùng</Link>
-              </Menu.Item>
+
               <Menu.Item key="manage-consign" icon={<ContrastOutlined />}>
                   <Link to="/admin/manage-consign">Quản lý ký gửi</Link>
-              </Menu.Item>
-              <Menu.Item key="approval" icon={<ContrastOutlined />}>
-                  <Link to="/admin/approval">Ký kết</Link>
-              </Menu.Item>
-              <Menu.Item key="settings" icon={<SettingOutlined />}>
-                  <Link to="/admin/settings">Cài Đặt Hệ Thống</Link>
               </Menu.Item>
           </Menu>
       </Sider>

@@ -50,14 +50,14 @@ const OrderDetails = () => {
   useEffect(() => {
       const fetchOrderDetails = async () => {
           try {
-              const response = await axiosInstance.get(`/orders/${orderId}`);
+              const response = await axiosInstance.get(`orders/${orderId}`);
               console.log("Order Details Response:", response.data);
               setOrder(response.data);
 
               // Fetch order details
-              const detailsResponse = await axiosInstance.get(`/orders/${orderId}/details`);
-              console.log("Order Details:", detailsResponse.data);
-              setOrderDetails(detailsResponse.data);
+              // const detailsResponse = await axiosInstance.get(`orders/${orderId}`);
+              // console.log("Order Details:", detailsResponse.data);
+              // setOrderDetails(detailsResponse.data);
 
               // Set assignee based on the UserID
               const assignedStaff = staff.find(
