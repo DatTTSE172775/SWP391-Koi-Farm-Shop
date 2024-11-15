@@ -7,21 +7,19 @@ const sql = require('mssql');
 // Configure multer for file upload
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, '../../uploads/')) // Path is now relative to the back-end directory
+        cb(null, path.join(__dirname, '../../uploads/'))
     },
     filename: function (req, file, cb) {
-        cb(null, Date.now() + path.extname(file.originalname)) // Appending extension
+        cb(null, Date.now() + path.extname(file.originalname))
     }
 });
 
 const upload = multer({ storage: storage });
 
 exports.createKoiConsignment = [
-    upload.single('imageFile'), // 'imageFile' should match the name in the form data
+    upload.single('imageFile'),
     async (req, res) => {
         try {
-            // The req object now has the user information thanks to authMiddleware
-            // and the file information thanks to multer
             const result = await consignmentModel.createKoiConsignment(req);
             res.status(201).json({ message: 'Koi Consignment created successfully', result });
         } catch (error) {

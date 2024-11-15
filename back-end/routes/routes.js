@@ -9,7 +9,6 @@ const logoutUser = require("../controllers/userLogout");
 const changePassword = require("../controllers/changePassword");
 const forgotPassword = require("../controllers/forgotPassword");
 
-const koiConsignmentController = require("../controllers/koiConsignmentController");
 const {
   createPayment,
   verifyPayment
@@ -68,7 +67,6 @@ const {
   getAllKoiConsignments,
   getConsignmentsById,
   deleteConsignmentById,
-  // updateConsignmentStatus,
   updateConsignmentToApproved,
   updateConsignmentToRejected,
   updateConsignmentToPending,
@@ -341,39 +339,138 @@ router.get("/koifish/:koiId", getKoiFishById);
 
 /**
  * @swagger
- * /api/koifish:
+ * /api/addKoiFish:
  *   post:
  *     summary: Create a new Koi Fish
  *     tags: [Koi Fish]
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
+ *             required:
+ *               - name
+ *               - varietyId
+ *               - origin
+ *               - breederId
+ *               - gender
+ *               - born
+ *               - size
+ *               - price
+ *               - weight
+ *               - personality
+ *               - feedingAmountPerDay
+ *               - healthStatus
+ *               - screeningRate
+ *               - imageFile
  *             properties:
  *               name:
  *                 type: string
+ *                 description: Name of the Koi fish
+ *                 example: "Kohaku Champion"
  *               varietyId:
  *                 type: integer
+ *                 description: ID of the Koi variety
+ *                 example: 1
  *               origin:
  *                 type: string
+ *                 description: Origin country of the Koi
+ *                 example: "Japan"
  *               breederId:
  *                 type: integer
+ *                 description: ID of the breeder
+ *                 example: 1
  *               gender:
  *                 type: string
+ *                 description: Gender of the Koi
+ *                 enum: [Male, Female, Unknown]
+ *                 example: "Male"
  *               born:
  *                 type: integer
+ *                 description: Birth year of the Koi
+ *                 example: 2022
  *               size:
  *                 type: number
+ *                 format: float
+ *                 description: Size of the Koi in centimeters
+ *                 example: 45.5
  *               price:
  *                 type: number
+ *                 format: decimal
+ *                 description: Price of the Koi
+ *                 example: 1999.99
+ *               weight:
+ *                 type: number
+ *                 format: float
+ *                 description: Weight of the Koi in grams
+ *                 example: 2500
+ *               personality:
+ *                 type: string
+ *                 description: Personality traits of the Koi
+ *                 example: "Friendly and active"
+ *               feedingAmountPerDay:
+ *                 type: number
+ *                 format: float
+ *                 description: Daily feeding amount in grams
+ *                 example: 50
+ *               healthStatus:
+ *                 type: string
+ *                 description: Health condition of the Koi
+ *                 example: "Healthy"
+ *               screeningRate:
+ *                 type: number
+ *                 format: float
+ *                 description: Screening rate score
+ *                 example: 9.5
  *               availability:
  *                 type: string
+ *                 description: Availability status
  *                 enum: [Available, Sold Out]
+ *                 default: Available
+ *               imageFile:
+ *                 type: string
+ *                 format: binary
+ *                 description: Image file of the Koi
+ *               certificateLink:
+ *                 type: string
+ *                 format: binary
+ *                 description: Certificate file for the Koi
  *     responses:
  *       201:
  *         description: Koi Fish created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Koi Fish created successfully!
+ *                 data:
+ *                   type: object
+ *       400:
+ *         description: Missing required fields
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Missing required fields
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Error creating Koi Fish
+ *                 error:
+ *                   type: string
  */
 router.post("/addKoiFish", createKoiFish);
 
@@ -435,6 +532,124 @@ router.patch("/koifish/:koiId/availability", updateKoiFishAvailability);
  */
 router.delete("/deleteKoi/:koiId", deleteKoiFish);
 
+/**
+ * @swagger
+ * /api/updateKoi/{koiId}:
+ *   put:
+ *     summary: Update a Koi Fish
+ *     tags: [Koi Fish]
+ *     parameters:
+ *       - in: path
+ *         name: koiId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the Koi fish to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - Name
+ *               - Gender
+ *               - Origin
+ *               - Born
+ *               - Size
+ *               - Price
+ *               - HealthStatus
+ *               - Availability
+ *             properties:
+ *               Name:
+ *                 type: string
+ *                 description: Name of the Koi fish
+ *                 example: "Kohaku Champion"
+ *               Gender:
+ *                 type: string
+ *                 description: Gender of the Koi fish
+ *                 enum: [Male, Female, Unknown]
+ *                 example: "Male"
+ *               Origin:
+ *                 type: string
+ *                 description: Origin of the Koi fish
+ *                 example: "Japan"
+ *               Born:
+ *                 type: integer
+ *                 description: Birth year of the Koi fish
+ *                 example: 2022
+ *               Size:
+ *                 type: number
+ *                 format: float
+ *                 description: Size of the Koi fish in centimeters
+ *                 example: 45.5
+ *               Price:
+ *                 type: number
+ *                 format: decimal
+ *                 description: Price of the Koi fish
+ *                 example: 1999.99
+ *               HealthStatus:
+ *                 type: string
+ *                 description: Health status of the Koi fish
+ *                 example: "Healthy"
+ *               Availability:
+ *                 type: string
+ *                 description: Availability status of the Koi fish
+ *                 enum: [Available, Sold Out]
+ *                 example: "Available"
+ *     responses:
+ *       200:
+ *         description: Koi Fish updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Koi Fish updated successfully.
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     Name:
+ *                       type: string
+ *                     Gender:
+ *                       type: string
+ *                     Origin:
+ *                       type: string
+ *                     Born:
+ *                       type: integer
+ *                     Size:
+ *                       type: number
+ *                     Price:
+ *                       type: number
+ *                     HealthStatus:
+ *                       type: string
+ *                     Availability:
+ *                       type: string
+ *       404:
+ *         description: Koi Fish not found or no changes made
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Koi Fish not found or no changes made.
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Error updating Koi Fish
+ *                 error:
+ *                   type: string
+ */
 router.put("/updateKoi/:koiId", updateKoiFish);
 
 // Order routes
@@ -800,12 +1015,82 @@ router.delete("/reports/:reportId", authMiddleware, deleteReportController);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
+ *             required:
+ *               - KoiID
+ *               - PackageName
+ *               - Price
+ *               - PackageSize
+ *               - Availability
+ *               - ImageFile
+ *             properties:
+ *               KoiID:
+ *                 type: integer
+ *                 description: ID of the Koi fish to include in the package
+ *                 example: 1
+ *               PackageName:
+ *                 type: string
+ *                 description: Name of the Koi Package
+ *                 example: "Premium Koi Collection"
+ *               Price:
+ *                 type: number
+ *                 format: decimal
+ *                 description: Price of the package
+ *                 example: 999.99
+ *               PackageSize:
+ *                 type: integer
+ *                 description: Number of Koi fish in the package
+ *                 example: 3
+ *               Availability:
+ *                 type: string
+ *                 description: Availability status of the package
+ *                 enum: [Available, Sold Out]
+ *                 example: "Available"
+ *               ImageFile:
+ *                 type: string
+ *                 format: binary
+ *                 description: Image file for the package
  *     responses:
  *       201:
  *         description: Koi Package created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Koi Package created successfully!
+ *                 PackageID:
+ *                   type: integer
+ *                   description: ID of the created package
+ *                   example: 1
+ *       400:
+ *         description: Missing required fields
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Missing required fields
+ *                 receivedData:
+ *                   type: object
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Error creating Koi Package
+ *                 error:
+ *                   type: string
  */
 router.post("/koipackage", createKoiPackage);
 
@@ -842,40 +1127,212 @@ router.get("/koipackages", getAllKoiPackages);
  */
 router.delete("/deleteKoiPackage/:packageId", deleteKoiPackage);
 
-router.put("/updateKoiPackage/:packageId", updateKoiPackage);
-
-// Koi Consignment routes
 /**
  * @swagger
- * /api/koiconsignment:
- *   post:
- *     summary: Create a new Koi Consignment
- *     tags: [Koi Consignment]
+ * /api/updateKoiPackage/{packageId}:
+ *   put:
+ *     summary: Update a Koi Package
+ *     tags: [Koi Package]
+ *     parameters:
+ *       - in: path
+ *         name: packageId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the Koi Package to update
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
- *     responses:
- *       201:
- *         description: Koi Consignment created successfully
- */
-router.post(
-  "/createConsignment",
-  authMiddleware,
-  koiConsignmentController.createKoiConsignment
-);
-/**
- * @swagger
- * /api/koiconsignments:
- *   get:
- *     summary: Get all Koi Consignments
- *     tags: [Koi Consignment]
+ *             required:
+ *               - PackageName
+ *               - PackageSize
+ *               - Price
+ *               - Availability
+ *             properties:
+ *               PackageName:
+ *                 type: string
+ *                 description: Name of the Koi Package
+ *                 example: "Premium Koi Collection"
+ *               PackageSize:
+ *                 type: integer
+ *                 description: Size of the package (number of koi)
+ *                 example: 3
+ *               Price:
+ *                 type: number
+ *                 format: decimal
+ *                 description: Price of the package
+ *                 example: 999.99
+ *               Availability:
+ *                 type: string
+ *                 description: Availability status of the package
+ *                 enum: [Available, Sold Out]
+ *                 example: "Available"
  *     responses:
  *       200:
- *         description: List of all Koi Consignments
+ *         description: Koi Package updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Koi Package updated successfully.
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     PackageName:
+ *                       type: string
+ *                     PackageSize:
+ *                       type: integer
+ *                     Price:
+ *                       type: number
+ *                     Availability:
+ *                       type: string
+ *       404:
+ *         description: Koi Package not found or no changes made
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Koi Package not found or no changes made.
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Error updating Koi Package
+ *                 error:
+ *                   type: string
  */
+router.put("/updateKoiPackage/:packageId", updateKoiPackage);
+
+// Koi Consignment routes
+/**
+ * @swagger
+ * /api/createConsignment:
+ *   post:
+ *     summary: Create a new koi consignment
+ *     tags: [Consignments]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - consignmentType
+ *               - consignmentMode
+ *               - priceAgreed
+ *               - koiType
+ *               - koiColor
+ *               - koiAge
+ *               - koiSize
+ *             properties:
+ *               consignmentType:
+ *                 type: string
+ *                 description: Type of the consignment
+ *                 example: "Regular"
+ *               consignmentMode:
+ *                 type: string
+ *                 description: Mode of the consignment
+ *                 example: "Direct"
+ *               priceAgreed:
+ *                 type: number
+ *                 format: decimal
+ *                 description: Agreed price for the consignment
+ *                 example: 1000.00
+ *               notes:
+ *                 type: string
+ *                 description: Additional notes about the consignment
+ *                 example: "Healthy koi fish in good condition"
+ *               koiType:
+ *                 type: string
+ *                 description: Type/variety of the koi
+ *                 example: "Kohaku"
+ *               koiColor:
+ *                 type: string
+ *                 description: Color pattern of the koi
+ *                 example: "Red and White"
+ *               koiAge:
+ *                 type: string
+ *                 description: Age of the koi
+ *                 example: "2 years"
+ *               koiSize:
+ *                 type: string
+ *                 description: Size of the koi
+ *                 example: "35cm"
+ *               imageFile:
+ *                 type: string
+ *                 format: binary
+ *                 description: Image of the koi fish
+ *     responses:
+ *       201:
+ *         description: Consignment created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Koi Consignment created successfully"
+ *                 result:
+ *                   type: object
+ *                   properties:
+ *                     rowsAffected:
+ *                       type: array
+ *                       items:
+ *                         type: number
+ *                       example: [1]
+ *       400:
+ *         description: Bad request - Invalid input data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Invalid input data"
+ *       401:
+ *         description: Unauthorized - User not authenticated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "User ID not found in the request. Make sure you are authenticated."
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Error creating Koi Consignment"
+ *                 error:
+ *                   type: string
+ *                   example: "Internal server error details"
+ */
+router.post("/createConsignment",authMiddleware,createKoiConsignment);
+
 router.get("/koiconsignments", getAllKoiConsignments);
 
 /**
@@ -920,22 +1377,313 @@ router.get("/koiconsignment/:id", getConsignmentsById);
 
 // router.patch("/koiconsignment/:consignmentId/:status", updateConsignmentStatus);
 
+/**
+ * @swagger
+ * /api/koiconsignment/{consignmentId}:
+ *   delete:
+ *     summary: Delete a koi consignment by ID
+ *     tags: [Koi Consignment]
+ *     parameters:
+ *       - in: path
+ *         name: consignmentId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the consignment to delete
+ *     responses:
+ *       200:
+ *         description: Consignment successfully deleted
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Koi Consignment deleted successfully
+ *                 data:
+ *                   type: boolean
+ *                   example: true
+ *       404:
+ *         description: Consignment not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Koi Consignment not found
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Error deleting Koi Consignment
+ *                 error:
+ *                   type: string
+ */
 router.delete("/koiconsignment/:consignmentId", deleteConsignmentById);
 
+/**
+ * @swagger
+ * /api/koiconsignment/{consignmentId}/pending:
+ *   patch:
+ *     summary: Update consignment status to Pending
+ *     tags: [Koi Consignment]
+ *     parameters:
+ *       - in: path
+ *         name: consignmentId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the consignment
+ *     responses:
+ *       200:
+ *         description: Consignment status updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Consignment status updated to Pending
+ *                 consignment:
+ *                   type: object
+ *       404:
+ *         description: Consignment not found
+ *       500:
+ *         description: Failed to update consignment status
+ */
 router.patch("/koiconsignment/:consignmentId/pending", updateConsignmentToPending);
 
+/**
+ * @swagger
+ * /api/koiconsignment/{consignmentId}/approved:
+ *   patch:
+ *     summary: Update consignment status to Approved
+ *     tags: [Koi Consignment]
+ *     parameters:
+ *       - in: path
+ *         name: consignmentId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the consignment
+ *     responses:
+ *       200:
+ *         description: Consignment status updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Consignment status updated to Approved
+ *                 consignment:
+ *                   type: object
+ *       404:
+ *         description: Consignment not found
+ *       500:
+ *         description: Failed to update consignment status
+ */
 router.patch("/koiconsignment/:consignmentId/approved", updateConsignmentToApproved);
 
+/**
+ * @swagger
+ * /api/koiconsignment/{consignmentId}/rejected:
+ *   patch:
+ *     summary: Update consignment status to Rejected
+ *     tags: [Koi Consignment]
+ *     parameters:
+ *       - in: path
+ *         name: consignmentId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the consignment
+ *     responses:
+ *       200:
+ *         description: Consignment status updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Consignment status updated to Rejected
+ *                 consignment:
+ *                   type: object
+ *       404:
+ *         description: Consignment not found
+ *       500:
+ *         description: Failed to update consignment status
+ */
 router.patch("/koiconsignment/:consignmentId/rejected", updateConsignmentToRejected);
-      
+
+/**
+ * @swagger
+ * /api/koiconsignment/pending/{userId}:
+ *   get:
+ *     summary: Get all pending consignments for a specific user
+ *     tags: [Koi Consignment]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the user
+ *     responses:
+ *       200:
+ *         description: List of pending consignments retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *       500:
+ *         description: Error fetching pending consignments
+ */
 router.get("/koiconsignment/pending/:userId", getPendingConsignmentsByUserId);
 
+/**
+ * @swagger
+ * /api/koiconsignment/approved/{userId}:
+ *   get:
+ *     summary: Get all approved consignments for a specific user
+ *     tags: [Koi Consignment]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the user
+ *     responses:
+ *       200:
+ *         description: List of approved consignments retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *       500:
+ *         description: Error fetching approved consignments
+ */
 router.get("/koiconsignment/approved/:userId", getApprovedConsignmentsByUserId);
 
+/**
+ * @swagger
+ * /api/koiconsignment/rejected/{userId}:
+ *   get:
+ *     summary: Get all rejected consignments for a specific user
+ *     tags: [Koi Consignment]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the user
+ *     responses:
+ *       200:
+ *         description: List of rejected consignments retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *       500:
+ *         description: Error fetching rejected consignments
+ */
 router.get("/koiconsignment/rejected/:userId", getRejectedConsignmentsByUserId);
 
+/**
+ * @swagger
+ * /api/koiconsignment/{KoiID}/sold:
+ *   patch:
+ *     summary: Update consignment status to Sold
+ *     tags: [Koi Consignment]
+ *     parameters:
+ *       - in: path
+ *         name: KoiID
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the Koi fish
+ *     responses:
+ *       200:
+ *         description: Consignment status updated to Sold successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Consignment status updated to Sold
+ *                 koiId:
+ *                   type: integer
+ *       404:
+ *         description: Consignment not found
+ *       500:
+ *         description: Error updating consignment status
+ */
 router.patch("/koiconsignment/:KoiID/sold", updateConsignmentToSold);
 
+/**
+ * @swagger
+ * /api/koiconsignment/{consignmentId}/sale:
+ *   patch:
+ *     summary: Update consignment status to Listed for Sale
+ *     tags: [Koi Consignment]
+ *     parameters:
+ *       - in: path
+ *         name: consignmentId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the consignment
+ *     responses:
+ *       200:
+ *         description: Consignment status updated to Sale successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Consignment status updated to Sale
+ *       500:
+ *         description: Error updating consignment status
+ */
 router.patch("/koiconsignment/:consignmentId/sale", updateConsignmentToSale);
 
 /**
@@ -970,8 +1718,123 @@ router.patch("/koiconsignment/:consignmentId/sale", updateConsignmentToSale);
  */
 router.patch("/koiconsignment/:consignmentId/assign", assignConsignmentToStaff);
 
+/**
+ * @swagger
+ * /api/from-consignment:
+ *   post:
+ *     summary: Create a new Koi Fish from consignment data
+ *     tags: [Koi Fish]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - KoiType
+ *               - KoiAge
+ *               - KoiSize
+ *               - PriceAgreed
+ *             properties:
+ *               KoiType:
+ *                 type: integer
+ *                 description: The variety ID of the Koi fish
+ *               KoiAge:
+ *                 type: integer
+ *                 description: Age of the Koi fish in years
+ *               KoiSize:
+ *                 type: integer
+ *                 description: Size of the Koi fish in centimeters
+ *               PriceAgreed:
+ *                 type: number
+ *                 format: float
+ *                 description: Agreed price for the Koi fish
+ *               InspectionResult:
+ *                 type: string
+ *                 description: Result of the Koi fish inspection
+ *               ImagePath:
+ *                 type: string
+ *                 description: Path to the Koi fish image
+ *               imageFile:
+ *                 type: string
+ *                 format: binary
+ *                 description: Image file of the Koi fish
+ *     responses:
+ *       201:
+ *         description: Koi Fish created successfully from consignment
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Koi Fish created successfully from consignment!
+ *                 koiId:
+ *                   type: integer
+ *                   description: ID of the created Koi fish
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Error creating Koi Fish from consignment
+ *                 error:
+ *                   type: string
+ */
 router.post('/from-consignment', createKoiFishFromConsignment);
 
+/**
+ * @swagger
+ * /api/koiconsignment/{consignmentId}:
+ *   patch:
+ *     summary: Update KoiID in a consignment
+ *     tags: [Koi Consignment]
+ *     parameters:
+ *       - in: path
+ *         name: consignmentId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the consignment to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - koiId
+ *             properties:
+ *               koiId:
+ *                 type: integer
+ *                 description: ID of the Koi fish to associate with the consignment
+ *     responses:
+ *       200:
+ *         description: KoiID updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: KoiID updated in KoiConsignment successfully.
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Error updating KoiID in KoiConsignment
+ */
 router.patch('/koiconsignment/:consignmentId', updateConsignmentKoiId);
 
 // Breeders routes
