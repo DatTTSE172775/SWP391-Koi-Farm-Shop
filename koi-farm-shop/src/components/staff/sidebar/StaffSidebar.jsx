@@ -74,6 +74,9 @@ const Sidebar = () => {
           <Menu.Item key="consignments-in-care">
             <Link to="/staff/consignments/in-care">Hoàn Thành</Link>
           </Menu.Item>
+          <Menu.Item key="consignments-rejected">
+            <Link to="/staff/consignments/rejected">Đã Hủy</Link>
+          </Menu.Item>
         </SubMenu>
 
 

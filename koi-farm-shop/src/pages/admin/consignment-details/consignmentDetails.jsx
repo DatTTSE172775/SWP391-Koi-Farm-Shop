@@ -125,7 +125,6 @@ const ConsignmentDetails = () => {
                   <Descriptions.Item label="Ngày ký gửi">
                     {new Date(consignment.StartDate).toLocaleString()}
                   </Descriptions.Item>
-                  <Descriptions.Item label="Trạng thái">{renderStatus(consignment.Status)}</Descriptions.Item>
                   <Descriptions.Item label="Giá thỏa thuận">
                     {consignment.PriceAgreed.toLocaleString()} VND
                   </Descriptions.Item>

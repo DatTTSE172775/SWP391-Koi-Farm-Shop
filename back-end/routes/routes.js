@@ -70,11 +70,13 @@ const {
   deleteConsignmentById,
   // updateConsignmentStatus,
   updateConsignmentToApproved,
+  updateConsignmentToRejected,
   updateConsignmentToPending,
   assignConsignmentToStaff,
   getAllStaffConsignmentsByUserId,
   getPendingConsignmentsByUserId,
   getApprovedConsignmentsByUserId,
+  getRejectedConsignmentsByUserId,
   updateConsignmentToSold,
   updateConsignmentToSale,
 } = require("../controllers/koiConsignmentController");
@@ -923,10 +925,14 @@ router.delete("/koiconsignment/:consignmentId", deleteConsignmentById);
 router.patch("/koiconsignment/:consignmentId/pending", updateConsignmentToPending);
 
 router.patch("/koiconsignment/:consignmentId/approved", updateConsignmentToApproved);
+
+router.patch("/koiconsignment/:consignmentId/rejected", updateConsignmentToRejected);
       
 router.get("/koiconsignment/pending/:userId", getPendingConsignmentsByUserId);
 
 router.get("/koiconsignment/approved/:userId", getApprovedConsignmentsByUserId);
+
+router.get("/koiconsignment/rejected/:userId", getRejectedConsignmentsByUserId);
 
 router.patch("/koiconsignment/:KoiID/sold", updateConsignmentToSold);
 

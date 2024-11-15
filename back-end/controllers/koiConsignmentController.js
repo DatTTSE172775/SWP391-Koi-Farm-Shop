@@ -146,6 +146,16 @@ exports.getApprovedConsignmentsByUserId = async (req, res) => {
         res.status(500).json({ message: 'Error fetching Approved Koi Consignments', error: error.message });
     }
 };
+
+exports.getRejectedConsignmentsByUserId = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const result = await consignmentModel.getRejectedConsignmentsByUserId(userId);
+        res.status(200).json({ message: 'Rejected Koi Consignments retrieved successfully', data: result });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching Approved Koi Consignments', error: error.message });
+    }
+};
         
 exports.updateConsignmentToApproved = async (req, res) => {
     const { consignmentId } = req.params;
@@ -162,6 +172,24 @@ exports.updateConsignmentToApproved = async (req, res) => {
     } catch (err) {
       console.error(err);
       res.status(500).send({ message: "Failed to update consignment to Approved." });
+    }
+  };
+
+  exports.updateConsignmentToRejected = async (req, res) => {
+    const { consignmentId } = req.params;
+  
+    try {
+      const updatedConsignment = await consignmentModel.updateConsignmentStatus(consignmentId, "Rejected");
+      if (!updatedConsignment) {
+        return res.status(404).send({ message: "Consignment not found." });
+      }
+      res.send({
+        message: "Consignment status updated to Rejected.",
+        consignment: updatedConsignment,
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send({ message: "Failed to update consignment to Rejected." });
     }
   };
 
