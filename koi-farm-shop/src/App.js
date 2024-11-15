@@ -1,5 +1,5 @@
 import "antd/dist/reset.css";
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import {
     Navigate,
     Route,
@@ -7,25 +7,29 @@ import {
     Routes,
 } from "react-router-dom";
 
+import { useDispatch } from "react-redux";
+import { initializeAuth } from "./store/actions/authActions";
+
 import Loading from "./components/loading/Loading";
 import CartProvider from "./components/order/cart-context/CartContext";
 // main layout
 import ChangePassword from "./pages/account/change-password/ChangePassword";
-import AddKoi from "./pages/admin/addProduct/AddKoi";
-import AddPackage from "./pages/admin/addProduct/AddPackage";
-import DeleteKoi from "./pages/admin/deleteProduct/deleteKoi";
-import DeleteKoiPackage from "./pages/admin/deleteProduct/deleteKoiPackage";
-import OrderDetails from "./pages/admin/order-details/OrderDetails";
-import OrdersManagement from "./pages/admin/orderManagement/OrdersManagement";
-import UpdateKoi from "./pages/admin/updateProduct/updateKoi";
-import WelcomeAdmin from "./pages/admin/welcome/WelcomeAdmin";
+// import AddKoi from "./pages/admin/addProduct/AddKoi";
+// import AddPackage from "./pages/admin/addProduct/AddPackage";
+// import DeleteKoi from "./pages/admin/deleteProduct/deleteKoi";
+// import DeleteKoiPackage from "./pages/admin/deleteProduct/deleteKoiPackage";
+// import OrderDetails from "./pages/admin/order-details/OrderDetails";
+// import OrdersManagement from "./pages/admin/orderManagement/OrdersManagement";
+// import UpdateKoi from "./pages/admin/updateProduct/updateKoi";
+// import WelcomeAdmin from "./pages/admin/welcome/WelcomeAdmin";
 import MainLayout from "./pages/MainLayout";
 import NotFound from "./pages/notfound/NotFound";
 import staffRoutes from "./routes/StaffRoutes";
-import PendingConsignments from "./pages/staff/consignment-manage/processing/ProcessingConsignment";
-import InCareConsignments from "./pages/staff/consignment-manage/completed/CompletedConsignment";
-import ManagerConsignmentPage from "./pages/admin/consign/AdminConsignment";
+// import PendingConsignments from "./pages/staff/consignment-manage/processing/ProcessingConsignment";
+// import InCareConsignments from "./pages/staff/consignment-manage/completed/CompletedConsignment";
+// import ManagerConsignmentPage from "./pages/admin/consign/AdminConsignment";
 import adminRoutes from "./routes/AdminRoutes";
+
 
 // auth page
 const ForgetPassword = lazy(() =>
@@ -81,6 +85,9 @@ const Checkout = lazy(() => import("./components/order/checkout/Checkout"));
 const OrderSuccess = lazy(() =>
     import("./pages/order/orderSuccess/OrderSuccess")
 );
+const PaymentResult = lazy(() =>
+    import("./components/order/payment/PaymentResult")
+);
 const Cart = lazy(() => import("./pages/order/cart/CartPage"));
 
 // customer page
@@ -88,7 +95,14 @@ const WelcomeAccount = lazy(() =>
     import("./pages/account/welcome/WelcomeAccount")
 );
 
+
+
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(initializeAuth());
+  }, [dispatch]);
     return (
         <CartProvider>
             <Router>
@@ -126,6 +140,7 @@ function App() {
                             {/* Order Routes */}
                             <Route path="cart" element={<Cart />} />
                             <Route path="checkout" element={<Checkout />} />
+                            <Route path="payment-result" element={<PaymentResult />} />
                             <Route path="order-success" element={<OrderSuccess />} />
                         </Route>
 

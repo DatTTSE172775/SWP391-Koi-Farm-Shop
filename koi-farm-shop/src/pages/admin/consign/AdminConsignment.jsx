@@ -1,8 +1,6 @@
-import { Alert, Layout, Spin, Typography, Table, Button, Space } from "antd";
+import { Alert, Layout, Spin, Typography, Table, Button, Space, Popconfirm, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import AdminHeader from "../../../components/admin/header/AdminHeader";
-import AdminSidebar from "../../../components/admin/sidebar/AdminSidebar";
 import axiosInstance from "../../../api/axiosInstance";
 import "./AdminConsignment.scss";
 
@@ -42,11 +40,26 @@ const AdminConsignment = () => {
     }
   };
 
+  const handleDelete = async (record) => {
+    try {
+      await axiosInstance.delete(`koiconsignment/${record.ConsignmentID}`);
+      message.success('Consignment deleted successfully');
+      // Refresh the consignments list
+      const response = await axiosInstance.get("koiconsignments");
+      setConsignments(response.data.data || []);
+    } catch (error) {
+      console.error("Error deleting consignment:", error);
+      message.error('Failed to delete consignment');
+    }
+  };
+
   const columns = [
     {
       title: 'ID',
       dataIndex: 'ConsignmentID',
       key: 'ConsignmentID',
+      defaultSortOrder: 'descend',
+      sorter: (a, b) => a.ConsignmentID - b.ConsignmentID,
     },
     {
       title: 'Loại Ký gửi',
@@ -60,8 +73,8 @@ const AdminConsignment = () => {
     },
     {
       title: 'Trạng thái',
-      dataIndex: 'Status',
-      key: 'Status',
+      dataIndex: 'ApprovedStatus',
+      key: 'ApprovedStatus',
     },
     {
       title: 'Hành động',
@@ -69,6 +82,14 @@ const AdminConsignment = () => {
       render: (_, record) => (
         <Space size="middle">
           <Button onClick={() => handleSeeDetail(record)}>Chi Tiết</Button>
+          <Popconfirm
+            title="Are you sure you want to delete this consignment?"
+            onConfirm={() => handleDelete(record)}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button danger>Xóa</Button>
+          </Popconfirm>
         </Space>
       ),
     },
@@ -78,9 +99,7 @@ const AdminConsignment = () => {
 
   return (
     <Layout className="admin-consignment">
-      <AdminSidebar />
       <Layout className="site-layout">
-        <AdminHeader />
         <Content style={{ margin: '24px 16px 0' }}>
           <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
             <Typography.Title level={2}>Ký gửi</Typography.Title>

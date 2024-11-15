@@ -11,7 +11,7 @@ const ShippedOrders = () => {
   console.log('User ID from localStorage:', userId);
   // Lấy dữ liệu từ store Redux
   const { orders, loading, error } = useSelector((state) => state.order);
-
+ 
   useEffect(() => {
     dispatch(fetchOrdersByUser(userId));
   }, [dispatch]);
@@ -25,7 +25,6 @@ const ShippedOrders = () => {
     return <div>Error: {error}</div>;
   }
 
-  // Lọc các đơn hàng với trạng thái "Shipped"
   const shippedOrders = orders.filter(
     (order) => order.OrderStatus === "Delivering"
   );

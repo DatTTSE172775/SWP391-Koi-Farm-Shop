@@ -109,7 +109,7 @@ export const register =
       console.log("Attempting registration with:", {
         username,
         email,
-        password: "*****",
+        password,
         fullname,
         phone,
       });
@@ -133,6 +133,7 @@ export const register =
 
       if (response.data && response.data.message) {
         dispatch({ type: REGISTER_SUCCESS, payload: response.data.message });
+        return response.data;
       } else {
         dispatch({
           type: REGISTER_FAILURE,
@@ -151,10 +152,24 @@ export const register =
 // Add a new action to initialize auth state from localStorage
 export const initializeAuth = () => (dispatch) => {
   const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
+  const username = localStorage.getItem("username");
   const userId = localStorage.getItem("userId");
-  if (token && userId) {
-    dispatch({ type: LOGIN_SUCCESS, payload: { token, userId } });
+
+  if (token && role && userId) {
+    // Restore the axios header
     axiosPublic.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    
+    // Dispatch login success with all necessary data
+    dispatch({
+      type: LOGIN_SUCCESS,
+      payload: {
+        token,
+        role,
+        username,
+        userId
+      }
+    });
   }
 };
 

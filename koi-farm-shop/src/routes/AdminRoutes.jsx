@@ -10,8 +10,9 @@ import UpdateKoi from "../pages/admin/updateProduct/updateKoi";
 import DeleteKoi from "../pages/admin/deleteProduct/deleteKoi";
 import DeleteKoiPackage from "../pages/admin/deleteProduct/deleteKoiPackage";
 import ManagerConsignmentPage from "../pages/admin/consign/AdminConsignment";
+import ConsignmentDetail from "../pages/admin/consignment-details/consignmentDetails";
 import Dashboard from "../pages/admin/dashboard/Dashboard";
-
+import UpdatePackage from "../pages/admin/updateProduct/updateKoiPackage";
 const ProtectedAdminRoute = ({children}) => {
     const role = localStorage.getItem("role");
     if (role !== "Manager") {
@@ -35,11 +36,12 @@ const AdminRoutes = (
         <Route path="manage-orders/:orderId" element={<OrderDetails/>}/>
         <Route path="AddKoi" element={<AddKoi/>}/>
         <Route path="AddPackage" element={<AddPackage/>}/>
+        <Route path="updatePackage" element={<UpdatePackage/>}/>
         <Route path="updateKoi" element={<UpdateKoi/>}/>
         <Route path="deleteKoi" element={<DeleteKoi/>}/>
         <Route path="deletePackage" element={<DeleteKoiPackage/>}/>
         <Route path="manage-consign" element={<ManagerConsignmentPage/>}/>
-        {/*<Route path="consign-detail/:id" element={<ConsignmentDetail/>}/>*/}
+        <Route path="/admin/consign-detail/:id" element={<ConsignmentDetail />} />
     </Route>
 );
 

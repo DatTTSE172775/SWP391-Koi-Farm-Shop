@@ -36,11 +36,11 @@ const PondAccessoriesSampleList = [
 const PondAccessories = () => {
   return (
     <div className="pond-accessories-container">
-      <h1 className="pond-accessories-title">Pond Accessories</h1>
+      <h1 className="pond-accessories-title">Phụ Kiện Hồ Cá</h1>
       
       <div className="guide">
-        <h2>Guide to Pond Accessories</h2>
-        <p>Transform your pond into a thriving, beautiful oasis with our wide selection of pond accessories. Designed to improve both the aesthetic appeal and overall functionality of your pond, our accessories help create the perfect environment for your fish, plants, and water features.</p>
+        <h2>Hướng Dẫn Về Phụ Kiện Hồ Cá</h2>
+        <p>Biến hồ cá của bạn thành một ốc đảo tươi tốt và xinh đẹp với bộ sưu tập phụ kiện hồ cá đa dạng của chúng tôi. Được thiết kế để cải thiện cả tính thẩm mỹ và chức năng tổng thể của hồ cá, các phụ kiện của chúng tôi giúp tạo ra môi trường hoàn hảo cho cá, cây trồng và các tính năng nước của bạn.</p>
       </div>
 
       <div className="pond-accessories-grid">

@@ -9,7 +9,7 @@ const createKoiConsignment = async (req) => {
         const pool = await sql.connect();
 
         // Get the userId from the authenticated user's token
-        const userId = req.user?.userId;  // Use optional chaining
+        const userId = req.user?.userId;
 
         if (!userId) {
             throw new Error('User ID not found in the request. Make sure you are authenticated.');
@@ -50,9 +50,18 @@ const createKoiConsignment = async (req) => {
             .input('KoiAge', sql.NVarChar(50), req.body.koiAge)
             .input('KoiSize', sql.NVarChar(50), req.body.koiSize)
             .input('ImagePath', sql.NVarChar(255), imagePath)
+            .input('InspectionResult', sql.NVarChar(sql.MAX), req.body.inspectionResult || null)
             .query(`
-                INSERT INTO KoiConsignment (CustomerID, ConsignmentType, ConsignmentMode, Status, PriceAgreed, ApprovedStatus, Notes, KoiType, KoiColor, KoiAge, KoiSize, ImagePath)
-                VALUES (@CustomerID, @ConsignmentType, @ConsignmentMode, @Status, @PriceAgreed, @ApprovedStatus, @Notes, @KoiType, @KoiColor, @KoiAge, @KoiSize, @ImagePath);
+                INSERT INTO KoiConsignment (
+                    CustomerID, ConsignmentType, ConsignmentMode, Status, 
+                    PriceAgreed, ApprovedStatus, Notes, KoiType, 
+                    KoiColor, KoiAge, KoiSize, ImagePath, InspectionResult
+                )
+                VALUES (
+                    @CustomerID, @ConsignmentType, @ConsignmentMode, @Status, 
+                    @PriceAgreed, @ApprovedStatus, @Notes, @KoiType, 
+                    @KoiColor, @KoiAge, @KoiSize, @ImagePath, @InspectionResult
+                );
             `);
         return result;
     } catch (err) {
@@ -91,8 +100,7 @@ const getConsignmentsById = async (id) => {
 
 const updateConsignmentStatus = async (consignmentID, status) => {
   try {
-    // Check if the status is valid
-    const validStatuses = ['Pending', 'Approved', 'Rejected']; // Update this based on your actual constraint
+    const validStatuses = ['Pending', 'Approved', 'Rejected'];
     if (!validStatuses.includes(status)) {
       throw new Error(`Invalid status. Must be one of: ${validStatuses.join(', ')}`);
     }
@@ -145,19 +153,116 @@ const assignConsignmentToStaff = async (consignmentId, userId) => {
             `);
 
         if (result.rowsAffected[0] === 0) {
-            return null; // No consignment was updated
+            return null;
         }
 
-        // Fetch the updated consignment
         const updatedConsignment = await getConsignmentsById(consignmentId);
         return updatedConsignment;
     } catch (error) {
         console.error("Error assigning consignment to staff:", error);
         throw new Error("Error assigning consignment to staff");
     }
-  };
+};
 
-  const getAllStaffConsignmentsByUserId = async (userId) => {
+const updateConsignmentToApproved = async (consignmentId) => {
+    try {
+        const pool = await sql.connect();
+        const result = await pool.request()
+            .input('consignmentId', sql.Int, consignmentId)
+            .query(`
+                UPDATE KoiConsignment
+                SET Status = 'Approved',
+                    ApprovedStatus = 'Approved'
+                WHERE ConsignmentID = @consignmentId
+            `);
+
+        if (result.rowsAffected[0] === 0) {
+            return null;
+        }
+
+        const updatedConsignment = await getConsignmentsById(consignmentId);
+        return updatedConsignment;
+    } catch (error) {
+        console.error("Error updating consignment to approved:", error);
+        throw new Error("Error updating consignment to approved");
+    }
+};
+
+const updateConsignmentToPending = async (consignmentId) => {
+  try {
+      const pool = await sql.connect();
+      const result = await pool.request()
+          .input('consignmentId', sql.Int, consignmentId)
+          .query(`
+              UPDATE KoiConsignment
+              SET Status = 'Pending',
+                  ApprovedStatus = 'Pending'
+              WHERE ConsignmentID = @consignmentId
+          `);
+
+      if (result.rowsAffected[0] === 0) {
+          return null;
+      }
+
+      const updatedConsignment = await getConsignmentsById(consignmentId);
+      return updatedConsignment;
+  } catch (error) {
+      console.error("Error updating consignment to approved:", error);
+      throw new Error("Error updating consignment to approved");
+  }
+};
+
+const updateConsignmentToSold = async (koiId) => {
+  try {
+    const pool = await sql.connect();
+    const result = await pool.request()
+      .input('KoiID', sql.Int, koiId)
+      .query(`
+        UPDATE KoiConsignment 
+        SET Status = 'Sold'
+        WHERE KoiID = @KoiID
+      `);
+
+    // Log the query result
+    console.log('Update result:', result);
+    
+    if (result.rowsAffected[0] === 0) {
+      console.log('No rows were updated. KoiID might not exist:', koiId);
+      return false;
+    }
+
+    // Verify the update
+    const verifyResult = await pool.request()
+      .input('KoiID', sql.Int, koiId)
+      .query('SELECT Status FROM KoiConsignment WHERE KoiID = @KoiID');
+    
+    console.log('Verification result:', verifyResult.recordset);
+    
+    return result.rowsAffected[0] > 0;
+  } catch (error) {
+    console.error("Error updating consignment to sold:", error);
+    throw new Error("Error updating consignment to sold");
+  }
+};
+
+const updateConsignmentToSale = async (consignmentId) => {
+  try {
+    const pool = await sql.connect();
+    const result = await pool.request()
+      .input('consignmentId', sql.Int, consignmentId)
+      .query(`
+        UPDATE KoiConsignment 
+        SET Status = 'Listed for Sale'
+          WHERE ConsignmentID = @consignmentId
+      `);
+    return result.rowsAffected[0] > 0;
+  } catch (error) {
+    console.error("Error updating consignment to sale:", error);
+    throw new Error("Error updating consignment to sale");
+  }
+};
+
+const getAllStaffConsignmentsByUserId = async (userId) => {
     try {  
       const pool = await sql.connect();
   
@@ -204,6 +309,17 @@ const assignConsignmentToStaff = async (consignmentId, userId) => {
     }
   }
 
+  const deleteConsignmentById = async (consignmentId) => {
+    try {
+      const pool = await sql.connect();
+      const result = await pool.request().input("ConsignmentID", sql.Int, consignmentId).query("DELETE FROM KoiConsignment WHERE ConsignmentID = @ConsignmentID");
+      return result.rowsAffected[0] > 0;
+    } catch (error) {
+      console.error("Error deleting consignment by ID:", error);
+      throw new Error("Error deleting consignment by ID");
+    }
+  }
+
 module.exports = {
     createKoiConsignment,
     getAllKoiConsignments,
@@ -213,5 +329,10 @@ module.exports = {
     getAllStaffConsignmentsByUserId,
     getPendingConsignmentsByUserId,
     getApprovedConsignmentsByUserId,
-    isUserStaff
+    isUserStaff,
+    deleteConsignmentById,
+    updateConsignmentToApproved,
+    updateConsignmentToPending,
+    updateConsignmentToSold,
+    updateConsignmentToSale
 };

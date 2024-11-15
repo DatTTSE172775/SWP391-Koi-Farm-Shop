@@ -8,6 +8,7 @@ const OrderSuccess = () => {
 
   const handleReturnHome = () => {
     navigate("/home");
+    window.location.reload();
   };
 
   const handleCheckOrderStatus = () => {
@@ -20,15 +21,15 @@ const OrderSuccess = () => {
         className="order-result"
         status="success"
         title="Thanh toán thành công"
-        subTitle="Mã đơn hàng của bạn là: 2017182818828182881. Đơn hàng của bạn sẽ sớm được giao đến"
+        subTitle="Đơn hàng của bạn sẽ sớm được giao đến"
         extra={[
-          <Button
-            key="status"
-            onClick={handleCheckOrderStatus}
-            className="ant-btn"
-          >
-            Kiểm tra đơn hàng
-          </Button>,
+          // <Button
+          //   key="status"
+          //   onClick={handleCheckOrderStatus}
+          //   className="ant-btn"
+          // >
+          //   Kiểm tra đơn hàng
+          // </Button>,
           <Button
             type="primary"
             key="home"

@@ -9,12 +9,24 @@ const CartProvider = ({ children }) => {
 
   const handleAddToCart = (item) => {
     const updatedCartItems = [...cartItems];
-    const existingItem = updatedCartItems.find((cartItem) => 
-      cartItem.id === item.id && cartItem.type === item.type
+    const existingItem = updatedCartItems.find(
+        (cartItem) => cartItem.id === item.id && cartItem.type === item.type
     );
+
     if (existingItem) {
-      existingItem.quantity += 1;
-      existingItem.total = existingItem.quantity * existingItem.price;
+      // Chỉ tăng số lượng nếu item là "lô cá koi" hoặc "koi package"
+      if (item.type === "package") {
+        existingItem.quantity += 1;
+        existingItem.total = existingItem.quantity * existingItem.price;
+      } else {
+        // Nếu là loại khác thì thông báo sản phẩm đã tồn tại trong giỏ hàng
+        notification.warning({
+          message: "Sản phẩm đã tồn tại trong giỏ hàng",
+          description: `${item.name} đã có trong giỏ hàng.`,
+          placement: "bottomRight",
+        });
+        return;
+      }
     } else {
       updatedCartItems.push({
         ...item,
@@ -23,6 +35,7 @@ const CartProvider = ({ children }) => {
         total: item.price,
       });
     }
+
     setCartItems(updatedCartItems);
     notification.success({
       message: "Thêm giỏ hàng thành công",
@@ -30,6 +43,7 @@ const CartProvider = ({ children }) => {
       placement: "bottomRight",
     });
   };
+
 
   const handleRemoveFromCart = (key) => {
     const updatedCartItems = cartItems.filter((item) => item.key !== key);
@@ -43,12 +57,14 @@ const CartProvider = ({ children }) => {
   const handleUpdateQuantity = (key, quantity) => {
     const updatedCartItems = [...cartItems];
     const item = updatedCartItems.find((item) => item.key === key);
-    if (item) {
-      item.quantity = quantity;
-      item.total = item.price * quantity;
+
+    if (item && item.type === 'package') {
+      item.quantity = quantity > 0 ? quantity : 1; // Đảm bảo số lượng không dưới 1
+      item.total = item.price * item.quantity;
       setCartItems(updatedCartItems);
     }
   };
+
 
   const clearCart = () => {
     setCartItems([]);

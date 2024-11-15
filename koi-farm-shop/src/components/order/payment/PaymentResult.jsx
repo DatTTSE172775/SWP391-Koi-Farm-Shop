@@ -25,16 +25,29 @@ const PaymentResult = () => {
           setStatus('success');
 
           // Get pending order from localStorage
-          const pendingOrder = JSON.parse(localStorage.getItem('pendingOrder'));
-          if (pendingOrder) {
+          const pendingOrderData = JSON.parse(localStorage.getItem('pendingOrder'));
+          if (pendingOrderData) {
             // Create order in database
-            await dispatch(createOrder(pendingOrder));
+            await dispatch(createOrder(pendingOrderData));
+
+            // Update consignment status for sold Koi
+            const { cartItems } = pendingOrderData;
+            for (const item of cartItems) {
+              if (item.type === 'koi') {
+                try {
+                  console.log(`Updating consignment status for KoiID: ${item.id}`);
+                  await axiosInstance.patch(`/koiconsignment/${item.id}/sold`);
+                } catch (error) {
+                  console.error('Error updating consignment status:', error);
+                }
+              }
+            }
+
             // Clear pending order from localStorage
             localStorage.removeItem('pendingOrder');
           }
         } else {
           setStatus('error');
-          //Remove pending order from localStorage
           localStorage.removeItem('pendingOrder');
         }
       } catch (error) {

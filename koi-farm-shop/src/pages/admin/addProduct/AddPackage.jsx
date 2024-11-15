@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Layout, Typography, Form, Input, InputNumber, Select, Button, message } from "antd";
-import AdminHeader from "../../../components/admin/header/AdminHeader";
-import AdminSidebar from "../../../components/admin/sidebar/AdminSidebar";
 import axiosPublic from "../../../api/axiosPublic";
 import { useNavigate } from "react-router-dom";
 import "./AddProds.scss";
@@ -91,10 +89,7 @@ const AddPackage = () => {
 
 
   return (
-    <Layout className="admin-layout">
-      <AdminSidebar />
       <Layout>
-        <AdminHeader />
         <Content className="admin-content">
           <div className="add-container">
             <Title level={2}>Thêm gói cá Koi</Title>
@@ -150,14 +145,13 @@ const AddPackage = () => {
               </Form.Item>
               <Form.Item>
                 <Button type="primary" htmlType="submit" size="large">
-                  Thêm cá Koi
+                  Thêm gói cá Koi
                 </Button>
               </Form.Item>
             </Form>
           </div>
         </Content>
       </Layout>
-    </Layout>
   );
 };
 

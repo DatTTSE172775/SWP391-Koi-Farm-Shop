@@ -94,9 +94,9 @@ const accountMenu = (
     <Menu.Item key="view-info">
       <Link to="/account">Xem Thông Tin</Link>
     </Menu.Item>
-    <Menu.Item key="order-history">
+    {/* <Menu.Item key="order-history">
       <Link to="/order-history">Lịch sử đơn hàng</Link>
-    </Menu.Item>
+    </Menu.Item> */}
     <Menu.Divider />
     <Menu.Item key="logout" onClick={handleLogout}>
       Đăng xuất
@@ -137,64 +137,11 @@ const accountMenu = (
           <Menu.Item key="koi-list">
             <Link to="/koi-list">Tất cả cá Koi đang bán</Link>
           </Menu.Item>
-          <Menu.Item key="koi-high-quality">
-            <Link to="/koi-high-quality">Cá Koi chất lượng cao</Link>
-          </Menu.Item>
-          <SubMenu key="koi-varieties" title="Các giống cá Koi">
-            <Menu.Item key="koi-varieties-1">
-              <Link to="/koi-varieties/1">Kohaku Koi</Link>
-            </Menu.Item>
-            <Menu.Item key="koi-varieties-2">
-              <Link to="/koi-varieties/2">Showa Koi</Link>
-            </Menu.Item>
-            <Menu.Item key="koi-varieties-3">
-              <Link to="/koi-varieties/3">Taisho Sanke Koi</Link>
-            </Menu.Item>
-            <Menu.Item key="koi-varieties-4">
-              <Link to="/koi-varieties/4">Shiro Utsuri Koi</Link>
-            </Menu.Item>
-            <Menu.Item key="koi-varieties-5">
-              <Link to="/koi-varieties/5">Hi Utsuri Koi</Link>
-            </Menu.Item>
-            <Menu.Item key="koi-varieties-6">
-              <Link to="/koi-varieties/6">Goshiki Koi</Link>
-            </Menu.Item>
-            <Menu.Item key="koi-varieties-7">
-              <Link to="/koi-varieties/7">Kujyaku Koi</Link>
-            </Menu.Item>
-            <Menu.Item key="koi-varieties-8">
-              <Link to="/koi-varieties/8">Shusui Koi</Link>
-            </Menu.Item>
-            <Menu.Item key="koi-varieties-9">
-              <Link to="/koi-varieties/9">Asagi Koi</Link>
-            </Menu.Item>
-            <Menu.Item key="koi-varieties-10">
-              <Link to="/koi-varieties/10">Ginrin Koi</Link>
-            </Menu.Item>
-            <Menu.Item key="koi-varieties-11">
-              <Link to="/koi-varieties/11">Tancho Koi</Link>
-            </Menu.Item>
-            <Menu.Item key="koi-varieties-12">
-              <Link to="/koi-varieties/12">Doitsu Koi</Link>
-            </Menu.Item>
-            <Menu.Item key="koi-varieties-13">
-              <Link to="/koi-varieties/13">Butterfly Koi</Link>
-            </Menu.Item>
-          </SubMenu>
           <Menu.Item key="koi-breeders">
             <Link to="/koi-breeders">Người nuôi cá Koi</Link>
           </Menu.Item>
           <Menu.Item key="koi-package">
             <Link to="/koi-package">Lô cá Koi</Link>
-          </Menu.Item>
-          <Menu.Item key="koi-collection">
-            <Link to="/koi-collection">Bộ sưu tập cá Koi</Link>
-          </Menu.Item>
-          <Menu.Item key="koi-request">
-            <Link to="/koi-request">Đề xuất cá Koi</Link>
-          </Menu.Item>
-          <Menu.Item key="koi-sold">
-            <Link to="/koi-sold">Cá koi đã bán</Link>
           </Menu.Item>
         </SubMenu>
 
@@ -226,7 +173,7 @@ const accountMenu = (
       <div className="nav-icons">
         {/* Chuông thông báo chỉ hiển thị khi đã đăng nhập */}
   {isAuthenticated && (
-    <Badge count={5} offset={[10, 0]} showZero>
+    <Badge count={0} offset={[10, 0]} showZero>
       <BellOutlined className="notification-bell" />
     </Badge>
   )}

@@ -1,9 +1,7 @@
-// src/components/Register/Register.scss
-
 .register-container {
-  width: 100vw;
-  height: 100vh;
-  background-image: url("../../../../public/koi-background.jpg"); // Đảm bảo bạn đã thêm hình ảnh vào thư mục public/images/
+  width: 100%;
+  max-width: 100%;
+  background-image: url("../../../../public/koi-background.jpg");
   background-size: cover;
   background-position: center;
   display: flex;

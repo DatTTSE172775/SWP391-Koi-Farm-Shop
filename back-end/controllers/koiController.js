@@ -5,18 +5,22 @@ const path = require('path');
 // Configure multer for file upload
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, '../../uploads/'));
+    cb(null, path.join(__dirname, '../../uploads/'))
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname));
+    cb(null, Date.now() + path.extname(file.originalname))
   }
 });
 
 const upload = multer({ storage: storage });
 
+
 // Controller function to create a new KoiFish entry
-const createKoiFish = [
-  upload.single('imageFile'), // Add multer middleware
+exports.createKoiFish = [
+  upload.fields([
+    { name: 'imageFile', maxCount: 1 },
+    { name: 'certificateLink', maxCount: 1 }
+  ]),
   async (req, res) => {
     try {
       const {
@@ -33,12 +37,12 @@ const createKoiFish = [
         feedingAmountPerDay,
         healthStatus,
         screeningRate,
-        certificateLink,
         availability,
       } = req.body;
 
       // Get the image path from the uploaded file
-      const imagesLink = req.file ? `/uploads/${req.file.filename}` : null;
+      const imagesLink = req.files.imageFile ? `/uploads/${req.files.imageFile[0].filename}` : null;
+      const certificateLink = req.files.certificateLink ? `/uploads/${req.files.certificateLink[0].filename}` : null;
 
       // Call the createKoiFish function from the model
       const result = await koiModel.createKoiFish(
@@ -75,18 +79,18 @@ const createKoiFish = [
 ];
 
 // Controller function to get all KoiFish entries
-const getAllKoiFish = async (req, res) => {
+ exports.getAllKoiFish = async (req, res) => {
   try {
-    const koiFish = await koiModel.getAllKoiFish();
-    res.json(koiFish);
+      const koiFish = await koiModel.getAllKoiFish();
+      res.json(koiFish);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error.' });
+      console.error(err);
+      res.status(500).json({ message: 'Server error.' });
   }
 };
 
 // Controller function to get a KoiFish entry by ID
-const getKoiFishById = async (req, res) => {
+exports.getKoiFishById = async (req, res) => {
   try {
     const koiId = req.params.koiId;
 
@@ -111,82 +115,110 @@ const getKoiFishById = async (req, res) => {
   }
 };
 
-// Controller to update availability status of KoiFish
-const updateKoiFishAvailability = async (req, res) => {
+// controller để cập nhật trạng thái sẵn có của KoiFish
+exports.updateKoiFishAvailability = async (req, res) => {
   try {
     const { koiId } = req.params;
     const { availability } = req.body;
 
     const validAvailabilities = ['Available', 'Sold Out'];
     if (!validAvailabilities.includes(availability)) {
-      return res.status(400).json({ message: "Invalid availability status." });
+      return res.status(400).json({ message: "Trạng thái sẵn có không hợp lệ." });
     }
 
     const success = await koiModel.updateKoiFishAvailability(koiId, availability);
     if (!success) {
-      return res.status(404).json({ message: "Koi Fish not found." });
+      return res.status(404).json({ message: "Không tìm thấy Koi Fish." });
     }
 
-    res.json({ message: "Koi Fish availability updated successfully." });
+    res.json({ message: "Cập nhật trạng thái sẵn có của Koi Fish thành công." });
   } catch (error) {
     res.status(500).json({
-      message: "Error updating Koi Fish availability",
+      message: "Lỗi cập nhật trạng thái sẵn có của Koi Fish",
       error: error.message,
     });
   }
 };
 
-// Controller to delete KoiFish
-const deleteKoiFish = async (req, res) => {
+// controller để xóa KoiFish
+exports.deleteKoiFish = async (req, res) => {
   try {
     const { koiId } = req.params;
 
     const success = await koiModel.deleteKoiFish(koiId);
     if (!success) {
-      return res.status(404).json({ message: "Koi Fish not found." });
+      return res.status(404).json({ message: "Không tìm thấy Koi Fish." });
     }
 
-    res.json({ message: "Koi Fish deleted successfully." });
+    res.json({ message: "Xóa Koi Fish thành công." });
   } catch (error) {
     res.status(500).json({
-      message: "Error deleting Koi Fish",
+      message: "Lỗi xóa Koi Fish",
       error: error.message,
     });
   }
 };
 
 // Controller function to update a KoiFish entry
-const updateKoiFish = async (req, res) => {
-  try {
-    const { koiId } = req.params;
-    const updateData = req.body;
+exports.updateKoiFish = async (req, res) => {
+    try {
+        const { koiId } = req.params;
+        const updateData = req.body;
 
-    const success = await koiModel.updateKoiFish(koiId, updateData);
-    
-    if (!success) {
-      return res.status(404).json({ 
-        message: "Koi Fish not found or no changes made." 
-      });
+        const success = await koiModel.updateKoiFish(koiId, updateData);
+        
+        if (!success) {
+            return res.status(404).json({ 
+                message: "Koi Fish not found or no changes made." 
+            });
+        }
+
+        res.json({ 
+            message: "Koi Fish updated successfully.",
+            data: updateData
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Error updating Koi Fish",
+            error: error.message
+        });
     }
-
-    res.json({ 
-      message: "Koi Fish updated successfully.",
-      data: updateData
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: "Error updating Koi Fish",
-      error: error.message
-    });
-  }
 };
 
-// Export all controller functions
-module.exports = {
-  createKoiFish,
-  getAllKoiFish,
-  getKoiFishById,
-  updateKoiFishAvailability,
-  deleteKoiFish,
-  updateKoiFish,
+// Controller function to create KoiFish from consignment data
+exports.createKoiFishFromConsignment = [
+  upload.single('imageFile'),
+  async (req, res) => {
+    try {
+      const consignmentData = {
+        KoiType: req.body.KoiType,
+        KoiAge: parseInt(req.body.KoiAge),
+        KoiSize: parseInt(req.body.KoiSize),
+        PriceAgreed: parseFloat(req.body.PriceAgreed),
+        InspectionResult: req.body.InspectionResult,
+        ImagePath: req.body.ImagePath
+      };
+
+      // Create KoiFish entry from consignment data
+      const koiId = await koiModel.createKoiFishFromConsignment(consignmentData);
+
+      res.status(201).json({
+        message: "Koi Fish created successfully from consignment!",
+        koiId: koiId
+      });
+    } catch (error) {
+      console.error('Error in createKoiFishFromConsignment:', error);
+      res.status(500).json({
+        message: "Error creating Koi Fish from consignment",
+        error: error.message
+      });
+    }
+  }
+];
+
+exports.updateConsignmentKoiId = async (req, res) => {
+  const { consignmentId } = req.params;
+  const { koiId } = req.body;
+  await koiModel.updateConsignmentKoiId(consignmentId, koiId);
+  res.json({ message: "KoiID updated in KoiConsignment successfully." });
 };

@@ -1,5 +1,3 @@
-// src/pages/KoiDetail.jsx
-
 import { DollarOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import { Breadcrumb, Button, Col, Image, Row, Spin, Typography } from "antd";
 import React, { useContext, useEffect, useState } from "react";
@@ -7,6 +5,7 @@ import { Link, useParams } from "react-router-dom";
 import axiosPublic from "../../../api/axiosPublic";
 import { CartContext } from "../../order/cart-context/CartContext";
 import "./KoiDetail.scss";
+import { useNavigate } from "react-router-dom";
 
 const { Title, Paragraph } = Typography;
 
@@ -17,6 +16,7 @@ const KoiDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { handleAddToCart } = useContext(CartContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchKoiData = async () => {
@@ -68,19 +68,6 @@ const KoiDetail = () => {
 
   return (
     <div className="koi-detail">
-      <div className="breadcrumb-background">
-        <Breadcrumb separator=">">
-          <Breadcrumb separator=">">
-            <Breadcrumb>
-              <Link to="/home">Trang chủ</Link>
-            </Breadcrumb>
-            <Breadcrumb>
-              <Link to="/koi-list">Tìm kiếm cá Koi</Link>
-            </Breadcrumb>
-            <Breadcrumb>{koiData.Name}</Breadcrumb>
-          </Breadcrumb>
-        </Breadcrumb>
-      </div>
       <Row gutter={[32, 32]} className="koi-detail-container">
         {/* Hình Ảnh */}
         <Col xs={24} md={12}>
@@ -111,16 +98,6 @@ const KoiDetail = () => {
               <strong>Kích thước:</strong> {koiData.Size} cm
             </Paragraph>
             <Paragraph>
-              <strong>Cân nặng:</strong> {koiData.Weight} kg
-            </Paragraph>
-            <Paragraph>
-              <strong>Tính cách:</strong> {koiData.Personality}
-            </Paragraph>
-            <Paragraph>
-              <strong>Lượng thức ăn mỗi ngày:</strong>{" "}
-              {koiData.FeedingAmountPerDay} g
-            </Paragraph>
-            <Paragraph>
               <strong>Tình trạng sức khỏe:</strong> {koiData.HealthStatus}
             </Paragraph>
             <Paragraph>
@@ -137,7 +114,7 @@ const KoiDetail = () => {
             </Paragraph>
           </Typography>
           <div className="koi-detail-buttons">
-            <Button
+            {/* <Button
               type="default"
               icon={<ShoppingCartOutlined />}
               size="large"
@@ -154,6 +131,15 @@ const KoiDetail = () => {
               disabled={koiData.Availability !== "Available"}
             >
               Mua ngay
+            </Button> */}
+            <Button
+              type="primary"
+              size="large"
+              disabled={koiData.Availability !== "Available"}
+              onClick={() => navigate("/koi-list")}
+            >
+              Tiếp tục mua hàng
+
             </Button>
           </div>
         </Col>
