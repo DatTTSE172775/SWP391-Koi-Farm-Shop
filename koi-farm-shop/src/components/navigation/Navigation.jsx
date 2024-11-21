@@ -92,7 +92,7 @@ const Navigation = () => {
 const accountMenu = (
   <Menu>
     <Menu.Item key="view-info">
-      <Link to="/account">Xem Thông Tin</Link>
+      <Link to="/profile">Xem Thông Tin</Link>
     </Menu.Item>
     {/* <Menu.Item key="order-history">
       <Link to="/order-history">Lịch sử đơn hàng</Link>
