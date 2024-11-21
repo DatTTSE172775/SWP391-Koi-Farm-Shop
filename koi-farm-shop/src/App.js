@@ -30,6 +30,8 @@ import staffRoutes from "./routes/StaffRoutes";
 // import ManagerConsignmentPage from "./pages/admin/consign/AdminConsignment";
 import adminRoutes from "./routes/AdminRoutes";
 import UpdateProfile from "./pages/account/updateProfile/UpdateProfile";
+import OrderHistoryPage from "./pages/account/OrderHistoryPage/OrderHistoryPage";
+import OrderDetailPage from "./pages/account/OrderDetailPage/OrderDetailPage";
 
 
 
@@ -149,6 +151,8 @@ function App() {
                             {/* Profile customer Routes */}
                             <Route path="profile" element={<ProfilePage />} />
                             <Route path="update-profile" element={<UpdateProfile />} />
+                            <Route path="order-history" element={<OrderHistoryPage />} />
+                            <Route path="order-history/:id" element={<OrderDetailPage />} />
                         </Route>
 
                         {/* Auth Routes without MainLayout */}
