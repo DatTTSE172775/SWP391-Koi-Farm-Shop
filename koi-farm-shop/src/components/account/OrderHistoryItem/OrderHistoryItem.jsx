@@ -23,14 +23,14 @@ const OrderHistoryItem = ({order}) => {
     };
 
     const navigate = useNavigate();
-    const statusDetails = getStatusDetails(order.status);
+    const statusDetails = getStatusDetails(order.OrderStatus);
 
     return (
         <Card className="order-history-item" hoverable>
             {/* Header: Order ID & Status */}
             <div className="order-header">
                 <div className="order-id">
-                    <ShoppingOutlined/> {order.id}
+                    <ShoppingOutlined/> {order.TrackingNumber}
                 </div>
                 <Tag color={statusDetails.color} className="order-status">
                     {statusDetails.label}
@@ -40,13 +40,13 @@ const OrderHistoryItem = ({order}) => {
             {/* Order Details */}
             <div className="order-details">
                 <p>
-                    <CalendarOutlined/> <strong>Ngày đặt:</strong> {order.date}
+                    <CalendarOutlined/> <strong>Ngày đặt:</strong> {order.OrderDate}
                 </p>
                 <p>
-                    <DollarOutlined/> <strong>Tổng tiền:</strong> {order.total} VND
+                    <DollarOutlined/> <strong>Tổng tiền:</strong> {order.TotalAmount} VND
                 </p>
                 <p>
-                    <HomeOutlined/> <strong>Địa chỉ giao hàng:</strong> {order.address}
+                    <HomeOutlined/> <strong>Địa chỉ giao hàng:</strong> {order.ShippingAddress}
                 </p>
             </div>
 
@@ -64,7 +64,7 @@ const OrderHistoryItem = ({order}) => {
                             title={<span>{item.name}</span>}
                             description={
                                 <span>
-                                    Số lượng: <strong>{item.quantity}</strong> | Giá:{" "}
+                                    Số lượng: <strong>{item.Quantity}</strong> | Giá:{" "}
                                     <strong>{item.price} VND</strong>
                                 </span>
                             }
@@ -77,7 +77,7 @@ const OrderHistoryItem = ({order}) => {
             <div className="order-footer">
                 <Space>
                     <Button type="primary" size="large" className="primary-btn"
-                            onClick={() => navigate(`/order-history/${order.id}`)}>
+                            onClick={() => navigate(`/order-history/${order.TrackingNumber}`)}>
                         Xem chi tiết
                     </Button>
                 </Space>

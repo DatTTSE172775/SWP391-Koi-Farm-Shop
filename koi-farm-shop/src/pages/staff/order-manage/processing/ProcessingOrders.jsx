@@ -14,18 +14,14 @@ const OrderProcessing = () => {
     error,
   } = useSelector((state) => state.order || {});
   const userId = localStorage.getItem('userId');
-  console.log('User ID from localStorage:', userId);
 
   useEffect(() => {
     if (userId) {
-      console.log('Fetching orders for user ID:', userId);
       dispatch(fetchOrdersByUser(userId));
     } else {
       console.warn('No user ID found in localStorage');
     }
   }, [dispatch, userId]);
-
-  console.log("Fetched Orders:", orders); // Kiểm tra dữ liệu lấy từ store
 
   if (loading) return <Spin tip="Loading orders..." />;
   if (error) return <div>Error: {error}</div>;

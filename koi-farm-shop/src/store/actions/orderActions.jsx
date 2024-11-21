@@ -14,6 +14,9 @@ export const ASSIGN_ORDER_FAILURE = "ASSIGN_ORDER_FAILURE";
 export const FETCH_ORDERS_BY_USER_REQUEST = "FETCH_ORDERS_BY_USER_REQUEST";
 export const FETCH_ORDERS_BY_USER_SUCCESS = "FETCH_ORDERS_BY_USER_SUCCESS";
 export const FETCH_ORDERS_BY_USER_FAILURE = "FETCH_ORDERS_BY_USER_FAILURE";
+export const FETCH_ORDERS_BY_CUSTOMER_REQUEST = "FETCH_ORDERS_BY_CUSTOMER_REQUEST";
+export const FETCH_ORDERS_BY_CUSTOMER_SUCCESS = "FETCH_ORDERS_BY_CUSTOMER_SUCCESS";
+export const FETCH_ORDERS_BY_CUSTOMER_FAILURE = "FETCH_ORDERS_BY_CUSTOMER_FAILURE";
 
 // Action Creators
 const createOrderRequest = () => ({ type: CREATE_ORDER_REQUEST });
@@ -63,6 +66,20 @@ const fetchOrdersByUserSuccess = (orders) => ({
 
 const fetchOrdersByUserFailure = (error) => ({
   type: FETCH_ORDERS_BY_USER_FAILURE,
+  payload: error,
+});
+
+const fetchOrdersByCustomerRequest = () => ({
+  type: FETCH_ORDERS_BY_CUSTOMER_REQUEST,
+});
+
+const fetchOrdersByCustomerSuccess = (orders) => ({
+  type: FETCH_ORDERS_BY_CUSTOMER_SUCCESS,
+  payload: orders,
+});
+
+const fetchOrdersByCustomerFailure = (error) => ({
+  type: FETCH_ORDERS_BY_CUSTOMER_FAILURE,
   payload: error,
 });
 
@@ -162,6 +179,19 @@ export const fetchOrdersByUser = (userId) => async (dispatch) => {
       message: "Lỗi",
       description: "Hiện tại không có đơn hàng nào.",
     });
+  }
+};
+
+// Thunk Action to Fetch Orders by Customer ID
+export const fetchOrdersByCustomer = (customerId) => async (dispatch) => {
+  dispatch(fetchOrdersByCustomerRequest());
+  try {
+    const response = await axiosInstance.get(`/orders/customer/${customerId}`);
+    console.log("Orders fetched successfully:", response.data); // Debugging
+    dispatch(fetchOrdersByCustomerSuccess(response.data));
+  } catch (error) {
+    console.error("Failed to fetch orders:", error.message); // Debugging
+    dispatch(fetchOrdersByCustomerFailure(error.message || "Failed to fetch orders"));
   }
 };
 
