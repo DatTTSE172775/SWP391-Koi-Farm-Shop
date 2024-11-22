@@ -123,8 +123,8 @@ console.log("Cart Items:", cartItems);
                 Tiếp Tục Mua Sắm
               </Button>
             </Link>
-            <Link to="/checkout">
-              <Button type="primary" className="proceed-to-checkout">
+            <Link to={cartItems.length > 0 ? "/checkout" : "#"}>
+              <Button type="primary" className="proceed-to-checkout" disabled={cartItems.length === 0}>
                 Thanh Toán
               </Button>
             </Link>
