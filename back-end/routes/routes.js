@@ -511,6 +511,11 @@ router.get("/orders/:orderId", getOrderById);
  *                     quantity:
  *                       type: integer
  *                       example: 1
+ *               totalAmount:
+ *                 type: number
+ *                 format: float
+ *                 example: 150000.0
+ *                 description: Total amount for the order, calculated on the frontend
  *               trackingNumber:
  *                 type: string
  *                 description: Tracking number provided by the frontend or during order creation
@@ -533,7 +538,25 @@ router.get("/orders/:orderId", getOrderById);
  *       201:
  *         description: Order created successfully
  *       400:
- *         description: Invalid request body
+ *         description: Không đủ số lượng tồn kho
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Không đủ số lượng tồn kho cho Package với ID 2.
+ *       404:
+ *         description: Sản phẩm không tồn tại
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Koi Fish với ID 1 không tồn tại.
  *       500:
  *         description: Internal server error
  */
