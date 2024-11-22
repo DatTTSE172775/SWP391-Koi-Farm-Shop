@@ -86,24 +86,17 @@ const fetchOrdersByCustomerFailure = (error) => ({
 // Thunk Action to Fetch Customer ID and Create an Order
 export const createOrder = (orderData) => async (dispatch) => {
   dispatch(createOrderRequest());
-
   try {
     const username = localStorage.getItem("username");
     if (!username) throw new Error("Username not found in localStorage");
 
-    const customerResponse = await axiosInstance.get(
-      `customers/username/${username}`
-    );
+    // Fetch customer ID from backend
+    const customerResponse = await axiosInstance.get(`/customers/username/${username}`);
     const customerID = customerResponse.data.CustomerID;
 
-    console.log("Customer ID:", customerID);
-
     const payload = {
-      customerID,
-      totalAmount: orderData.totalAmount,
-      shippingAddress: orderData.shippingAddress,
-      paymentMethod: orderData.paymentMethod,
-      orderItems: orderData.orderItems,
+      ...orderData,
+      customerID, // Attach the fetched customer ID
     };
 
     console.log("Order payload:", payload);
@@ -112,14 +105,13 @@ export const createOrder = (orderData) => async (dispatch) => {
     console.log("Order created successfully:", response.data);
 
     dispatch(createOrderSuccess(response.data));
-
-    // Optionally, clear the cart here
-    // dispatch(clearCart());
   } catch (error) {
     console.error("Order creation failed:", error);
     dispatch(createOrderFailure(error.message || "Failed to create order"));
   }
 };
+
+
 
 // Thunk Action to Fetch All Orders
 export const fetchOrders = () => async (dispatch) => {
@@ -144,10 +136,10 @@ export const assignOrder = (orderId, userId, username) => async (dispatch) => {
     await axiosInstance.patch(`/orders/${orderId}/processing`);
 
     dispatch(
-      assignOrderSuccess({
-        ...response.data.order,
-        assignedTo: username,
-      })
+        assignOrderSuccess({
+          ...response.data.order,
+          assignedTo: username,
+        })
     );
 
     notification.success({
@@ -194,4 +186,3 @@ export const fetchOrdersByCustomer = (customerId) => async (dispatch) => {
     dispatch(fetchOrdersByCustomerFailure(error.message || "Failed to fetch orders"));
   }
 };
-
