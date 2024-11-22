@@ -4,6 +4,7 @@ import authReducer from "./reducers/authReducers";
 import orderReducer from "./reducers/orderReducers";
 import staffReducer from "./reducers/staffReducers";
 import koiReducers from "./reducers/koiReducers";
+import addressReducer from "./reducers/addressReducer";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -11,6 +12,7 @@ const rootReducer = combineReducers({
   order: orderReducer,
   staff: staffReducer,
   koi: koiReducers,
+  address: addressReducer,
 });
 
 export default rootReducer;
