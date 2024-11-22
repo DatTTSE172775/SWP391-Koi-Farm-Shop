@@ -12,7 +12,6 @@ import {
 import React, {useContext, useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
-import {fetchUserByUsername} from "../../../store/actions/accountActions";
 import {createOrder} from "../../../store/actions/orderActions";
 import {CartContext} from "../cart-context/CartContext";
 import "./Checkout.scss";
@@ -31,19 +30,6 @@ const Checkout = () => {
     const user = useSelector((state) => state.account.user);
     const {order, loading, error} = useSelector((state) => state.order);
 
-    // Fetch the username and trigger the API call to get user data
-    useEffect(() => {
-        const username = localStorage.getItem("username");
-
-        if (!username) {
-            console.error("No username found in localStorage");
-            return;
-        }
-
-        console.log("Username from localStorage:", username);
-        dispatch(fetchUserByUsername(username));
-    }, [dispatch]);
-
     // Populate the form when user data is available
     useEffect(() => {
         if (user) {
@@ -55,15 +41,6 @@ const Checkout = () => {
             });
         }
     }, [user, form]);
-
-    // Update the useEffect for order success
-    useEffect(() => {
-        if (order) {
-            console.log("Order created successfully:", order);
-            clearCart(); // Clear the cart after successful order
-            navigate("/order-success", {state: {order}});
-        }
-    }, [order, navigate, clearCart]);
 
     // Generate a random tracking number
     const generateTrackingNumber = () => {
@@ -87,76 +64,86 @@ const Checkout = () => {
 
     // Handle form submission
     const onFinish = async (values) => {
-        const trackingNumber = generateTrackingNumber();
-        console.log("Generated tracking number:", trackingNumber);
+        try {
+            const trackingNumber = generateTrackingNumber();
+            console.log("Generated tracking number:", trackingNumber);
 
-        const {province, district, ward, addressDetails} = values;
+            const {province, district, ward, addressDetails} = values;
 
-        const provinceName = provinces.find((item) => item.code === province)?.name || "";
-        const districtName = districts.find((item) => item.code === district)?.name || "";
-        const wardName = wards.find((item) => item.code === ward)?.name || "";
+            const provinceName = provinces.find((item) => item.code === province)?.name || "";
+            const districtName = districts.find((item) => item.code === district)?.name || "";
+            const wardName = wards.find((item) => item.code === ward)?.name || "";
 
-        const fullAddress = `${addressDetails}, ${wardName}, ${districtName}, ${provinceName}`;
-        console.log("Full Address:", fullAddress);
+            const fullAddress = `${addressDetails}, ${wardName}, ${districtName}, ${provinceName}`;
+            console.log("Full Address:", fullAddress);
 
-        const orderData = {
-            customerID: user ? user.id : 0,
-            shippingAddress: fullAddress,
-            paymentMethod: values.paymentMethod === 'VNPAY' ? 'Credit Card' : values.paymentMethod,
-            orderItems: cartItems.map(item => ({
+            // Consolidate cartItems into orderItems
+            const orderItems = cartItems.map((item) => ({
                 KoiID: item.type === 'koi' ? item.id : null,
                 PackageID: item.type === 'package' ? item.id : null,
-                quantity: item.type === 'package' ? item.quantity : 0, // Set quantity to 0 if it's a single koi, otherwise use the specified quantity
-            })),
-            trackingNumber,
-            discount: 0, // Set discount to 0 or fetch if available
-            shippingCost: 0, // Set shipping cost to 0 or calculate if applicable
-            promotionID: null, // Set promotionID if any, or keep it null
-        };
+                quantity: item.quantity,
+            }));
 
-        console.log("Final orderData:", orderData);
+            const totalAmount = Math.round(calculateTotal());
 
-        const updateConsignmentStatus = async () => {
-            for (const item of cartItems) {
-                if (item.type === 'koi') {
-                    try {
-                        console.log(`Updating consignment status for KoiID: ${item.id}`);
-                        const response = await axiosInstance.patch(`/koiconsignment/${item.id}/sold`);
-                        console.log('Update consignment response:', response);
-                    } catch (error) {
-                        console.error('Error updating consignment status:', error);
+            const orderData = {
+                customerID: user ? user.id : 0,
+                shippingAddress: fullAddress,
+                paymentMethod: values.paymentMethod === 'VNPAY' ? 'Credit Card' : values.paymentMethod,
+                orderItems,
+                totalAmount,
+                trackingNumber,
+                discount: 0, // Set discount to 0 or fetch if available
+                shippingCost: 0, // Set shipping cost to 0 or calculate if applicable
+                promotionID: null, // Set promotionID if any, or keep it null
+            };
+
+            console.log("Final orderData:", orderData);
+
+            const updateConsignmentStatus = async () => {
+                for (const item of cartItems) {
+                    if (item.type === 'koi') {
+                        try {
+                            console.log(`Updating consignment status for KoiID: ${item.id}`);
+                            const response = await axiosInstance.patch(`/koiconsignment/${item.id}/sold`);
+                            console.log('Update consignment response:', response);
+                        } catch (error) {
+                            console.error('Error updating consignment status:', error);
+                        }
                     }
                 }
-            }
-        };
+            };
 
-        if (values.paymentMethod === 'VNPAY') {
-            try {
-                localStorage.setItem('pendingOrder', JSON.stringify({
-                    ...orderData,
-                    cartItems: cartItems
-                }));
+            if (values.paymentMethod === 'VNPAY') {
+                try {
+                    localStorage.setItem('pendingOrder', JSON.stringify({
+                        ...orderData,
+                        cartItems: cartItems
+                    }));
 
-                const response = await axiosInstance.post('/payment/create', {
-                    amount: calculateTotal(),
-                    orderId: `ORDER_${Date.now()}`,
-                    bankCode: '',
-                    language: 'vn'
-                });
+                    const response = await axiosInstance.post('/payment/create', {
+                        amount: calculateTotal(),
+                        orderId: `ORDER_${Date.now()}`,
+                        bankCode: '',
+                        language: 'vn'
+                    });
 
-                window.location.href = response.data.vnpUrl;
-            } catch (error) {
-                console.error('Payment creation error:', error);
+                    window.location.href = response.data.vnpUrl;
+                } catch (error) {
+                    console.error('Payment creation error:', error);
+                }
+            } else {
+                try {
+                    await dispatch(createOrder(orderData));
+                    await updateConsignmentStatus();
+                    clearCart(); // Clear the cart after successful order
+                    navigate("/order-success", {state: {order: orderData}});
+                } catch (error) {
+                    console.error('Error processing COD order:', error);
+                }
             }
-        } else {
-            try {
-                await dispatch(createOrder(orderData));
-                await updateConsignmentStatus();
-                clearCart(); // Clear the cart after successful order
-                navigate("/order-success", {state: {order: orderData}});
-            } catch (error) {
-                console.error('Error processing COD order:', error);
-            }
+        } catch (error) {
+            console.log(error);
         }
     };
 
@@ -276,7 +263,7 @@ const Checkout = () => {
                                 </Radio.Group>
                             </Form.Item>
                             <Divider/>
-                            <Button type="primary" htmlType="submit" block loading={loading}>
+                            <Button type="primary" htmlType="submit" block loading={loading} disabled={loading}>
                                 Xác Nhận Thanh Toán
                             </Button>
                             {error && <Text type="danger">{error}</Text>}
