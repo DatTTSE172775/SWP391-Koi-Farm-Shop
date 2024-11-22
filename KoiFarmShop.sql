@@ -133,7 +133,7 @@ CREATE TABLE KoiConsignment (
 --SELECT * FROM KoiConsignment
 --select * from Orders	
 --select * from Users;
---select * from OrderDetails
+select * from OrderDetails
 
 
 --SELECT kc.* 
@@ -213,6 +213,7 @@ CREATE TABLE OrderDetails (
 --select * from Orders
 
 --select * from OrderDetails
+select * from OrderHistory
 
 CREATE TABLE Payments (
     PaymentID INT IDENTITY(1,1) PRIMARY KEY,
