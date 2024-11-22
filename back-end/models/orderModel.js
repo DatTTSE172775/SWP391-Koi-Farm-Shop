@@ -412,7 +412,7 @@ exports.getAllOrders = async () => {
   try {
     const result =
       await sql.query`
-        SELECT 
+        SELECT
           o.OrderID,
           o.CustomerID,
           u.UserID,
@@ -461,7 +461,7 @@ exports.getAllOrders = async () => {
           STRING_AGG(CAST(kp.Quantity AS VARCHAR), ', ') AS PackageQuantities,
           STRING_AGG(kp.Availability, ', ') AS PackageAvailabilities,
 
-            -- Thông tin chi tiết về KoiConsignment
+          -- Thông tin chi tiết về KoiConsignment
           STRING_AGG(CAST(kc.ConsignmentID AS VARCHAR), ', ') AS ConsignmentIDList,
           STRING_AGG(CAST(kc.CustomerID AS VARCHAR), ', ') AS ConsignmentCustomerIDs,
           STRING_AGG(CAST(kc.KoiID AS VARCHAR), ', ') AS ConsignmentKoiIDs,
@@ -471,29 +471,45 @@ exports.getAllOrders = async () => {
           STRING_AGG(kc.Status, ', ') AS ConsignmentStatuses,
           STRING_AGG(kc.ApprovedStatus, ', ') AS ConsignmentApprovedStatuses,
           STRING_AGG(kc.Notes, ', ') AS ConsignmentNotes
-        FROM 
-            Orders o
-        LEFT JOIN 
-            OrderDetails od ON o.OrderID = od.OrderID
-        LEFT JOIN 
-            KoiFish kf ON od.KoiID = kf.KoiID
-        LEFT JOIN 
-            KoiPackage kp ON od.PackageID = kp.PackageID
-        LEFT JOIN 
+      FROM 
+          Orders o
+      LEFT JOIN 
+          OrderDetails od ON o.OrderID = od.OrderID
+      LEFT JOIN 
+          KoiFish kf ON od.KoiID = kf.KoiID
+      LEFT JOIN 
+          KoiPackage kp ON od.PackageID = kp.PackageID
+      LEFT JOIN 
           KoiConsignment kc ON kc.CustomerID = o.CustomerID AND kc.KoiID = kf.KoiID
-        LEFT JOIN 
-            Customers c ON o.CustomerID = c.CustomerID
-        LEFT JOIN 
-            Users u ON c.UserID = u.UserID
+      LEFT JOIN 
+          Customers c ON o.CustomerID = c.CustomerID
+      LEFT JOIN 
+          Users u ON o.UserID = u.UserID -- Thay đổi vị trí join để lấy chính xác UserID từ Orders
 
-        GROUP BY  
-            o.OrderID, o.CustomerID, u.UserID, u.Username, u.Role, o.OrderDate, o.TotalAmount, 
-            o.ShippingAddress, o.OrderStatus, o.PaymentMethod, o.PaymentStatus, 
-            o.TrackingNumber, o.Discount, o.ShippingCost, o.PromotionID,
-            c.FullName, c.Email, c.PhoneNumber, c.Address, c.LoyaltyPoints
+      GROUP BY  
+          o.OrderID, 
+          o.CustomerID, 
+          u.UserID, 
+          u.Username, 
+          u.Role, 
+          o.OrderDate, 
+          o.TotalAmount, 
+          o.ShippingAddress, 
+          o.OrderStatus, 
+          o.PaymentMethod, 
+          o.PaymentStatus, 
+          o.TrackingNumber, 
+          o.Discount, 
+          o.ShippingCost, 
+          o.PromotionID, 
+          c.FullName, 
+          c.Email, 
+          c.PhoneNumber, 
+          c.Address, 
+          c.LoyaltyPoints
 
-        ORDER BY 
-            o.OrderID;
+      ORDER BY 
+          o.OrderID;
       `;
     return result.recordset;
   } catch (error) {
