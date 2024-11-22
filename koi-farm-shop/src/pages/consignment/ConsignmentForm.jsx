@@ -14,7 +14,7 @@ const ConsignmentForm = () => {
     koiColor: "",
     koiAge: "",
     koiSize: "",
-    imageFile: null, // Store the file itself
+    imageFile: null,
     inspectionResult: "",
   });
 

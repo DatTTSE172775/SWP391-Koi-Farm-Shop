@@ -73,8 +73,9 @@ const ConsignmentDetails = () => {
       // First assign the staff
       const assignResponse = await axiosInstance.patch(
         `/koiconsignment/${consignment.ConsignmentID}/assign`, 
-        { userId: userId }
-      );
+        { userId: userId } //gửi userId cho bên backend API
+      );                 //const { userId } = req.body; Nhận userId
+
 
       // Then update the status to pending
       const approveResponse = await axiosInstance.patch(

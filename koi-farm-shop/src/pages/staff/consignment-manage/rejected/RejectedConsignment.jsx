@@ -40,10 +40,6 @@ const RejectedConsignment = () => {
     return <div>Error: {error}</div>;
   }
 
-  const completedConsignments = consignments.filter(
-    (consignment) => consignment.Status === "Rejected"
-  );
-
   return <ConsignmentList
     initialConsignments={consignments} 
     filterStatus="Rejected" 

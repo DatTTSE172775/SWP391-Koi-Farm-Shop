@@ -104,7 +104,6 @@ const Login = () => {
 
           {error && <Typography className="message">{error}</Typography>}
 
-          <Divider sx={{ my: 2 }}>HOẶC</Divider>
 
           {/* <Button
             variant="outlined"

@@ -40,9 +40,9 @@ const CompletedConsignment = () => {
     return <div>Error: {error}</div>;
   }
 
-  const completedConsignments = consignments.filter(
-    (consignment) => consignment.Status === "Approved"
-  );
+  // const completedConsignments = consignments.filter(
+  //   (consignment) => consignment.Status === "Approved"
+  // );
 
   return <ConsignmentList
     initialConsignments={consignments} 
