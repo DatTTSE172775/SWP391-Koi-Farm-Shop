@@ -8,6 +8,10 @@ const userSignIn = require("../controllers/userSignIn");
 const logoutUser = require("../controllers/userLogout");
 const changePassword = require("../controllers/changePassword");
 const forgotPassword = require("../controllers/forgotPassword");
+const { updateOrderStatus } = require('../controllers/orderController');
+const orderController = require('../controllers/orderController');
+
+
 
 const {
   createPayment,
@@ -32,12 +36,12 @@ const {
   getAllStaffOrdersByUserId,
   assignOrderToStaff,
   deleteOrder,
-  getOrderDetails,
   updateOrderToPending,
   updateOrderToProcessing,
   updateOrderToDelivering,
   updateOrderToDelivered,
   updateOrderToCancelled,
+  getOrderByCustomerId,
 } = require("../controllers/orderController");
 
 const {
@@ -96,6 +100,12 @@ const {
   getDashboardRevenue,
   getOrderStatusStatistics,
   getDailyRevenueThisMonth,
+  getPendingConsignments,
+  getActiveConsignment,
+  getReturningCustomers,
+  getDailyOrderCount,
+  getPendingOrdersInfo,
+  getPendingConsignmentsInfo,
  } = require("../controllers/dashboardController");
 
 // User routes
@@ -655,7 +665,7 @@ router.put("/updateKoi/:koiId", updateKoiFish);
 // Order routes
 /**
  * @swagger
- * /api/orders:
+ * /api/orders/all:
  *   get:
  *     summary: Get all orders
  *     tags: [Orders]
@@ -663,7 +673,7 @@ router.put("/updateKoi/:koiId", updateKoiFish);
  *       200:
  *         description: List of all orders
  */
-router.get("/orders", getAllOrders);
+router.get("/orders/all", getAllOrders);
 
 /**
  * @swagger
@@ -699,17 +709,117 @@ router.get("/orders/:orderId", getOrderById);
  *             properties:
  *               customerID:
  *                 type: integer
- *               totalAmount:
- *                 type: number
  *               shippingAddress:
  *                 type: string
  *               paymentMethod:
  *                 type: string
+ *                 enum: [Credit Card, Bank Transfer, Cash on Delivery]
+ *               orderItems:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     KoiID:
+ *                       type: integer
+ *                       nullable: true
+ *                     PackageID:
+ *                       type: integer
+ *                       nullable: true
+ *                     quantity:
+ *                       type: integer
+ *                       example: 1
+ *               totalAmount:
+ *                 type: number
+ *                 format: float
+ *                 example: 150000.0
+ *                 description: Total amount for the order, calculated on the frontend
+ *               trackingNumber:
+ *                 type: string
+ *                 description: Tracking number provided by the frontend or during order creation
+ *               discount:
+ *                 type: number
+ *                 format: float
+ *                 example: 0.0
+ *                 description: Optional discount for the order
+ *               shippingCost:
+ *                 type: number
+ *                 format: float
+ *                 example: 0.0
+ *                 description: Optional shipping cost
+ *               promotionID:
+ *                 type: integer
+ *                 nullable: true
+ *                 example: null
+ *                 description: Optional promotion ID for the order
  *     responses:
  *       201:
  *         description: Order created successfully
+ *       400:
+ *         description: Không đủ số lượng tồn kho
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Không đủ số lượng tồn kho cho Package với ID 2.
+ *       404:
+ *         description: Sản phẩm không tồn tại
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Koi Fish với ID 1 không tồn tại.
+ *       500:
+ *         description: Internal server error
  */
 router.post("/orders", createOrder);
+
+/**
+ * @swagger
+ * /api/orders/customer/{customerId}:
+ *   get:
+ *     summary: Get orders by customer ID
+ *     tags: [Orders]
+ *     parameters:
+ *       - in: path
+ *         name: customerId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: Customer ID to retrieve orders for
+ *     responses:
+ *       200:
+ *         description: List of orders for the given customer ID
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   orderId:
+ *                     type: integer
+ *                   customerID:
+ *                     type: integer
+ *                   totalAmount:
+ *                     type: number
+ *                   shippingAddress:
+ *                     type: string
+ *                   paymentMethod:
+ *                     type: string
+ *                   status:
+ *                     type: string
+ *       404:
+ *         description: No orders found for this customer ID
+ *       500:
+ *         description: Internal server error
+ */
+router.get("/customer/:customerId", getOrderByCustomerId);
 
 /**
  * @swagger
@@ -1928,8 +2038,6 @@ router.get("/varieties", getAllVarieties);
 
 router.post("/addKoiPackageVariety", addKoiPackageVariety);
 
-router.get("/orders/:orderId/details", getOrderDetails);
-
 router.get("/koipackage/:packageId", getKoiPackageById);
 
 /**
@@ -2059,5 +2167,198 @@ router.get("/orders/status", getOrderStatusStatistics);
  *         description: Error fetching daily revenue data
  */
 router.get("/revenue/daily", getDailyRevenueThisMonth);
+
+/**
+ * @swagger
+ * /api/dashboard/consignments/pending/count:
+ *   get:
+ *     summary: Get the count of new consignment requests
+ *     tags: [Dashboard]
+ *     responses:
+ *       200:
+ *         description: Number of new consignment requests
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 newConsignments:
+ *                   type: integer
+ *                   example: 3
+ *       500:
+ *         description: Server error
+ */
+router.get('/consignments/pending/count', getPendingConsignments);
+
+/**
+ * @swagger
+ * /api/dashboard/consignments/active:
+ *   get:
+ *     summary: Get the count of active consignments by type
+ *     tags: [Dashboard]
+ *     responses:
+ *       200:
+ *         description: Number of active consignments categorized by type (Care or Sale)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 activeConsignments:
+ *                   type: integer
+ *                   example: 12
+ *                 forCare:
+ *                   type: integer
+ *                   example: 7
+ *                 forSale:
+ *                   type: integer
+ *                   example: 5
+ *       500:
+ *         description: Server error
+ */
+router.get('/consignments/active', getActiveConsignment);
+
+/**
+ * @swagger
+ * /api/dashboard/customers/returning:
+ *   get:
+ *     summary: Get the number of returning customers
+ *     tags: [Dashboard]
+ *     responses:
+ *       200:
+ *         description: Number of returning customers fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 returningCustomers:
+ *                   type: integer
+ *                   example: 25
+ *       500:
+ *         description: Server error
+ */
+router.get('/customers/returning', getReturningCustomers);
+
+/**
+ * @swagger
+ * /api/dashboard/orders/daily:
+ *   get:
+ *     summary: Get daily order counts for the current month
+ *     tags: [Dashboard]
+ *     responses:
+ *       200:
+ *         description: Daily order counts fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 labels:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                   description: List of dates in the current month
+ *                   example: ["2024-10-01", "2024-10-02", "2024-10-03"]
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: integer
+ *                   description: Number of orders for each date
+ *                   example: [5, 7, 4]
+ *       500:
+ *         description: Server error
+ */
+router.get('/orders/daily', getDailyOrderCount);
+
+
+/**
+ * @swagger
+ * /api/dashboard/orders/pending:
+ *   get:
+ *     summary: Get full details of pending orders
+ *     tags: [Dashboard]
+ *     responses:
+ *       200:
+ *         description: Full details of pending orders retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   OrderID:
+ *                     type: integer
+ *                     example: 1
+ *                   CustomerID:
+ *                     type: integer
+ *                     example: 7
+ *                   FullName:
+ *                     type: string
+ *                     example: "Nguyễn Thị Tuyết Hương"
+ *                   Email:
+ *                     type: string
+ *                     example: "nguyenthituyethuong10.1@gmail.com"
+ *                   OrderDate:
+ *                     type: string
+ *                     format: date-time
+ *                     example: "2024-06-15T10:30:00Z"
+ *                   TotalAmount:
+ *                     type: number
+ *                     format: float
+ *                     example: 1000000.0
+ *                   KoiNames:
+ *                     type: string
+ *                     example: "Sakura Beauty, Golden Dragon"
+ *       500:
+ *         description: Server error
+ */
+router.get('/orders/pending', getPendingOrdersInfo);
+
+/**
+ * @swagger
+ * /api/dashboard/consignments/pending:
+ *   get:
+ *     summary: Get the list of pending consignment requests
+ *     tags: [Dashboard]
+ *     responses:
+ *       200:
+ *         description: List of pending consignment requests fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   consignmentId:
+ *                     type: string
+ *                     example: "CON001"
+ *                   customerName:
+ *                     type: string
+ *                     example: "Nguyễn Văn A"
+ *                   koiType:
+ *                     type: string
+ *                     example: "Kohaku"
+ *                   status:
+ *                     type: string
+ *                     example: "Chờ xử lý"
+ *                   fullName:
+ *                     type: string
+ *                     example: "Nguyễn Văn A"
+ *                   email:
+ *                     type: string
+ *                     example: "example@example.com"
+ *                   phoneNumber:
+ *                     type: string
+ *                     example: "0123456789"
+ *                   address:
+ *                     type: string
+ *                     example: "123 Lê Lợi, Quận 1, TP.HCM"
+ *       500:
+ *         description: Server error
+ */
+router.get('/consignments/pending', getPendingConsignmentsInfo);
 
 module.exports = router;

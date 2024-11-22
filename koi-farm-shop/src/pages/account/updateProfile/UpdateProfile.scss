@@ -1,0 +1,64 @@
+.update-profile-container {
+  max-width: 700px;
+  margin: 50px auto;
+  padding: 20px;
+
+  .profile-card {
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    padding: 30px;
+
+    .avatar-section {
+      text-align: center;
+      margin-bottom: 20px;
+
+      .avatar {
+        cursor: pointer; // Con trỏ chuột chỉ báo rằng có thể click
+        margin-bottom: 15px;
+        border: 3px solid #1890ff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s, box-shadow 0.3s;
+
+        &:hover {
+          transform: scale(1.05);
+          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+      }
+    }
+
+    .avatar-buttons {
+      text-align: center;
+
+      .upload-btn {
+        background-color: #1890ff;
+        color: #fff;
+        font-weight: bold;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+
+        &:hover {
+          background-color: #40a9ff;
+        }
+      }
+    }
+
+    .ant-form-item {
+      margin-bottom: 20px;
+    }
+
+    .save-btn {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 16px;
+      background-color: #1890ff;
+      color: #fff;
+      border-radius: 8px;
+
+      &:hover {
+        background-color: #40a9ff;
+      }
+    }
+  }
+}

@@ -1,0 +1,130 @@
+.order-history-item {
+  margin-bottom: 20px;
+  padding: 20px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+
+  &:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    transform: translateY(-4px);
+  }
+
+  .order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    background: #f5f5f5;
+    padding: 12px;
+    border-radius: 8px;
+
+    .order-id {
+      font-size: 20px;
+      font-weight: bold;
+      color: #1890ff;
+      display: flex;
+      align-items: center;
+
+      svg {
+        margin-right: 8px;
+      }
+    }
+
+    .order-status {
+      font-size: 14px;
+      padding: 5px 12px;
+      border-radius: 16px;
+      font-weight: bold;
+    }
+  }
+
+  .order-details {
+    margin-top: 16px;
+
+    p {
+      margin: 8px 0;
+      font-size: 15px;
+      color: #555;
+
+      svg {
+        margin-right: 8px;
+        color: #1890ff;
+      }
+
+      strong {
+        font-weight: bold;
+        color: #333;
+      }
+    }
+  }
+
+  .order-products {
+    margin-top: 16px;
+
+    .ant-list-item {
+      padding: 12px;
+      border-radius: 8px;
+      transition: background 0.3s;
+
+      &:hover {
+        background: #f0f8ff;
+      }
+    }
+
+    .ant-list-item-meta {
+      align-items: center;
+
+      .ant-list-item-meta-avatar {
+        margin-right: 16px;
+      }
+
+      .ant-list-item-meta-title {
+        font-weight: bold;
+        font-size: 14px;
+        color: #333;
+      }
+
+      .ant-list-item-meta-description {
+        font-size: 13px;
+        color: #555;
+      }
+    }
+  }
+
+  .order-footer {
+    margin-top: 16px;
+    text-align: right;
+
+    .primary-btn {
+      font-weight: bold;
+      font-size: 14px;
+      padding: 8px 24px;
+      border-radius: 8px;
+      background-color: #1890ff;
+      color: white;
+      transition: all 0.3s;
+
+      &:hover {
+        background-color: #0056b3;
+        transform: scale(1.05);
+      }
+    }
+
+    .secondary-btn {
+      font-weight: bold;
+      font-size: 14px;
+      padding: 8px 24px;
+      border-radius: 8px;
+      background-color: #f5f5f5;
+      color: #555;
+      transition: all 0.3s;
+
+      &:hover {
+        background-color: #d9d9d9;
+        transform: scale(1.05);
+      }
+    }
+  }
+}

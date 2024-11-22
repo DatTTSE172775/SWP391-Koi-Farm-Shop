@@ -1,0 +1,102 @@
+.profile-container {
+  max-width: 700px;
+  margin: 50px auto;
+  padding: 20px;
+
+  .profile-card {
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    padding: 30px;
+    text-align: center;
+  }
+
+  .profile-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+
+      h2 {
+        margin-top: 10px;
+        font-size: 24px;
+        font-weight: 700;
+      }
+
+      .avatar {
+        border: 3px solid #1890ff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+    }
+
+    .user-info {
+      width: 100%;
+      text-align: left;
+      font-size: 16px;
+
+      .info-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+
+        .icon {
+          color: #1890ff;
+          margin-right: 10px;
+          font-size: 18px;
+        }
+
+        .label {
+          font-weight: bold;
+          color: #555555;
+          margin-right: 5px;
+        }
+      }
+    }
+
+    .profile-actions {
+      display: flex;
+      gap: 15px;
+      width: 100%;
+      margin-top: 20px;
+
+      .update-btn {
+        background: linear-gradient(90deg, #007bff, #0056b3);
+        color: white;
+        font-weight: bold;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        transition: all 0.3s;
+
+        &:hover {
+          background: linear-gradient(90deg, #0056b3, #003f7f);
+          transform: scale(1.05);
+        }
+      }
+
+      .change-password-btn {
+        background: #f0f0f0;
+        border: none;
+        font-weight: bold;
+        color: #555555;
+        padding: 10px 20px;
+        border-radius: 8px;
+        transition: all 0.3s;
+
+        &:hover {
+          background: #e6e6e6;
+          transform: scale(1.05);
+        }
+      }
+    }
+  }
+
+  .error {
+    color: red;
+    font-weight: bold;
+    margin-top: 20px;
+  }
+}
