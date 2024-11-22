@@ -309,6 +309,18 @@ const getAllStaffConsignmentsByUserId = async (userId) => {
     }
   }
 
+  const getRejectedConsignmentsByUserId = async (userId) => {
+    try {
+      const pool = await sql.connect();
+      const result = await pool.request().input("userId", sql.Int, userId)
+        .query(`SELECT * FROM KoiConsignment WHERE UserID = @userId AND ApprovedStatus = 'Rejected'`);
+      return result.recordset;
+    } catch (error) {
+      console.error("Error fetching approved consignments by user ID:", error);
+      throw new Error("Error fetching approved consignments by user ID");
+    }
+  }
+
   const deleteConsignmentById = async (consignmentId) => {
     try {
       const pool = await sql.connect();
@@ -329,6 +341,7 @@ module.exports = {
     getAllStaffConsignmentsByUserId,
     getPendingConsignmentsByUserId,
     getApprovedConsignmentsByUserId,
+    getRejectedConsignmentsByUserId,
     isUserStaff,
     deleteConsignmentById,
     updateConsignmentToApproved,

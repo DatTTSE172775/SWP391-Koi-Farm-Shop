@@ -14,7 +14,7 @@ const ConsignmentForm = () => {
     koiColor: "",
     koiAge: "",
     koiSize: "",
-    imageFile: null, // Store the file itself
+    imageFile: null,
     inspectionResult: "",
   });
 
@@ -35,7 +35,7 @@ const ConsignmentForm = () => {
     if (file) {
       setFormData((prevData) => ({
         ...prevData,
-        imageFile: file, // Store the file directly
+        imageFile: file,
       }));
     }
   };
@@ -121,7 +121,7 @@ const ConsignmentForm = () => {
               onChange={handlePriceChange}
               step="0.01"
               min="0"
-              max="99999999.99" // Maximum value for DECIMAL(10,2)
+              max="99999999.99"
               required
               placeholder="0.00"
               className="price-input"
@@ -162,7 +162,7 @@ const ConsignmentForm = () => {
           <div>
             <label htmlFor="koiAge">Tuổi Koi:</label>
             <input
-              type="text"
+              type="number"
               id="koiAge"
               name="koiAge"
               value={formData.koiAge}
@@ -176,7 +176,7 @@ const ConsignmentForm = () => {
         <div>
           <label htmlFor="koiSize">Kích thước Koi:</label>
           <input
-            type="text"
+            type="number"
             id="koiSize"
             name="koiSize"
             value={formData.koiSize}

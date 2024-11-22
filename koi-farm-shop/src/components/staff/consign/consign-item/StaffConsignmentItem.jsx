@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card, Typography, Button, Tag, notification } from "antd";
 import "./StaffConsignmentItem.scss";
 import axiosInstance from "../../../../api/axiosInstance";
@@ -8,6 +8,7 @@ const { Text } = Typography;
 
 const StaffConsignmentItem = ({ consignment, onRemove }) => {
   const navigate = useNavigate();
+  const [action, setAction] = useState(null);
 
   if (!consignment) {
     return null;
@@ -38,19 +39,19 @@ const StaffConsignmentItem = ({ consignment, onRemove }) => {
     return status === "Pending";
   };
 
-  const handleStatusChange = async () => {
+  const handleStatusChange = async (actionType) => {
     try {
-      const nextStatus = ApprovedStatus === "Pending" ? "Approved" : null;
+      const nextStatus = actionType === "Approve" ? "Approved" : "Rejected";
       
       // First update the consignment status
       const statusResponse = await axiosInstance.patch(
         `/koiconsignment/${ConsignmentID}/${nextStatus}`
       );
 
-      if (statusResponse.data.success || statusResponse.data.message.includes("updated to Approved")) {
-        // If status update is successful and new status is Approved, create KoiFish entry
-        if (nextStatus === "Approved") {
-          // Prepare koi data for KoiFish creation
+      // Check if the response contains data
+      if (statusResponse?.data) {
+        // Only create KoiFish entry if approving
+        if (actionType === "Approve") {
           const koiData = {
             KoiType: consignment.KoiType,
             KoiAge: consignment.KoiAge,
@@ -84,13 +85,13 @@ const StaffConsignmentItem = ({ consignment, onRemove }) => {
           onRemove(ConsignmentID);
         }
       } else {
-        throw new Error(statusResponse.data.message || "Failed to update status");
+        throw new Error("Invalid response from server");
       }
     } catch (error) {
       console.error("Error updating status:", error);
       notification.error({
         message: "Lỗi",
-        description: "Không thể cập nhật trạng thái đơn ký gửi.",
+        description: error.response?.data?.message || "Không thể cập nhật trạng thái đơn ký gửi.",
       });
     }
   };
@@ -130,7 +131,20 @@ const StaffConsignmentItem = ({ consignment, onRemove }) => {
       <div className="action-buttons">
         <Button type="default" onClick={handleSeeDetails}>Xem Chi Tiết</Button>
         {shouldShowUpdateButton(ApprovedStatus) && (
-          <Button type="primary" onClick={handleStatusChange}>Chuyển Trạng Thái</Button>
+          <>
+            <Button 
+              className="ant-btn-approve" 
+              onClick={() => handleStatusChange("Approve")}
+            >
+              Approve
+            </Button>
+            <Button 
+              className="ant-btn-reject" 
+              onClick={() => handleStatusChange("Reject")}
+            >
+              Reject
+            </Button>
+          </>
         )}
       </div>
     </Card>
