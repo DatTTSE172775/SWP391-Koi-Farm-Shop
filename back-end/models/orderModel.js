@@ -230,20 +230,28 @@ exports.checkProductAvailability = async (koiID, packageID, quantity) => {
       // Kiểm tra xem Koi với KoiID có còn tồn tại không (vì mỗi cá chỉ có 1)
       const koiResult = await pool.request()
         .input('koiID', sql.Int, koiID)
-        .query('SELECT COUNT(*) AS Count FROM KoiFish WHERE KoiID = @koiID');
+        .query('SELECT Availability FROM KoiFish WHERE KoiID = @koiID');
 
       if (koiResult.recordset[0].Count === 0) {
         return  { status: 404, message: `Koi Fish với ID ${koiID} không tồn tại.` };
+      }
+
+      if (koiResult.recordset[0].Availability === 'Sold Out') {
+        return { status: 400, message: `Koi Fish với ID ${koiID} đã được bán hết.` };
       }
     } else if (packageID) {
       // Kiểm tra số lượng tồn kho cho Package
       const packageResult = await pool.request()
         .input('packageID', sql.Int, packageID)
-        .query('SELECT Quantity FROM KoiPackage WHERE PackageID = @packageID');
+        .query('SELECT Quantity, Availability FROM KoiPackage WHERE PackageID = @packageID');
 
         if (packageResult.recordset.length === 0) {
           // Nếu gói hàng không tồn tại, trả về lỗi 404
           return  { status: 404, message: `Package với ID ${packageID} không tồn tại.` };
+        }
+
+        if (packageResult.recordset[0].Availability === 'Sold Out') {
+          return { status: 400, message: `Gói hàng với ID ${packageID} đã được bán hết.` };
         }
     
         if (packageResult.recordset[0].Quantity < quantity) {
