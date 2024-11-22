@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import ConsignmentList from "../../../../components/staff/consign/consign-list/ConsignmentList";
 import axiosInstance from "../../../../api/axiosInstance";
 
-const CompletedConsignment = () => {
+const RejectedConsignment = () => {
   const [consignments, setConsignments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -12,7 +12,7 @@ const CompletedConsignment = () => {
   useEffect(() => {
     const fetchConsignments = async () => {
         try {
-          const response = await axiosInstance.get(`/koiconsignment/approved/${userId}`);
+          const response = await axiosInstance.get(`/koiconsignment/rejected/${userId}`);
           console.log("API Response:", response.data);
           if (response.data && Array.isArray(response.data.data)) {
             setConsignments(response.data.data);
@@ -40,14 +40,10 @@ const CompletedConsignment = () => {
     return <div>Error: {error}</div>;
   }
 
-  // const completedConsignments = consignments.filter(
-  //   (consignment) => consignment.Status === "Approved"
-  // );
-
   return <ConsignmentList
     initialConsignments={consignments} 
-    filterStatus="Approved" 
+    filterStatus="Rejected" 
   />;
 };
 
-export default CompletedConsignment;
+export default RejectedConsignment;

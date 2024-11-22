@@ -7,21 +7,19 @@ const sql = require('mssql');
 // Configure multer for file upload
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, '../../uploads/')) // Path is now relative to the back-end directory
+        cb(null, path.join(__dirname, '../../uploads/'))
     },
     filename: function (req, file, cb) {
-        cb(null, Date.now() + path.extname(file.originalname)) // Appending extension
+        cb(null, Date.now() + path.extname(file.originalname))
     }
 });
 
 const upload = multer({ storage: storage });
 
 exports.createKoiConsignment = [
-    upload.single('imageFile'), // 'imageFile' should match the name in the form data
+    upload.single('imageFile'),
     async (req, res) => {
         try {
-            // The req object now has the user information thanks to authMiddleware
-            // and the file information thanks to multer
             const result = await consignmentModel.createKoiConsignment(req);
             res.status(201).json({ message: 'Koi Consignment created successfully', result });
         } catch (error) {
@@ -146,6 +144,16 @@ exports.getApprovedConsignmentsByUserId = async (req, res) => {
         res.status(500).json({ message: 'Error fetching Approved Koi Consignments', error: error.message });
     }
 };
+
+exports.getRejectedConsignmentsByUserId = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const result = await consignmentModel.getRejectedConsignmentsByUserId(userId);
+        res.status(200).json({ message: 'Rejected Koi Consignments retrieved successfully', data: result });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching Approved Koi Consignments', error: error.message });
+    }
+};
         
 exports.updateConsignmentToApproved = async (req, res) => {
     const { consignmentId } = req.params;
@@ -162,6 +170,24 @@ exports.updateConsignmentToApproved = async (req, res) => {
     } catch (err) {
       console.error(err);
       res.status(500).send({ message: "Failed to update consignment to Approved." });
+    }
+  };
+
+  exports.updateConsignmentToRejected = async (req, res) => {
+    const { consignmentId } = req.params;
+  
+    try {
+      const updatedConsignment = await consignmentModel.updateConsignmentStatus(consignmentId, "Rejected");
+      if (!updatedConsignment) {
+        return res.status(404).send({ message: "Consignment not found." });
+      }
+      res.send({
+        message: "Consignment status updated to Rejected.",
+        consignment: updatedConsignment,
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send({ message: "Failed to update consignment to Rejected." });
     }
   };
 

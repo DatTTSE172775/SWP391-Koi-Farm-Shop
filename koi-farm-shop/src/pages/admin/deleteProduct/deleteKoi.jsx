@@ -29,7 +29,7 @@ const DeleteKoi = () => {
     try {
       await axiosPublic.delete(`deleteKoi/${koiId}`);
       message.success("Koi deleted successfully");
-      fetchKoiList(); // Refresh the list after deletion
+      fetchKoiList();
     } catch (error) {
       console.error("Error deleting Koi:", error);
       message.error("Failed to delete Koi");

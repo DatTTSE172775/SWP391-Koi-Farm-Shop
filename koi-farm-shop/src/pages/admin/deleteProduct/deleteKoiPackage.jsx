@@ -21,7 +21,7 @@ const DeleteKoiPackage = () => {
     try {
       setLoading(true);
       const response = await axiosPublic.get("koipackages");
-      console.log("API Response:", response.data); // Log the response data
+      console.log("API Response:", response.data);
       if (Array.isArray(response.data)) {
         setKoiPackageList(response.data);
       } else if (typeof response.data === 'object' && response.data !== null) {
