@@ -26,22 +26,60 @@ const createOrder = async (req, res) => {
     shippingCost,
     promotionID,
   } = req.body;
+
+  // Tạo đơn hàng
+  const newOrder = await Order.createOrder(
+    customerID,
+    totalAmount,
+    shippingAddress,
+    paymentMethod,
+    orderItems,
+    discount,
+    shippingCost,
+    promotionID,
+    trackingNumber
+  );
+
   try {
-    const newOrder = await Order.createOrder(
-      customerID,
-      totalAmount,
-      shippingAddress,
-      paymentMethod,
-      orderItems,
-      discount,
-      shippingCost,
-      promotionID,
-      trackingNumber
-    );
+    // Tính tổng tiền
+    // // const totalAmount = calculateTotalAmount(orderItems, discount, shippingCost);
+    // const totalAmount = Order.calculateTotalAmount(orderItems);
+
+    // Thêm từng item trong orderItems vào OrderDetails
+    for (const item of orderItems) {
+      const koiID = item.KoiID || null; // Kiểm tra và gán giá trị cho KoiID
+      const packageID = item.PackageID || null; // Kiểm tra và gán giá trị cho PackageID
+      const quantity = item.quantity || 1;
+
+      // Xác định productType
+      const productType = koiID && packageID ? "All" : koiID ? "Single Fish" : "Package";
+
+      // Kiểm tra tồn kho trước khi thêm sản phẩm
+      const availability = await Order.checkProductAvailability(koiID, packageID, quantity);
+
+      if (availability.status !== 200) {
+        // Nếu phát hiện lỗi, trả về ngay lập tức
+        return res.status(availability.status).json({ message: availability.message });
+      }
+
+      // Gửi dữ liệu vào OrderDetails
+      await Order.addOrderDetail({
+        orderId: newOrder.orderId,
+        koiID,
+        packageID,
+        quantity: koiID ? 1 : item.quantity || 1, // Nếu là KoiFish, quantity mặc định là 1
+        productType,
+        unitPrice: item.unitPrice || 0, // Đơn giá, nếu có
+      });
+    }
 
     res.status(201).send(newOrder);
   } catch (err) {
-    console.error(err);
+    console.error("Lỗi khi tạo đơn hàng:", err);
+    // Xử lý và gửi lỗi
+    if (err.status && err.message) {
+      return res.status(err.status).send({ message: err.message });
+    }
     res.status(500).send({ message: "Lỗi khi tạo đơn hàng." });
   }
 };
