@@ -6,13 +6,13 @@ import WelcomeStaff from "../pages/staff/layout/WelcomeStaff";
 import StaffOrderManage from "../pages/staff/order-manage/StaffOrderManage";
 import CancelledOrders from "../pages/staff/order-manage/cancelled/CancelledOrders";
 import DeliveredOrders from "../pages/staff/order-manage/completed/CompletedOrders";
-import OrderDetail from "../pages/staff/order-manage/details/OrderDetail";
 import ProcessingOrders from "../pages/staff/order-manage/processing/ProcessingOrders";
 import ShippingOrders from "../pages/staff/order-manage/shipping/ShippingOrders";
 import PendingConsignments from "../pages/staff/consignment-manage/processing/ProcessingConsignment";
 import InCareConsignments from "../pages/staff/consignment-manage/completed/CompletedConsignment";
 import StaffConsignmentDetails from "../pages/staff/consignment-manage/consignmentDetails/staffConsignmentDetails";
 import RejectedConsignments from "../pages/staff/consignment-manage/rejected/RejectedConsignment";
+import OrderDetailsStaff from "../pages/staff/OrderDetails/OrderDetailsStaff";
 
 const ProtectedStaffRoute = ({ children }) => {
   const role = localStorage.getItem("role");
@@ -38,7 +38,7 @@ const staffRoutes = (
       <Route path="shipping" element={<ShippingOrders />} />
       <Route path="deliveried" element={<DeliveredOrders />} />
       <Route path="cancelled" element={<CancelledOrders />} />
-      <Route path="orders/:id" element={<OrderDetail />} />
+      <Route path="order-details/:OrderID" element={<OrderDetailsStaff />} />
     </Route>
 
     <Route path="consignments">

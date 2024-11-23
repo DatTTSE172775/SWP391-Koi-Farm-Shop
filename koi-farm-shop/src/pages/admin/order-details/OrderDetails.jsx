@@ -1,16 +1,5 @@
 import {
-    Alert,
-    Button,
-    Card,
-    Col,
-    Divider,
-    Layout,
-    Row,
-    Spin,
-    Table,
-    Typography,
-    Select,
-    Tag,
+    Alert, Button, Card, Col, Divider, Layout, Row, Spin, Table, Typography, Select, Tag,
 } from "antd";
 import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
@@ -58,14 +47,17 @@ const translatePaymentMethod = (method) => {
 };
 
 // Convert payment status to Vietnamese
-const translatePaymentStatus = (status) => {
+const translatePaymentStatus = (status, method) => {
+    if (method === "VNPay") {
+        return "Đã thanh toán";
+    }
+
     const paymentStatusMap = {
-        Completed: "Đã thanh toán",
-        Pending: "Đang chờ thanh toán",
-        Failed: "Thanh toán thất bại",
+        Completed: "Đã thanh toán", Pending: "Đang chờ thanh toán", Failed: "Thanh toán thất bại",
     };
     return paymentStatusMap[status] || "Không xác định";
 };
+
 
 const OrderDetails = () => {
     const {orderId} = useParams();
@@ -85,9 +77,7 @@ const OrderDetails = () => {
                 setOrder(response.data);
 
                 // Set assignee based on the UserID
-                const assignedStaff = staff.find(
-                    (member) => member.UserID === response.data.UserID
-                );
+                const assignedStaff = staff.find((member) => member.UserID === response.data.UserID);
                 setAssignee(assignedStaff ? assignedStaff.Username : "Chưa giao");
 
                 setLoading(false);
@@ -114,8 +104,7 @@ const OrderDetails = () => {
         // Update local state to reflect changes immediately
         setAssignee(username);
         setOrder((prevOrder) => ({
-            ...prevOrder,
-            UserID: userId,
+            ...prevOrder, UserID: userId,
         }));
     };
 
@@ -124,10 +113,47 @@ const OrderDetails = () => {
     }
 
     if (error) {
-        return (
-            <Alert message="Error" description={error} type="error" showIcon/>
-        );
+        return (<Alert message="Error" description={error} type="error" showIcon/>);
     }
+
+    const products = [];
+
+    // Thêm sản phẩm từ loại "Single Fish"
+    if (order?.ProductTypes?.includes("Single Fish")) {
+        const koiNames = order.KoiNames?.split(",") || [];
+        const koiPrices = order.KoiPrices?.split(",") || [];
+        const koiQuantities = order.KoiIDs?.split(",").map(() => 1) || [];
+
+        koiNames.forEach((name, index) => {
+            products.push({
+                key: index + 1,
+                ProductName: name.trim(),
+                Quantity: koiQuantities[index] || 1,
+                UnitPrice: parseFloat(koiPrices[index]) || 0,
+                TotalPrice: (parseFloat(koiPrices[index]) || 0) * (koiQuantities[index] || 1),
+                ImageLink: "/placeholder-fish.png", // Thay bằng ảnh thực tế nếu có
+            });
+        });
+    }
+
+    // Thêm sản phẩm từ loại "Package"
+    if (order?.ProductTypes?.includes("Package")) {
+        const packageNames = order.PackageNames?.split(",") || [];
+        const packagePrices = order.PackagePrices?.split(",") || [];
+        const packageQuantities = order.PackageIDs?.split(",").map(() => 1) || [];
+
+        packageNames.forEach((name, index) => {
+            products.push({
+                key: products.length + 1,
+                ProductName: name.trim(),
+                Quantity: packageQuantities[index] || 1,
+                UnitPrice: parseFloat(packagePrices[index]) || 0,
+                TotalPrice: (parseFloat(packagePrices[index]) || 0) * (packageQuantities[index] || 1),
+                ImageLink: "/placeholder-package.png", // Thay bằng ảnh thực tế nếu có
+            });
+        });
+    }
+
 
     const columns = [
         {
@@ -137,12 +163,12 @@ const OrderDetails = () => {
             render: (_, record) => (
                 <div className="product-info">
                     <img
-                        src={record.KoiImagesLink || record.PackageImageLink || "https://placehold.co/50"}
-                        alt={record.KoiName || record.PackageName || "Product"}
+                        src={record.ImageLink || "https://placehold.co/50"}
+                        alt={record.ProductName || "Product"}
                         className="product-image"
                     />
                     <div>
-                        <Text strong>{record.KoiName || record.PackageName || "N/A"}</Text>
+                        <Text strong>{record.ProductName || "N/A"}</Text>
                     </div>
                 </div>
             ),
@@ -167,157 +193,128 @@ const OrderDetails = () => {
         },
     ];
 
-    const dataSource = [
-        {
-            key: 1,
-            ProductName: order.PackageName || order.KoiName,
-            Quantity: order.Quantity,
-            UnitPrice: order.PackagePrice || order.KoiPrice,
-            TotalPrice: order.TotalPrice,
-            KoiImagesLink: order.KoiImagesLink,
-            PackageImageLink: order.PackageImageLink,
-            KoiName: order.KoiName,
-            PackageName: order.PackageName,
-        },
-    ];
+    return (<Layout>
+        <Content className="admin-content">
+            <div className="order-details-container">
+                <Button
+                    type="link"
+                    onClick={() => navigate("/admin/manage-orders")}
+                    className="back-button"
+                >
+                    &lt; Quay lại
+                </Button>
+                <Title level={3} className="title">
+                    Chi tiết đơn hàng
+                </Title>
+                <Divider/>
 
-    return (
-        <Layout>
-            <Content className="admin-content">
-                <div className="order-details-container">
-                    <Button
-                        type="link"
-                        onClick={() => navigate("/admin/manage-orders")}
-                        className="back-button"
-                    >
-                        &lt; Quay lại
-                    </Button>
-                    <Title level={3} className="title">
-                        Chi tiết đơn hàng
-                    </Title>
-                    <Divider/>
+                {/* Thông Tin Đơn Hàng */}
+                <Row gutter={[16, 16]}>
+                    <Col span={12}>
+                        <Card bordered className="info-card">
+                            <p>
+                                <Text strong>Mã đơn hàng:</Text> {order.OrderID || "N/A"}
+                            </p>
+                            <p>
+                                <Text strong>Trạng thái đơn hàng:</Text>{" "}
+                                <Tag color={statusColors[order.OrderStatus]}>
+                                    {translateStatus(order.OrderStatus)}
+                                </Tag>
+                            </p>
+                            <p>
+                                <Text strong>Ngày đặt hàng:</Text>{" "}
+                                {new Date(order.OrderDate).toLocaleDateString() || "N/A"}
+                            </p>
+                            <p>
+                                <Text strong>Số theo dõi:</Text>{" "}
+                                {order.TrackingNumber || "N/A"}
+                            </p>
+                        </Card>
+                    </Col>
+                    <Col span={12}>
+                        <Card bordered className="info-card">
+                            <p>
+                                <Text strong>Người đặt hàng:</Text> {order.FullName || "N/A"}
+                            </p>
+                            <p>
+                                <Text strong>Email:</Text> {order.Email || "N/A"}
+                            </p>
+                            <p>
+                                <Text strong>Số điện thoại:</Text> {order.PhoneNumber || "N/A"}
+                            </p>
+                            <p>
+                                <Text strong>Trạng thái thanh toán:</Text>{" "}
+                                <Tag color={paymentColors[order.PaymentStatus]}>
+                                    {translatePaymentStatus(order.PaymentStatus)}
+                                </Tag>
+                            </p>
+                        </Card>
+                    </Col>
+                </Row>
 
-                    {/* Thông Tin Đơn Hàng */}
-                    <Row gutter={[16, 16]}>
-                        <Col span={12}>
-                            <Card bordered className="info-card">
-                                <p>
-                                    <Text strong>Mã đơn hàng:</Text> {order.OrderID || "N/A"}
-                                </p>
-                                <p>
-                                    <Text strong>Trạng thái đơn hàng:</Text>{" "}
-                                    <Tag color={statusColors[order.OrderStatus]}>
-                                        {translateStatus(order.OrderStatus)}
-                                    </Tag>
-                                </p>
-                                <p>
-                                    <Text strong>Ngày đặt hàng:</Text>{" "}
-                                    {new Date(order.OrderDate).toLocaleDateString() || "N/A"}
-                                </p>
-                                <p>
-                                    <Text strong>Số theo dõi:</Text>{" "}
-                                    {order.TrackingNumber || "N/A"}
-                                </p>
-                            </Card>
-                        </Col>
-                        <Col span={12}>
-                            <Card bordered className="info-card">
-                                <p>
-                                    <Text strong>Người đặt hàng:</Text> {order.FullName || "N/A"}
-                                </p>
-                                <p>
-                                    <Text strong>Email:</Text> {order.Email || "N/A"}
-                                </p>
-                                <p>
-                                    <Text strong>Số điện thoại:</Text> {order.PhoneNumber || "N/A"}
-                                </p>
-                                <p>
-                                    <Text strong>Trạng thái thanh toán:</Text>{" "}
-                                    <Tag color={paymentColors[order.PaymentStatus]}>
-                                        {translatePaymentStatus(order.PaymentStatus)}
-                                    </Tag>
-                                </p>
-                            </Card>
-                        </Col>
-                    </Row>
+                {/* Giao Đơn Hàng */}
+                <Divider/>
+                <Row gutter={[16, 16]}>
+                    <Col span={24}>
+                        <Card bordered className="info-card">
+                            <Text strong>Nhân viên phụ trách:</Text>
+                            {order.OrderStatus === "Pending" ? (<Select
+                                value={assignee}
+                                onChange={(userId) => handleAssign(userId)}
+                                style={{width: "100%", marginTop: 10}}
+                            >
+                                {staff.map((member) => (<Option key={member.UserID} value={member.UserID}>
+                                    {member.Username}
+                                </Option>))}
+                            </Select>) : (<p style={{marginTop: 10}}>{assignee || "Chưa giao"}</p>)}
+                        </Card>
+                    </Col>
+                </Row>
 
-                    {/* Giao Đơn Hàng */}
-                    <Divider/>
-                    <Row gutter={[16, 16]}>
-                        <Col span={24}>
-                            <Card bordered className="info-card">
-                                <Text strong>Nhân viên phụ trách:</Text>
-                                {order.OrderStatus === "Pending" ? (
-                                    <Select
-                                        value={assignee}
-                                        onChange={(userId) => handleAssign(userId)}
-                                        style={{width: "100%", marginTop: 10}}
-                                    >
-                                        {staff.map((member) => (
-                                            <Option key={member.UserID} value={member.UserID}>
-                                                {member.Username}
-                                            </Option>
-                                        ))}
-                                    </Select>
-                                ) : (
-                                    <p style={{marginTop: 10}}>{assignee || "Chưa giao"}</p>
-                                )}
-                            </Card>
-                        </Col>
-                    </Row>
+                {/* Tóm Tắt Sản Phẩm */}
+                <Divider/>
+                <Title level={4}>Tóm tắt sản phẩm</Title>
+                <Table
+                    dataSource={products}
+                    columns={columns}
+                    pagination={false}
+                    className="order-summary-table"
+                />
 
-                    {/* Tóm Tắt Sản Phẩm */}
-                    <Divider/>
-                    <Title level={4}>Tóm tắt sản phẩm</Title>
-                    <Table
-                        dataSource={dataSource}
-                        columns={columns}
-                        pagination={false}
-                        className="order-summary-table"
-                    />
+                {/* Chi Tiết Thanh Toán và Giao Hàng */}
+                <Divider/>
+                <Card bordered className="info-card">
+                    <Title level={5}>Thông tin giao hàng</Title>
+                    <p>{order.FullName || "N/A"}</p>
+                    <p>{order.ShippingAddress || "N/A"}</p>
+                    <p>{order.PhoneNumber || "N/A"}</p>
+                </Card>
 
-                    {/* Chi Tiết Thanh Toán và Giao Hàng */}
-                    <Divider/>
-                    <Row gutter={[16, 16]}>
-                        <Col span={12}>
-                            <Card bordered className="info-card">
-                                <Title level={5}>Thông tin thanh toán</Title>
-                                <p>{order.FullName || "N/A"}</p>
-                                <p>{order.Address || "N/A"}</p>
-                                <p>{order.PhoneNumber || "N/A"}</p>
-                            </Card>
-                        </Col>
-                        <Col span={12}>
-                            <Card bordered className="info-card">
-                                <Title level={5}>Thông tin giao hàng</Title>
-                                <p>{order.FullName || "N/A"}</p>
-                                <p>{order.ShippingAddress || "N/A"}</p>
-                                <p>{order.PhoneNumber || "N/A"}</p>
-                            </Card>
-                        </Col>
-                    </Row>
+                <Divider/>
 
-                    <Row gutter={[16, 16]}>
-                        <Col span={12}>
-                            <Card bordered className="info-card">
-                                <p>
-                                    <Text strong>Phương thức vận chuyển:</Text> Free
-                                </p>
-                            </Card>
-                        </Col>
-                        <Col span={12}>
-                            <Card bordered className="info-card">
-                                <p>
-                                    <Text strong>Phương thức thanh toán:</Text>{" "}
-                                    {translatePaymentMethod(order.PaymentMethod)}
-                                </p>
-                            </Card>
-                        </Col>
-                    </Row>
-                </div>
-            </Content>
-        </Layout>
-    );
+                <Row gutter={[16, 16]}>
+                    <Col span={12}>
+                        <Card bordered className="info-card">
+                            <p>
+                                <Text strong>Phương thức vận chuyển:</Text> Free
+                            </p>
+                        </Card>
+                    </Col>
+                    <Col span={12}>
+                        <Card bordered className="info-card">
+                            <p>
+                                <Text strong>Trạng thái thanh toán:</Text>{" "}
+                                <Tag color={paymentColors[order.PaymentStatus]}>
+                                    {translatePaymentStatus(order.PaymentStatus, translatePaymentMethod(order.PaymentMethod))}
+                                </Tag>
+                            </p>
+
+                        </Card>
+                    </Col>
+                </Row>
+            </div>
+        </Content>
+    </Layout>);
 };
 
 export default OrderDetails;

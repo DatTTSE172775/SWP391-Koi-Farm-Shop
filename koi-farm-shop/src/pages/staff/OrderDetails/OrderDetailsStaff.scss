@@ -1,0 +1,96 @@
+.order-details-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+
+  .back-button {
+    margin-bottom: 20px;
+    font-size: 16px;
+    color: #1890ff;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .title {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 30px;
+  }
+
+  .info-card {
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+
+    p {
+      margin: 8px 0;
+      font-size: 14px;
+
+      strong {
+        font-weight: 600;
+      }
+    }
+  }
+
+  .order-summary-table {
+    .ant-table-thead > tr > th {
+      background-color: #fafafa;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .ant-table-tbody > tr > td {
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    .product-info {
+      display: flex;
+      align-items: center;
+
+      .product-image {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 4px;
+        margin-right: 10px;
+      }
+    }
+  }
+
+  .loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .order-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+
+    .update-button {
+      background-color: #1890ff;
+      color: #fff;
+      &:hover {
+        background-color: #40a9ff;
+      }
+    }
+
+    .cancel-button {
+      background-color: #ff4d4f;
+      color: #fff;
+      &:hover {
+        background-color: #ff7875;
+      }
+    }
+  }
+
+  .ant-card-bordered {
+    border: 1px solid #e8e8e8;
+  }
+}

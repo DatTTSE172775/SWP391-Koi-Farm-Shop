@@ -94,10 +94,10 @@ const UpdateKoi = () => {
           <Input />
         </Form.Item>
         <Form.Item name="Born" label="Born" rules={[{ required: true }]}>
-          <InputNumber min={1900} max={2100} />
+          <InputNumber min={1990} max={2024} />
         </Form.Item>
         <Form.Item name="Size" label="Size" rules={[{ required: true }]}>
-          <InputNumber min={0} />
+          <InputNumber min={1} max={30}/>
         </Form.Item>
         <Form.Item name="HealthStatus" label="Health Status" rules={[{ required: true }]}>
           <Input />
