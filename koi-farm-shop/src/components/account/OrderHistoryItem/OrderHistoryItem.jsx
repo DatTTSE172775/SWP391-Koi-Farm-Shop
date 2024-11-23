@@ -73,7 +73,12 @@ const OrderHistoryItem = ({ order }) => {
 
             <div className="order-details">
                 <p>
-                    <CalendarOutlined /> <strong>Ngày đặt:</strong> {order.OrderDate}
+                    <CalendarOutlined /> <strong>Ngày đặt:</strong> {order?.OrderDate
+                    ? new Intl.DateTimeFormat("vi-VN", {
+                        dateStyle: "medium",
+                        timeStyle: "short",
+                    }).format(new Date(order.OrderDate))
+                    : "Không có thông tin"}
                 </p>
                 <p>
                     <DollarOutlined /> <strong>Tổng tiền:</strong>{" "}
@@ -112,7 +117,7 @@ const OrderHistoryItem = ({ order }) => {
                         type="primary"
                         size="large"
                         className="primary-btn"
-                        onClick={() => navigate(`/order-history/${order.TrackingNumber}`)}
+                        onClick={() => navigate(`/order-history/${order.OrderID}/${order.TrackingNumber}`)}
                     >
                         Xem chi tiết
                     </Button>

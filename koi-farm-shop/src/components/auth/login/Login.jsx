@@ -124,17 +124,6 @@ const Login = () => {
 
             {error && <Typography className="message">{error}</Typography>}
 
-            <Divider sx={{ my: 2 }}>HOẶC</Divider>
-
-            <Button
-                variant="outlined"
-                color="primary"
-                fullWidth
-                startIcon={<GoogleIcon />}
-            >
-              Đăng nhập với Google
-            </Button>
-
             <Typography variant="body2" align="center" className="register-text">
               Bạn chưa có tài khoản?{" "}
               <Link component={RouterLink} to="/register" variant="body2">

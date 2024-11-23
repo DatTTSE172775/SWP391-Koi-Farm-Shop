@@ -14,6 +14,12 @@ import {
     FETCH_ORDERS_FAILURE,
     FETCH_ORDERS_REQUEST,
     FETCH_ORDERS_SUCCESS,
+    FETCH_ORDER_DETAIL_REQUEST,
+    FETCH_ORDER_DETAIL_SUCCESS,
+    FETCH_ORDER_DETAIL_FAILURE,
+    CANCEL_ORDER_REQUEST,
+    CANCEL_ORDER_SUCCESS,
+    CANCEL_ORDER_FAILURE,
 } from "../actions/orderActions";
 
 const initialState = {
@@ -81,6 +87,23 @@ const orderReducer = (state = initialState, action) => {
         case FETCH_ORDERS_BY_CUSTOMER_FAILURE:
             return {...state, loading: false, error: action.payload};
 
+        case FETCH_ORDER_DETAIL_REQUEST:
+            return { ...state, loading: true, error: null };
+        case FETCH_ORDER_DETAIL_SUCCESS:
+            console.log("Reducer received order:", action.payload);
+            return { ...state, loading: false, order: action.payload };
+        case FETCH_ORDER_DETAIL_FAILURE:
+            return { ...state, loading: false, error: action.payload };
+        case CANCEL_ORDER_REQUEST:
+            return { ...state, loading: true };
+        case CANCEL_ORDER_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                order: { ...state.order, OrderStatus: "Cancelled" },
+            };
+        case CANCEL_ORDER_FAILURE:
+            return { ...state, loading: false, error: action.payload };
 
         default:
             return state;

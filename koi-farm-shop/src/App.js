@@ -152,7 +152,7 @@ function App() {
                             <Route path="profile" element={<ProfilePage />} />
                             <Route path="update-profile" element={<UpdateProfile />} />
                             <Route path="order-history" element={<OrderHistoryPage />} />
-                            <Route path="order-history/:id" element={<OrderDetailPage />} />
+                            <Route path="order-history/:OrderID/:trackingNumber" element={<OrderDetailPage />} />
                         </Route>
 
                         {/* Auth Routes without MainLayout */}

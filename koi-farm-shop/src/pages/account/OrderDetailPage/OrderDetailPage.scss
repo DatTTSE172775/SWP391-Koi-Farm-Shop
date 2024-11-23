@@ -43,11 +43,17 @@
       }
     }
 
-    .order-timeline {
-      margin: 20px 0;
+    .order-timeline-horizontal {
+      display: flex;
+      justify-content: space-between;
 
-      .ant-timeline-item-content {
-        font-size: 14px;
+      .ant-timeline-item {
+        text-align: center;
+        flex: 1;
+
+        .ant-timeline-item-content {
+          font-size: 14px;
+        }
       }
     }
 

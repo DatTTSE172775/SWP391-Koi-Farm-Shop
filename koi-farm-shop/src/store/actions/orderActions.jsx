@@ -17,6 +17,12 @@ export const FETCH_ORDERS_BY_USER_FAILURE = "FETCH_ORDERS_BY_USER_FAILURE";
 export const FETCH_ORDERS_BY_CUSTOMER_REQUEST = "FETCH_ORDERS_BY_CUSTOMER_REQUEST";
 export const FETCH_ORDERS_BY_CUSTOMER_SUCCESS = "FETCH_ORDERS_BY_CUSTOMER_SUCCESS";
 export const FETCH_ORDERS_BY_CUSTOMER_FAILURE = "FETCH_ORDERS_BY_CUSTOMER_FAILURE";
+export const FETCH_ORDER_DETAIL_REQUEST = "FETCH_ORDER_DETAIL_REQUEST";
+export const FETCH_ORDER_DETAIL_SUCCESS = "FETCH_ORDER_DETAIL_SUCCESS";
+export const FETCH_ORDER_DETAIL_FAILURE = "FETCH_ORDER_DETAIL_FAILURE";
+export const CANCEL_ORDER_REQUEST = "CANCEL_ORDER_REQUEST";
+export const CANCEL_ORDER_SUCCESS = "CANCEL_ORDER_SUCCESS";
+export const CANCEL_ORDER_FAILURE = "CANCEL_ORDER_FAILURE";
 
 // Action Creators
 const createOrderRequest = () => ({ type: CREATE_ORDER_REQUEST });
@@ -82,6 +88,17 @@ const fetchOrdersByCustomerFailure = (error) => ({
   type: FETCH_ORDERS_BY_CUSTOMER_FAILURE,
   payload: error,
 });
+
+const fetchOrderDetailRequest = () => ({ type: FETCH_ORDER_DETAIL_REQUEST });
+const fetchOrderDetailSuccess = (order) => ({
+  type: FETCH_ORDER_DETAIL_SUCCESS,
+  payload: order,
+});
+const fetchOrderDetailFailure = (error) => ({
+  type: FETCH_ORDER_DETAIL_FAILURE,
+  payload: error,
+});
+
 
 // Thunk Action to Fetch Customer ID and Create an Order
 export const createOrder = (orderData) => async (dispatch) => {
@@ -186,3 +203,44 @@ export const fetchOrdersByCustomer = (customerId) => async (dispatch) => {
     dispatch(fetchOrdersByCustomerFailure(error.message || "Failed to fetch orders"));
   }
 };
+
+// Thunk Action to Fetch Order Detail
+export const fetchOrderDetail = (OrderId) => async (dispatch) => {
+  dispatch({ type: "FETCH_ORDER_DETAIL_REQUEST" });
+  try {
+    const response = await axiosInstance.get(`orders/${OrderId}`); // Đảm bảo endpoint chính xác
+    console.log("API Response:", response.data); // Debug dữ liệu trả về
+    dispatch({
+      type: "FETCH_ORDER_DETAIL_SUCCESS",
+      payload: response.data, // Đảm bảo payload đúng định dạng
+    });
+  } catch (error) {
+    console.error("Error fetching order details:", error.message);
+    dispatch({
+      type: "FETCH_ORDER_DETAIL_FAILURE",
+      payload: error.message || "Lỗi khi lấy thông tin đơn hàng",
+    });
+  }
+};
+
+export const cancelOrder = (OrderID) => async (dispatch) => {
+  dispatch({ type: CANCEL_ORDER_REQUEST });
+  try {
+    await axiosInstance.patch(`orders/${OrderID}/cancelled`);
+    dispatch({ type: CANCEL_ORDER_SUCCESS, payload: OrderID });
+
+    notification.success({
+      message: "Thành công",
+      description: "Đơn hàng đã được hủy.",
+    });
+  } catch (error) {
+    dispatch({ type: CANCEL_ORDER_FAILURE, payload: error.message });
+
+    notification.error({
+      message: "Lỗi",
+      description: error.message || "Không thể hủy đơn hàng.",
+    });
+  }
+};
+
+
