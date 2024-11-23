@@ -64,6 +64,7 @@ const {
   deleteKoiPackage,
   getKoiPackageById,
   updateKoiPackage,
+  updateKoiPackageAvailability,
 } = require("../controllers/koiPackageController");
 
 const {
@@ -1220,6 +1221,25 @@ router.get("/koipackages", getAllKoiPackages);
 
 /**
  * @swagger
+ * /api/koipackages/{packageId}:
+ *   get:
+ *     summary: Get Koi Package details by ID
+ *     tags: [Koi Package]
+ *     parameters:
+ *       - in: path
+ *         name: packageId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Koi Package ID
+ *     responses:
+ *       200:
+ *         description: Koi Package details
+ */
+router.get("/koipackages/:packageId", getKoiPackageById);
+
+/**
+ * @swagger
  * /api/deleteKoiPackage/{packageId}:
  *   delete:
  *     summary: Delete a Koi Package
@@ -1236,6 +1256,43 @@ router.get("/koipackages", getAllKoiPackages);
  *         description: Koi Package deleted successfully
  */
 router.delete("/deleteKoiPackage/:packageId", deleteKoiPackage);
+
+/**
+ * @swagger
+ * /api/updateKoiPackageAvailability/{packageId}:
+*   patch:
+ *     summary: Update Koi Package availability
+ *     tags: [Koi Package]
+ *     parameters:
+ *       - in: path
+ *         name: packageId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The Koi Package ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               availability:
+ *                 type: string
+ *                 enum: [Available, Sold Out]
+ *     responses:
+ *       200:
+ *         description: Koi Package availability updated successfully
+ *       400:
+ *         description: Invalid availability status
+ *       404:
+ *         description: Koi Package not found
+ *       500:
+ *         description: Server error
+ */
+router.patch("/updateKoiPackageAvailability/:packageId", updateKoiPackageAvailability);
+
+// Koi Consignment routes
 
 /**
  * @swagger
@@ -2038,7 +2095,7 @@ router.get("/varieties", getAllVarieties);
 
 router.post("/addKoiPackageVariety", addKoiPackageVariety);
 
-router.get("/koipackage/:packageId", getKoiPackageById);
+
 
 /**
  * @swagger
