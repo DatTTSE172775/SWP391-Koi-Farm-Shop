@@ -1,46 +1,157 @@
-// src/pages/admin/OrderDetails.scss
+.admin-content {
+  padding: 30px;
+  background-color: #f4f6f8;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 
-.admin-layout {
-  height: 100vh;
-
-  .admin-content {
-    padding: 30px;
-    background-color: #f5f7fa;
-    overflow-y: auto;
-  }
-
-  .order-details-card {
-    padding: 30px;
-    border-radius: 12px;
+  .order-details-container {
+    max-width: 1500px;
+    margin: 0 auto;
     background-color: #ffffff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transition: box-shadow 0.3s;
-
-    &:hover {
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-    }
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 
     .title {
+      font-size: 2rem;
+      font-weight: bold;
       text-align: center;
+      color: #333;
       margin-bottom: 20px;
     }
 
     .back-button {
-      background-color: #1890ff;
-      border-color: #1890ff;
-      transition: background-color 0.3s, border-color 0.3s;
-
+      font-size: 1rem;
+      font-weight: bold;
+      color: #007bff;
+      margin-bottom: 15px;
       &:hover {
-        background-color: #40a9ff;
-        border-color: #40a9ff;
+        color: #0056b3;
+      }
+    }
+
+    .info-card {
+      background-color: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid #e3e6f0;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+
+      p {
+        margin: 5px 0;
+        line-height: 1.6;
+        font-size: 0.95rem;
+
+        strong {
+          font-weight: 600;
+        }
+      }
+
+      .ant-tag {
+        font-size: 0.85rem;
+        padding: 5px 10px;
+        border-radius: 12px;
+        text-transform: capitalize;
+      }
+    }
+
+    .order-summary-table {
+      margin-top: 20px;
+      border-radius: 8px;
+      overflow: hidden;
+
+      .ant-table {
+        border-radius: 8px;
+        overflow: hidden;
+
+        .ant-table-container {
+          border: 1px solid #e3e6f0;
+          border-radius: 8px;
+        }
+
+        .ant-table-thead > tr > th {
+          background-color: #f4f6f8;
+          font-weight: 600;
+          color: #495057;
+          font-size: 0.95rem;
+          text-transform: uppercase;
+          padding: 12px 16px;
+        }
+
+        .ant-table-tbody > tr > td {
+          padding: 12px 16px;
+          font-size: 0.9rem;
+          color: #333;
+        }
+
+        .product-info {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+
+          .product-image {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid #e3e6f0;
+          }
+        }
+      }
+    }
+
+    .ant-card {
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .ant-select {
+      margin-top: 10px;
+      .ant-select-selector {
+        border-radius: 6px;
+        border: 1px solid #e3e6f0;
+      }
+    }
+
+    .ant-divider {
+      margin: 20px 0;
+    }
+  }
+
+  /* Bố cục dành cho các phần Billing và Shipping Details */
+  .details-section {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+    }
+
+    .info-card {
+      flex: 1;
+      padding: 15px;
+
+      h5 {
+        margin-bottom: 10px;
+        font-size: 1rem;
+        font-weight: 600;
       }
     }
   }
 
-  .loading-spinner {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+  /* Nút hành động quay lại */
+  .back-button {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #007bff;
+    display: inline-block;
+    margin-bottom: 20px;
+    &:hover {
+      color: #0056b3;
+      text-decoration: underline;
+    }
   }
 }

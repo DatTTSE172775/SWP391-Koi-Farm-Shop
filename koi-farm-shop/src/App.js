@@ -29,6 +29,10 @@ import staffRoutes from "./routes/StaffRoutes";
 // import InCareConsignments from "./pages/staff/consignment-manage/completed/CompletedConsignment";
 // import ManagerConsignmentPage from "./pages/admin/consign/AdminConsignment";
 import adminRoutes from "./routes/AdminRoutes";
+import UpdateProfile from "./pages/account/updateProfile/UpdateProfile";
+import OrderHistoryPage from "./pages/account/OrderHistoryPage/OrderHistoryPage";
+import OrderDetailPage from "./pages/account/OrderDetailPage/OrderDetailPage";
+
 
 
 // auth page
@@ -90,10 +94,11 @@ const PaymentResult = lazy(() =>
 );
 const Cart = lazy(() => import("./pages/order/cart/CartPage"));
 
-// customer page
+// profile customer page
 const WelcomeAccount = lazy(() =>
     import("./pages/account/welcome/WelcomeAccount")
 );
+const ProfilePage = lazy(() => import("./pages/account/profile/ProfilePage"));
 
 
 
@@ -142,6 +147,12 @@ function App() {
                             <Route path="checkout" element={<Checkout />} />
                             <Route path="payment-result" element={<PaymentResult />} />
                             <Route path="order-success" element={<OrderSuccess />} />
+
+                            {/* Profile customer Routes */}
+                            <Route path="profile" element={<ProfilePage />} />
+                            <Route path="update-profile" element={<UpdateProfile />} />
+                            <Route path="order-history" element={<OrderHistoryPage />} />
+                            <Route path="order-history/:id" element={<OrderDetailPage />} />
                         </Route>
 
                         {/* Auth Routes without MainLayout */}

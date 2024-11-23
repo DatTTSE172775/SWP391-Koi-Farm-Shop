@@ -92,11 +92,14 @@ const Navigation = () => {
 const accountMenu = (
   <Menu>
     <Menu.Item key="view-info">
-      <Link to="/account">Xem Thông Tin</Link>
+      <Link to="/profile">Xem Thông Tin</Link>
     </Menu.Item>
-    {/* <Menu.Item key="order-history">
+    <Menu.Item key="order-history">
       <Link to="/order-history">Lịch sử đơn hàng</Link>
-    </Menu.Item> */}
+    </Menu.Item>
+    <Menu.Item key="consignment-history">
+      <Link to="/consignment-history">Lịch sử ký gửi</Link>
+    </Menu.Item>
     <Menu.Divider />
     <Menu.Item key="logout" onClick={handleLogout}>
       Đăng xuất

@@ -1,0 +1,24 @@
+.order-history-page {
+  max-width: 1200px; // Tăng chiều rộng để phù hợp với nhiều nội dung hơn
+  margin: 100px auto; // Căn giữa trang
+  padding: 20px;
+
+  h2 {
+    text-align: center;
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 30px;
+  }
+
+  .order-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); // Chỉ hiển thị 2 cột
+    gap: 24px; // Khoảng cách giữa các item
+    padding: 10px;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr; // Với màn hình nhỏ hơn, hiển thị 1 item mỗi dòng
+    }
+  }
+}

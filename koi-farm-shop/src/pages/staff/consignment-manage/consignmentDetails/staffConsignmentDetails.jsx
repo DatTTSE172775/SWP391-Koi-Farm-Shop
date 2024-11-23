@@ -40,20 +40,6 @@ const StaffConsignmentDetails = () => {
     return variety ? variety.VarietyName : 'Unknown Variety';
   };
 
-  const renderStatus = (status) => {
-    let color = 'default';
-    switch (status) {
-      case 'Approved': color = 'green'; break;
-      case 'Pending': color = 'orange'; break;
-      case 'In Care': color = 'blue'; break;
-      case 'Listed for Sale': color = 'cyan'; break;
-      case 'Sold': color = 'purple'; break;
-      case 'Withdrawn': color = 'red'; break;
-      default: color = 'default';
-    }
-    return <Tag color={color}>{status}</Tag>;
-  };
-
   return (
     <Layout className="consignment-details">
       <Layout className="site-layout">
@@ -77,7 +63,6 @@ const StaffConsignmentDetails = () => {
                   <Descriptions.Item label="Ngày ký gửi">
                     {new Date(consignment.StartDate).toLocaleString()}
                   </Descriptions.Item>
-                  <Descriptions.Item label="Trạng thái">{renderStatus(consignment.Status)}</Descriptions.Item>
                   <Descriptions.Item label="Giá thỏa thuận">
                     {consignment.PriceAgreed.toLocaleString()} VND
                   </Descriptions.Item>
