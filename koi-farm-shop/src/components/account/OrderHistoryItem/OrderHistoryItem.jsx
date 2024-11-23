@@ -1,15 +1,48 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Tag, List, Avatar, Divider, Button, Space } from "antd";
-import {
-    HomeOutlined,
-    CalendarOutlined,
-    DollarOutlined,
-    ShoppingOutlined,
-} from "@ant-design/icons";
+import { HomeOutlined, CalendarOutlined, DollarOutlined, ShoppingOutlined } from "@ant-design/icons";
 import "./OrderHistoryItem.scss";
 import { useNavigate } from "react-router-dom";
 
 const OrderHistoryItem = ({ order }) => {
+    const navigate = useNavigate();
+
+    // Parse products from order data
+    const products = [];
+
+    // Single Fish Items
+    if (order.ProductTypes?.includes("Single Fish") && order.KoiNames) {
+        const koiNames = order.KoiNames.split(",");
+        const koiPrices = order.KoiPrices.split(",");
+        const koiQuantities = order.KoiIDs.split(",").map(() => 1); // Assuming single quantity for each koi
+        koiNames.forEach((name, index) => {
+            products.push({
+                type: "Single Fish",
+                name: name.trim(),
+                image: "/placeholder-fish.png", // Replace with actual image if available
+                quantity: koiQuantities[index],
+                price: parseFloat(koiPrices[index]).toLocaleString() + " VND",
+            });
+        });
+    }
+
+    // Koi Packages
+    if (order.ProductTypes?.includes("Package") && order.PackageNames) {
+        const packageNames = order.PackageNames.split(",");
+        const packagePrices = order.PackagePrices.split(",");
+        const packageQuantities = order.PackageIDs.split(",").map(() => 1); // Assuming single quantity for each package
+        const packageImages = ["/placeholder-package.png", "/placeholder-package.png"]; // Replace with actual images
+        packageNames.forEach((name, index) => {
+            products.push({
+                type: "Package",
+                name: name.trim(),
+                image: packageImages[index] || "/placeholder-package.png",
+                quantity: packageQuantities[index],
+                price: parseFloat(packagePrices[index]).toLocaleString() + " VND",
+            });
+        });
+    }
+
     const getStatusDetails = (status) => {
         switch (status) {
             case "Pending":
@@ -27,41 +60,24 @@ const OrderHistoryItem = ({ order }) => {
         }
     };
 
-    const navigate = useNavigate();
     const statusDetails = getStatusDetails(order.OrderStatus);
-
-    // Chuẩn bị dữ liệu sản phẩm trong đơn hàng
-    const products = [];
-    if (order.ProductType === "Single Fish") {
-        products.push({
-            name: order.KoiName || "Không có tên",
-            image: order.KoiImagesLink || "",
-            quantity: order.Quantity || 1,
-            price: order.KoiPrice || 0,
-        });
-    }
-
-    // Nếu cần xử lý thêm các loại sản phẩm khác (ví dụ: lô cá koi), hãy thêm logic tương tự ở đây.
 
     return (
         <Card className="order-history-item" hoverable>
-            {/* Header: Order ID & Status */}
             <div className="order-header">
                 <div className="order-id">
                     <ShoppingOutlined /> {order.TrackingNumber}
                 </div>
-                <Tag color={statusDetails.color} className="order-status">
-                    {statusDetails.label}
-                </Tag>
+                <Tag color={statusDetails.color}>{statusDetails.label}</Tag>
             </div>
 
-            {/* Order Details */}
             <div className="order-details">
                 <p>
                     <CalendarOutlined /> <strong>Ngày đặt:</strong> {order.OrderDate}
                 </p>
                 <p>
-                    <DollarOutlined /> <strong>Tổng tiền:</strong> {order.TotalAmount.toLocaleString()} VND
+                    <DollarOutlined /> <strong>Tổng tiền:</strong>{" "}
+                    {order.TotalAmount.toLocaleString()} VND
                 </p>
                 <p>
                     <HomeOutlined /> <strong>Địa chỉ giao hàng:</strong>{" "}
@@ -71,7 +87,6 @@ const OrderHistoryItem = ({ order }) => {
 
             <Divider />
 
-            {/* Product List */}
             <List
                 className="order-products"
                 header={<strong>Sản phẩm trong đơn hàng:</strong>}
@@ -79,12 +94,11 @@ const OrderHistoryItem = ({ order }) => {
                 renderItem={(item) => (
                     <List.Item>
                         <List.Item.Meta
-                            avatar={<Avatar src={item.image} />}
+                            avatar={<Avatar src={item.image || "/placeholder.png"} />}
                             title={<span>{item.name}</span>}
                             description={
                                 <span>
-                                    Số lượng: <strong>{item.quantity}</strong> | Giá:{" "}
-                                    <strong>{item.price.toLocaleString()} VND</strong>
+                                    Số lượng: <strong>{item.quantity}</strong> | Giá: <strong>{item.price}</strong>
                                 </span>
                             }
                         />
@@ -92,7 +106,6 @@ const OrderHistoryItem = ({ order }) => {
                 )}
             />
 
-            {/* Footer: Button */}
             <div className="order-footer">
                 <Space>
                     <Button

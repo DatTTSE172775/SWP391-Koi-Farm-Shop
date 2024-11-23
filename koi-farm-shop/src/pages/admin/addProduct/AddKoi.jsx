@@ -181,11 +181,11 @@ const AddKoi = () => {
             </div>
             <div className="form-group">
               <label>Năm sinh</label>
-              <input type="number" name="born" min="1900" max={new Date().getFullYear()} value={formValues.born} onChange={handleChange} required />
+              <input type="number" name="born" min="1990" max={new Date().getFullYear()} value={formValues.born} onChange={handleChange} required />
             </div>
             <div className="form-group">
               <label>Kích thước (cm)</label>
-              <input type="number" name="size" min="0" step="0.1" value={formValues.size} onChange={handleChange} required />
+              <input type="number" name="size" min="0.5" max="30" step="0.1" value={formValues.size} onChange={handleChange} required />
             </div>
             <div className="form-group">
               <label>Giá</label>
@@ -193,7 +193,7 @@ const AddKoi = () => {
             </div>
             <div className="form-group">
               <label>Cân nặng (kg)</label>
-              <input type="number" name="weight" min="0" step="0.1" value={formValues.weight} onChange={handleChange} required />
+              <input type="number" name="weight" min="0.5" max="15" step="0.1" value={formValues.weight} onChange={handleChange} required />
             </div>
             <div className="form-group">
               <label>Tính cách</label>
