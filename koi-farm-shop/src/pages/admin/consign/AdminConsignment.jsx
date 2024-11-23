@@ -53,6 +53,11 @@ const AdminConsignment = () => {
     }
   };
 
+  const formatDate = (dataString) => {
+    const date = new Date(dataString);
+    return new Intl.DateTimeFormat('en-GB').format(date);
+  }
+
   const columns = [
     {
       title: 'ID',
@@ -70,6 +75,7 @@ const AdminConsignment = () => {
       title: 'Ngày ký gửi',
       dataIndex: 'StartDate',
       key: 'StartDate',
+      render: (text) => formatDate(text),
     },
     {
       title: 'Trạng thái',

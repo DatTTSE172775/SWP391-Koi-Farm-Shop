@@ -1,5 +1,6 @@
 import { Button, Card, Divider, notification, Space, Typography } from "antd";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../../../api/axiosInstance";
 import "./OrderItem.scss";
 
@@ -22,12 +23,13 @@ const shouldShowUpdateButton = (status) => {
 
 const OrderItem = ({ order, onRemove }) => {
   const [customerInfo, setCustomerInfo] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCustomerInfo = async () => {
       try {
         const response = await axiosInstance.get(`/customers/${order.CustomerID}`);
-        setCustomerInfo(response.data); // Save customer data to state
+        setCustomerInfo(response.data);
       } catch (error) {
         console.error("Error fetching customer info:", error);
       }
@@ -48,8 +50,7 @@ const OrderItem = ({ order, onRemove }) => {
           description: `Đơn hàng đã chuyển sang trạng thái ${nextStatus}.`,
         });
 
-        // Call the onRemove function to remove the order from the list
-        onRemove(order.OrderID);
+        onRemove(order.OrderID); // Remove the order from the list
       } catch (error) {
         notification.error({
           message: "Lỗi",
@@ -114,6 +115,12 @@ const OrderItem = ({ order, onRemove }) => {
                       : "Chuyển sang Đã Giao"}
                 </Button>
             )}
+            <Button
+                type="default"
+                onClick={() => navigate(`/staff/orders/order-details/${order.OrderID}`)}
+            >
+              Xem chi tiết
+            </Button>
           </Space>
         </div>
       </Card>

@@ -75,7 +75,7 @@ const KoiPackage = () => {
               >
                 <Card.Meta
                   title={pkg.PackageName}
-                  description={<Text type="secondary">Kích thước: {pkg.PackageSize} cm</Text>}
+                  description={<Text type="secondary">Kích thước: {pkg.PackageSize}</Text>}
                 />
                 <div className="koi-package-card__details">
                   <Text strong>Tình trạng: {pkg.Availability}</Text>
