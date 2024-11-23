@@ -1,5 +1,5 @@
 import { Button, Card, Divider, notification, Space, Typography } from "antd";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import axiosInstance from "../../../../api/axiosInstance";
 import "./OrderItem.scss";
 
@@ -21,19 +21,34 @@ const shouldShowUpdateButton = (status) => {
 };
 
 const OrderItem = ({ order, onRemove }) => {
+  const [customerInfo, setCustomerInfo] = useState(null);
+
+  useEffect(() => {
+    const fetchCustomerInfo = async () => {
+      try {
+        const response = await axiosInstance.get(`/customers/${order.CustomerID}`);
+        setCustomerInfo(response.data); // Save customer data to state
+      } catch (error) {
+        console.error("Error fetching customer info:", error);
+      }
+    };
+
+    fetchCustomerInfo();
+  }, [order.CustomerID]);
+
   const handleStatusUpdate = async () => {
     const nextStatus = getNextStatus(order.OrderStatus);
     if (nextStatus) {
       try {
         await axiosInstance.patch(
-          `/orders/${order.OrderID}/${nextStatus.toLowerCase()}`
+            `/orders/${order.OrderID}/${nextStatus.toLowerCase()}`
         );
         notification.success({
           message: "Thành Công",
           description: `Đơn hàng đã chuyển sang trạng thái ${nextStatus}.`,
         });
 
-        // Gọi hàm xóa đơn hàng khỏi danh sách sau khi cập nhật thành công
+        // Call the onRemove function to remove the order from the list
         onRemove(order.OrderID);
       } catch (error) {
         notification.error({
@@ -45,64 +60,63 @@ const OrderItem = ({ order, onRemove }) => {
   };
 
   return (
-    <Card className="order-item" bordered={false}>
-      <div className="order-main-info">
-        <div>
-          <Title level={5}>Địa chỉ:</Title>
-          <Text className="highlight-text">{order.ShippingAddress}</Text>
+      <Card className="order-item" bordered={false}>
+        <div className="order-main-info">
+          <div>
+            <Title level={5}>Địa chỉ:</Title>
+            <Text className="highlight-text">{order.ShippingAddress}</Text>
+          </div>
+          <div>
+            <Title level={5}>Số điện thoại:</Title>
+            <Text className="highlight-text">
+              {customerInfo ? customerInfo.PhoneNumber : "Đang tải..."}
+            </Text>
+          </div>
+          <div>
+            <Title level={5}>Giá:</Title>
+            <Text className="price-text">
+              {order.TotalAmount != null
+                  ? order.TotalAmount.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  })
+                  : "N/A"}
+            </Text>
+          </div>
         </div>
-        <div>
-          <Title level={5}>Số điện thoại:</Title>
-          <Text className="highlight-text">{order.PhoneNumber}</Text>
-        </div>
-        <div>
-          <Title level={5}>Giá:</Title>
-          <Text className="price-text">
-            {order.TotalAmount != null
-                ? order.TotalAmount.toLocaleString("vi-VN", {
-                  style: "currency",
-                  currency: "VND",
-                })
-                : "N/A"}
-          </Text>
-        </div>
-      </div>
 
-      <Divider />
+        <Divider />
 
-      <div className="order-details">
-        <div>
-          <Text strong>Mã đơn hàng:</Text> <Text>{order.OrderID}</Text>
+        <div className="order-details">
+          <div>
+            <Text strong>Mã đơn hàng:</Text> <Text>{order.OrderID}</Text>
+          </div>
+          <div>
+            <Text strong>Ngày tạo:</Text>{" "}
+            <Text>{new Date(order.OrderDate).toLocaleDateString()}</Text>
+          </div>
+          <div>
+            <Text strong>Họ tên khách hàng:</Text>{" "}
+            <Text>{customerInfo ? customerInfo.FullName : "Đang tải..."}</Text>
+          </div>
         </div>
-        <div>
-          <Text strong>Ngày tạo:</Text>{" "}
-          <Text>{new Date(order.OrderDate).toLocaleDateString()}</Text>
-        </div>
-        <div>
-          <Text strong>Họ tên khách hàng:</Text>{" "}
-          <Text>{order.CustomerName}</Text>
-        </div>
-      </div>
 
-      <div className="order-actions">
-        <Space size="middle">
-          {/* <Button type="default" className="detail-button">
-            <Link to={`/staff/orders/${order.OrderID}`}>Xem Chi Tiết</Link>
-          </Button> */}
-          {shouldShowUpdateButton(order.OrderStatus) && (
-            <Button
-              type="primary"
-              className="update-button"
-              onClick={handleStatusUpdate}
-            >
-              {order.OrderStatus === "Processing"
-                ? "Chuyển sang Đang Giao"
-                : "Chuyển sang Đã Giao"}
-            </Button>
-          )}
-        </Space>
-      </div>
-    </Card>
+        <div className="order-actions">
+          <Space size="middle">
+            {shouldShowUpdateButton(order.OrderStatus) && (
+                <Button
+                    type="primary"
+                    className="update-button"
+                    onClick={handleStatusUpdate}
+                >
+                  {order.OrderStatus === "Processing"
+                      ? "Chuyển sang Đang Giao"
+                      : "Chuyển sang Đã Giao"}
+                </Button>
+            )}
+          </Space>
+        </div>
+      </Card>
   );
 };
 
