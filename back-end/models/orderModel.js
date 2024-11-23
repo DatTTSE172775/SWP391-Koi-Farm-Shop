@@ -230,28 +230,20 @@ exports.checkProductAvailability = async (koiID, packageID, quantity) => {
       // Kiểm tra xem Koi với KoiID có còn tồn tại không (vì mỗi cá chỉ có 1)
       const koiResult = await pool.request()
         .input('koiID', sql.Int, koiID)
-        .query('SELECT Availability FROM KoiFish WHERE KoiID = @koiID');
+        .query('SELECT COUNT(*) AS Count FROM KoiFish WHERE KoiID = @koiID');
 
       if (koiResult.recordset[0].Count === 0) {
         return  { status: 404, message: `Koi Fish với ID ${koiID} không tồn tại.` };
-      }
-
-      if (koiResult.recordset[0].Availability === 'Sold Out') {
-        return { status: 400, message: `Koi Fish với ID ${koiID} đã được bán hết.` };
       }
     } else if (packageID) {
       // Kiểm tra số lượng tồn kho cho Package
       const packageResult = await pool.request()
         .input('packageID', sql.Int, packageID)
-        .query('SELECT Quantity, Availability FROM KoiPackage WHERE PackageID = @packageID');
+        .query('SELECT Quantity FROM KoiPackage WHERE PackageID = @packageID');
 
         if (packageResult.recordset.length === 0) {
           // Nếu gói hàng không tồn tại, trả về lỗi 404
           return  { status: 404, message: `Package với ID ${packageID} không tồn tại.` };
-        }
-
-        if (packageResult.recordset[0].Availability === 'Sold Out') {
-          return { status: 400, message: `Gói hàng với ID ${packageID} đã được bán hết.` };
         }
     
         if (packageResult.recordset[0].Quantity < quantity) {
@@ -272,107 +264,104 @@ exports.getOrdersByCustomerId = async (customerID) => {
   try {
     const result =
       await sql.query`
-        SELECT 
-          o.OrderID,
-          o.CustomerID,
-          u.UserID,
-          u.Username,
-          u.Role,
-          o.OrderDate,
-          o.TotalAmount,
-          o.ShippingAddress,
-          o.OrderStatus,
-          o.PaymentMethod,
-          o.PaymentStatus,
-          o.TrackingNumber,
-          o.Discount,
-          o.ShippingCost,
-          o.PromotionID,
-          
-          c.FullName,
-          c.Email,
-          c.PhoneNumber,
-          c.Address,
-          c.LoyaltyPoints,
-      
-          -- Thông tin từ OrderDetails
-          od.OrderDetailID,
-          od.ProductID,
-          od.KoiID,
-          od.PackageID,
-          od.Quantity,
-          od.UnitPrice,
-          od.TotalPrice,
-          od.ProductType,
-          od.CertificateStatus,
-      
-          -- Thông tin chi tiết về KoiFish
-          kf.KoiID AS KoiID_Details,
-          kf.Name AS KoiName,
-          kf.VarietyID,
-          kf.Origin,
-          kf.Gender,
-          kf.Born,
-          kf.Size,
-          kf.Weight,
-          kf.Personality,
-          kf.FeedingAmountPerDay,
-          kf.HealthStatus,
-          kf.ScreeningRate,
-          kf.Price AS KoiPrice,
-          kf.CertificateLink AS KoiCertificateLink,
-          kf.ImagesLink AS KoiImagesLink,
-          kf.AddedDate,
-          kf.Availability AS KoiAvailability,
-      
-          -- Thông tin chi tiết về KoiPackage
-          kp.PackageID AS PackageID_Details,
-          kp.PackageName,
-          kp.ImageLink AS PackageImageLink,
-          kp.Price AS PackagePrice,
-          kp.PackageSize,
-          kp.CreatedDate AS PackageCreatedDate,
-          kp.Availability AS PackageAvailability,
-          kp.Quantity AS PackageQuantity,
-      
-          -- Thông tin chi tiết về KoiConsignment (nếu có)
-          kc.ConsignmentID,
-          kc.ConsignmentType,
-          kc.ConsignmentMode,
-          kc.StartDate,
-          kc.EndDate,
-          kc.Status AS ConsignmentStatus,
-          kc.PriceAgreed,
-          kc.PickupDate,
-          kc.ApprovedStatus,
-          kc.InspectionResult,
-          kc.Notes,
-          kc.KoiType,
-          kc.KoiColor,
-          kc.KoiAge,
-          kc.KoiSize,
-          kc.ImagePath
-      
-        FROM 
-            Orders o
-        LEFT JOIN 
-            OrderDetails od ON o.OrderID = od.OrderID
-        LEFT JOIN 
-            KoiFish kf ON od.KoiID = kf.KoiID
-        LEFT JOIN 
-            KoiPackage kp ON od.PackageID = kp.PackageID
-        LEFT JOIN 
-            KoiConsignment kc ON kc.CustomerID = o.CustomerID AND kc.KoiID = kf.KoiID
-        LEFT JOIN 
-            Customers c ON o.CustomerID = c.CustomerID
-        LEFT JOIN 
-            Users u ON o.UserID = u.UserID
-        
-        WHERE 
-            o.CustomerID = ${customerID}
-        
-        ORDER BY 
-            o.OrderID;
+ SELECT 
+    o.OrderID,
+    o.CustomerID,
+    u.UserID,
+    u.Username,
+    u.Role,
+    o.OrderDate,
+    o.TotalAmount,
+    o.ShippingAddress,
+    o.OrderStatus,
+    o.PaymentMethod,
+    o.PaymentStatus,
+    o.TrackingNumber,
+    o.Discount,
+    o.ShippingCost,
+    o.PromotionID,
+    
+    c.FullName,
+    c.Email,
+    c.PhoneNumber,
+    c.Address,
+    c.LoyaltyPoints,
+
+    -- Thông tin từ OrderDetails
+    STRING_AGG(CAST(od.ProductID AS VARCHAR), ', ') AS ProductIDs,
+    STRING_AGG(CAST(od.KoiID AS VARCHAR), ', ') AS KoiIDs,
+    STRING_AGG(CAST(od.PackageID AS VARCHAR), ', ') AS PackageIDs,
+    STRING_AGG(od.ProductType, ', ') AS ProductTypes,
+    STRING_AGG(od.CertificateStatus, ', ') AS CertificateStatuses,
+    SUM(od.Quantity) AS TotalQuantity,
+    SUM(od.TotalPrice) AS TotalOrderDetailPrice, -- Tổng giá từ OrderDetails
+
+    -- Thông tin từ KoiFish
+    STRING_AGG(kf.Name, ', ') AS KoiNames,
+    STRING_AGG(CAST(kf.VarietyID AS VARCHAR), ', ') AS VarietyIDs,
+    STRING_AGG(kf.Origin, ', ') AS Origins,
+    STRING_AGG(kf.Gender, ', ') AS Genders,
+    STRING_AGG(CAST(kf.Size AS VARCHAR), ', ') AS KoiSizes,
+    STRING_AGG(CAST(kf.Weight AS VARCHAR), ', ') AS KoiWeights,
+    STRING_AGG(kf.HealthStatus, ', ') AS KoiHealthStatuses,
+    STRING_AGG(CAST(kf.Price AS VARCHAR), ', ') AS KoiPrices,
+
+    -- Thông tin từ KoiPackage
+    STRING_AGG(kp.PackageName, ', ') AS PackageNames,
+    STRING_AGG(CAST(kp.PackageSize AS VARCHAR), ', ') AS PackageSizes,
+    STRING_AGG(CAST(kp.Price AS VARCHAR), ', ') AS PackagePrices,
+    STRING_AGG(CAST(kp.Quantity AS VARCHAR), ', ') AS PackageQuantities,
+    STRING_AGG(kp.Availability, ', ') AS PackageAvailabilities,
+
+    -- Thông tin từ KoiConsignment
+    STRING_AGG(CAST(kc.ConsignmentID AS VARCHAR), ', ') AS ConsignmentIDs,
+    STRING_AGG(kc.ConsignmentType, ', ') AS ConsignmentTypes,
+    STRING_AGG(kc.ConsignmentMode, ', ') AS ConsignmentModes,
+    STRING_AGG(CAST(kc.PriceAgreed AS VARCHAR), ', ') AS ConsignmentPriceAgreeds,
+    STRING_AGG(kc.Status, ', ') AS ConsignmentStatuses
+
+FROM 
+    Orders o
+LEFT JOIN 
+    OrderDetails od ON o.OrderID = od.OrderID
+LEFT JOIN 
+    KoiFish kf ON od.KoiID = kf.KoiID
+LEFT JOIN 
+    KoiPackage kp ON od.PackageID = kp.PackageID
+LEFT JOIN 
+    KoiConsignment kc ON kc.CustomerID = o.CustomerID AND kc.KoiID = kf.KoiID
+LEFT JOIN 
+    Customers c ON o.CustomerID = c.CustomerID
+LEFT JOIN 
+    Users u ON o.UserID = u.UserID -- Phải đảm bảo o.UserID liên kết đúng với Users
+
+WHERE 
+    o.CustomerID = ${customerID} -- Lấy theo CustomerID cụ thể
+
+GROUP BY 
+    o.OrderID, 
+    o.CustomerID, 
+    u.UserID, 
+    u.Username, 
+    u.Role, 
+    o.OrderDate, 
+    o.TotalAmount, 
+    o.ShippingAddress, 
+    o.OrderStatus, 
+    o.PaymentMethod, 
+    o.PaymentStatus, 
+    o.TrackingNumber, 
+    o.Discount, 
+    o.ShippingCost, 
+    o.PromotionID, 
+    c.FullName, 
+    c.Email, 
+    c.PhoneNumber, 
+    c.Address, 
+    c.LoyaltyPoints
+
+ORDER BY 
+    o.OrderID;
     `;
     return result.recordset;
   } catch (error) {
@@ -571,107 +560,104 @@ exports.getOrderById = async (orderId) => {
 
     const result =
       await sql.query`
-      SELECT 
-        o.OrderID,
-        o.CustomerID,
-        u.UserID,
-        u.Username,
-        u.Role,
-        o.OrderDate,
-        o.TotalAmount,
-        o.ShippingAddress,
-        o.OrderStatus,
-        o.PaymentMethod,
-        o.PaymentStatus,
-        o.TrackingNumber,
-        o.Discount,
-        o.ShippingCost,
-        o.PromotionID,
-        
-        c.FullName,
-        c.Email,
-        c.PhoneNumber,
-        c.Address,
-        c.LoyaltyPoints,
+ SELECT 
+    o.OrderID,
+    o.CustomerID,
+    u.UserID,
+    u.Username,
+    u.Role,
+    o.OrderDate,
+    o.TotalAmount,
+    o.ShippingAddress,
+    o.OrderStatus,
+    o.PaymentMethod,
+    o.PaymentStatus,
+    o.TrackingNumber,
+    o.Discount,
+    o.ShippingCost,
+    o.PromotionID,
+    
+    c.FullName,
+    c.Email,
+    c.PhoneNumber,
+    c.Address,
+    c.LoyaltyPoints,
 
-        -- Thông tin từ OrderDetails
-        od.OrderDetailID,
-        od.ProductID,
-        od.KoiID,
-        od.PackageID,
-        od.Quantity,
-        od.UnitPrice,
-        od.TotalPrice,
-        od.ProductType,
-        od.CertificateStatus,
+    -- Thông tin từ OrderDetails
+    STRING_AGG(CAST(od.ProductID AS VARCHAR), ', ') AS ProductIDs,
+    STRING_AGG(CAST(od.KoiID AS VARCHAR), ', ') AS KoiIDs,
+    STRING_AGG(CAST(od.PackageID AS VARCHAR), ', ') AS PackageIDs,
+    STRING_AGG(od.ProductType, ', ') AS ProductTypes,
+    STRING_AGG(od.CertificateStatus, ', ') AS CertificateStatuses,
+    SUM(od.Quantity) AS TotalQuantity,
+    SUM(od.TotalPrice) AS TotalOrderDetailPrice, -- Tổng giá từ OrderDetails
 
-        -- Thông tin chi tiết về KoiFish
-        kf.KoiID AS KoiID_Details,
-        kf.Name AS KoiName,
-        kf.VarietyID,
-        kf.Origin,
-        kf.Gender,
-        kf.Born,
-        kf.Size,
-        kf.Weight,
-        kf.Personality,
-        kf.FeedingAmountPerDay,
-        kf.HealthStatus,
-        kf.ScreeningRate,
-        kf.Price AS KoiPrice,
-        kf.CertificateLink AS KoiCertificateLink,
-        kf.ImagesLink AS KoiImagesLink,
-        kf.AddedDate,
-        kf.Availability AS KoiAvailability,
+    -- Thông tin từ KoiFish
+    STRING_AGG(kf.Name, ', ') AS KoiNames,
+    STRING_AGG(CAST(kf.VarietyID AS VARCHAR), ', ') AS VarietyIDs,
+    STRING_AGG(kf.Origin, ', ') AS Origins,
+    STRING_AGG(kf.Gender, ', ') AS Genders,
+    STRING_AGG(CAST(kf.Size AS VARCHAR), ', ') AS KoiSizes,
+    STRING_AGG(CAST(kf.Weight AS VARCHAR), ', ') AS KoiWeights,
+    STRING_AGG(kf.HealthStatus, ', ') AS KoiHealthStatuses,
+    STRING_AGG(CAST(kf.Price AS VARCHAR), ', ') AS KoiPrices,
 
-        -- Thông tin chi tiết về KoiPackage
-        kp.PackageID AS PackageID_Details,
-        kp.PackageName,
-        kp.ImageLink AS PackageImageLink,
-        kp.Price AS PackagePrice,
-        kp.PackageSize,
-        kp.CreatedDate AS PackageCreatedDate,
-        kp.Availability AS PackageAvailability,
-        kp.Quantity AS PackageQuantity,
+    -- Thông tin từ KoiPackage
+    STRING_AGG(kp.PackageName, ', ') AS PackageNames,
+    STRING_AGG(CAST(kp.PackageSize AS VARCHAR), ', ') AS PackageSizes,
+    STRING_AGG(CAST(kp.Price AS VARCHAR), ', ') AS PackagePrices,
+    STRING_AGG(CAST(kp.Quantity AS VARCHAR), ', ') AS PackageQuantities,
+    STRING_AGG(kp.Availability, ', ') AS PackageAvailabilities,
 
-        -- Thông tin chi tiết về KoiConsignment (nếu có)
-        kc.ConsignmentID,
-        kc.ConsignmentType,
-        kc.ConsignmentMode,
-        kc.StartDate,
-        kc.EndDate,
-        kc.Status AS ConsignmentStatus,
-        kc.PriceAgreed,
-        kc.PickupDate,
-        kc.ApprovedStatus,
-        kc.InspectionResult,
-        kc.Notes,
-        kc.KoiType,
-        kc.KoiColor,
-        kc.KoiAge,
-        kc.KoiSize,
-        kc.ImagePath
+    -- Thông tin từ KoiConsignment
+    STRING_AGG(CAST(kc.ConsignmentID AS VARCHAR), ', ') AS ConsignmentIDs,
+    STRING_AGG(kc.ConsignmentType, ', ') AS ConsignmentTypes,
+    STRING_AGG(kc.ConsignmentMode, ', ') AS ConsignmentModes,
+    STRING_AGG(CAST(kc.PriceAgreed AS VARCHAR), ', ') AS ConsignmentPriceAgreeds,
+    STRING_AGG(kc.Status, ', ') AS ConsignmentStatuses
 
-      FROM 
-          Orders o
-      LEFT JOIN 
-          OrderDetails od ON o.OrderID = od.OrderID
-      LEFT JOIN 
-          KoiFish kf ON od.KoiID = kf.KoiID
-      LEFT JOIN 
-          KoiPackage kp ON od.PackageID = kp.PackageID
-      LEFT JOIN 
-          KoiConsignment kc ON kc.CustomerID = o.CustomerID AND kc.KoiID = kf.KoiID
-      LEFT JOIN 
-          Customers c ON o.CustomerID = c.CustomerID
-      LEFT JOIN 
-          Users u ON o.UserID = u.UserID
+FROM 
+    Orders o
+LEFT JOIN 
+    OrderDetails od ON o.OrderID = od.OrderID
+LEFT JOIN 
+    KoiFish kf ON od.KoiID = kf.KoiID
+LEFT JOIN 
+    KoiPackage kp ON od.PackageID = kp.PackageID
+LEFT JOIN 
+    KoiConsignment kc ON kc.CustomerID = o.CustomerID AND kc.KoiID = kf.KoiID
+LEFT JOIN 
+    Customers c ON o.CustomerID = c.CustomerID
+LEFT JOIN 
+    Users u ON o.UserID = u.UserID
 
-      WHERE 
-          o.OrderID = ${orderId}
+WHERE 
+    o.OrderID = ${orderId}
 
-      ORDER BY 
-          o.OrderID; 
+GROUP BY 
+    o.OrderID, 
+    o.CustomerID, 
+    u.UserID, 
+    u.Username, 
+    u.Role, 
+    o.OrderDate, 
+    o.TotalAmount, 
+    o.ShippingAddress, 
+    o.OrderStatus, 
+    o.PaymentMethod, 
+    o.PaymentStatus, 
+    o.TrackingNumber, 
+    o.Discount, 
+    o.ShippingCost, 
+    o.PromotionID, 
+    c.FullName, 
+    c.Email, 
+    c.PhoneNumber, 
+    c.Address, 
+    c.LoyaltyPoints
+
+ORDER BY 
+    o.OrderID;
       `;
     console.log("Query result:", result.recordset); // Log để kiểm tra kết quả truy vấn
 
@@ -733,10 +719,96 @@ exports.getAllStaffOrdersByUserIdData = async (userId) => {
     const result = await pool.request()
       .input("userId", sql.Int, userId) // Đặt giá trị userId vào truy vấn
       .query(`
-        SELECT o.* 
-        FROM Orders o
-        JOIN Users u ON o.userId = u.userId
-        WHERE u.userId = @userId AND u.Role = 'Staff'
+        SELECT 
+            o.OrderID,
+            o.CustomerID,
+            u.UserID,
+            u.Username,
+            u.Role,
+            o.OrderDate,
+            o.TotalAmount,
+            o.ShippingAddress,
+            o.OrderStatus,
+            o.PaymentMethod,
+            o.PaymentStatus,
+            o.TrackingNumber,
+            o.Discount,
+            o.ShippingCost,
+            o.PromotionID,
+            
+            c.FullName,
+            c.Email,
+            c.PhoneNumber,
+            c.Address,
+            c.LoyaltyPoints,
+
+            -- Thông tin từ OrderDetails
+            STRING_AGG(CAST(od.ProductID AS VARCHAR), ', ') AS ProductIDs,
+            STRING_AGG(CAST(od.KoiID AS VARCHAR), ', ') AS KoiIDs,
+            STRING_AGG(CAST(od.PackageID AS VARCHAR), ', ') AS PackageIDs,
+            STRING_AGG(od.ProductType, ', ') AS ProductTypes,
+            STRING_AGG(od.CertificateStatus, ', ') AS CertificateStatuses,
+            SUM(od.Quantity) AS TotalQuantity,
+            SUM(od.TotalPrice) AS TotalOrderDetailPrice, -- Tổng giá từ OrderDetails
+
+            -- Thông tin từ KoiFish
+            STRING_AGG(kf.Name, ', ') AS KoiNames,
+            STRING_AGG(CAST(kf.VarietyID AS VARCHAR), ', ') AS VarietyIDs,
+            STRING_AGG(kf.Origin, ', ') AS Origins,
+            STRING_AGG(kf.Gender, ', ') AS Genders,
+            STRING_AGG(CAST(kf.Size AS VARCHAR), ', ') AS KoiSizes,
+            STRING_AGG(CAST(kf.Weight AS VARCHAR), ', ') AS KoiWeights,
+            STRING_AGG(kf.HealthStatus, ', ') AS KoiHealthStatuses,
+            STRING_AGG(CAST(kf.Price AS VARCHAR), ', ') AS KoiPrices,
+
+            -- Thông tin từ KoiPackage
+            STRING_AGG(kp.PackageName, ', ') AS PackageNames,
+            STRING_AGG(CAST(kp.PackageSize AS VARCHAR), ', ') AS PackageSizes,
+            STRING_AGG(CAST(kp.Price AS VARCHAR), ', ') AS PackagePrices,
+            STRING_AGG(CAST(kp.Quantity AS VARCHAR), ', ') AS PackageQuantities,
+            STRING_AGG(kp.Availability, ', ') AS PackageAvailabilities
+
+        FROM 
+            Orders o
+        LEFT JOIN 
+            OrderDetails od ON o.OrderID = od.OrderID
+        LEFT JOIN 
+            KoiFish kf ON od.KoiID = kf.KoiID
+        LEFT JOIN 
+            KoiPackage kp ON od.PackageID = kp.PackageID
+        LEFT JOIN 
+            Customers c ON o.CustomerID = c.CustomerID
+        LEFT JOIN 
+            Users u ON o.UserID = u.UserID
+
+        WHERE 
+            u.UserID = @userId AND u.Role = 'Staff' -- Lọc theo UserID và Role
+
+        GROUP BY 
+            o.OrderID, 
+            o.CustomerID, 
+            u.UserID, 
+            u.Username, 
+            u.Role, 
+            o.OrderDate, 
+            o.TotalAmount, 
+            o.ShippingAddress, 
+            o.OrderStatus, 
+            o.PaymentMethod, 
+            o.PaymentStatus, 
+            o.TrackingNumber, 
+            o.Discount, 
+            o.ShippingCost, 
+            o.PromotionID, 
+            c.FullName, 
+            c.Email, 
+            c.PhoneNumber, 
+            c.Address, 
+            c.LoyaltyPoints
+
+        ORDER BY 
+            o.OrderID;
+
         `);
 
     if (result.recordset.length === 0) {
